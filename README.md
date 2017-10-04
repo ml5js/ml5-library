@@ -1,4 +1,4 @@
-# Deeplearn.js meets p5
+# p5-deeplearn-js
 
 Interactive experiments using [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) and [p5.js](https://github.com/processing/p5.js).
 
