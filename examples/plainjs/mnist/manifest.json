@@ -1,0 +1,41 @@
+{
+  "hidden1/biases": {
+    "filename": "model/hidden1_biases",
+    "shape": [
+      128
+    ]
+  },
+  "hidden1/weights": {
+    "filename": "model/hidden1_weights",
+    "shape": [
+      784,
+      128
+    ]
+  },
+  "hidden2/biases": {
+    "filename": "model/hidden2_biases",
+    "shape": [
+      32
+    ]
+  },
+  "hidden2/weights": {
+    "filename": "model/hidden2_weights",
+    "shape": [
+      128,
+      32
+    ]
+  },
+  "softmax_linear/biases": {
+    "filename": "model/softmax_linear_biases",
+    "shape": [
+      10
+    ]
+  },
+  "softmax_linear/weights": {
+    "filename": "model/softmax_linear_weights",
+    "shape": [
+      32,
+      10
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "p5deeplearn",
+  "version": "1.0.0",
+  "description": "p5.js meets deeplearn.js",
+  "main": "index.js",
+  "scripts": {
+    "watch:mnist": "watchify mnist/index.js --outfile mnist/dist/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:mnist": "browserify mnist/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > mnist/dist/bundle.js",
+    "watch:rnn": "watchify rnn/index.js --outfile rnn/dist/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:rnn": "browserify rnn/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > rnn/dist/bundle.js",
+    "build:all": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cvalenzuela/p5deeplearn.git"
+  },
+  "author": "Cristobal Valenzuela <cvalenzuela@nyu.edu> (https://github.com/cvalenzuela)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cvalenzuela/p5deeplearn/issues"
+  },
+  "homepage": "https://github.com/cvalenzuela/p5deeplearn#readme",
+  "dependencies": {
+    "deeplearn": "0.2.4",
+    "p5": "0.5.14"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "6.24.1",
+    "babelify": "7.3.0",
+    "browserify": "14.4.0",
+    "live-server": "1.2.0",
+    "uglifyify": "4.0.4",
+    "watchify": "3.9.0"
+  }
+}

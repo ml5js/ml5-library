@@ -1,0 +1,330 @@
+{
+  "Variable": {
+    "filename": "Variable",
+    "shape": [
+      41
+    ]
+  },
+  "Variable_1": {
+    "filename": "Variable_1",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "Variable_10": {
+    "filename": "Variable_10",
+    "shape": [
+      41
+    ]
+  },
+  "Variable_11": {
+    "filename": "Variable_11",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "Variable_12": {
+    "filename": "Variable_12",
+    "shape": [
+      512
+    ]
+  },
+  "Variable_13": {
+    "filename": "Variable_13",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "Variable_14": {
+    "filename": "Variable_14",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "Variable_15": {
+    "filename": "Variable_15",
+    "shape": [
+      41
+    ]
+  },
+  "Variable_16": {
+    "filename": "Variable_16",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "Variable_17": {
+    "filename": "Variable_17",
+    "shape": [
+      512
+    ]
+  },
+  "Variable_18": {
+    "filename": "Variable_18",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "Variable_19": {
+    "filename": "Variable_19",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "Variable_2": {
+    "filename": "Variable_2",
+    "shape": [
+      512
+    ]
+  },
+  "Variable_3": {
+    "filename": "Variable_3",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "Variable_4": {
+    "filename": "Variable_4",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "Variable_5": {
+    "filename": "Variable_5",
+    "shape": [
+      41
+    ]
+  },
+  "Variable_6": {
+    "filename": "Variable_6",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "Variable_7": {
+    "filename": "Variable_7",
+    "shape": [
+      512
+    ]
+  },
+  "Variable_8": {
+    "filename": "Variable_8",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "Variable_9": {
+    "filename": "Variable_9",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "decay": {
+    "filename": "decay",
+    "shape": []
+  },
+  "decay_1": {
+    "filename": "decay_1",
+    "shape": []
+  },
+  "decay_2": {
+    "filename": "decay_2",
+    "shape": []
+  },
+  "decay_3": {
+    "filename": "decay_3",
+    "shape": []
+  },
+  "dense_1/bias": {
+    "filename": "dense_1_bias",
+    "shape": [
+      41
+    ]
+  },
+  "dense_1/kernel": {
+    "filename": "dense_1_kernel",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "dense_1_1/bias": {
+    "filename": "dense_1_1_bias",
+    "shape": [
+      41
+    ]
+  },
+  "dense_1_1/kernel": {
+    "filename": "dense_1_1_kernel",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "dense_1_2/bias": {
+    "filename": "dense_1_2_bias",
+    "shape": [
+      41
+    ]
+  },
+  "dense_1_2/kernel": {
+    "filename": "dense_1_2_kernel",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "dense_1_3/bias": {
+    "filename": "dense_1_3_bias",
+    "shape": [
+      41
+    ]
+  },
+  "dense_1_3/kernel": {
+    "filename": "dense_1_3_kernel",
+    "shape": [
+      128,
+      41
+    ]
+  },
+  "iterations": {
+    "filename": "iterations",
+    "shape": []
+  },
+  "iterations_1": {
+    "filename": "iterations_1",
+    "shape": []
+  },
+  "iterations_2": {
+    "filename": "iterations_2",
+    "shape": []
+  },
+  "iterations_3": {
+    "filename": "iterations_3",
+    "shape": []
+  },
+  "lr": {
+    "filename": "lr",
+    "shape": []
+  },
+  "lr_1": {
+    "filename": "lr_1",
+    "shape": []
+  },
+  "lr_2": {
+    "filename": "lr_2",
+    "shape": []
+  },
+  "lr_3": {
+    "filename": "lr_3",
+    "shape": []
+  },
+  "lstm_1/bias": {
+    "filename": "lstm_1_bias",
+    "shape": [
+      512
+    ]
+  },
+  "lstm_1/kernel": {
+    "filename": "lstm_1_kernel",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "lstm_1/recurrent_kernel": {
+    "filename": "lstm_1_recurrent_kernel",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "lstm_1_1/bias": {
+    "filename": "lstm_1_1_bias",
+    "shape": [
+      512
+    ]
+  },
+  "lstm_1_1/kernel": {
+    "filename": "lstm_1_1_kernel",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "lstm_1_1/recurrent_kernel": {
+    "filename": "lstm_1_1_recurrent_kernel",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "lstm_1_2/bias": {
+    "filename": "lstm_1_2_bias",
+    "shape": [
+      512
+    ]
+  },
+  "lstm_1_2/kernel": {
+    "filename": "lstm_1_2_kernel",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "lstm_1_2/recurrent_kernel": {
+    "filename": "lstm_1_2_recurrent_kernel",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "lstm_1_3/bias": {
+    "filename": "lstm_1_3_bias",
+    "shape": [
+      512
+    ]
+  },
+  "lstm_1_3/kernel": {
+    "filename": "lstm_1_3_kernel",
+    "shape": [
+      41,
+      512
+    ]
+  },
+  "lstm_1_3/recurrent_kernel": {
+    "filename": "lstm_1_3_recurrent_kernel",
+    "shape": [
+      128,
+      512
+    ]
+  },
+  "rho": {
+    "filename": "rho",
+    "shape": []
+  },
+  "rho_1": {
+    "filename": "rho_1",
+    "shape": []
+  },
+  "rho_2": {
+    "filename": "rho_2",
+    "shape": []
+  },
+  "rho_3": {
+    "filename": "rho_3",
+    "shape": []
+  }
+}
