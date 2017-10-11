@@ -13,6 +13,7 @@ reader.getAllVariables().then((checkpoints) => {
   let graphModel = buildModelGraph(checkpoints);
   input = graphModel[0];
   probs = graphModel[1];
+  console.log(graphModel)
   session = new Session(input.node.graph, math);
 });
 
@@ -29,6 +30,7 @@ let predict = (data, resultTag) => {
 };
 
 let buildModelGraph = (checkpoints) => {
+  console.log(checkpoints)
   let g = new Graph();
   let input = g.placeholder('input', [784]);
   let hidden1W = g.constant(checkpoints['hidden1/weights']);

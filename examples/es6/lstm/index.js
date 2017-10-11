@@ -59,31 +59,13 @@ let sketch = new p5((p) => {
       length: lengthSlider.value()
     }
 
-    // If we aren't waiting for previous results, go ahead and post
-    // if (!waiting) {
-    //   // Now we are waiting
-    //   waiting = true;
-    //   console.log('Posting seed: ' + txt);
-    //   console.log(data);
-    //   // Post to the server
-    //   httpPost('/upload', data, success, error);
-    // }
+    let success = result => {
+      p.select('#original').html(original);
+      p.select('#prediction').html(result.sentence);
+    }
 
-    // // WE got a reply
-    // function success(reply) {
-    //   var result = JSON.parse(reply);
-    //   console.log(result);
-    //   // Update the DOM elements
-    //   select('#original').html(original);
-    //   select('#prediction').html(result.sentence);
-    //   // We're not waiting anymore
-    //   waiting = false;
-    // }
-
-    // // Error
-    // function error(reply) {
-    //   console.log(reply);
-    // }
+    let result = generateText(data, success);
   }
+
 
 });
