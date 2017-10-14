@@ -16,7 +16,7 @@ Interactive and easy to use experiments using [deeplearn.js](https://github.com/
 Most of the examples are ports of Daniel Shiffman [Nature of Code Intelligence and Learning examples.](https://github.com/shiffman/NOC-S17-2-Intelligence-Learning)
 
 1. Mnist: [Demo](https://itpnyu.github.io/p5-deeplearn-js/examples/es6/mnist/dist/index.html) | [Code](examples/plainjs/mnist) | [ES6 Code](examples/es6/mnist)
-2. LSTM: [Demo](https://itpnyu.github.io/p5-deeplearn-js/examples/es6/rnn/dist/index.html) | [Code](examples/plainjs/lstm) | [Code](examples/es6/lstm)
+2. LSTM: [Demo](https://itpnyu.github.io/p5-deeplearn-js/examples/es6/lstm/dist/index.html) | [Code](examples/plainjs/lstm) | [Code](examples/es6/lstm)
 
 ### Tutorials
 
