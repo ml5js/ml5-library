@@ -1,17 +1,14 @@
 // Generate Text with a LSTM
 
 import { Array1D, Array2D, Array3D, CheckpointLoader, NDArrayMathGPU, Scalar, util } from 'deeplearn';
+
 import { hamlet } from './hamlet';
-let lstmKernel1, lstmBias1, fullyConnectedBiases, fullyConnectedWeights;
+
+let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyConnectedWeights;
 
 const results = [];
 let checkpointsLoaded = false;
-
-let input, probs, session;
-
-let sample = (preds, temperature) => {
-  preds = '';
-};
+let math = new NDArrayMathGPU();
 
 let randomInt = (min, max) => {
   min = Math.ceil(min);
@@ -39,17 +36,19 @@ generated += sentence;
 
 const reader = new CheckpointLoader('./models/hamlet');
 reader.getAllVariables().then(vars => {
-  lstmKernel1 = vars['lstm_1_3/kernel'];
-  lstmBias1 = vars['lstm_1_3/bias'];
+  lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
+  lstmBias1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
 
-  fullyConnectedBiases = vars['dense_1_3/bias'];
-  fullyConnectedWeights = vars['dense_1_3/kernel'];
+  lstmKernel2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/weights'];
+  lstmBias2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/biases'];
+
+  fullyConnectedBiases = vars['fully_connected/biases'];
+  fullyConnectedWeights = vars['fully_connected/weights'];
   checkpointsLoaded = true;
 });
 
 // Generate Text
 let generateText = () => {
-  let math = new NDArrayMathGPU();
 
   if (!checkpointsLoaded) {
     setTimeout(() => {
@@ -58,50 +57,52 @@ let generateText = () => {
   } else {
 
     math.scope((keep, track) => {
-
       const forgetBias = track(Scalar.new(1.0));
       const lstm1 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel1, lstmBias1);
+      const lstm2 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel2, lstmBias2);
 
       let c = [
         track(Array2D.zeros([1, lstmBias1.shape[0] / 4])),
+        track(Array2D.zeros([1, lstmBias2.shape[0] / 4]))
       ];
       let h = [
         track(Array2D.zeros([1, lstmBias1.shape[0] / 4])),
+        track(Array2D.zeros([1, lstmBias2.shape[0] / 4]))
       ];
 
-      // Generate x amount of characters
-      let charsToGenerate = 1;
-      for (let i = 0; i < charsToGenerate; i++) {
-        const onehot = track(Array3D.zeros([1, maxlen, chars.length]));
-        for (let t = 0; t < sentence.length; t++) {
-          onehot.set(1.0, 0, t, char_indices[sentence[t]]);
-        }
 
-        console.log('onehot shape is ', onehot.shape, onehot);
-        console.log('lstmBias1.shape[0]', lstmBias1.shape);
-        console.log('c shape is ', c[0].shape, c);
-        console.log('h shape is ', h[0].shape, h);
+      let userInput = Array.from('ham');
+      let encoded_input = [];
+      userInput.forEach((char, ind) => {
+        encoded_input.push(char_indices[char]);
+        results.push(char);
+      });
 
-        // Error in vectorTimesMatrix: size of vector (1768) must match first dimension of matrix (41)
-        // ¿?
-        const output = math.multiRNNCell([lstm1], onehot, c, h);
-        console.log('output', output);
+      let input = encoded_input[0];
 
-        // c = output[0];
-        // h = output[1];
+      let length = encoded_input.length + 20;
 
-        // const outputH = h[1];
-        // const weightedResult = math.matMul(outputH, fullyConnectedWeights);
-        // const logits = math.add(weightedResult, fullyConnectedBiases);
+      for (let i = 0; i < length; i++) {
+        const onehot = track(Array2D.zeros([1, 41]));
+        onehot.set(1.0, 0, input);
 
-        // const result = math.argMax(logits).get();
-        // console.log(result);
-        // results.push(result);
-        // input = result;
+        const output = math.multiRNNCell([lstm1, lstm2], onehot, c, h);
 
+        c = output[0];
+        h = output[1];
+
+        const outputH = h[1];
+        const weightedResult = math.matMul(outputH, fullyConnectedWeights);
+        const logits = math.add(weightedResult, fullyConnectedBiases);
+
+        const result = math.argMax(logits).get();
+        results.push(indices_char[result]);
+        input = result;
       }
     });
-    math = null;
+    return results.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue;
+    });
   }
 
 };

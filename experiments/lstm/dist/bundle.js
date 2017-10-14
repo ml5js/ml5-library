@@ -91,6 +91,9 @@ var predictPi = function predictPi() {
       var c = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4])), track(_deeplearn.Array2D.zeros([1, lstmBias2.shape[0] / 4]))];
       var h = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4])), track(_deeplearn.Array2D.zeros([1, lstmBias2.shape[0] / 4]))];
 
+      console.log('lstm1', lstmKernel1);
+      console.log('c', c[0].shape);
+
       for (var i = 0; i < 22; i++) {
         var onehot = track(_deeplearn.Array2D.zeros([1, 10]));
         onehot.set(1.0, 0, input);
@@ -133,19 +136,14 @@ var _hamlet = require('./hamlet');
 
 var lstmKernel1 = void 0,
     lstmBias1 = void 0,
+    lstmKernel2 = void 0,
+    lstmBias2 = void 0,
     fullyConnectedBiases = void 0,
     fullyConnectedWeights = void 0;
 
 var results = [];
 var checkpointsLoaded = false;
-
-var input = void 0,
-    probs = void 0,
-    session = void 0;
-
-var sample = function sample(preds, temperature) {
-  preds = '';
-};
+var math = new _deeplearn.NDArrayMathGPU();
 
 var randomInt = function randomInt(min, max) {
   min = Math.ceil(min);
@@ -173,17 +171,19 @@ generated += sentence;
 
 var reader = new _deeplearn.CheckpointLoader('./models/hamlet');
 reader.getAllVariables().then(function (vars) {
-  lstmKernel1 = vars['lstm_1_3/kernel'];
-  lstmBias1 = vars['lstm_1_3/bias'];
+  lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
+  lstmBias1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
 
-  fullyConnectedBiases = vars['dense_1_3/bias'];
-  fullyConnectedWeights = vars['dense_1_3/kernel'];
+  lstmKernel2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/weights'];
+  lstmBias2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/biases'];
+
+  fullyConnectedBiases = vars['fully_connected/biases'];
+  fullyConnectedWeights = vars['fully_connected/weights'];
   checkpointsLoaded = true;
 });
 
 // Generate Text
 var generateText = function generateText() {
-  var math = new _deeplearn.NDArrayMathGPU();
 
   if (!checkpointsLoaded) {
     setTimeout(function () {
@@ -192,45 +192,45 @@ var generateText = function generateText() {
   } else {
 
     math.scope(function (keep, track) {
-
       var forgetBias = track(_deeplearn.Scalar.new(1.0));
       var lstm1 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel1, lstmBias1);
+      var lstm2 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel2, lstmBias2);
 
-      var c = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4]))];
-      var h = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4]))];
+      var c = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4])), track(_deeplearn.Array2D.zeros([1, lstmBias2.shape[0] / 4]))];
+      var h = [track(_deeplearn.Array2D.zeros([1, lstmBias1.shape[0] / 4])), track(_deeplearn.Array2D.zeros([1, lstmBias2.shape[0] / 4]))];
 
-      // Generate x amount of characters
-      var charsToGenerate = 1;
-      for (var i = 0; i < charsToGenerate; i++) {
-        var onehot = track(_deeplearn.Array3D.zeros([1, maxlen, chars.length]));
-        for (var t = 0; t < sentence.length; t++) {
-          onehot.set(1.0, 0, t, char_indices[sentence[t]]);
-        }
+      var userInput = Array.from('ham');
+      var encoded_input = [];
+      userInput.forEach(function (char, ind) {
+        encoded_input.push(char_indices[char]);
+        results.push(char);
+      });
 
-        console.log('onehot shape is ', onehot.shape, onehot);
-        console.log('lstmBias1.shape[0]', lstmBias1.shape);
-        console.log('c shape is ', c[0].shape, c);
-        console.log('h shape is ', h[0].shape, h);
+      var input = encoded_input[0];
 
-        // Error in vectorTimesMatrix: size of vector (1768) must match first dimension of matrix (41)
-        // ¿?
-        var output = math.multiRNNCell([lstm1], onehot, c, h);
-        console.log('output', output);
+      var length = encoded_input.length + 20;
 
-        // c = output[0];
-        // h = output[1];
+      for (var i = 0; i < length; i++) {
+        var onehot = track(_deeplearn.Array2D.zeros([1, 41]));
+        onehot.set(1.0, 0, input);
 
-        // const outputH = h[1];
-        // const weightedResult = math.matMul(outputH, fullyConnectedWeights);
-        // const logits = math.add(weightedResult, fullyConnectedBiases);
+        var output = math.multiRNNCell([lstm1, lstm2], onehot, c, h);
 
-        // const result = math.argMax(logits).get();
-        // console.log(result);
-        // results.push(result);
-        // input = result;
+        c = output[0];
+        h = output[1];
+
+        var outputH = h[1];
+        var weightedResult = math.matMul(outputH, fullyConnectedWeights);
+        var logits = math.add(weightedResult, fullyConnectedBiases);
+
+        var result = math.argMax(logits).get();
+        results.push(indices_char[result]);
+        input = result;
       }
     });
-    math = null;
+    return results.reduce(function (accumulator, currentValue) {
+      return accumulator + currentValue;
+    });
   }
 };
 

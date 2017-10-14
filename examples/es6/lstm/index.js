@@ -13,7 +13,7 @@ https://github.com/cvalenzuela/p5deeplearn
 
 import p5 from 'p5';
 import 'p5/lib/addons/p5.dom';
-import { generateText } from './lstm';
+import { lstm } from './lstm';
 
 let textInput, tempSlider, lengthSlider, maxlen = 40,
   waiting = false;
@@ -45,26 +45,24 @@ let sketch = new p5((p) => {
     // Make it to lower case
     let txt = original.toLowerCase();
 
-    // while (txt.length < maxlen) {
-    //   txt += original.toLowerCase();
-    // }
-    if (txt.length > maxlen) {
-      txt = txt.substring(txt.length - maxlen, txt.length);
+    // Check if there's something to send
+    if (txt.length > 0) {
+      // Here is the data to post
+      let data = {
+        seed: txt,
+        temperature: tempSlider.value(),
+        length: lengthSlider.value()
+      }
+
+      lstm(data, result => {
+        p.select('#original').html(original);
+        p.select('#prediction').html(result.sentence);
+      });
+    } else {
+      p.select('#original').html('');
+      p.select('#prediction').html('');
     }
 
-    // Here is the data to post
-    let data = {
-      seed: txt,
-      temperature: tempSlider.value(),
-      length: lengthSlider.value()
-    }
-
-    let success = result => {
-      p.select('#original').html(original);
-      p.select('#prediction').html(result.sentence);
-    }
-
-    let result = generateText(data, success);
   }
 
 

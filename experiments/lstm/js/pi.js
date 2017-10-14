@@ -35,6 +35,7 @@ let predictPi = () => {
       const lstm1 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel1, lstmBias1);
       const lstm2 = math.basicLSTMCell.bind(math, forgetBias, lstmKernel2, lstmBias2);
 
+      
       let c = [
         track(Array2D.zeros([1, lstmBias1.shape[0] / 4])),
         track(Array2D.zeros([1, lstmBias2.shape[0] / 4]))
@@ -44,6 +45,10 @@ let predictPi = () => {
         track(Array2D.zeros([1, lstmBias2.shape[0] / 4]))
       ];
 
+      console.log('lstm1', lstmKernel1);
+      console.log('c', c[0].shape);
+      
+      
       for (let i = 0; i < 22; i++) {
         const onehot = track(Array2D.zeros([1, 10]));
         onehot.set(1.0, 0, input);
