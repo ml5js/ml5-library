@@ -2,40 +2,40 @@
   "fully_connected/biases": {
     "filename": "fully_connected_biases",
     "shape": [
-      41
+      40
     ]
   },
   "fully_connected/weights": {
     "filename": "fully_connected_weights",
     "shape": [
-      20,
-      41
+      100,
+      40
     ]
   },
   "rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases": {
     "filename": "rnn_multi_rnn_cell_cell_0_basic_lstm_cell_biases",
     "shape": [
-      80
+      400
     ]
   },
   "rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights": {
     "filename": "rnn_multi_rnn_cell_cell_0_basic_lstm_cell_weights",
     "shape": [
-      61,
-      80
+      140,
+      400
     ]
   },
   "rnn/multi_rnn_cell/cell_1/basic_lstm_cell/biases": {
     "filename": "rnn_multi_rnn_cell_cell_1_basic_lstm_cell_biases",
     "shape": [
-      80
+      400
     ]
   },
   "rnn/multi_rnn_cell/cell_1/basic_lstm_cell/weights": {
     "filename": "rnn_multi_rnn_cell_cell_1_basic_lstm_cell_weights",
     "shape": [
-      40,
-      80
+      200,
+      400
     ]
   }
 }
