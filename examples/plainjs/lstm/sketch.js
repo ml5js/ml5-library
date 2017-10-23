@@ -13,13 +13,11 @@ Originally ported to ES6 with deeplearn.js by Cristóbal Valenzuela
 let textInput;
 let tempSlider;
 let lengthSlider;
-let maxlen = 40;
 let waiting = false;
 
 
 function setup() {
   noCanvas();
-  initLSTM();
   // Grab the DOM elements
   textInput = select('#textInput');
   lengthSlider = select('#lenSlider');
