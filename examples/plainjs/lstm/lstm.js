@@ -77,7 +77,7 @@ let lstm = (data, callback) => {
 
         current++;
 
-        if(current < userInput.length){
+        if (current < userInput.length) {
           input = encoded_input[current];
         } else {
           results.push(indices_char[result]);
