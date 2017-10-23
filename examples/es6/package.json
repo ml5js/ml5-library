@@ -4,10 +4,10 @@
   "description": "p5.js meets deeplearn.js",
   "main": "index.js",
   "scripts": {
-    "watch:mnist": "watchify mnist/index.js --outfile mnist/dist/bundle.js -t [ babelify --presets [ es2015 ] ]",
-    "build:mnist": "browserify mnist/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > mnist/dist/bundle.js",
-    "watch:lstm": "watchify lstm/index.js --outfile lstm/dist/bundle.js -t [ babelify --presets [ es2015 ] ]",
-    "build:lstm": "browserify lstm/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > lstm/dist/bundle.js",
+    "watch:mnist": "watchify mnist/src/index.js --outfile mnist/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:mnist": "browserify mnist/src/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > mnist/bundle.js",
+    "watch:lstm": "watchify lstm/src/index.js --outfile lstm/bundle.js -t [ babelify --presets [ es2015 ] ]",
+    "build:lstm": "browserify lstm/src/index.js -t [ babelify --presets [ es2015 ] ] | uglifyjs -c > lstm/bundle.js",
     "build:all": ""
   },
   "repository": {
