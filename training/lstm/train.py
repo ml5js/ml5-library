@@ -8,19 +8,23 @@ import tensorflow as tf
 
 FLAGS = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_string('output_dir', 'checkpoints', 'Directory to write checkpoint.')
+# this is where the model is saved
+tf.app.flags.DEFINE_string('output_dir', 'checkpoints/preclass/', 'Directory to write checkpoint.')
 
 def main(unused_argv):
   # Load the data
   path ='data/hamlet.txt'
-  text = open(path).read().lower().replace("\n", "")
+  # Case by case basis in terms of handling line breaks
+  text = open(path).read().lower().replace("\n", " ")
   chars = sorted(list(set(text)))
   char_indices = dict((c,i) for i,c in enumerate(chars))
   indices_char = dict((i,c) for i,c in enumerate(chars))
 
   encoded_data = []
 
-  for c in text[:500]:
+  # number of characters to use
+  for c in text[:5000]:
+  # for c in text:
     encoded_data.append(char_indices[c])
 
   data = np.array([encoded_data])
@@ -31,7 +35,8 @@ def main(unused_argv):
   x = tf.placeholder(dtype=tf.int32, shape=[1, data.shape[1] - 1])
   y = tf.placeholder(dtype=tf.int32, shape=[1, data.shape[1] - 1])
 
-  NHIDDEN = 512
+  # Increase hidden layers depending on amount of text 256, 512, etc.
+  NHIDDEN = 128
   NLABELS = 40
 
   lstm1 = tf.contrib.rnn.BasicLSTMCell(NHIDDEN)
@@ -56,7 +61,7 @@ def main(unused_argv):
   sess.run(tf.global_variables_initializer())
 
   print('Start training')
-  NEPOCH = 1000
+  NEPOCH = 100
   for step in range(NEPOCH + 1):
     loss_out, _ = sess.run([loss, train_op],
                            feed_dict={
@@ -65,6 +70,12 @@ def main(unused_argv):
                            })
     if step % 10 == 0:
       print('Loss at step {}: {}'.format(step, loss_out))
+
+    if step % 100 == 0:
+      saver = tf.train.Saver()
+      path = saver.save(sess, FLAGS.output_dir, global_step=step)
+      print('Saved checkpoint at {}'.format(path))
+
 
   print('Expected data:')
   expected = ''
@@ -78,10 +89,6 @@ def main(unused_argv):
     textResult += indices_char[c]
   print(textResult)
 
-  saver = tf.train.Saver()
-  path = saver.save(sess, FLAGS.output_dir, global_step=step)
-  print('Saved checkpoint at {}'.format(path))
 
 if __name__ == '__main__':
   tf.app.run(main)
-
