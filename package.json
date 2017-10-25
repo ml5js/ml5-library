@@ -1,0 +1,62 @@
+{
+  "name": "highml",
+  "version": "0.0.1",
+  "description": "A high level javascript library for machine learning.",
+  "main": "dist/highml.js",
+  "directories": {
+    "examples": "examples",
+    "dist": "dist",
+    "test": "test"
+  },
+  "scripts": {
+    "commit": "git-cz",
+    "prebuild": "rimraf dist",
+    "build": "npm-run-all build:*",
+    "build:main": "webpack --output-filename highml.js",
+    "build:min": "uglifyjs dist/highml.js -o dist/highml.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ITPNYU/p5-deeplearn-js.git"
+  },
+  "keywords": [
+    "machine learning"
+  ],
+  "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ITPNYU)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ITPNYU/p5-deeplearn-js/issues"
+  },
+  "homepage": "https://github.com/ITPNYU/p5-deeplearn-js#readme",
+  "devDependencies": {
+    "babel-cli": "6.24.1",
+    "babel-loader": "7.0.0",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-stage-2": "6.24.1",
+    "babel-register": "6.24.1",
+    "commitizen": "2.9.6",
+    "cz-conventional-changelog": "2.0.0",
+    "ghooks": "2.0.0",
+    "npm-run-all": "4.0.2",
+    "rimraf": "2.6.1",
+    "semantic-release": "6.3.6",
+    "uglify-es": "3.0.28",
+    "webpack": "2.6.1",
+    "webpack-dev-server": "2.4.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "babel": {
+    "presets": [
+      "es2015",
+      "stage-2"
+    ]
+  }
+}
