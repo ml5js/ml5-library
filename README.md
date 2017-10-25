@@ -1,10 +1,10 @@
-# HighML
+# p5ML
 
 **_This project is currently in development._**
 
-HighML(?) is a high level javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using javascript.
+p5ML is a high level javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using javascript.
 
-HighML provides two main functionalities:
+p5ML provides two main functionalities:
   - A wrapper around [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) providing a simplier interface, that makes it easier to work with GPU accelerated machine learning in javascript.
   - Custom ML methods.
 
@@ -14,14 +14,14 @@ Import the library and [deeplearn.js](https://github.com/PAIR-code/deeplearnjs):
 
 ```html
 <script src="https://unpkg.com/deeplearn"></script>
-<script src="highml.js"></script>
+<script src="p5ML.js"></script>
 ```
 
 To use with ES6
 
 ```bash
 npm install deeplearn
-npm install highml
+npm install p5ML
 ```
 
 ## Examples
@@ -39,33 +39,33 @@ npm install highml
 ### Neural Network
 
 ```javascript
-new highml.NeuralNetwork();
+new p5ML.NeuralNetwork();
 ```
 
 ### Bayes Classifier
 
 ```javascript
-new highml.Bayes();
+new p5ML.Bayes();
 ```
 
 ### Word2Vec
 
 ```javascript
-new highml.Word2Vec();
+new p5ML.Word2Vec();
 ```
 
 ### LSTM
 
 ```javascript
-new highml.LSTM();
+new p5ML.LSTM();
 ```
 
 ## Develop
 
 First clone the repo and install dependencies
 ```bash
-git clone https://github.com/ITPNYU/HighML.git
-cd HighML
+git clone https://github.com/ITPNYU/p5ML.git
+cd p5ML
 yarn
 ```
 

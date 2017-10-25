@@ -8,8 +8,8 @@ export default {
     path: join(__dirname, 'dist'),
     libraryTarget: 'umd',
     publicPath: "/dist/",
-    filename: "highml.js",
-    library: 'highml'
+    filename: "p5ml.js",
+    library: 'p5ml'
   },
   module: {
     loaders: [

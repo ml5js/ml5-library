@@ -1,8 +1,8 @@
 {
-  "name": "highml",
+  "name": "p5ml",
   "version": "0.0.1",
   "description": "A high level javascript library for machine learning.",
-  "main": "dist/highml.js",
+  "main": "dist/p5ml.js",
   "directories": {
     "examples": "examples",
     "dist": "dist",
@@ -12,8 +12,8 @@
     "commit": "git-cz",
     "prebuild": "rimraf dist",
     "build": "npm-run-all build:*",
-    "build:main": "webpack --output-filename highml.js",
-    "build:min": "uglifyjs dist/highml.js -o dist/highml.min.js"
+    "build:main": "webpack --output-filename p5ml.js",
+    "build:min": "uglifyjs dist/p5ml.js -o dist/p5ml.min.js"
   },
   "repository": {
     "type": "git",
