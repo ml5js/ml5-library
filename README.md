@@ -1,51 +1,84 @@
-# p5-deeplearn-js
+# HighML
 
 **_This project is currently in development._**
 
-Interactive and easy to use experiments using [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) and [p5.js](https://github.com/processing/p5.js). The idea of this project is to further reduce the barriers between lower level machine learning and creative outputs.
+HighML(?) is a high level javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using javascript.
 
-## Contents
+HighML provides two main functionalities:
+  - A wrapper around [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) providing a simplier interface, that makes it easier to work with GPU accelerated machine learning in javascript.
+  - Custom ML methods.
 
- - [Examples](#examples)
- - [Tutorials](#tutorials)
- - [Glossary](#glossary)
- - [Reference](#reference)
- - [Experiments](#experiments)
- 
----
-### Examples
+## Usage
 
-Most of the examples are ports of Daniel Shiffman [Nature of Code Intelligence and Learning examples.](https://github.com/shiffman/NOC-S17-2-Intelligence-Learning)
+To use with plain js, import the library and [deeplearn.js](https://github.com/PAIR-code/deeplearnjs):
 
-1. [Mnist](examples/es6/mnist)
-2. [LSTM](examples/es6/lstm)
-3. [~~Image Recognition~~](examples/es6/imagerecognition)
-4. [~~Image to Text~~](examples/es6/imagetotext)
-5. [~~Style Transfer~~](examples/es6/styletransfer)
-
-### Tutorials
-
-1. [~~Mnist Hello World~~](/tutorials/hello-world)
-2. [~~Generating text with a LSTM~~](/tutorials/generating-text)
-
-### Glossary
-
-- [Statistics glossary]()
-- [Machine learning glossary]()
-- [Mathematics glossary]()
-
-### Experiments
-
-### Reference
-
-To work and modify the ES6 examples:
-
+```html
+<script src="https://unpkg.com/deeplearn"></script>
+<script src="highml.js"></script>
 ```
-git clone https://github.com/ITPNYU/p5-deeplearn-js.git
-cd p5-deeplearn-js/examples/es6
-npm install
-npm watch:mnist
-````
+
+To use with ES6
+
+```bash
+npm install deeplearn
+npm install highml
+```
+
+## Examples
+
+- [Mnist](examples/es6/mnist)
+- [LSTM](examples/es6/lstm)
+
+## API Reference
+ 
+- [Neural Network]()
+- [Bayes Classifier]()
+- [Word2Vec]()
+- [LSTM]()
+
+### Neural Network
+
+```javascript
+new highml.NeuralNetwork();
+```
+
+### Bayes Classifier
+
+```javascript
+new highml.Bayes();
+```
+
+### Word2Vec
+
+```javascript
+new highml.Word2Vec();
+```
+
+### LSTM
+
+```javascript
+new highml.LSTM();
+```
+
+## Develop
+
+First clone the repo and install dependencies
+```bash
+git clone https://github.com/ITPNYU/HighML.git
+cd HighML
+yarn
+```
+
+To devolop and run a server
+```bash
+webpack-dev-server
+```
+
+To build:
+```bash
+yarn build
+```
+
 
 
 
