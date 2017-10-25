@@ -8,9 +8,9 @@ HighML provides two main functionalities:
   - A wrapper around [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) providing a simplier interface, that makes it easier to work with GPU accelerated machine learning in javascript.
   - Custom ML methods.
 
-## Usage
+## Usage
 
-To use with plain js, import the library and [deeplearn.js](https://github.com/PAIR-code/deeplearnjs):
+Import the library and [deeplearn.js](https://github.com/PAIR-code/deeplearnjs):
 
 ```html
 <script src="https://unpkg.com/deeplearn"></script>
