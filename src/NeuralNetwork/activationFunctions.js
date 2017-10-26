@@ -1,25 +1,24 @@
 // Utils
 // Activation Functions
 
-// Sigmoid function
-const sigmoid = x => {
-  return 1 / (1 + pow(Math.E, -x));
+// Activation Functions
+let activationFunctions = {
+  sigmoid: x => {
+    return 1 / (1 + pow(Math.E, -x));
+  },
+  tanh: x => {
+    return Math.tanh(x);
+  }
 }
 
-// Sigmoid derivative
-const dSigmoid = x => {
-  return x * (1 - x);
+// Derivatives
+let derivatives = {
+  sigmoid: x => {
+    return x * (1 - x);
+  },
+  tanh: x => {
+    return 1 / (pow(Math.cosh(x), 2))
+  }
 }
 
-// Tanh function
-const tanh = x => {
-  return Math.tanh(x);
-}
-
-// Tanh derivative
-const dtanh = x => {
-  return 1 / (pow(Math.cosh(x), 2))
-}
-
-
-export { sigmoid, dSigmoid, tanh, dtanh }
+export { activationFunctions, derivatives }

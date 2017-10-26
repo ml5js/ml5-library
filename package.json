@@ -58,5 +58,8 @@
       "es2015",
       "stage-2"
     ]
+  },
+  "dependencies": {
+    "deeplearn": "0.3.3"
   }
 }

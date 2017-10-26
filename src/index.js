@@ -10,13 +10,7 @@ Made @ NYU ITP
 
 import { NeuralNetwork } from './NeuralNetwork/index';
 
-// Check if deeplearn.js is imported
-if(window.deeplearn){
-  console.log('p5ML loaded!');
-} else {
-  console.error(`You need to import deeplearn.js!
-  Add this to your html page <script src="https://unpkg.com/deeplearn"></script>`);
-}
+console.log('p5ML loaded');
 
 module.exports = {
   NeuralNetwork,
