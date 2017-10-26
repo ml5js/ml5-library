@@ -13,9 +13,12 @@ tf.app.flags.DEFINE_string('output_dir', 'checkpoints/preclass/', 'Directory to 
 
 def main(unused_argv):
   # Load the data
-  path ='data/hamlet.txt'
+  # path ='data/hamlet.txt'
+  path ='data/itp.txt'
+  
   # Case by case basis in terms of handling line breaks
-  text = open(path).read().lower().replace("\n", " ")
+  text = open(path).read().lower()
+  # text = open(path).read().lower().replace("\n", " ")
   chars = sorted(list(set(text)))
   char_indices = dict((c,i) for i,c in enumerate(chars))
   indices_char = dict((i,c) for i,c in enumerate(chars))
@@ -23,8 +26,8 @@ def main(unused_argv):
   encoded_data = []
 
   # number of characters to use
-  for c in text[:5000]:
-  # for c in text:
+  # for c in text[:500]:
+  for c in text:
     encoded_data.append(char_indices[c])
 
   data = np.array([encoded_data])
@@ -71,7 +74,7 @@ def main(unused_argv):
     if step % 10 == 0:
       print('Loss at step {}: {}'.format(step, loss_out))
 
-    if step % 100 == 0:
+    if step % 10 == 0:
       saver = tf.train.Saver()
       path = saver.save(sess, FLAGS.output_dir, global_step=step)
       print('Saved checkpoint at {}'.format(path))
