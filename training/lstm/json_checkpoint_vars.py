@@ -83,7 +83,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--output_dir',
       type=str,
-      default='models/hamlet',
+      default='models/itp',
       help='The output directory where to store the converted weights')
   parser.add_argument(
       '--remove_variables_regex',
