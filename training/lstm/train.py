@@ -6,25 +6,35 @@ from __future__ import print_function
 import numpy as np
 import tensorflow as tf
 
+import json
+
 FLAGS = tf.app.flags.FLAGS
 
 # this is where the model is saved
-tf.app.flags.DEFINE_string('output_dir', 'checkpoints/preclass/', 'Directory to write checkpoint.')
+tf.app.flags.DEFINE_string('output_dir', 'checkpoints/itp/itp', 'Directory to write checkpoint.')
 
 def main(unused_argv):
   # Load the data
-  path ='data/hamlet.txt'
+  # path ='data/hamlet.txt'
+  path ='data/itp.txt'
   # Case by case basis in terms of handling line breaks
-  text = open(path).read().lower().replace("\n", " ")
+  text = open(path).read().lower()
+  # text = open(path).read().lower().replace("\n", " ")
   chars = sorted(list(set(text)))
   char_indices = dict((c,i) for i,c in enumerate(chars))
   indices_char = dict((i,c) for i,c in enumerate(chars))
 
+  with open("char_indices.json", "w") as out:
+    json.dump(char_indices, out)
+
+  with open("indices_char.json", "w") as out:
+    json.dump(indices_char, out)
+
   encoded_data = []
 
   # number of characters to use
-  for c in text[:5000]:
-  # for c in text:
+  # for c in text[:500]:
+  for c in text:
     encoded_data.append(char_indices[c])
 
   data = np.array([encoded_data])
@@ -71,7 +81,7 @@ def main(unused_argv):
     if step % 10 == 0:
       print('Loss at step {}: {}'.format(step, loss_out))
 
-    if step % 100 == 0:
+    if step % 10 == 0:
       saver = tf.train.Saver()
       path = saver.save(sess, FLAGS.output_dir, global_step=step)
       print('Saved checkpoint at {}'.format(path))

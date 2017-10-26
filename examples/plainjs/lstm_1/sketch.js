@@ -9,9 +9,20 @@ Originally ported to ES6 with deeplearn.js by Cristóbal Valenzuela
 ===
 */
 
+let char_indices;
+let indices_char;
+let txt;
+
+function preload() {
+  char_indices = loadJSON('data/itp/char_indices.json');
+  indices_char = loadJSON('data/itp/indices_char.json');
+  txt = loadStrings('data/itp/itp.txt');
+}
 
 function setup() {
   noCanvas();
+  txt = txt.join('\n');
+  
   // Grab the DOM elements
   let textInput = select('#textInput');
   let lengthSlider = select('#lenSlider');
