@@ -1,13 +1,9 @@
 // Generate Text with a LSTM
 
-
 let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyConnectedWeights;
 
 let checkpointsLoaded = false;
 let math = new deeplearn.NDArrayMathGPU();
-
-let maxlen = 40;
-
 
 const reader = new deeplearn.CheckpointLoader('./models/itp');
 reader.getAllVariables().then(vars => {
@@ -28,7 +24,7 @@ let lstm = (data, callback) => {
 
   if (!checkpointsLoaded) {
     setTimeout(() => {
-      deeplearn.predictNextNumber();
+      lstm(data, callback);
     }, 100);
   } else {
 
@@ -57,7 +53,7 @@ let lstm = (data, callback) => {
       let input = encoded_input[current];
 
       for (let i = 0; i < userInput.length + data.length; i++) {
-        const onehot = track(deeplearn.Array2D.zeros([1, 40]));
+        const onehot = track(deeplearn.Array2D.zeros([1, 32]));
         onehot.set(1.0, 0, input);
 
         const output = math.multiRNNCell([lstm1, lstm2], onehot, c, h);

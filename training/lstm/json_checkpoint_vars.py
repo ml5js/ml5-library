@@ -78,7 +78,7 @@ if __name__ == '__main__':
   parser.add_argument(
       '--checkpoint_file',
       type=str,
-      default='checkpoints/checkpoints-1000',
+      default='checkpoints/itp/checkpoints-1000',
       help='Path to the model checkpoint')
   parser.add_argument(
       '--output_dir',

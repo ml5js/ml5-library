@@ -24,6 +24,14 @@ def main(unused_argv):
   char_indices = dict((c,i) for i,c in enumerate(chars))
   indices_char = dict((i,c) for i,c in enumerate(chars))
 
+  # just for debug
+  print('text is', text)
+  print('chars are', chars)
+  print('char_indices', char_indices)
+  print('indices_char', indices_char)
+  print('text len', len(text))
+  print('chars len', len(chars))
+
   with open("char_indices.json", "w") as out:
     json.dump(char_indices, out)
 
@@ -33,21 +41,23 @@ def main(unused_argv):
   encoded_data = []
 
   # number of characters to use
-  # for c in text[:500]:
   for c in text:
     encoded_data.append(char_indices[c])
 
   data = np.array([encoded_data])
-  print(data)
-
   tf.reset_default_graph()
 
   x = tf.placeholder(dtype=tf.int32, shape=[1, data.shape[1] - 1])
   y = tf.placeholder(dtype=tf.int32, shape=[1, data.shape[1] - 1])
 
+  # just for debug
+  print('data.shape', data.shape)
+  print('x.shape', x.shape)
+  print('y.shape', y.shape)
+
   # Increase hidden layers depending on amount of text 256, 512, etc.
   NHIDDEN = 128
-  NLABELS = 40
+  NLABELS = len(chars)
 
   lstm1 = tf.contrib.rnn.BasicLSTMCell(NHIDDEN)
   lstm2 = tf.contrib.rnn.BasicLSTMCell(NHIDDEN)
@@ -71,27 +81,21 @@ def main(unused_argv):
   sess.run(tf.global_variables_initializer())
 
   print('Start training')
-  NEPOCH = 100
+  NEPOCH = 1000
   for step in range(NEPOCH + 1):
     loss_out, _ = sess.run([loss, train_op],
                            feed_dict={
                                x: data[:, :-1],
                                y: data[:, 1:],
                            })
-    if step % 10 == 0:
+    if step % 100 == 0:
       print('Loss at step {}: {}'.format(step, loss_out))
 
-    if step % 10 == 0:
+    if step % 1000 == 0:
       saver = tf.train.Saver()
       path = saver.save(sess, FLAGS.output_dir, global_step=step)
       print('Saved checkpoint at {}'.format(path))
 
-
-  print('Expected data:')
-  expected = ''
-  for c in data[:, 1:][0]:
-    expected += indices_char[c]
-  print(expected)
   print('Results:')
   results = sess.run([predictions], feed_dict={x: data[:, :-1]})
   textResult = ''
