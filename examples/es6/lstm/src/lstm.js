@@ -9,7 +9,7 @@ let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyC
 let checkpointsLoaded = false;
 let math = new NDArrayMathGPU();
 
-const reader = new CheckpointLoader('./models/lstm/itp/');
+const reader = new CheckpointLoader('./../../../models/lstm/itp/');
 reader.getAllVariables().then(vars => {
   lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
   lstmBias1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
