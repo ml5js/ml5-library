@@ -1,4 +1,4 @@
-# Training
+# Training a simple LSTM network
 
 ## Python Environment
 
@@ -8,85 +8,41 @@ Set up a python environment with tensorflow installed. ([more detailed instructi
 pip install tensorflow
 ```
 
-## Training
+## 1) Training
+
+The input file must be inside the `/data` folder in `.txt` format. 
+
+Then run:
+```
+python train.py --file YOURFILENAME.txt --nhidden 128 --epochs 1000 --save 100
+```
+--nhidden is the amount of hidden layers
+
+--epochs is the amount of epochs to run the training. Defaults to 1000.
+
+--save is the how often do you want to save model. Defaults to 100.
+
+This will save the output to the `/checkpoints` and create a `variables.json` file.
+
+## 2) Convert model
+
+The next step requires you to convert the model to a format compatible with p5-deeplearn-js. This is accomplished with the `json_checkpoint_vars.py` script find in `/training/`. This scripts is the same for any model trained in tensorflow. The command below specifies where to find the checkpoints file as well as where to write the model.
 
 ```
-python train.py
+python json_checkpoint_vars.py --checkpoint_file lstm/checkpoints/demo/demo-10 --output_dir demo
 ```
 
-```python
-# directory to write output
-tf.app.flags.DEFINE_string('output_dir', 'checkpoints/itp/itp', 'Directory to write checkpoint.')
-```
+This will save the model in a js ready format in the globals `./models` folder.
 
-```python
-# Path to your data
-path ='data/itp.txt'
-# Any post processing of the text? Line breaks, etc.?
-text = open(path).read().lower()
-```
+## 3) Run p5 Sketch!
 
-```python
-# Increase hidden layers depending on amount of text 256, 512, etc.
-# 2 MB: 256 (or 128)
-# 5 MB: 512
-# 10-20 MB: 1024
-# 25+ MB: 2048
-NHIDDEN = 128
-```
+To work with the model in p5, you'll need to:
 
-```python
-# How long do you want to train for?
-NEPOCH = 1000
-```
-
-```python
-# How often do you want to save model?
-if step % 100 == 0:
-  saver = tf.train.Saver()
-  path = saver.save(sess, FLAGS.output_dir, global_step=step)
-  print('Saved checkpoint at {}'.format(path))
-```
-
-## Convert model
-
-The next step requires you to convert the model to a format compatible with p5-deeplearn-js. This is accomplished with the `json_checkpoint_vars.py` script. The command below specifies where to find the checkpoints file as well as where to write the model.
-
-```
-python json_checkpoint_vars.py --checkpoint_file checkpoints/itp-1000 --output_dir models/itp
-```
-
-## Run p5 Sketch!
-
-To work with the model in p5, you'll need to copy the following over to your p5.js sketch.
-
-1. `models/itp` (or whatever you named your model)
-2. `char_indices.json` and `indices_char.json` (these files were generated when you ran `train.py`.)
-
-See the [lstm_1](https://github.com/ITPNYU/p5-deeplearn-js/tree/master/examples/plainjs/lstm_1) example for a directory structure. In `sketch.js` you'll need to make sure you have:
-
+1. Change the model in the `lstm.js`file:
 ```javascript
-let char_indices;
-let indices_char;
-
-function preload() {
-  char_indices = loadJSON('data/itp/char_indices.json');
-  indices_char = loadJSON('data/itp/indices_char.json');
-}
+const reader = new deeplearn.CheckpointLoader('../../models/demo');
 ```
-
-And in `lstm.js` (this will eventually be broken out into a library):
-
-```javascript
-const reader = new deeplearn.CheckpointLoader('./models/itp');
-```
-
-
-
-
-
-
-
+2. Replace the `variables.json` file for the new `variables.json` created in the training.
 
 ### More notes about RNN configurations (Thanks to Ross Goodwin!)
 * 2 MB: -rnn_size 256 (or 128) -layers 2 -seq_length 64 -batch_size 32 -dropout 0.25

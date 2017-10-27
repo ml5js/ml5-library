@@ -5,7 +5,7 @@ let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyC
 let checkpointsLoaded = false;
 let math = new deeplearn.NDArrayMathGPU();
 
-const reader = new deeplearn.CheckpointLoader('./models/itp');
+const reader = new deeplearn.CheckpointLoader('./../../../models/lstm/itp/');
 reader.getAllVariables().then(vars => {
   lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
   lstmBias1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
@@ -46,14 +46,14 @@ let lstm = (data, callback) => {
 
       let encoded_input = [];
       userInput.forEach((char, ind) => {
-        encoded_input.push(char_indices[char]);
+        encoded_input.push(variables.char_indices[char]);
       });
 
       let current = 0;
       let input = encoded_input[current];
 
       for (let i = 0; i < userInput.length + data.length; i++) {
-        const onehot = track(deeplearn.Array2D.zeros([1, 32]));
+        const onehot = track(deeplearn.Array2D.zeros([1, variables.NLABELS]));
         onehot.set(1.0, 0, input);
 
         const output = math.multiRNNCell([lstm1, lstm2], onehot, c, h);
@@ -73,7 +73,7 @@ let lstm = (data, callback) => {
         if (current < userInput.length) {
           input = encoded_input[current];
         } else {
-          results.push(indices_char[result]);
+          results.push(variables.indices_char[result]);
           input = result;
         }
 

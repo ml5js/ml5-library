@@ -8,7 +8,7 @@ let input, probs, session;
 
 const math = new NDArrayMathGPU();
 
-let reader = new CheckpointLoader('model/');
+let reader = new CheckpointLoader('../../../../models/mnist/');
 reader.getAllVariables().then((checkpoints) => {
   let graphModel = buildModelGraph(checkpoints);
   input = graphModel[0];

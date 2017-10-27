@@ -9,12 +9,15 @@ Originally ported to ES6 with deeplearn.js by Cristóbal Valenzuela
 ===
 */
 
-
 let textInput;
 let tempSlider;
 let lengthSlider;
 let waiting = false;
+let variables;
 
+function preload(){
+  variables = loadJSON('variables.json');
+}
 
 function setup() {
   noCanvas();

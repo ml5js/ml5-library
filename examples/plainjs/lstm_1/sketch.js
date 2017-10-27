@@ -9,19 +9,14 @@ Originally ported to ES6 with deeplearn.js by Cristóbal Valenzuela
 ===
 */
 
-let char_indices;
-let indices_char;
-let txt;
+let variables;
 
 function preload() {
-  char_indices = loadJSON('data/itp/char_indices.json');
-  indices_char = loadJSON('data/itp/indices_char.json');
-  txt = loadStrings('data/itp/itp.txt');
+  variables = loadJSON('variables.json');
 }
 
 function setup() {
   noCanvas();
-  txt = txt.join('\n');
   
   // Grab the DOM elements
   let textInput = select('#textInput');
@@ -32,9 +27,7 @@ function setup() {
 
 
   function generate() {
-    console.log('hello');
-
-    // Update the length and temperature span elements
+     // Update the length and temperature span elements
     select('#length').html(lengthSlider.value())
     select('#temperature').html(tempSlider.value())
 

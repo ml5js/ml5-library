@@ -1,1 +1,0 @@
-# Mnist Hello World
