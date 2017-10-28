@@ -9,9 +9,7 @@ let math = new NDArrayMathGPU();
 
 let vocab = { '\n': 10, '!': 46, ' ': 0, '$': 64, "'": 30, '&': 63, '-': 48, ',': 16, '.': 25, '3': 62, ';': 38, ':': 24, '?': 44, 'A': 26, 'C': 37, 'B': 43, 'E': 31, 'D': 47, 'G': 45, 'F': 49, 'I': 21, 'H': 41, 'K': 52, 'J': 58, 'M': 42, 'L': 36, 'O': 32, 'N': 33, 'Q': 59, 'P': 51, 'S': 35, 'R': 34, '': 40, 'T': 29, 'W': 39, 'V': 53, 'Y': 50, 'X': 61, 'Z': 60, 'a': 4, 'c': 19, 'b': 22, 'e': 1, 'd': 12, 'g': 20, 'f': 18, 'i': 9, 'h': 5, 'k': 28, 'j': 54, 'm': 14, 'l': 11, 'o': 3, 'n': 8, 'q': 55, 'p': 23, 's': 6, 'r': 7, '': 13, 't': 2, 'w': 17, 'v': 27, 'y': 15, 'x': 56, 'z': 57 };
 
-let chars = [' ', 'e', 't', 'o', 'a', 'h', 's', 'r', 'n', 'i', '\n', 'l', 'd', '', 'm', 'y', ',', 'w', 'f', 'c', 'g', 'I', 'b', 'p', ':', '.', 'A', 'v', 'k', 'T', "'", 'E', 'O', 'N', 'R', 'S', 'L', 'C', ';', 'W', '', 'H', 'M', 'B', '?', 'G', '!', 'D', '-', 'F', 'Y', 'P', 'K', 'V', 'j', 'q', 'x', 'z', 'J', 'Q', 'Z', 'X', '3', '&', '$'];
-
-const reader = new CheckpointLoader('../../../models/shakespear/');
+const reader = new CheckpointLoader('../../../models/lstm/shakespear/');
 reader.getAllVariables().then(vars => {
   embeddingWeights = vars['embedding'];
 
@@ -50,12 +48,10 @@ let generateText = () => {
         track(Array2D.zeros([1, lstmBias2.shape[0] / 4]))
       ];
 
-      let input = 20;
-      for (let i = 0; i < 500; i++) {
+      let input = 'H';
+      for (let i = 0; i < 100; i++) {
         const onehot = track(Array2D.zeros([1, 65]));
-
         onehot.set(1.0, 0, input);
-
         const embedded = math.matMul(onehot, embeddingWeights);
 
         const output = math.multiRNNCell([lstm1, lstm2], embedded, c, h);
@@ -66,16 +62,15 @@ let generateText = () => {
         const outputH = h[1];
         const weightedResult = math.matMul(outputH, fullyConnectedWeights);
         const logits = math.add(weightedResult, fullyConnectedBiases);
-
         const result = math.argMax(logits).get();
-        
+
         const divided = math.arrayDividedByScalar(logits, Scalar.new(0.25));
         const probabilities = math.exp(divided);
         const normalized = math.divide(probabilities, math.sum(probabilities)).getValues();
         const randValue = Math.random();
-        var sum = 0;
-        var j = 0;
-        for (; j < normalized.length; j++){
+        let sum = 0;
+        let j = 0;
+        for (;j < normalized.length; j++) {
           sum += normalized[j];
           if (randValue < sum) {
             break;
@@ -92,6 +87,7 @@ let generateText = () => {
       generated += Object.keys(vocab).find(key => vocab[key] === c);
     })
     console.log(generated)
+    return generated;
 
     // let output = results.reduce((accumulator, currentValue) => {
     //   return accumulator + currentValue;

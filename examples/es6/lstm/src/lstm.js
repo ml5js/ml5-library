@@ -4,21 +4,23 @@ import { Array1D, Array2D, Array3D, CheckpointLoader, NDArrayMathGPU, Scalar, ut
 
 import { variables } from './variables';
 
-let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyConnectedWeights;
+let lstmKernel1, lstmBias1, lstmKernel2, lstmBias2, fullyConnectedBiases, fullyConnectedWeights, embeddingWeights;
 
 let checkpointsLoaded = false;
 let math = new NDArrayMathGPU();
 
-const reader = new CheckpointLoader('./../../../models/lstm/itp/');
+const reader = new CheckpointLoader('./../../../models/lstm/shakespear/');
 reader.getAllVariables().then(vars => {
-  lstmKernel1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
-  lstmBias1 = vars['rnn/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
+  embeddingWeights = vars['embedding'];
 
-  lstmKernel2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/weights'];
-  lstmBias2 = vars['rnn/multi_rnn_cell/cell_1/basic_lstm_cell/biases'];
+  lstmKernel1 = vars['rnnlm/multi_rnn_cell/cell_0/basic_lstm_cell/weights'];
+  lstmBias1 = vars['rnnlm/multi_rnn_cell/cell_0/basic_lstm_cell/biases'];
 
-  fullyConnectedBiases = vars['fully_connected/biases'];
-  fullyConnectedWeights = vars['fully_connected/weights'];
+  lstmKernel2 = vars['rnnlm/multi_rnn_cell/cell_1/basic_lstm_cell/weights'];
+  lstmBias2 = vars['rnnlm/multi_rnn_cell/cell_1/basic_lstm_cell/biases'];
+
+  fullyConnectedBiases = vars['rnnlm/softmax_b'];
+  fullyConnectedWeights = vars['rnnlm/softmax_w'];
   checkpointsLoaded = true;
 });
 
@@ -50,7 +52,7 @@ let lstm = (data, callback) => {
 
       let encoded_input = [];
       userInput.forEach((char, ind) => {
-        encoded_input.push(variables.char_indices[char]);
+        encoded_input.push(variables.vocab[char]);
       });
 
       let current = 0;
@@ -59,36 +61,44 @@ let lstm = (data, callback) => {
       for (let i = 0; i < userInput.length + data.length; i++) {
         const onehot = track(Array2D.zeros([1, variables.NLABELS]));
         onehot.set(1.0, 0, input);
+        const embedded = math.matMul(onehot, embeddingWeights);
 
-        const output = math.multiRNNCell([lstm1, lstm2], onehot, c, h);
+        const output = math.multiRNNCell([lstm1, lstm2], embedded, c, h);
 
         c = output[0];
         h = output[1];
-    
+
         const outputH = h[1];
         const weightedResult = math.matMul(outputH, fullyConnectedWeights);
         const logits = math.add(weightedResult, fullyConnectedBiases);
-
         const result = math.argMax(logits).get();
 
-
-        current++;
-
-        if(current < userInput.length){
-          input = encoded_input[current];
-        } else {
-          results.push(variables.indices_char[result]);
-          input = result;  
+        const divided = math.arrayDividedByScalar(logits, Scalar.new(data.temperature));
+        const probabilities = math.exp(divided);
+        const normalized = math.divide(probabilities, math.sum(probabilities)).getValues();
+        const randValue = Math.random();
+        let sum = 0;
+        let j = 0;
+        for (; j < normalized.length; j++) {
+          sum += normalized[j];
+          if (randValue < sum) {
+            break;
+          }
         }
-        
+        results.push(j);
+        input = j;
+
       }
     });
-    let output = results.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue;
-    });
+
+    let generated = '';
+
+    results.forEach((c, i) => {
+      generated += Object.keys(variables.vocab).find(key => variables.vocab[key] === c);
+    })
 
     callback({
-      sentence: output
+      sentence: generated
     })
 
   }
