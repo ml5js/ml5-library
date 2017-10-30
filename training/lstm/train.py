@@ -102,7 +102,7 @@ def main(unused_argv):
     if step % 100 == 0:
       print('Loss at step {}: {}'.format(step, loss_out))
 
-    if step % FLAGS.save == 0:
+    if step % FLAGS.save == 0 and step != 0:
       saver = tf.train.Saver()
       path = saver.save(sess, output_dir+fileName, global_step=step)
       print('Saved checkpoint at {}'.format(path))
