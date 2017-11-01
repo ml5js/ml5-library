@@ -26,7 +26,7 @@ npm install p5ML --save
 
 - [Mnist](examples/mnist)
 - [LSTM Simple](examples/lstm_1)
-- [LSTM Interactive](examples/lstm_1)
+- [LSTM Interactive](examples/lstm_2)
 
 ## API Reference
  
@@ -45,7 +45,7 @@ lstm.generate([options], callback)
 - _options_: An object that specifies the seed, length and temperature of the input. Defaults to `{seed: "a", length:20, temperature:0.5}`
 - _callback_: A function to execute once the model has run. 
 
-See [this](examples/lstm_1) and [this](examples/lstm_1) examples.
+See [this](examples/lstm_1) and [this](examples/lstm_2) examples.
 
 ## Develop
 
