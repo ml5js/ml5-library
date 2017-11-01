@@ -10,55 +10,42 @@ p5ML provides two main functionalities:
 
 ## Usage 
 
-Import the library and [deeplearn.js](https://github.com/PAIR-code/deeplearnjs):
+Download the library from [here](https://raw.githubusercontent.com/ITPNYU/p5-deeplearn-js/master/dist/p5ml.min.js) and import:
 
 ```html
-<script src="https://unpkg.com/deeplearn"></script>
-<script src="p5ML.js"></script>
+<script src="p5ML.min.js"></script>
 ```
 
 To use with ES6
 
 ```bash
-npm install deeplearn
-npm install p5ML
+npm install p5ML --save
 ```
 
 ## Examples
 
-- [Mnist](examples/es6/mnist)
-- [LSTM](examples/es6/lstm)
+- [Mnist](examples/mnist)
+- [LSTM Simple](examples/lstm_1)
+- [LSTM Interactive](examples/lstm_1)
 
 ## API Reference
  
-- [Neural Network]()
-- [Bayes Classifier]()
-- [Word2Vec]()
-- [LSTM]()
-
-### Neural Network
-
-```javascript
-new p5ML.NeuralNetwork();
-```
-
-### Bayes Classifier
-
-```javascript
-new p5ML.Bayes();
-```
-
-### Word2Vec
-
-```javascript
-new p5ML.Word2Vec();
-```
+- [LSTM](#lstm)
 
 ### LSTM
 
+> Use a LSTM pretrained model and run it in inference mode. Returns an object.
+
 ```javascript
-new p5ML.LSTM();
+var lstm = new p5ML.LSTM(path);
+lstm.generate([options], callback)
 ```
+
+- _path_: The folder where the deeplearn.js model is.  
+- _options_: An object that specifies the seed, length and temperature of the input. Defaults to `{seed: "a", length:20, temperature:0.5}`
+- _callback_: A function to execute once the model has run. 
+
+See [this](examples/lstm_1) and [this](examples/lstm_1) examples.
 
 ## Develop
 
@@ -77,6 +64,11 @@ webpack-dev-server
 To build:
 ```bash
 yarn build
+```
+
+To commit:
+```bash
+yarn commit
 ```
 
 
