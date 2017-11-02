@@ -6918,7 +6918,7 @@ var LSTMGenerator = function () {
         return response.json();
       }).then(function (json) {
         _this2.vocab = json;
-        _this2.vocabSize = Object.keys(json).length + 1;
+        _this2.vocabSize = Object.keys(json).length;
       });
     }
 

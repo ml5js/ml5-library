@@ -51,7 +51,7 @@ class LSTMGenerator {
       .then(response => response.json())
       .then(json => {
         this.vocab = json;
-        this.vocabSize = Object.keys(json).length + 1;
+        this.vocabSize = Object.keys(json).length;
       });
   }
 

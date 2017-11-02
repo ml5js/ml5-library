@@ -27,7 +27,7 @@ function setup() {
   tempSlider.input(generate);
 
   // Create the LSTM Generator
-  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespear/')
+  lstm = new p5ml.LSTMGenerator('./../../models/lstm/darwin/')
 }
 
 function generate() {
