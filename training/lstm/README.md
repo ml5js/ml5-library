@@ -1,51 +1,84 @@
-# Training a simple LSTM network
+# Training a LSTM network
 
-## Python Environment
+Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language models in Python using Tensorflow and modified to work with [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) and p5ML.js
 
-Set up a python environment with tensorflow installed. ([more detailed instructions](https://github.com/shiffman/A2Z-F17/wiki/Python-Environment-for-LSTM-example))
+Based on [char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorflow).
 
-```
-pip install tensorflow
-```
+## Requirements
 
-## 1) Training
+Set up a python environment with tensorflow installed. [More detailed instructions here](../)
 
-The input file must be inside the `/data` folder in `.txt` format. 
+## Usage
 
+### 1) Train
+
+Inside the `/data` folder, create a new folder with the name of your data. Inside that folder should be one file called `input.txt`
+(A quick tip to concatenate many small disparate `.txt` files into one large training file: `ls *.txt | xargs -L 1 cat >> input.txt`)
 Then run:
-```
-python train.py --file YOURFILENAME.txt --nhidden 128 --epochs 1000 --save 100
-```
---nhidden is the amount of hidden layers
 
---epochs is the amount of epochs to run the training. Defaults to 1000.
-
---save is the how often do you want to save model. Defaults to 100.
-
-This will save the output to the `/checkpoints` and create a `variables.json` file.
-
-## 2) Convert model
-
-The next step requires you to convert the model to a format compatible with p5-deeplearn-js. This is accomplished with the `json_checkpoint_vars.py` script find in `/training/`. This scripts is the same for any model trained in tensorflow. The command below specifies where to find the checkpoints file as well as where to write the model.
-
-```
-python json_checkpoint_vars.py --checkpoint_file lstm/checkpoints/demo/demo-10 --output_dir demo
+```bash
+python train.py --data_dir=./data/my_own_data/
 ```
 
-This will save the model in a js ready format in the globals `./models` folder.
+You can specify the hyperparameters:
 
-## 3) Run p5 Sketch!
+```bash
+python train.py --data_dir=./data/my_own_data/ --rnn_size 128 --num_layers 2 --seq_length 64 --batch_size 32 --num_epochs 1000
+```
 
-To work with the model in p5, you'll need to:
+This will train your model and save the model, **in the globals `./models` folder**, in a format usable in javascript. 
 
-1. Change the model in the `lstm.js`file:
+### 2) Run!
+
+To work with the model in p5ML, you'll just need to point to the new folder in your sketch:
+
 ```javascript
-const reader = new deeplearn.CheckpointLoader('../../models/demo');
+var lstm = new p5ml.LSTMGenerator('./models/your_new_model');
 ```
-2. Replace the `variables.json` file for the new `variables.json` created in the training.
 
-### More notes about RNN configurations (Thanks to Ross Goodwin!)
-* 2 MB: -rnn_size 256 (or 128) -layers 2 -seq_length 64 -batch_size 32 -dropout 0.25
-* 5-8 MB: -rnn_size 512 -layers 2 (or 3) -seq_length 128 -batch_size 64 -dropout 0.25
-* 10-20 MB: -rnn_size 1024 -layers 2 (or 3) -seq_length 128 (or 256) -batch_size 128 -dropout 0.25
-* 25+ MB: -rnn_size 2048 -layers 2 (or 3) -seq_length 256 (or 128) -batch_size 128 -dropout 0.25
+That's it!
+
+## Hyperparameters
+
+_Thanks to Ross Goodwin!_
+
+Given the size of the training dataset, you can use:
+
+* 2 MB: 
+   - rnn_size 256 (or 128) 
+   - layers 2 
+   - seq_length 64 
+   - batch_size 32 
+   - dropout 0.25
+* 5-8 MB: 
+  - rnn_size 512 
+  - layers 2 (or 3) 
+  - seq_length 128 
+  - batch_size 64 
+  - dropout 0.25
+* 10-20 MB: 
+  - rnn_size 1024 
+  - layers 2 (or 3) 
+  - seq_length 128 (or 256) 
+  - batch_size 128 
+  - dropout 0.25
+* 25+ MB: 
+  - rnn_size 2048 
+  - layers 2 (or 3) 
+  - seq_length 256 (or 128) 
+  - batch_size 128 
+  - dropout 0.25
+
+## Tensorboard
+
+Tensorflow comes with [Tensorboard](https://github.com/tensorflow/tensorboard): "a suite of web applications for inspecting and understanding your TensorFlow runs and graphs.".
+
+To visualize training progress, model graphs, and internal state histograms: fire up Tensorboard and point it at your `log_dir`:
+
+```bash
+$ tensorboard --logdir=./logs/
+```
+
+Then open a browser to [http://localhost:6006](http://localhost:6006) or the correct IP/Port specified.
+
+
