@@ -1,7 +1,6 @@
 dev
 examples/es6/node_modules
 experiments/node_modules
-training/lstm/checkpoints
 node_modules
 **/npm-debug.log
 .vscode
