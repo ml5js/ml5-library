@@ -16,19 +16,23 @@ function setup() {
 
   // Create the LSTM Generator
   lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespear/')
-  
+
   // Grab the DOM elements
   let textInput = select('#textInput');
   let lengthSlider = select('#lenSlider');
   let tempSlider = select('#tempSlider');
   let button = select('#generate');
   button.mousePressed(generate);
+  lengthSlider.input(updateSliders);
+  tempSlider.input(updateSliders);
 
+  function updateSliders() {
+    select('#length').html(lengthSlider.value())
+    select('#temperature').html(tempSlider.value())
+  }
 
   function generate() {
      // Update the length and temperature span elements
-    select('#length').html(lengthSlider.value())
-    select('#temperature').html(tempSlider.value())
 
     // Grab the original text
     let original = textInput.value();
