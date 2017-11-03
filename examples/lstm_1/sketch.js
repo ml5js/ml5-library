@@ -16,7 +16,7 @@ function setup() {
 
   // Create the LSTM Generator
   // Pass in a model directory
-  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespear/')
+  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespeare/')
 
   // Grab the DOM elements
   let textInput = select('#textInput');

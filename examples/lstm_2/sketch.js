@@ -28,7 +28,7 @@ function setup() {
 
   // Create the LSTM Generator
   // Point it to a directory of model files
-  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespear/')
+  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespeare/')
 }
 
 function generate() {
