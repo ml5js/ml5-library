@@ -11,11 +11,11 @@ Originally ported to ES6 with deeplearn.js by Cristóbal Valenzuela
 let textInput;
 let tempSlider;
 let lengthSlider;
-let waiting = false;
-var lstm;
+let lstm;
 
 function setup() {
   noCanvas();
+
   // Grab the DOM elements
   textInput = select('#textInput');
   lengthSlider = select('#lenSlider');
@@ -27,7 +27,8 @@ function setup() {
   tempSlider.input(generate);
 
   // Create the LSTM Generator
-  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespear/')
+  // Point it to a directory of model files
+  lstm = new p5ml.LSTMGenerator('./../../models/lstm/shakespeare/')
 }
 
 function generate() {
@@ -41,9 +42,9 @@ function generate() {
   // Make it to lower case
   let txt = original.toLowerCase();
 
-  // Check if there's something to send
+  // Check if there's something
   if (txt.length > 0) {
-    // Here is the data to post
+    // Here is the data for the LSTM generator
     let data = {
       seed: txt,
       temperature: tempSlider.value(),
@@ -53,11 +54,13 @@ function generate() {
     // Generate text with the lstm
     lstm.generate(data, gotData);
 
+    // Update the DOM elements with typed and generated text
     function gotData(result) {
       select('#original').html(original);
       select('#prediction').html(result.generated);
     }
   } else {
+    // Clear everything
     select('#original').html('');
     select('#prediction').html('');
   }
