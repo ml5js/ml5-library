@@ -14,6 +14,7 @@ let randomInt = (min = 0, max = 1) => {
 // Taken from https://github.com/processing/p5.js/blob/master/src/math/random.js#L168
 let randomGaussian = (mean = 0, sd = 1) => {
   let y1, y2, x1, x2, w;
+  let previous;
   if (previous) {
     y1 = y2;
     previous = false;
@@ -28,7 +29,7 @@ let randomGaussian = (mean = 0, sd = 1) => {
     y2 = x2 * w;
     previous = true;
   }
-  return y1 * s + m;
+  return y1 * sd + mean;
 };
 
 export { randomFloat, randomInt, randomGaussian }

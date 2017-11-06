@@ -7,3 +7,4 @@ node_modules
 *.DS_STORE
 experiments
 scripts
+training/lstm/data/t

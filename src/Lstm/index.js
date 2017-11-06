@@ -64,7 +64,7 @@ class LSTMGenerator {
 
     if (!this.checkpointsLoaded) {
       setTimeout(() => {
-        generate(options, callback);
+        this.generate(options, callback);
       }, 100);
     } else {
       math.scope((keep, track) => {
@@ -110,7 +110,6 @@ class LSTMGenerator {
           const outputH = h[1];
           const weightedResult = math.matMul(outputH, this.model.fullyConnectedWeights);
           const logits = math.add(weightedResult, this.model.fullyConnectedBiases);
-          const result = math.argMax(logits).get();
  
           const divided = math.arrayDividedByScalar(logits, Scalar.new(options.temperature));
           const probabilities = math.exp(divided);
