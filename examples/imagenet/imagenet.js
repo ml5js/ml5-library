@@ -7,7 +7,7 @@ const TOP_K_CLASSES = 5;
 
 class ImageNet {
 
-  constructor() {
+  constructor(callback) {
     this.gl = deeplearn.gpgpu_util.createWebGLContext();
     this.gpgpu = new deeplearn.GPGPUContext(this.gl);
     this.math = new deeplearn.NDArrayMathGPU(this.gpgpu);
@@ -15,14 +15,23 @@ class ImageNet {
     this.squeezeNet = new SqueezeNet(this.math);
     this.squeezeNet.load().then(() => {
       console.log("ready");
+      callback();
     });
   }
 
-  inference(img) {
-    const image = deeplearn.Array3D.fromPixels(img);
-    const inferenceResult = this.squeezeNet.predict(image);
-    const namedActivations = inferenceResult.namedActivations;
-    this.layerNames = Object.keys(namedActivations);
+  inference(canvas) {
+    const image = deeplearn.Array3D.fromPixels(canvas);
+    console.log(image);
+    const inferenceResult = this.squeezeNet.predict(image).
+    then(() => {
+      console.log('all set');
+      console.log(inferenceResult);
+    })
+    .catch((err) => {
+        console.log(err)
+    });
+    // const namedActivations = inferenceResult.namedActivations;
+    // this.layerNames = Object.keys(namedActivations);
     // const topClassesToProbability = this.getTopKClasses(
     //   inferenceResult.logits, TOP_K_CLASSES);
     // let count = 0;

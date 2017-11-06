@@ -65,6 +65,7 @@ var SqueezeNet = (function () {
             return __generator(this, function (_a) {
                 namedActivations = {};
                 avgpool10 = this.math.scope(function (keep) {
+                    console.log(_this);
                     var preprocessedInput = _this.math.subtract(input, _this.preprocessOffset);
                     var conv1 = _this.math.conv2d(preprocessedInput, _this.variables['conv1_W:0'], _this.variables['conv1_b:0'], 2, 0);
                     var conv1relu = keep(_this.math.relu(conv1));
