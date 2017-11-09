@@ -1,8 +1,8 @@
 /*
 ===
+Simple Image demo
 Imagenet with SqueezeNet 
 
-Simple Image demo
 Nov 2017
 ===
 */
@@ -35,7 +35,7 @@ function setup() {
         result = value;
       }
     }
-    select('#result').html("I guess this is a " + result);
+    select('#result').html(result);
     // We are still console loggin all the results
     console.log(values)
   }

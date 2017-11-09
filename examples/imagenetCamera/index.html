@@ -2,16 +2,25 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Imagenet Example</title>
+  <title>Imagenet Webcam example</title>
 
   <script src="../libraries/p5.min.js"></script>
   <script src="../libraries/p5.dom.min.js"></script>
   <script src="../../dist/p5ml.min.js"></script>
+
+  <style>
+    img{
+      display: none;
+    }
+    canvas{
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
-  <!-- This is the image we want to use. We can change the src later from the sketch.js -->
-  <img src="images/elephant.jpg" id="img" width=227 height=227 crossorigin/>
+  <!-- The image to classify will be in this element -->
+  <img src="#" id="img" width=227 height=227 crossorigin/>
   <p>I guess this is a <span id="result"></span>...</p>
   <script src="sketch.js"></script>
 </body>

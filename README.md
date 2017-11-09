@@ -28,6 +28,7 @@ npm install p5ML --save
 - [LSTM Simple](examples/lstm_1)
 - [LSTM Interactive](examples/lstm_2)
 - [Imagenet Simple](examples/imagenet)
+- [Imagenet Webcam](examples/imagenetCamera)
 
 ## API Reference
  
@@ -47,7 +48,7 @@ lstm.generate([options], callback)
 - _options_: An object that specifies the seed, length and temperature of the input. Defaults to `{seed: "a", length:20, temperature:0.5}`
 - _callback_: A function to execute once the model has run. 
 
-See [this](examples/lstm_1) and [this](examples/lstm_2) examples.
+See this [simple example](examples/lstm_1) and this [interactive example](examples/lstm_2).
 
 ### ImageNet
 
@@ -62,12 +63,11 @@ var prediction = imagenet.predict(img, callback);
 - _img_: The DOM element of the image to classify.
 - _callback_: A function to execute once the model has run. 
 
-See [this](examples/imagenet) example.
+See this [simple example ](examples/imagenet) example and this [webcam example](examples/imagenetCamera)
 
 ### Neural Network
 
 > A Simple Artificial Neural Network
-
 
 ## Develop
 

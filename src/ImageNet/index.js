@@ -3,7 +3,7 @@ Image net Class
 */
 
 import { math } from './../utils/index';
-import { Array3D, softmax } from 'deeplearn';
+import { Array3D } from 'deeplearn';
 import { SqueezeNet } from './squeezenet';
 
 class ImageNet {
