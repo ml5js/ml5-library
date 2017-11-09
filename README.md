@@ -63,7 +63,7 @@ var prediction = imagenet.predict(img, callback);
 - _img_: The DOM element of the image to classify.
 - _callback_: A function to execute once the model has run. 
 
-See this [simple example ](examples/imagenet) example and this [webcam example](examples/imagenetCamera)
+See this [simple example ](examples/imagenet) and this [webcam example](examples/imagenetCamera)
 
 ### Neural Network
 
