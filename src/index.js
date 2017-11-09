@@ -10,8 +10,10 @@ console.log('p5ML loaded');
 
 import { NeuralNetwork } from './NeuralNetwork/index';
 import { LSTMGenerator } from './Lstm/index';
+import { ImageNet } from './ImageNet/index';
 
 module.exports = {
   NeuralNetwork,
-  LSTMGenerator
+  LSTMGenerator,
+  ImageNet
 };

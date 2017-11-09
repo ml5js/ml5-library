@@ -1,19 +1,19 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>ImageNet</title>
 
-    <script src="../libraries/p5.min.js"></script>
-    <script src="../libraries/p5.dom.min.js"></script>
-    <script src="deeplearn.js"></script>
-    <script src="models/squeezenet/squeezenet.js"></script>
-    <script src="sketch.js" type="text/javascript"></script>
-    <script src="imagenet.js" type="text/javascript"></script>
-  </head>
-  <body>
+<head>
+  <meta charset="UTF-8">
+  <title>Imagenet Example</title>
 
+  <script src="../libraries/p5.min.js"></script>
+  <script src="../libraries/p5.dom.min.js"></script>
+  <script src="../../dist/p5ml.min.js"></script>
+</head>
 
+<body>
+  <!-- This is the image we want to use. We can change the src later from the sketch.js -->
+  <img src="images/elephant.jpg" id="img" width=227 height=227 crossorigin/>
+  <p id="result"></p>
+  <script src="sketch.js"></script>
+</body>
 
-  </body>
 </html>

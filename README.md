@@ -27,14 +27,16 @@ npm install p5ML --save
 - [Mnist](examples/mnist)
 - [LSTM Simple](examples/lstm_1)
 - [LSTM Interactive](examples/lstm_2)
+- [Imagenet Simple](examples/imagenet)
 
 ## API Reference
  
 - [LSTM](#lstm)
+- [ImageNet](#imagenet)
 
 ### LSTM
 
-> Use a LSTM pretrained model and run it in inference mode. Returns an object.
+> Use a pretrained LSTM model and run it in inference mode. Returns an object.
 
 ```javascript
 var lstm = new p5ML.LSTM(path);
@@ -46,6 +48,26 @@ lstm.generate([options], callback)
 - _callback_: A function to execute once the model has run. 
 
 See [this](examples/lstm_1) and [this](examples/lstm_2) examples.
+
+### ImageNet
+
+> Classify an image using a given model. Returns an object.
+
+```javascript
+var imagenet = new p5ml.ImageNet(model);
+var prediction = imagenet.predict(img, callback);
+```
+
+- _model_: Specify the model to use. For now only 'Squeezenet' is supported. 
+- _img_: The DOM element of the image to classify.
+- _callback_: A function to execute once the model has run. 
+
+See [this](examples/imagenet) example.
+
+### Neural Network
+
+> A Simple Artificial Neural Network
+
 
 ## Develop
 

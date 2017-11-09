@@ -1,956 +1,1033 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.deeplearn = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.squeezenet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IMAGENET_CLASSES = {
+    0: 'tench, Tinca tinca',
+    1: 'goldfish, Carassius auratus',
+    2: 'great white shark, white shark, man-eater, man-eating shark, ' +
+        'Carcharodon carcharias',
+    3: 'tiger shark, Galeocerdo cuvieri',
+    4: 'hammerhead, hammerhead shark',
+    5: 'electric ray, crampfish, numbfish, torpedo',
+    6: 'stingray',
+    7: 'cock',
+    8: 'hen',
+    9: 'ostrich, Struthio camelus',
+    10: 'brambling, Fringilla montifringilla',
+    11: 'goldfinch, Carduelis carduelis',
+    12: 'house finch, linnet, Carpodacus mexicanus',
+    13: 'junco, snowbird',
+    14: 'indigo bunting, indigo finch, indigo bird, Passerina cyanea',
+    15: 'robin, American robin, Turdus migratorius',
+    16: 'bulbul',
+    17: 'jay',
+    18: 'magpie',
+    19: 'chickadee',
+    20: 'water ouzel, dipper',
+    21: 'kite',
+    22: 'bald eagle, American eagle, Haliaeetus leucocephalus',
+    23: 'vulture',
+    24: 'great grey owl, great gray owl, Strix nebulosa',
+    25: 'European fire salamander, Salamandra salamandra',
+    26: 'common newt, Triturus vulgaris',
+    27: 'eft',
+    28: 'spotted salamander, Ambystoma maculatum',
+    29: 'axolotl, mud puppy, Ambystoma mexicanum',
+    30: 'bullfrog, Rana catesbeiana',
+    31: 'tree frog, tree-frog',
+    32: 'tailed frog, bell toad, ribbed toad, tailed toad, Ascaphus trui',
+    33: 'loggerhead, loggerhead turtle, Caretta caretta',
+    34: 'leatherback turtle, leatherback, leathery turtle, Dermochelys coriacea',
+    35: 'mud turtle',
+    36: 'terrapin',
+    37: 'box turtle, box tortoise',
+    38: 'banded gecko',
+    39: 'common iguana, iguana, Iguana iguana',
+    40: 'American chameleon, anole, Anolis carolinensis',
+    41: 'whiptail, whiptail lizard',
+    42: 'agama',
+    43: 'frilled lizard, Chlamydosaurus kingi',
+    44: 'alligator lizard',
+    45: 'Gila monster, Heloderma suspectum',
+    46: 'green lizard, Lacerta viridis',
+    47: 'African chameleon, Chamaeleo chamaeleon',
+    48: 'Komodo dragon, Komodo lizard, dragon lizard, giant lizard, ' +
+        'Varanus komodoensis',
+    49: 'African crocodile, Nile crocodile, Crocodylus niloticus',
+    50: 'American alligator, Alligator mississipiensis',
+    51: 'triceratops',
+    52: 'thunder snake, worm snake, Carphophis amoenus',
+    53: 'ringneck snake, ring-necked snake, ring snake',
+    54: 'hognose snake, puff adder, sand viper',
+    55: 'green snake, grass snake',
+    56: 'king snake, kingsnake',
+    57: 'garter snake, grass snake',
+    58: 'water snake',
+    59: 'vine snake',
+    60: 'night snake, Hypsiglena torquata',
+    61: 'boa constrictor, Constrictor constrictor',
+    62: 'rock python, rock snake, Python sebae',
+    63: 'Indian cobra, Naja naja',
+    64: 'green mamba',
+    65: 'sea snake',
+    66: 'horned viper, cerastes, sand viper, horned asp, Cerastes cornutus',
+    67: 'diamondback, diamondback rattlesnake, Crotalus adamanteus',
+    68: 'sidewinder, horned rattlesnake, Crotalus cerastes',
+    69: 'trilobite',
+    70: 'harvestman, daddy longlegs, Phalangium opilio',
+    71: 'scorpion',
+    72: 'black and gold garden spider, Argiope aurantia',
+    73: 'barn spider, Araneus cavaticus',
+    74: 'garden spider, Aranea diademata',
+    75: 'black widow, Latrodectus mactans',
+    76: 'tarantula',
+    77: 'wolf spider, hunting spider',
+    78: 'tick',
+    79: 'centipede',
+    80: 'black grouse',
+    81: 'ptarmigan',
+    82: 'ruffed grouse, partridge, Bonasa umbellus',
+    83: 'prairie chicken, prairie grouse, prairie fowl',
+    84: 'peacock',
+    85: 'quail',
+    86: 'partridge',
+    87: 'African grey, African gray, Psittacus erithacus',
+    88: 'macaw',
+    89: 'sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita',
+    90: 'lorikeet',
+    91: 'coucal',
+    92: 'bee eater',
+    93: 'hornbill',
+    94: 'hummingbird',
+    95: 'jacamar',
+    96: 'toucan',
+    97: 'drake',
+    98: 'red-breasted merganser, Mergus serrator',
+    99: 'goose',
+    100: 'black swan, Cygnus atratus',
+    101: 'tusker',
+    102: 'echidna, spiny anteater, anteater',
+    103: 'platypus, duckbill, duckbilled platypus, duck-billed platypus, ' +
+        'Ornithorhynchus anatinus',
+    104: 'wallaby, brush kangaroo',
+    105: 'koala, koala bear, kangaroo bear, native bear, Phascolarctos cinereus',
+    106: 'wombat',
+    107: 'jelly fish',
+    108: 'sea anemone, anemone',
+    109: 'brain coral',
+    110: 'flatworm, platyhelminth',
+    111: 'nematode, nematode worm, roundworm',
+    112: 'conch',
+    113: 'snail',
+    114: 'slug',
+    115: 'sea slug, nudibranch',
+    116: 'chiton, coat-of-mail shell, sea cradle, polyplacophore',
+    117: 'chambered nautilus, pearly nautilus, nautilus',
+    118: 'Dungeness crab, Cancer magister',
+    119: 'rock crab, Cancer irroratus',
+    120: 'fiddler crab',
+    121: 'king crab, Alaska crab, Alaskan king crab, Alaska king crab, ' +
+        'Paralithodes camtschatica',
+    122: 'American lobster, Northern lobster, Maine lobster, Homarus americanus',
+    123: 'spiny lobster, langouste, rock lobster, crawfish, crayfish, sea ' +
+        'crawfish',
+    124: 'crayfish, crawfish, crawdad, crawdaddy',
+    125: 'hermit crab',
+    126: 'isopod',
+    127: 'white stork, Ciconia ciconia',
+    128: 'black stork, Ciconia nigra',
+    129: 'spoonbill',
+    130: 'flamingo',
+    131: 'little blue heron, Egretta caerulea',
+    132: 'American egret, great white heron, Egretta albus',
+    133: 'bittern',
+    134: 'crane',
+    135: 'limpkin, Aramus pictus',
+    136: 'European gallinule, Porphyrio porphyrio',
+    137: 'American coot, marsh hen, mud hen, water hen, Fulica americana',
+    138: 'bustard',
+    139: 'ruddy turnstone, Arenaria interpres',
+    140: 'red-backed sandpiper, dunlin, Erolia alpina',
+    141: 'redshank, Tringa totanus',
+    142: 'dowitcher',
+    143: 'oystercatcher, oyster catcher',
+    144: 'pelican',
+    145: 'king penguin, Aptenodytes patagonica',
+    146: 'albatross, mollymawk',
+    147: 'grey whale, gray whale, devilfish, Eschrichtius gibbosus, ' +
+        'Eschrichtius robustus',
+    148: 'killer whale, killer, orca, grampus, sea wolf, Orcinus orca',
+    149: 'dugong, Dugong dugon',
+    150: 'sea lion',
+    151: 'Chihuahua',
+    152: 'Japanese spaniel',
+    153: 'Maltese dog, Maltese terrier, Maltese',
+    154: 'Pekinese, Pekingese, Peke',
+    155: 'Shih-Tzu',
+    156: 'Blenheim spaniel',
+    157: 'papillon',
+    158: 'toy terrier',
+    159: 'Rhodesian ridgeback',
+    160: 'Afghan hound, Afghan',
+    161: 'basset, basset hound',
+    162: 'beagle',
+    163: 'bloodhound, sleuthhound',
+    164: 'bluetick',
+    165: 'black-and-tan coonhound',
+    166: 'Walker hound, Walker foxhound',
+    167: 'English foxhound',
+    168: 'redbone',
+    169: 'borzoi, Russian wolfhound',
+    170: 'Irish wolfhound',
+    171: 'Italian greyhound',
+    172: 'whippet',
+    173: 'Ibizan hound, Ibizan Podenco',
+    174: 'Norwegian elkhound, elkhound',
+    175: 'otterhound, otter hound',
+    176: 'Saluki, gazelle hound',
+    177: 'Scottish deerhound, deerhound',
+    178: 'Weimaraner',
+    179: 'Staffordshire bullterrier, Staffordshire bull terrier',
+    180: 'American Staffordshire terrier, Staffordshire terrier, American pit ' +
+        'bull terrier, pit bull terrier',
+    181: 'Bedlington terrier',
+    182: 'Border terrier',
+    183: 'Kerry blue terrier',
+    184: 'Irish terrier',
+    185: 'Norfolk terrier',
+    186: 'Norwich terrier',
+    187: 'Yorkshire terrier',
+    188: 'wire-haired fox terrier',
+    189: 'Lakeland terrier',
+    190: 'Sealyham terrier, Sealyham',
+    191: 'Airedale, Airedale terrier',
+    192: 'cairn, cairn terrier',
+    193: 'Australian terrier',
+    194: 'Dandie Dinmont, Dandie Dinmont terrier',
+    195: 'Boston bull, Boston terrier',
+    196: 'miniature schnauzer',
+    197: 'giant schnauzer',
+    198: 'standard schnauzer',
+    199: 'Scotch terrier, Scottish terrier, Scottie',
+    200: 'Tibetan terrier, chrysanthemum dog',
+    201: 'silky terrier, Sydney silky',
+    202: 'soft-coated wheaten terrier',
+    203: 'West Highland white terrier',
+    204: 'Lhasa, Lhasa apso',
+    205: 'flat-coated retriever',
+    206: 'curly-coated retriever',
+    207: 'golden retriever',
+    208: 'Labrador retriever',
+    209: 'Chesapeake Bay retriever',
+    210: 'German short-haired pointer',
+    211: 'vizsla, Hungarian pointer',
+    212: 'English setter',
+    213: 'Irish setter, red setter',
+    214: 'Gordon setter',
+    215: 'Brittany spaniel',
+    216: 'clumber, clumber spaniel',
+    217: 'English springer, English springer spaniel',
+    218: 'Welsh springer spaniel',
+    219: 'cocker spaniel, English cocker spaniel, cocker',
+    220: 'Sussex spaniel',
+    221: 'Irish water spaniel',
+    222: 'kuvasz',
+    223: 'schipperke',
+    224: 'groenendael',
+    225: 'malinois',
+    226: 'briard',
+    227: 'kelpie',
+    228: 'komondor',
+    229: 'Old English sheepdog, bobtail',
+    230: 'Shetland sheepdog, Shetland sheep dog, Shetland',
+    231: 'collie',
+    232: 'Border collie',
+    233: 'Bouvier des Flandres, Bouviers des Flandres',
+    234: 'Rottweiler',
+    235: 'German shepherd, German shepherd dog, German police dog, alsatian',
+    236: 'Doberman, Doberman pinscher',
+    237: 'miniature pinscher',
+    238: 'Greater Swiss Mountain dog',
+    239: 'Bernese mountain dog',
+    240: 'Appenzeller',
+    241: 'EntleBucher',
+    242: 'boxer',
+    243: 'bull mastiff',
+    244: 'Tibetan mastiff',
+    245: 'French bulldog',
+    246: 'Great Dane',
+    247: 'Saint Bernard, St Bernard',
+    248: 'Eskimo dog, husky',
+    249: 'malamute, malemute, Alaskan malamute',
+    250: 'Siberian husky',
+    251: 'dalmatian, coach dog, carriage dog',
+    252: 'affenpinscher, monkey pinscher, monkey dog',
+    253: 'basenji',
+    254: 'pug, pug-dog',
+    255: 'Leonberg',
+    256: 'Newfoundland, Newfoundland dog',
+    257: 'Great Pyrenees',
+    258: 'Samoyed, Samoyede',
+    259: 'Pomeranian',
+    260: 'chow, chow chow',
+    261: 'keeshond',
+    262: 'Brabancon griffon',
+    263: 'Pembroke, Pembroke Welsh corgi',
+    264: 'Cardigan, Cardigan Welsh corgi',
+    265: 'toy poodle',
+    266: 'miniature poodle',
+    267: 'standard poodle',
+    268: 'Mexican hairless',
+    269: 'timber wolf, grey wolf, gray wolf, Canis lupus',
+    270: 'white wolf, Arctic wolf, Canis lupus tundrarum',
+    271: 'red wolf, maned wolf, Canis rufus, Canis niger',
+    272: 'coyote, prairie wolf, brush wolf, Canis latrans',
+    273: 'dingo, warrigal, warragal, Canis dingo',
+    274: 'dhole, Cuon alpinus',
+    275: 'African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus',
+    276: 'hyena, hyaena',
+    277: 'red fox, Vulpes vulpes',
+    278: 'kit fox, Vulpes macrotis',
+    279: 'Arctic fox, white fox, Alopex lagopus',
+    280: 'grey fox, gray fox, Urocyon cinereoargenteus',
+    281: 'tabby, tabby cat',
+    282: 'tiger cat',
+    283: 'Persian cat',
+    284: 'Siamese cat, Siamese',
+    285: 'Egyptian cat',
+    286: 'cougar, puma, catamount, mountain lion, painter, panther, ' +
+        'Felis concolor',
+    287: 'lynx, catamount',
+    288: 'leopard, Panthera pardus',
+    289: 'snow leopard, ounce, Panthera uncia',
+    290: 'jaguar, panther, Panthera onca, Felis onca',
+    291: 'lion, king of beasts, Panthera leo',
+    292: 'tiger, Panthera tigris',
+    293: 'cheetah, chetah, Acinonyx jubatus',
+    294: 'brown bear, bruin, Ursus arctos',
+    295: 'American black bear, black bear, Ursus americanus, Euarctos ' +
+        'americanus',
+    296: 'ice bear, polar bear, Ursus Maritimus, Thalarctos maritimus',
+    297: 'sloth bear, Melursus ursinus, Ursus ursinus',
+    298: 'mongoose',
+    299: 'meerkat, mierkat',
+    300: 'tiger beetle',
+    301: 'ladybug, ladybeetle, lady beetle, ladybird, ladybird beetle',
+    302: 'ground beetle, carabid beetle',
+    303: 'long-horned beetle, longicorn, longicorn beetle',
+    304: 'leaf beetle, chrysomelid',
+    305: 'dung beetle',
+    306: 'rhinoceros beetle',
+    307: 'weevil',
+    308: 'fly',
+    309: 'bee',
+    310: 'ant, emmet, pismire',
+    311: 'grasshopper, hopper',
+    312: 'cricket',
+    313: 'walking stick, walkingstick, stick insect',
+    314: 'cockroach, roach',
+    315: 'mantis, mantid',
+    316: 'cicada, cicala',
+    317: 'leafhopper',
+    318: 'lacewing, lacewing fly',
+    319: 'dragonfly, darning needle, devil\'s darning needle, sewing needle, ' +
+        'snake feeder, snake doctor, mosquito hawk, skeeter hawk',
+    320: 'damselfly',
+    321: 'admiral',
+    322: 'ringlet, ringlet butterfly',
+    323: 'monarch, monarch butterfly, milkweed butterfly, Danaus plexippus',
+    324: 'cabbage butterfly',
+    325: 'sulphur butterfly, sulfur butterfly',
+    326: 'lycaenid, lycaenid butterfly',
+    327: 'starfish, sea star',
+    328: 'sea urchin',
+    329: 'sea cucumber, holothurian',
+    330: 'wood rabbit, cottontail, cottontail rabbit',
+    331: 'hare',
+    332: 'Angora, Angora rabbit',
+    333: 'hamster',
+    334: 'porcupine, hedgehog',
+    335: 'fox squirrel, eastern fox squirrel, Sciurus niger',
+    336: 'marmot',
+    337: 'beaver',
+    338: 'guinea pig, Cavia cobaya',
+    339: 'sorrel',
+    340: 'zebra',
+    341: 'hog, pig, grunter, squealer, Sus scrofa',
+    342: 'wild boar, boar, Sus scrofa',
+    343: 'warthog',
+    344: 'hippopotamus, hippo, river horse, Hippopotamus amphibius',
+    345: 'ox',
+    346: 'water buffalo, water ox, Asiatic buffalo, Bubalus bubalis',
+    347: 'bison',
+    348: 'ram, tup',
+    349: 'bighorn, bighorn sheep, cimarron, Rocky Mountain bighorn, Rocky ' +
+        'Mountain sheep, Ovis canadensis',
+    350: 'ibex, Capra ibex',
+    351: 'hartebeest',
+    352: 'impala, Aepyceros melampus',
+    353: 'gazelle',
+    354: 'Arabian camel, dromedary, Camelus dromedarius',
+    355: 'llama',
+    356: 'weasel',
+    357: 'mink',
+    358: 'polecat, fitch, foulmart, foumart, Mustela putorius',
+    359: 'black-footed ferret, ferret, Mustela nigripes',
+    360: 'otter',
+    361: 'skunk, polecat, wood pussy',
+    362: 'badger',
+    363: 'armadillo',
+    364: 'three-toed sloth, ai, Bradypus tridactylus',
+    365: 'orangutan, orang, orangutang, Pongo pygmaeus',
+    366: 'gorilla, Gorilla gorilla',
+    367: 'chimpanzee, chimp, Pan troglodytes',
+    368: 'gibbon, Hylobates lar',
+    369: 'siamang, Hylobates syndactylus, Symphalangus syndactylus',
+    370: 'guenon, guenon monkey',
+    371: 'patas, hussar monkey, Erythrocebus patas',
+    372: 'baboon',
+    373: 'macaque',
+    374: 'langur',
+    375: 'colobus, colobus monkey',
+    376: 'proboscis monkey, Nasalis larvatus',
+    377: 'marmoset',
+    378: 'capuchin, ringtail, Cebus capucinus',
+    379: 'howler monkey, howler',
+    380: 'titi, titi monkey',
+    381: 'spider monkey, Ateles geoffroyi',
+    382: 'squirrel monkey, Saimiri sciureus',
+    383: 'Madagascar cat, ring-tailed lemur, Lemur catta',
+    384: 'indri, indris, Indri indri, Indri brevicaudatus',
+    385: 'Indian elephant, Elephas maximus',
+    386: 'African elephant, Loxodonta africana',
+    387: 'lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens',
+    388: 'giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca',
+    389: 'barracouta, snoek',
+    390: 'eel',
+    391: 'coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus ' +
+        'kisutch',
+    392: 'rock beauty, Holocanthus tricolor',
+    393: 'anemone fish',
+    394: 'sturgeon',
+    395: 'gar, garfish, garpike, billfish, Lepisosteus osseus',
+    396: 'lionfish',
+    397: 'puffer, pufferfish, blowfish, globefish',
+    398: 'abacus',
+    399: 'abaya',
+    400: 'academic gown, academic robe, judge\'s robe',
+    401: 'accordion, piano accordion, squeeze box',
+    402: 'acoustic guitar',
+    403: 'aircraft carrier, carrier, flattop, attack aircraft carrier',
+    404: 'airliner',
+    405: 'airship, dirigible',
+    406: 'altar',
+    407: 'ambulance',
+    408: 'amphibian, amphibious vehicle',
+    409: 'analog clock',
+    410: 'apiary, bee house',
+    411: 'apron',
+    412: 'ashcan, trash can, garbage can, wastebin, ash bin, ash-bin, ashbin, ' +
+        'dustbin, trash barrel, trash bin',
+    413: 'assault rifle, assault gun',
+    414: 'backpack, back pack, knapsack, packsack, rucksack, haversack',
+    415: 'bakery, bakeshop, bakehouse',
+    416: 'balance beam, beam',
+    417: 'balloon',
+    418: 'ballpoint, ballpoint pen, ballpen, Biro',
+    419: 'Band Aid',
+    420: 'banjo',
+    421: 'bannister, banister, balustrade, balusters, handrail',
+    422: 'barbell',
+    423: 'barber chair',
+    424: 'barbershop',
+    425: 'barn',
+    426: 'barometer',
+    427: 'barrel, cask',
+    428: 'barrow, garden cart, lawn cart, wheelbarrow',
+    429: 'baseball',
+    430: 'basketball',
+    431: 'bassinet',
+    432: 'bassoon',
+    433: 'bathing cap, swimming cap',
+    434: 'bath towel',
+    435: 'bathtub, bathing tub, bath, tub',
+    436: 'beach wagon, station wagon, wagon, estate car, beach waggon, station ' +
+        'waggon, waggon',
+    437: 'beacon, lighthouse, beacon light, pharos',
+    438: 'beaker',
+    439: 'bearskin, busby, shako',
+    440: 'beer bottle',
+    441: 'beer glass',
+    442: 'bell cote, bell cot',
+    443: 'bib',
+    444: 'bicycle-built-for-two, tandem bicycle, tandem',
+    445: 'bikini, two-piece',
+    446: 'binder, ring-binder',
+    447: 'binoculars, field glasses, opera glasses',
+    448: 'birdhouse',
+    449: 'boathouse',
+    450: 'bobsled, bobsleigh, bob',
+    451: 'bolo tie, bolo, bola tie, bola',
+    452: 'bonnet, poke bonnet',
+    453: 'bookcase',
+    454: 'bookshop, bookstore, bookstall',
+    455: 'bottlecap',
+    456: 'bow',
+    457: 'bow tie, bow-tie, bowtie',
+    458: 'brass, memorial tablet, plaque',
+    459: 'brassiere, bra, bandeau',
+    460: 'breakwater, groin, groyne, mole, bulwark, seawall, jetty',
+    461: 'breastplate, aegis, egis',
+    462: 'broom',
+    463: 'bucket, pail',
+    464: 'buckle',
+    465: 'bulletproof vest',
+    466: 'bullet train, bullet',
+    467: 'butcher shop, meat market',
+    468: 'cab, hack, taxi, taxicab',
+    469: 'caldron, cauldron',
+    470: 'candle, taper, wax light',
+    471: 'cannon',
+    472: 'canoe',
+    473: 'can opener, tin opener',
+    474: 'cardigan',
+    475: 'car mirror',
+    476: 'carousel, carrousel, merry-go-round, roundabout, whirligig',
+    477: 'carpenter\'s kit, tool kit',
+    478: 'carton',
+    479: 'car wheel',
+    480: 'cash machine, cash dispenser, automated teller machine, automatic ' +
+        'teller machine, automated teller, automatic teller, ATM',
+    481: 'cassette',
+    482: 'cassette player',
+    483: 'castle',
+    484: 'catamaran',
+    485: 'CD player',
+    486: 'cello, violoncello',
+    487: 'cellular telephone, cellular phone, cellphone, cell, mobile phone',
+    488: 'chain',
+    489: 'chainlink fence',
+    490: 'chain mail, ring mail, mail, chain armor, chain armour, ring armor, ' +
+        'ring armour',
+    491: 'chain saw, chainsaw',
+    492: 'chest',
+    493: 'chiffonier, commode',
+    494: 'chime, bell, gong',
+    495: 'china cabinet, china closet',
+    496: 'Christmas stocking',
+    497: 'church, church building',
+    498: 'cinema, movie theater, movie theatre, movie house, picture palace',
+    499: 'cleaver, meat cleaver, chopper',
+    500: 'cliff dwelling',
+    501: 'cloak',
+    502: 'clog, geta, patten, sabot',
+    503: 'cocktail shaker',
+    504: 'coffee mug',
+    505: 'coffeepot',
+    506: 'coil, spiral, volute, whorl, helix',
+    507: 'combination lock',
+    508: 'computer keyboard, keypad',
+    509: 'confectionery, confectionary, candy store',
+    510: 'container ship, containership, container vessel',
+    511: 'convertible',
+    512: 'corkscrew, bottle screw',
+    513: 'cornet, horn, trumpet, trump',
+    514: 'cowboy boot',
+    515: 'cowboy hat, ten-gallon hat',
+    516: 'cradle',
+    517: 'crane',
+    518: 'crash helmet',
+    519: 'crate',
+    520: 'crib, cot',
+    521: 'Crock Pot',
+    522: 'croquet ball',
+    523: 'crutch',
+    524: 'cuirass',
+    525: 'dam, dike, dyke',
+    526: 'desk',
+    527: 'desktop computer',
+    528: 'dial telephone, dial phone',
+    529: 'diaper, nappy, napkin',
+    530: 'digital clock',
+    531: 'digital watch',
+    532: 'dining table, board',
+    533: 'dishrag, dishcloth',
+    534: 'dishwasher, dish washer, dishwashing machine',
+    535: 'disk brake, disc brake',
+    536: 'dock, dockage, docking facility',
+    537: 'dogsled, dog sled, dog sleigh',
+    538: 'dome',
+    539: 'doormat, welcome mat',
+    540: 'drilling platform, offshore rig',
+    541: 'drum, membranophone, tympan',
+    542: 'drumstick',
+    543: 'dumbbell',
+    544: 'Dutch oven',
+    545: 'electric fan, blower',
+    546: 'electric guitar',
+    547: 'electric locomotive',
+    548: 'entertainment center',
+    549: 'envelope',
+    550: 'espresso maker',
+    551: 'face powder',
+    552: 'feather boa, boa',
+    553: 'file, file cabinet, filing cabinet',
+    554: 'fireboat',
+    555: 'fire engine, fire truck',
+    556: 'fire screen, fireguard',
+    557: 'flagpole, flagstaff',
+    558: 'flute, transverse flute',
+    559: 'folding chair',
+    560: 'football helmet',
+    561: 'forklift',
+    562: 'fountain',
+    563: 'fountain pen',
+    564: 'four-poster',
+    565: 'freight car',
+    566: 'French horn, horn',
+    567: 'frying pan, frypan, skillet',
+    568: 'fur coat',
+    569: 'garbage truck, dustcart',
+    570: 'gasmask, respirator, gas helmet',
+    571: 'gas pump, gasoline pump, petrol pump, island dispenser',
+    572: 'goblet',
+    573: 'go-kart',
+    574: 'golf ball',
+    575: 'golfcart, golf cart',
+    576: 'gondola',
+    577: 'gong, tam-tam',
+    578: 'gown',
+    579: 'grand piano, grand',
+    580: 'greenhouse, nursery, glasshouse',
+    581: 'grille, radiator grille',
+    582: 'grocery store, grocery, food market, market',
+    583: 'guillotine',
+    584: 'hair slide',
+    585: 'hair spray',
+    586: 'half track',
+    587: 'hammer',
+    588: 'hamper',
+    589: 'hand blower, blow dryer, blow drier, hair dryer, hair drier',
+    590: 'hand-held computer, hand-held microcomputer',
+    591: 'handkerchief, hankie, hanky, hankey',
+    592: 'hard disc, hard disk, fixed disk',
+    593: 'harmonica, mouth organ, harp, mouth harp',
+    594: 'harp',
+    595: 'harvester, reaper',
+    596: 'hatchet',
+    597: 'holster',
+    598: 'home theater, home theatre',
+    599: 'honeycomb',
+    600: 'hook, claw',
+    601: 'hoopskirt, crinoline',
+    602: 'horizontal bar, high bar',
+    603: 'horse cart, horse-cart',
+    604: 'hourglass',
+    605: 'iPod',
+    606: 'iron, smoothing iron',
+    607: 'jack-o\'-lantern',
+    608: 'jean, blue jean, denim',
+    609: 'jeep, landrover',
+    610: 'jersey, T-shirt, tee shirt',
+    611: 'jigsaw puzzle',
+    612: 'jinrikisha, ricksha, rickshaw',
+    613: 'joystick',
+    614: 'kimono',
+    615: 'knee pad',
+    616: 'knot',
+    617: 'lab coat, laboratory coat',
+    618: 'ladle',
+    619: 'lampshade, lamp shade',
+    620: 'laptop, laptop computer',
+    621: 'lawn mower, mower',
+    622: 'lens cap, lens cover',
+    623: 'letter opener, paper knife, paperknife',
+    624: 'library',
+    625: 'lifeboat',
+    626: 'lighter, light, igniter, ignitor',
+    627: 'limousine, limo',
+    628: 'liner, ocean liner',
+    629: 'lipstick, lip rouge',
+    630: 'Loafer',
+    631: 'lotion',
+    632: 'loudspeaker, speaker, speaker unit, loudspeaker system, speaker ' +
+        'system',
+    633: 'loupe, jeweler\'s loupe',
+    634: 'lumbermill, sawmill',
+    635: 'magnetic compass',
+    636: 'mailbag, postbag',
+    637: 'mailbox, letter box',
+    638: 'maillot',
+    639: 'maillot, tank suit',
+    640: 'manhole cover',
+    641: 'maraca',
+    642: 'marimba, xylophone',
+    643: 'mask',
+    644: 'matchstick',
+    645: 'maypole',
+    646: 'maze, labyrinth',
+    647: 'measuring cup',
+    648: 'medicine chest, medicine cabinet',
+    649: 'megalith, megalithic structure',
+    650: 'microphone, mike',
+    651: 'microwave, microwave oven',
+    652: 'military uniform',
+    653: 'milk can',
+    654: 'minibus',
+    655: 'miniskirt, mini',
+    656: 'minivan',
+    657: 'missile',
+    658: 'mitten',
+    659: 'mixing bowl',
+    660: 'mobile home, manufactured home',
+    661: 'Model T',
+    662: 'modem',
+    663: 'monastery',
+    664: 'monitor',
+    665: 'moped',
+    666: 'mortar',
+    667: 'mortarboard',
+    668: 'mosque',
+    669: 'mosquito net',
+    670: 'motor scooter, scooter',
+    671: 'mountain bike, all-terrain bike, off-roader',
+    672: 'mountain tent',
+    673: 'mouse, computer mouse',
+    674: 'mousetrap',
+    675: 'moving van',
+    676: 'muzzle',
+    677: 'nail',
+    678: 'neck brace',
+    679: 'necklace',
+    680: 'nipple',
+    681: 'notebook, notebook computer',
+    682: 'obelisk',
+    683: 'oboe, hautboy, hautbois',
+    684: 'ocarina, sweet potato',
+    685: 'odometer, hodometer, mileometer, milometer',
+    686: 'oil filter',
+    687: 'organ, pipe organ',
+    688: 'oscilloscope, scope, cathode-ray oscilloscope, CRO',
+    689: 'overskirt',
+    690: 'oxcart',
+    691: 'oxygen mask',
+    692: 'packet',
+    693: 'paddle, boat paddle',
+    694: 'paddlewheel, paddle wheel',
+    695: 'padlock',
+    696: 'paintbrush',
+    697: 'pajama, pyjama, pj\'s, jammies',
+    698: 'palace',
+    699: 'panpipe, pandean pipe, syrinx',
+    700: 'paper towel',
+    701: 'parachute, chute',
+    702: 'parallel bars, bars',
+    703: 'park bench',
+    704: 'parking meter',
+    705: 'passenger car, coach, carriage',
+    706: 'patio, terrace',
+    707: 'pay-phone, pay-station',
+    708: 'pedestal, plinth, footstall',
+    709: 'pencil box, pencil case',
+    710: 'pencil sharpener',
+    711: 'perfume, essence',
+    712: 'Petri dish',
+    713: 'photocopier',
+    714: 'pick, plectrum, plectron',
+    715: 'pickelhaube',
+    716: 'picket fence, paling',
+    717: 'pickup, pickup truck',
+    718: 'pier',
+    719: 'piggy bank, penny bank',
+    720: 'pill bottle',
+    721: 'pillow',
+    722: 'ping-pong ball',
+    723: 'pinwheel',
+    724: 'pirate, pirate ship',
+    725: 'pitcher, ewer',
+    726: 'plane, carpenter\'s plane, woodworking plane',
+    727: 'planetarium',
+    728: 'plastic bag',
+    729: 'plate rack',
+    730: 'plow, plough',
+    731: 'plunger, plumber\'s helper',
+    732: 'Polaroid camera, Polaroid Land camera',
+    733: 'pole',
+    734: 'police van, police wagon, paddy wagon, patrol wagon, wagon, black ' +
+        'Maria',
+    735: 'poncho',
+    736: 'pool table, billiard table, snooker table',
+    737: 'pop bottle, soda bottle',
+    738: 'pot, flowerpot',
+    739: 'potter\'s wheel',
+    740: 'power drill',
+    741: 'prayer rug, prayer mat',
+    742: 'printer',
+    743: 'prison, prison house',
+    744: 'projectile, missile',
+    745: 'projector',
+    746: 'puck, hockey puck',
+    747: 'punching bag, punch bag, punching ball, punchball',
+    748: 'purse',
+    749: 'quill, quill pen',
+    750: 'quilt, comforter, comfort, puff',
+    751: 'racer, race car, racing car',
+    752: 'racket, racquet',
+    753: 'radiator',
+    754: 'radio, wireless',
+    755: 'radio telescope, radio reflector',
+    756: 'rain barrel',
+    757: 'recreational vehicle, RV, R.V.',
+    758: 'reel',
+    759: 'reflex camera',
+    760: 'refrigerator, icebox',
+    761: 'remote control, remote',
+    762: 'restaurant, eating house, eating place, eatery',
+    763: 'revolver, six-gun, six-shooter',
+    764: 'rifle',
+    765: 'rocking chair, rocker',
+    766: 'rotisserie',
+    767: 'rubber eraser, rubber, pencil eraser',
+    768: 'rugby ball',
+    769: 'rule, ruler',
+    770: 'running shoe',
+    771: 'safe',
+    772: 'safety pin',
+    773: 'saltshaker, salt shaker',
+    774: 'sandal',
+    775: 'sarong',
+    776: 'sax, saxophone',
+    777: 'scabbard',
+    778: 'scale, weighing machine',
+    779: 'school bus',
+    780: 'schooner',
+    781: 'scoreboard',
+    782: 'screen, CRT screen',
+    783: 'screw',
+    784: 'screwdriver',
+    785: 'seat belt, seatbelt',
+    786: 'sewing machine',
+    787: 'shield, buckler',
+    788: 'shoe shop, shoe-shop, shoe store',
+    789: 'shoji',
+    790: 'shopping basket',
+    791: 'shopping cart',
+    792: 'shovel',
+    793: 'shower cap',
+    794: 'shower curtain',
+    795: 'ski',
+    796: 'ski mask',
+    797: 'sleeping bag',
+    798: 'slide rule, slipstick',
+    799: 'sliding door',
+    800: 'slot, one-armed bandit',
+    801: 'snorkel',
+    802: 'snowmobile',
+    803: 'snowplow, snowplough',
+    804: 'soap dispenser',
+    805: 'soccer ball',
+    806: 'sock',
+    807: 'solar dish, solar collector, solar furnace',
+    808: 'sombrero',
+    809: 'soup bowl',
+    810: 'space bar',
+    811: 'space heater',
+    812: 'space shuttle',
+    813: 'spatula',
+    814: 'speedboat',
+    815: 'spider web, spider\'s web',
+    816: 'spindle',
+    817: 'sports car, sport car',
+    818: 'spotlight, spot',
+    819: 'stage',
+    820: 'steam locomotive',
+    821: 'steel arch bridge',
+    822: 'steel drum',
+    823: 'stethoscope',
+    824: 'stole',
+    825: 'stone wall',
+    826: 'stopwatch, stop watch',
+    827: 'stove',
+    828: 'strainer',
+    829: 'streetcar, tram, tramcar, trolley, trolley car',
+    830: 'stretcher',
+    831: 'studio couch, day bed',
+    832: 'stupa, tope',
+    833: 'submarine, pigboat, sub, U-boat',
+    834: 'suit, suit of clothes',
+    835: 'sundial',
+    836: 'sunglass',
+    837: 'sunglasses, dark glasses, shades',
+    838: 'sunscreen, sunblock, sun blocker',
+    839: 'suspension bridge',
+    840: 'swab, swob, mop',
+    841: 'sweatshirt',
+    842: 'swimming trunks, bathing trunks',
+    843: 'swing',
+    844: 'switch, electric switch, electrical switch',
+    845: 'syringe',
+    846: 'table lamp',
+    847: 'tank, army tank, armored combat vehicle, armoured combat vehicle',
+    848: 'tape player',
+    849: 'teapot',
+    850: 'teddy, teddy bear',
+    851: 'television, television system',
+    852: 'tennis ball',
+    853: 'thatch, thatched roof',
+    854: 'theater curtain, theatre curtain',
+    855: 'thimble',
+    856: 'thresher, thrasher, threshing machine',
+    857: 'throne',
+    858: 'tile roof',
+    859: 'toaster',
+    860: 'tobacco shop, tobacconist shop, tobacconist',
+    861: 'toilet seat',
+    862: 'torch',
+    863: 'totem pole',
+    864: 'tow truck, tow car, wrecker',
+    865: 'toyshop',
+    866: 'tractor',
+    867: 'trailer truck, tractor trailer, trucking rig, rig, articulated ' +
+        'lorry, semi',
+    868: 'tray',
+    869: 'trench coat',
+    870: 'tricycle, trike, velocipede',
+    871: 'trimaran',
+    872: 'tripod',
+    873: 'triumphal arch',
+    874: 'trolleybus, trolley coach, trackless trolley',
+    875: 'trombone',
+    876: 'tub, vat',
+    877: 'turnstile',
+    878: 'typewriter keyboard',
+    879: 'umbrella',
+    880: 'unicycle, monocycle',
+    881: 'upright, upright piano',
+    882: 'vacuum, vacuum cleaner',
+    883: 'vase',
+    884: 'vault',
+    885: 'velvet',
+    886: 'vending machine',
+    887: 'vestment',
+    888: 'viaduct',
+    889: 'violin, fiddle',
+    890: 'volleyball',
+    891: 'waffle iron',
+    892: 'wall clock',
+    893: 'wallet, billfold, notecase, pocketbook',
+    894: 'wardrobe, closet, press',
+    895: 'warplane, military plane',
+    896: 'washbasin, handbasin, washbowl, lavabo, wash-hand basin',
+    897: 'washer, automatic washer, washing machine',
+    898: 'water bottle',
+    899: 'water jug',
+    900: 'water tower',
+    901: 'whiskey jug',
+    902: 'whistle',
+    903: 'wig',
+    904: 'window screen',
+    905: 'window shade',
+    906: 'Windsor tie',
+    907: 'wine bottle',
+    908: 'wing',
+    909: 'wok',
+    910: 'wooden spoon',
+    911: 'wool, woolen, woollen',
+    912: 'worm fence, snake fence, snake-rail fence, Virginia fence',
+    913: 'wreck',
+    914: 'yawl',
+    915: 'yurt',
+    916: 'web site, website, internet site, site',
+    917: 'comic book',
+    918: 'crossword puzzle, crossword',
+    919: 'street sign',
+    920: 'traffic light, traffic signal, stoplight',
+    921: 'book jacket, dust cover, dust jacket, dust wrapper',
+    922: 'menu',
+    923: 'plate',
+    924: 'guacamole',
+    925: 'consomme',
+    926: 'hot pot, hotpot',
+    927: 'trifle',
+    928: 'ice cream, icecream',
+    929: 'ice lolly, lolly, lollipop, popsicle',
+    930: 'French loaf',
+    931: 'bagel, beigel',
+    932: 'pretzel',
+    933: 'cheeseburger',
+    934: 'hotdog, hot dog, red hot',
+    935: 'mashed potato',
+    936: 'head cabbage',
+    937: 'broccoli',
+    938: 'cauliflower',
+    939: 'zucchini, courgette',
+    940: 'spaghetti squash',
+    941: 'acorn squash',
+    942: 'butternut squash',
+    943: 'cucumber, cuke',
+    944: 'artichoke, globe artichoke',
+    945: 'bell pepper',
+    946: 'cardoon',
+    947: 'mushroom',
+    948: 'Granny Smith',
+    949: 'strawberry',
+    950: 'orange',
+    951: 'lemon',
+    952: 'fig',
+    953: 'pineapple, ananas',
+    954: 'banana',
+    955: 'jackfruit, jak, jack',
+    956: 'custard apple',
+    957: 'pomegranate',
+    958: 'hay',
+    959: 'carbonara',
+    960: 'chocolate sauce, chocolate syrup',
+    961: 'dough',
+    962: 'meat loaf, meatloaf',
+    963: 'pizza, pizza pie',
+    964: 'potpie',
+    965: 'burrito',
+    966: 'red wine',
+    967: 'espresso',
+    968: 'cup',
+    969: 'eggnog',
+    970: 'alp',
+    971: 'bubble',
+    972: 'cliff, drop, drop-off',
+    973: 'coral reef',
+    974: 'geyser',
+    975: 'lakeside, lakeshore',
+    976: 'promontory, headland, head, foreland',
+    977: 'sandbar, sand bar',
+    978: 'seashore, coast, seacoast, sea-coast',
+    979: 'valley, vale',
+    980: 'volcano',
+    981: 'ballplayer, baseball player',
+    982: 'groom, bridegroom',
+    983: 'scuba diver',
+    984: 'rapeseed',
+    985: 'daisy',
+    986: 'yellow lady\'s slipper, yellow lady-slipper, Cypripedium calceolus, ' +
+        'Cypripedium parviflorum',
+    987: 'corn',
+    988: 'acorn',
+    989: 'hip, rose hip, rosehip',
+    990: 'buckeye, horse chestnut, conker',
+    991: 'coral fungus',
+    992: 'agaric',
+    993: 'gyromitra',
+    994: 'stinkhorn, carrion fungus',
+    995: 'earthstar',
+    996: 'hen-of-the-woods, hen of the woods, Polyporus frondosus, Grifola ' +
+        'frondosa',
+    997: 'bolete',
+    998: 'ear, spike, capitulum',
+    999: 'toilet tissue, toilet paper, bathroom tissue'
+};
 
 },{}],2:[function(require,module,exports){
-// A library of seedable RNGs implemented in Javascript.
-//
-// Usage:
-//
-// var seedrandom = require('seedrandom');
-// var random = seedrandom(1); // or any seed.
-// var x = random();       // 0 <= x < 1.  Every bit is random.
-// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
 
-// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
-// Period: ~2^116
-// Reported to pass all BigCrush tests.
-var alea = require('./lib/alea');
-
-// xor128, a pure xor-shift generator by George Marsaglia.
-// Period: 2^128-1.
-// Reported to fail: MatrixRank and LinearComp.
-var xor128 = require('./lib/xor128');
-
-// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
-// Period: 2^192-2^32
-// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = require('./lib/xorwow');
-
-// xorshift7, by François Panneton and Pierre L'ecuyer, takes
-// a different approach: it adds robustness by allowing more shifts
-// than Marsaglia's original three.  It is a 7-shift generator
-// with 256 bits, that passes BigCrush with no systmatic failures.
-// Period 2^256-1.
-// No systematic BigCrush failures reported.
-var xorshift7 = require('./lib/xorshift7');
-
-// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
-// very long period that also adds a Weyl generator. It also passes
-// BigCrush with no systematic failures.  Its long period may
-// be useful if you have many generators and need to avoid
-// collisions.
-// Period: 2^4128-2^32.
-// No systematic BigCrush failures reported.
-var xor4096 = require('./lib/xor4096');
-
-// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
-// number generator derived from ChaCha, a modern stream cipher.
-// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
-// Period: ~2^127
-// No systematic BigCrush failures reported.
-var tychei = require('./lib/tychei');
-
-// The original ARC4-based prng included in this library.
-// Period: ~2^1600
-var sr = require('./seedrandom');
-
-sr.alea = alea;
-sr.xor128 = xor128;
-sr.xorwow = xorwow;
-sr.xorshift7 = xorshift7;
-sr.xor4096 = xor4096;
-sr.tychei = tychei;
-
-module.exports = sr;
-
-},{"./lib/alea":3,"./lib/tychei":4,"./lib/xor128":5,"./lib/xor4096":6,"./lib/xorshift7":7,"./lib/xorwow":8,"./seedrandom":9}],3:[function(require,module,exports){
-// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
-// http://baagoe.com/en/RandomMusings/javascript/
-// https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
-// Original work is under MIT license -
-
-// Copyright (C) 2010 by Johannes Baagøe <baagoe@baagoe.org>
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-
-
-
-(function(global, module, define) {
-
-function Alea(seed) {
-  var me = this, mash = Mash();
-
-  me.next = function() {
-    var t = 2091639 * me.s0 + me.c * 2.3283064365386963e-10; // 2^-32
-    me.s0 = me.s1;
-    me.s1 = me.s2;
-    return me.s2 = t - (me.c = t | 0);
-  };
-
-  // Apply the seeding algorithm from Baagoe.
-  me.c = 1;
-  me.s0 = mash(' ');
-  me.s1 = mash(' ');
-  me.s2 = mash(' ');
-  me.s0 -= mash(seed);
-  if (me.s0 < 0) { me.s0 += 1; }
-  me.s1 -= mash(seed);
-  if (me.s1 < 0) { me.s1 += 1; }
-  me.s2 -= mash(seed);
-  if (me.s2 < 0) { me.s2 += 1; }
-  mash = null;
-}
-
-function copy(f, t) {
-  t.c = f.c;
-  t.s0 = f.s0;
-  t.s1 = f.s1;
-  t.s2 = f.s2;
-  return t;
-}
-
-function impl(seed, opts) {
-  var xg = new Alea(seed),
-      state = opts && opts.state,
-      prng = xg.next;
-  prng.int32 = function() { return (xg.next() * 0x100000000) | 0; }
-  prng.double = function() {
-    return prng() + (prng() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
-  };
-  prng.quick = prng;
-  if (state) {
-    if (typeof(state) == 'object') copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-function Mash() {
-  var n = 0xefc8249d;
-
-  var mash = function(data) {
-    data = data.toString();
-    for (var i = 0; i < data.length; i++) {
-      n += data.charCodeAt(i);
-      var h = 0.02519603282416938 * n;
-      n = h >>> 0;
-      h -= n;
-      h *= n;
-      n = h >>> 0;
-      h -= n;
-      n += h * 0x100000000; // 2^32
-    }
-    return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
-  };
-
-  return mash;
-}
-
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.alea = impl;
-}
-
-})(
-  this,
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-
-
-},{}],4:[function(require,module,exports){
-// A Javascript implementaion of the "Tyche-i" prng algorithm by
-// Samuel Neves and Filipe Araujo.
-// See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
-
-(function(global, module, define) {
-
-function XorGen(seed) {
-  var me = this, strseed = '';
-
-  // Set up generator function.
-  me.next = function() {
-    var b = me.b, c = me.c, d = me.d, a = me.a;
-    b = (b << 25) ^ (b >>> 7) ^ c;
-    c = (c - d) | 0;
-    d = (d << 24) ^ (d >>> 8) ^ a;
-    a = (a - b) | 0;
-    me.b = b = (b << 20) ^ (b >>> 12) ^ c;
-    me.c = c = (c - d) | 0;
-    me.d = (d << 16) ^ (c >>> 16) ^ a;
-    return me.a = (a - b) | 0;
-  };
-
-  /* The following is non-inverted tyche, which has better internal
-   * bit diffusion, but which is about 25% slower than tyche-i in JS.
-  me.next = function() {
-    var a = me.a, b = me.b, c = me.c, d = me.d;
-    a = (me.a + me.b | 0) >>> 0;
-    d = me.d ^ a; d = d << 16 ^ d >>> 16;
-    c = me.c + d | 0;
-    b = me.b ^ c; b = b << 12 ^ d >>> 20;
-    me.a = a = a + b | 0;
-    d = d ^ a; me.d = d = d << 8 ^ d >>> 24;
-    me.c = c = c + d | 0;
-    b = b ^ c;
-    return me.b = (b << 7 ^ b >>> 25);
-  }
-  */
-
-  me.a = 0;
-  me.b = 0;
-  me.c = 2654435769 | 0;
-  me.d = 1367130551;
-
-  if (seed === Math.floor(seed)) {
-    // Integer seed.
-    me.a = (seed / 0x100000000) | 0;
-    me.b = seed | 0;
-  } else {
-    // String seed.
-    strseed += seed;
-  }
-
-  // Mix in string seed, then discard an initial batch of 64 values.
-  for (var k = 0; k < strseed.length + 20; k++) {
-    me.b ^= strseed.charCodeAt(k) | 0;
-    me.next();
-  }
-}
-
-function copy(f, t) {
-  t.a = f.a;
-  t.b = f.b;
-  t.c = f.c;
-  t.d = f.d;
-  return t;
-};
-
-function impl(seed, opts) {
-  var xg = new XorGen(seed),
-      state = opts && opts.state,
-      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
-  prng.double = function() {
-    do {
-      var top = xg.next() >>> 11,
-          bot = (xg.next() >>> 0) / 0x100000000,
-          result = (top + bot) / (1 << 21);
-    } while (result === 0);
-    return result;
-  };
-  prng.int32 = xg.next;
-  prng.quick = prng;
-  if (state) {
-    if (typeof(state) == 'object') copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.tychei = impl;
-}
-
-})(
-  this,
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-
-
-},{}],5:[function(require,module,exports){
-// A Javascript implementaion of the "xor128" prng algorithm by
-// George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
-
-(function(global, module, define) {
-
-function XorGen(seed) {
-  var me = this, strseed = '';
-
-  me.x = 0;
-  me.y = 0;
-  me.z = 0;
-  me.w = 0;
-
-  // Set up generator function.
-  me.next = function() {
-    var t = me.x ^ (me.x << 11);
-    me.x = me.y;
-    me.y = me.z;
-    me.z = me.w;
-    return me.w ^= (me.w >>> 19) ^ t ^ (t >>> 8);
-  };
-
-  if (seed === (seed | 0)) {
-    // Integer seed.
-    me.x = seed;
-  } else {
-    // String seed.
-    strseed += seed;
-  }
-
-  // Mix in string seed, then discard an initial batch of 64 values.
-  for (var k = 0; k < strseed.length + 64; k++) {
-    me.x ^= strseed.charCodeAt(k) | 0;
-    me.next();
-  }
-}
-
-function copy(f, t) {
-  t.x = f.x;
-  t.y = f.y;
-  t.z = f.z;
-  t.w = f.w;
-  return t;
-}
-
-function impl(seed, opts) {
-  var xg = new XorGen(seed),
-      state = opts && opts.state,
-      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
-  prng.double = function() {
-    do {
-      var top = xg.next() >>> 11,
-          bot = (xg.next() >>> 0) / 0x100000000,
-          result = (top + bot) / (1 << 21);
-    } while (result === 0);
-    return result;
-  };
-  prng.int32 = xg.next;
-  prng.quick = prng;
-  if (state) {
-    if (typeof(state) == 'object') copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.xor128 = impl;
-}
-
-})(
-  this,
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-
-
-},{}],6:[function(require,module,exports){
-// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
-//
-// This fast non-cryptographic random number generator is designed for
-// use in Monte-Carlo algorithms. It combines a long-period xorshift
-// generator with a Weyl generator, and it passes all common batteries
-// of stasticial tests for randomness while consuming only a few nanoseconds
-// for each prng generated.  For background on the generator, see Brent's
-// paper: "Some long-period random number generators using shifts and xors."
-// http://arxiv.org/pdf/1004.3115v1.pdf
-//
-// Usage:
-//
-// var xor4096 = require('xor4096');
-// random = xor4096(1);                        // Seed with int32 or string.
-// assert.equal(random(), 0.1520436450538547); // (0, 1) range, 53 bits.
-// assert.equal(random.int32(), 1806534897);   // signed int32, 32 bits.
-//
-// For nonzero numeric keys, this impelementation provides a sequence
-// identical to that by Brent's xorgens 3 implementaion in C.  This
-// implementation also provides for initalizing the generator with
-// string seeds, or for saving and restoring the state of the generator.
-//
-// On Chrome, this prng benchmarks about 2.1 times slower than
-// Javascript's built-in Math.random().
-
-(function(global, module, define) {
-
-function XorGen(seed) {
-  var me = this;
-
-  // Set up generator function.
-  me.next = function() {
-    var w = me.w,
-        X = me.X, i = me.i, t, v;
-    // Update Weyl generator.
-    me.w = w = (w + 0x61c88647) | 0;
-    // Update xor generator.
-    v = X[(i + 34) & 127];
-    t = X[i = ((i + 1) & 127)];
-    v ^= v << 13;
-    t ^= t << 17;
-    v ^= v >>> 15;
-    t ^= t >>> 12;
-    // Update Xor generator array state.
-    v = X[i] = v ^ t;
-    me.i = i;
-    // Result is the combination.
-    return (v + (w ^ (w >>> 16))) | 0;
-  };
-
-  function init(me, seed) {
-    var t, v, i, j, w, X = [], limit = 128;
-    if (seed === (seed | 0)) {
-      // Numeric seeds initialize v, which is used to generates X.
-      v = seed;
-      seed = null;
-    } else {
-      // String seeds are mixed into v and X one character at a time.
-      seed = seed + '\0';
-      v = 0;
-      limit = Math.max(limit, seed.length);
-    }
-    // Initialize circular array and weyl value.
-    for (i = 0, j = -32; j < limit; ++j) {
-      // Put the unicode characters into the array, and shuffle them.
-      if (seed) v ^= seed.charCodeAt((j + 32) % seed.length);
-      // After 32 shuffles, take v as the starting w value.
-      if (j === 0) w = v;
-      v ^= v << 10;
-      v ^= v >>> 15;
-      v ^= v << 4;
-      v ^= v >>> 13;
-      if (j >= 0) {
-        w = (w + 0x61c88647) | 0;     // Weyl.
-        t = (X[j & 127] ^= (v + w));  // Combine xor and weyl to init array.
-        i = (0 == t) ? i + 1 : 0;     // Count zeroes.
-      }
-    }
-    // We have detected all zeroes; make the key nonzero.
-    if (i >= 128) {
-      X[(seed && seed.length || 0) & 127] = -1;
-    }
-    // Run the generator 512 times to further mix the state before using it.
-    // Factoring this as a function slows the main generator, so it is just
-    // unrolled here.  The weyl generator is not advanced while warming up.
-    i = 127;
-    for (j = 4 * 128; j > 0; --j) {
-      v = X[(i + 34) & 127];
-      t = X[i = ((i + 1) & 127)];
-      v ^= v << 13;
-      t ^= t << 17;
-      v ^= v >>> 15;
-      t ^= t >>> 12;
-      X[i] = v ^ t;
-    }
-    // Storing state as object members is faster than using closure variables.
-    me.w = w;
-    me.X = X;
-    me.i = i;
-  }
-
-  init(me, seed);
-}
-
-function copy(f, t) {
-  t.i = f.i;
-  t.w = f.w;
-  t.X = f.X.slice();
-  return t;
-};
-
-function impl(seed, opts) {
-  if (seed == null) seed = +(new Date);
-  var xg = new XorGen(seed),
-      state = opts && opts.state,
-      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
-  prng.double = function() {
-    do {
-      var top = xg.next() >>> 11,
-          bot = (xg.next() >>> 0) / 0x100000000,
-          result = (top + bot) / (1 << 21);
-    } while (result === 0);
-    return result;
-  };
-  prng.int32 = xg.next;
-  prng.quick = prng;
-  if (state) {
-    if (state.X) copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.xor4096 = impl;
-}
-
-})(
-  this,                                     // window object or global
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-},{}],7:[function(require,module,exports){
-// A Javascript implementaion of the "xorshift7" algorithm by
-// François Panneton and Pierre L'ecuyer:
-// "On the Xorgshift Random Number Generators"
-// http://saluc.engr.uconn.edu/refs/crypto/rng/panneton05onthexorshift.pdf
-
-(function(global, module, define) {
-
-function XorGen(seed) {
-  var me = this;
-
-  // Set up generator function.
-  me.next = function() {
-    // Update xor generator.
-    var X = me.x, i = me.i, t, v, w;
-    t = X[i]; t ^= (t >>> 7); v = t ^ (t << 24);
-    t = X[(i + 1) & 7]; v ^= t ^ (t >>> 10);
-    t = X[(i + 3) & 7]; v ^= t ^ (t >>> 3);
-    t = X[(i + 4) & 7]; v ^= t ^ (t << 7);
-    t = X[(i + 7) & 7]; t = t ^ (t << 13); v ^= t ^ (t << 9);
-    X[i] = v;
-    me.i = (i + 1) & 7;
-    return v;
-  };
-
-  function init(me, seed) {
-    var j, w, X = [];
-
-    if (seed === (seed | 0)) {
-      // Seed state array using a 32-bit integer.
-      w = X[0] = seed;
-    } else {
-      // Seed state using a string.
-      seed = '' + seed;
-      for (j = 0; j < seed.length; ++j) {
-        X[j & 7] = (X[j & 7] << 15) ^
-            (seed.charCodeAt(j) + X[(j + 1) & 7] << 13);
-      }
-    }
-    // Enforce an array length of 8, not all zeroes.
-    while (X.length < 8) X.push(0);
-    for (j = 0; j < 8 && X[j] === 0; ++j);
-    if (j == 8) w = X[7] = -1; else w = X[j];
-
-    me.x = X;
-    me.i = 0;
-
-    // Discard an initial 256 values.
-    for (j = 256; j > 0; --j) {
-      me.next();
-    }
-  }
-
-  init(me, seed);
-}
-
-function copy(f, t) {
-  t.x = f.x.slice();
-  t.i = f.i;
-  return t;
-}
-
-function impl(seed, opts) {
-  if (seed == null) seed = +(new Date);
-  var xg = new XorGen(seed),
-      state = opts && opts.state,
-      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
-  prng.double = function() {
-    do {
-      var top = xg.next() >>> 11,
-          bot = (xg.next() >>> 0) / 0x100000000,
-          result = (top + bot) / (1 << 21);
-    } while (result === 0);
-    return result;
-  };
-  prng.int32 = xg.next;
-  prng.quick = prng;
-  if (state) {
-    if (state.x) copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.xorshift7 = impl;
-}
-
-})(
-  this,
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-
-},{}],8:[function(require,module,exports){
-// A Javascript implementaion of the "xorwow" prng algorithm by
-// George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
-
-(function(global, module, define) {
-
-function XorGen(seed) {
-  var me = this, strseed = '';
-
-  // Set up generator function.
-  me.next = function() {
-    var t = (me.x ^ (me.x >>> 2));
-    me.x = me.y; me.y = me.z; me.z = me.w; me.w = me.v;
-    return (me.d = (me.d + 362437 | 0)) +
-       (me.v = (me.v ^ (me.v << 4)) ^ (t ^ (t << 1))) | 0;
-  };
-
-  me.x = 0;
-  me.y = 0;
-  me.z = 0;
-  me.w = 0;
-  me.v = 0;
-
-  if (seed === (seed | 0)) {
-    // Integer seed.
-    me.x = seed;
-  } else {
-    // String seed.
-    strseed += seed;
-  }
-
-  // Mix in string seed, then discard an initial batch of 64 values.
-  for (var k = 0; k < strseed.length + 64; k++) {
-    me.x ^= strseed.charCodeAt(k) | 0;
-    if (k == strseed.length) {
-      me.d = me.x << 10 ^ me.x >>> 4;
-    }
-    me.next();
-  }
-}
-
-function copy(f, t) {
-  t.x = f.x;
-  t.y = f.y;
-  t.z = f.z;
-  t.w = f.w;
-  t.v = f.v;
-  t.d = f.d;
-  return t;
-}
-
-function impl(seed, opts) {
-  var xg = new XorGen(seed),
-      state = opts && opts.state,
-      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
-  prng.double = function() {
-    do {
-      var top = xg.next() >>> 11,
-          bot = (xg.next() >>> 0) / 0x100000000,
-          result = (top + bot) / (1 << 21);
-    } while (result === 0);
-    return result;
-  };
-  prng.int32 = xg.next;
-  prng.quick = prng;
-  if (state) {
-    if (typeof(state) == 'object') copy(state, xg);
-    prng.state = function() { return copy(xg, {}); }
-  }
-  return prng;
-}
-
-if (module && module.exports) {
-  module.exports = impl;
-} else if (define && define.amd) {
-  define(function() { return impl; });
-} else {
-  this.xorwow = impl;
-}
-
-})(
-  this,
-  (typeof module) == 'object' && module,    // present in node.js
-  (typeof define) == 'function' && define   // present with an AMD loader
-);
-
-
-
-},{}],9:[function(require,module,exports){
-/*
-Copyright 2014 David Bau.
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-*/
-
-(function (pool, math) {
-//
-// The following constants are related to IEEE 754 limits.
-//
-var global = this,
-    width = 256,        // each RC4 output is 0 <= x < 256
-    chunks = 6,         // at least six RC4 outputs for each double
-    digits = 52,        // there are 52 significant digits in a double
-    rngname = 'random', // rngname: name for Math.random and Math.seedrandom
-    startdenom = math.pow(width, chunks),
-    significance = math.pow(2, digits),
-    overflow = significance * 2,
-    mask = width - 1,
-    nodecrypto;         // node.js crypto module, initialized at the bottom.
-
-//
-// seedrandom()
-// This is the seedrandom function described above.
-//
-function seedrandom(seed, options, callback) {
-  var key = [];
-  options = (options == true) ? { entropy: true } : (options || {});
-
-  // Flatten the seed string or build one from local entropy if needed.
-  var shortseed = mixkey(flatten(
-    options.entropy ? [seed, tostring(pool)] :
-    (seed == null) ? autoseed() : seed, 3), key);
-
-  // Use the seed to initialize an ARC4 generator.
-  var arc4 = new ARC4(key);
-
-  // This function returns a random double in [0, 1) that contains
-  // randomness in every bit of the mantissa of the IEEE 754 value.
-  var prng = function() {
-    var n = arc4.g(chunks),             // Start with a numerator n < 2 ^ 48
-        d = startdenom,                 //   and denominator d = 2 ^ 48.
-        x = 0;                          //   and no 'extra last byte'.
-    while (n < significance) {          // Fill up all significant digits by
-      n = (n + x) * width;              //   shifting numerator and
-      d *= width;                       //   denominator and generating a
-      x = arc4.g(1);                    //   new least-significant-byte.
-    }
-    while (n >= overflow) {             // To avoid rounding up, before adding
-      n /= 2;                           //   last byte, shift everything
-      d /= 2;                           //   right using integer math until
-      x >>>= 1;                         //   we have exactly the desired bits.
-    }
-    return (n + x) / d;                 // Form the number within [0, 1).
-  };
-
-  prng.int32 = function() { return arc4.g(4) | 0; }
-  prng.quick = function() { return arc4.g(4) / 0x100000000; }
-  prng.double = prng;
-
-  // Mix the randomness into accumulated entropy.
-  mixkey(tostring(arc4.S), pool);
-
-  // Calling convention: what to return as a function of prng, seed, is_math.
-  return (options.pass || callback ||
-      function(prng, seed, is_math_call, state) {
-        if (state) {
-          // Load the arc4 state from the given state if it has an S array.
-          if (state.S) { copy(state, arc4); }
-          // Only provide the .state method if requested via options.state.
-          prng.state = function() { return copy(arc4, {}); }
-        }
-
-        // If called as a method of Math (Math.seedrandom()), mutate
-        // Math.random because that is how seedrandom.js has worked since v1.0.
-        if (is_math_call) { math[rngname] = prng; return seed; }
-
-        // Otherwise, it is a newer calling convention, so return the
-        // prng directly.
-        else return prng;
-      })(
-  prng,
-  shortseed,
-  'global' in options ? options.global : (this == math),
-  options.state);
-}
-math['seed' + rngname] = seedrandom;
-
-//
-// ARC4
-//
-// An ARC4 implementation.  The constructor takes a key in the form of
-// an array of at most (width) integers that should be 0 <= x < (width).
-//
-// The g(count) method returns a pseudorandom integer that concatenates
-// the next (count) outputs from ARC4.  Its return value is a number x
-// that is in the range 0 <= x < (width ^ count).
-//
-function ARC4(key) {
-  var t, keylen = key.length,
-      me = this, i = 0, j = me.i = me.j = 0, s = me.S = [];
-
-  // The empty key [] is treated as [0].
-  if (!keylen) { key = [keylen++]; }
-
-  // Set up S using the standard key scheduling algorithm.
-  while (i < width) {
-    s[i] = i++;
-  }
-  for (i = 0; i < width; i++) {
-    s[i] = s[j = mask & (j + key[i % keylen] + (t = s[i]))];
-    s[j] = t;
-  }
-
-  // The "g" method returns the next (count) outputs as one number.
-  (me.g = function(count) {
-    // Using instance members instead of closure state nearly doubles speed.
-    var t, r = 0,
-        i = me.i, j = me.j, s = me.S;
-    while (count--) {
-      t = s[i = mask & (i + 1)];
-      r = r * width + s[mask & ((s[i] = s[j = mask & (j + t)]) + (s[j] = t))];
-    }
-    me.i = i; me.j = j;
-    return r;
-    // For robust unpredictability, the function call below automatically
-    // discards an initial batch of values.  This is called RC4-drop[256].
-    // See http://google.com/search?q=rsa+fluhrer+response&btnI
-  })(width);
-}
-
-//
-// copy()
-// Copies internal state of ARC4 to or from a plain object.
-//
-function copy(f, t) {
-  t.i = f.i;
-  t.j = f.j;
-  t.S = f.S.slice();
-  return t;
-};
-
-//
-// flatten()
-// Converts an object tree to nested arrays of strings.
-//
-function flatten(obj, depth) {
-  var result = [], typ = (typeof obj), prop;
-  if (depth && typ == 'object') {
-    for (prop in obj) {
-      try { result.push(flatten(obj[prop], depth - 1)); } catch (e) {}
-    }
-  }
-  return (result.length ? result : typ == 'string' ? obj : obj + '\0');
-}
-
-//
-// mixkey()
-// Mixes a string seed into a key that is an array of integers, and
-// returns a shortened string seed that is equivalent to the result key.
-//
-function mixkey(seed, key) {
-  var stringseed = seed + '', smear, j = 0;
-  while (j < stringseed.length) {
-    key[mask & j] =
-      mask & ((smear ^= key[mask & j] * 19) + stringseed.charCodeAt(j++));
-  }
-  return tostring(key);
-}
-
-//
-// autoseed()
-// Returns an object for autoseeding, using window.crypto and Node crypto
-// module if available.
-//
-function autoseed() {
-  try {
-    var out;
-    if (nodecrypto && (out = nodecrypto.randomBytes)) {
-      // The use of 'out' to remember randomBytes makes tight minified code.
-      out = out(width);
-    } else {
-      out = new Uint8Array(width);
-      (global.crypto || global.msCrypto).getRandomValues(out);
-    }
-    return tostring(out);
-  } catch (e) {
-    var browser = global.navigator,
-        plugins = browser && browser.plugins;
-    return [+new Date, global, plugins, global.screen, tostring(pool)];
-  }
-}
-
-//
-// tostring()
-// Converts an array of charcodes to a string
-//
-function tostring(a) {
-  return String.fromCharCode.apply(0, a);
-}
-
-//
-// When seedrandom.js is loaded, we immediately mix a few bits
-// from the built-in RNG into the entropy pool.  Because we do
-// not want to interfere with deterministic PRNG state later,
-// seedrandom will not call math.random on its own again after
-// initialization.
-//
-mixkey(math.random(), pool);
-
-//
-// Nodejs and AMD support: export the implementation as a module using
-// either convention.
-//
-if ((typeof module) == 'object' && module.exports) {
-  module.exports = seedrandom;
-  // When in node.js, try using crypto package for autoseeding.
-  try {
-    nodecrypto = require('crypto');
-  } catch (ex) {}
-} else if ((typeof define) == 'function' && define.amd) {
-  define(function() { return seedrandom; });
-}
-
-// End anonymous scope, and pass initial values.
-})(
-  [],     // pool: entropy pool starts empty
-  Math    // math: package containing random, pow, and seedrandom
-);
-
-},{"crypto":1}],10:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("../math/ndarray");
@@ -1047,7 +1124,7 @@ var CheckpointLoader = (function () {
 }());
 exports.CheckpointLoader = CheckpointLoader;
 
-},{"../math/ndarray":63}],11:[function(require,module,exports){
+},{"../math/ndarray":56}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("../math/ndarray");
@@ -1212,7 +1289,7 @@ var InMemoryDataset = (function () {
 }());
 exports.InMemoryDataset = InMemoryDataset;
 
-},{"../math/ndarray":63,"../util":95}],12:[function(require,module,exports){
+},{"../math/ndarray":56,"../util":88}],5:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1315,7 +1392,7 @@ var InGPUMemoryShuffledInputProviderBuilder = (function (_super) {
 }(InMemoryShuffledInputProviderBuilder));
 exports.InGPUMemoryShuffledInputProviderBuilder = InGPUMemoryShuffledInputProviderBuilder;
 
-},{"../math/ndarray":63,"../util":95}],13:[function(require,module,exports){
+},{"../math/ndarray":56,"../util":88}],6:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -1462,7 +1539,7 @@ function parseTypedArrayFromPng(info, shape) {
     });
 }
 
-},{"../math/ndarray":63,"../util":95,"./dataset":11}],14:[function(require,module,exports){
+},{"../math/ndarray":56,"../util":88,"./dataset":4}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function isMobile() {
@@ -1474,7 +1551,7 @@ function isMobile() {
 }
 exports.isMobile = isMobile;
 
-},{}],15:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var device_util = require("./device_util");
@@ -1652,7 +1729,7 @@ function setEnvironment(environment) {
 }
 exports.setEnvironment = setEnvironment;
 
-},{"./device_util":14,"./util":95}],16:[function(require,module,exports){
+},{"./device_util":7,"./util":88}],9:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2246,7 +2323,7 @@ var ArgMaxEqualsNode = (function (_super) {
 }(Node));
 exports.ArgMaxEqualsNode = ArgMaxEqualsNode;
 
-},{"../initializers":52,"../math/concat_util":56,"../math/conv_util":57,"../math/ndarray":63,"../util":95}],17:[function(require,module,exports){
+},{"../initializers":45,"../math/concat_util":49,"../math/conv_util":50,"../math/ndarray":56,"../util":88}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var graph_1 = require("./graph");
@@ -2323,7 +2400,7 @@ function isPassthroughNode(node, map) {
 }
 exports.isPassthroughNode = isPassthroughNode;
 
-},{"./graph":16,"./priority_queue":46}],18:[function(require,module,exports){
+},{"./graph":9,"./priority_queue":39}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var graph_1 = require("./graph");
@@ -2437,7 +2514,7 @@ function emitOpFromNode(node) {
     }
 }
 
-},{"./graph":16,"./graph_util":17,"./ops/add":19,"./ops/argmax":20,"./ops/argmaxequals":21,"./ops/concat3d":22,"./ops/convolution":23,"./ops/divide":24,"./ops/element_wise_activation":25,"./ops/element_wise_cost":26,"./ops/exp":27,"./ops/linear_combination":28,"./ops/log":29,"./ops/matmul":30,"./ops/max_pool":31,"./ops/multiply":32,"./ops/reduce_sum":34,"./ops/reshape":35,"./ops/softmax":36,"./ops/subtract":37}],19:[function(require,module,exports){
+},{"./graph":9,"./graph_util":10,"./ops/add":12,"./ops/argmax":13,"./ops/argmaxequals":14,"./ops/concat3d":15,"./ops/convolution":16,"./ops/divide":17,"./ops/element_wise_activation":18,"./ops/element_wise_cost":19,"./ops/exp":20,"./ops/linear_combination":21,"./ops/log":22,"./ops/matmul":23,"./ops/max_pool":24,"./ops/multiply":25,"./ops/reduce_sum":27,"./ops/reshape":28,"./ops/softmax":29,"./ops/subtract":30}],12:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2524,7 +2601,7 @@ var Add = (function (_super) {
 }(op_1.Operation));
 exports.Add = Add;
 
-},{"../../math/ndarray":63,"../../util":95,"../graph_util":17,"./op":33}],20:[function(require,module,exports){
+},{"../../math/ndarray":56,"../../util":88,"../graph_util":10,"./op":26}],13:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2560,7 +2637,7 @@ var ArgMax = (function (_super) {
 }(op_1.Operation));
 exports.ArgMax = ArgMax;
 
-},{"./op":33}],21:[function(require,module,exports){
+},{"./op":26}],14:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2598,7 +2675,7 @@ var ArgMaxEquals = (function (_super) {
 }(op_1.Operation));
 exports.ArgMaxEquals = ArgMaxEquals;
 
-},{"./op":33}],22:[function(require,module,exports){
+},{"./op":26}],15:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2640,7 +2717,7 @@ var Concat3D = (function (_super) {
 }(op_1.Operation));
 exports.Concat3D = Concat3D;
 
-},{"../../math/concat_util":56,"./op":33}],23:[function(require,module,exports){
+},{"../../math/concat_util":49,"./op":26}],16:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2709,7 +2786,7 @@ var Convolution2D = (function (_super) {
 }(op_1.Operation));
 exports.Convolution2D = Convolution2D;
 
-},{"../../math/conv_util":57,"../../util":95,"./op":33}],24:[function(require,module,exports){
+},{"../../math/conv_util":50,"../../util":88,"./op":26}],17:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2804,7 +2881,7 @@ var Divide = (function (_super) {
 }(op_1.Operation));
 exports.Divide = Divide;
 
-},{"../../util":95,"../graph_util":17,"./op":33}],25:[function(require,module,exports){
+},{"../../util":88,"../graph_util":10,"./op":26}],18:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2882,7 +2959,7 @@ var Square = (function (_super) {
 }(ElementWiseActivation));
 exports.Square = Square;
 
-},{"../../math/activation_functions":53,"./op":33}],26:[function(require,module,exports){
+},{"../../math/activation_functions":46,"./op":26}],19:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2951,7 +3028,7 @@ var MeanSquaredCost = (function (_super) {
 }(ElementWiseCost));
 exports.MeanSquaredCost = MeanSquaredCost;
 
-},{"../../math/cost_functions":59,"../../math/ndarray":63,"../../util":95,"../graph_util":17,"./op":33}],27:[function(require,module,exports){
+},{"../../math/cost_functions":52,"../../math/ndarray":56,"../../util":88,"../graph_util":10,"./op":26}],20:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2995,7 +3072,7 @@ var Exp = (function (_super) {
 }(op_1.Operation));
 exports.Exp = Exp;
 
-},{"../graph_util":17,"./op":33}],28:[function(require,module,exports){
+},{"../graph_util":10,"./op":26}],21:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3059,7 +3136,7 @@ var LinearCombination = (function (_super) {
 }(op_1.Operation));
 exports.LinearCombination = LinearCombination;
 
-},{"../graph_util":17,"./op":33}],29:[function(require,module,exports){
+},{"../graph_util":10,"./op":26}],22:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3103,7 +3180,7 @@ var Log = (function (_super) {
 }(op_1.Operation));
 exports.Log = Log;
 
-},{"../graph_util":17,"./op":33}],30:[function(require,module,exports){
+},{"../graph_util":10,"./op":26}],23:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3172,7 +3249,7 @@ var MatMul = (function (_super) {
 }(op_1.Operation));
 exports.MatMul = MatMul;
 
-},{"../../math/math":60,"../graph_util":17,"./op":33}],31:[function(require,module,exports){
+},{"../../math/math":53,"../graph_util":10,"./op":26}],24:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3226,7 +3303,7 @@ var MaxPool = (function (_super) {
 }(op_1.Operation));
 exports.MaxPool = MaxPool;
 
-},{"../../math/conv_util":57,"../../util":95,"./op":33}],32:[function(require,module,exports){
+},{"../../math/conv_util":50,"../../util":88,"./op":26}],25:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3309,7 +3386,7 @@ var Multiply = (function (_super) {
 }(op_1.Operation));
 exports.Multiply = Multiply;
 
-},{"../../util":95,"../graph_util":17,"./op":33}],33:[function(require,module,exports){
+},{"../../util":88,"../graph_util":10,"./op":26}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Operation = (function () {
@@ -3321,7 +3398,7 @@ var Operation = (function () {
 }());
 exports.Operation = Operation;
 
-},{}],34:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3373,7 +3450,7 @@ var ReduceSum = (function (_super) {
 }(op_1.Operation));
 exports.ReduceSum = ReduceSum;
 
-},{"../../math/ndarray":63,"../../util":95,"../graph_util":17,"./op":33}],35:[function(require,module,exports){
+},{"../../math/ndarray":56,"../../util":88,"../graph_util":10,"./op":26}],28:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3417,7 +3494,7 @@ var Reshape = (function (_super) {
 }(op_1.Operation));
 exports.Reshape = Reshape;
 
-},{"../../util":95,"./op":33}],36:[function(require,module,exports){
+},{"../../util":88,"./op":26}],29:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3505,7 +3582,7 @@ function crossEntropyCost(math, y, target, epsilon) {
 }
 exports.crossEntropyCost = crossEntropyCost;
 
-},{"../../math/ndarray":63,"../../util":95,"../graph":16,"./op":33}],37:[function(require,module,exports){
+},{"../../math/ndarray":56,"../../util":88,"../graph":9,"./op":26}],30:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3593,7 +3670,7 @@ var Subtract = (function (_super) {
 }(op_1.Operation));
 exports.Subtract = Subtract;
 
-},{"../../math/ndarray":63,"../../util":95,"../graph_util":17,"./op":33}],38:[function(require,module,exports){
+},{"../../math/ndarray":56,"../../util":88,"../graph_util":10,"./op":26}],31:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3668,7 +3745,7 @@ var AdadeltaOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.AdadeltaOptimizer = AdadeltaOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./optimizer":43}],39:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./optimizer":36}],32:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3731,7 +3808,7 @@ var AdagradOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.AdagradOptimizer = AdagradOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./optimizer":43}],40:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./optimizer":36}],33:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3820,7 +3897,7 @@ var AdamOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.AdamOptimizer = AdamOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./optimizer":43}],41:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./optimizer":36}],34:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3901,7 +3978,7 @@ var AdamaxOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.AdamaxOptimizer = AdamaxOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./optimizer":43}],42:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./optimizer":36}],35:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -3967,7 +4044,7 @@ var MomentumOptimizer = (function (_super) {
 }(sgd_optimizer_1.SGDOptimizer));
 exports.MomentumOptimizer = MomentumOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./sgd_optimizer":45}],43:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./sgd_optimizer":38}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("../../math/ndarray");
@@ -4017,7 +4094,7 @@ var Optimizer = (function () {
 }());
 exports.Optimizer = Optimizer;
 
-},{"../../math/ndarray":63,"../session_util":48,"../tensor_array_map":49}],44:[function(require,module,exports){
+},{"../../math/ndarray":56,"../session_util":41,"../tensor_array_map":42}],37:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4083,7 +4160,7 @@ var RMSPropOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.RMSPropOptimizer = RMSPropOptimizer;
 
-},{"../../math/ndarray":63,"../tensor_array_map":49,"./optimizer":43}],45:[function(require,module,exports){
+},{"../../math/ndarray":56,"../tensor_array_map":42,"./optimizer":36}],38:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4130,7 +4207,7 @@ var SGDOptimizer = (function (_super) {
 }(optimizer_1.Optimizer));
 exports.SGDOptimizer = SGDOptimizer;
 
-},{"../tensor_array_map":49,"./optimizer":43}],46:[function(require,module,exports){
+},{"../tensor_array_map":42,"./optimizer":36}],39:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function defaultCompare(a, b) {
@@ -4261,7 +4338,7 @@ var PriorityQueue = (function () {
 }());
 exports.PriorityQueue = PriorityQueue;
 
-},{}],47:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("../math/ndarray");
@@ -4399,7 +4476,7 @@ var Session = (function () {
 }());
 exports.Session = Session;
 
-},{"../math/ndarray":63,"../util":95,"./operation_emitter":18,"./session_util":48,"./tensor_array_map":49}],48:[function(require,module,exports){
+},{"../math/ndarray":56,"../util":88,"./operation_emitter":11,"./session_util":41,"./tensor_array_map":42}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("../math/ndarray");
@@ -4527,7 +4604,7 @@ function throwErrorIfEvaluationSetContainsPlaceholderNodes(evaluationSet) {
 }
 exports.throwErrorIfEvaluationSetContainsPlaceholderNodes = throwErrorIfEvaluationSetContainsPlaceholderNodes;
 
-},{"../math/ndarray":63,"../util":95,"./graph":16,"./graph_util":17}],49:[function(require,module,exports){
+},{"../math/ndarray":56,"../util":88,"./graph":9,"./graph_util":10}],42:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4627,7 +4704,7 @@ var SummedTensorArrayMap = (function (_super) {
 }(TensorArrayMapBase));
 exports.SummedTensorArrayMap = SummedTensorArrayMap;
 
-},{}],50:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var session_1 = require("./graph/session");
@@ -4850,7 +4927,7 @@ var GraphRunner = (function () {
 }());
 exports.GraphRunner = GraphRunner;
 
-},{"./graph/session":47,"./math/ndarray":63}],51:[function(require,module,exports){
+},{"./graph/session":40,"./math/ndarray":56}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var xhr_dataset = require("./data/xhr-dataset");
@@ -4945,7 +5022,7 @@ function exportToTopLevel(alias) {
 }
 exportToTopLevel('dl');
 
-},{"./data/checkpoint_loader":10,"./data/dataset":11,"./data/input_provider":12,"./data/xhr-dataset":13,"./environment":15,"./graph/graph":16,"./graph/optimizers/adadelta_optimizer":38,"./graph/optimizers/adagrad_optimizer":39,"./graph/optimizers/adam_optimizer":40,"./graph/optimizers/adamax_optimizer":41,"./graph/optimizers/momentum_optimizer":42,"./graph/optimizers/optimizer":43,"./graph/optimizers/rmsprop_optimizer":44,"./graph/optimizers/sgd_optimizer":45,"./graph/session":47,"./graph_runner":50,"./initializers":52,"./math/conv_util":57,"./math/math":60,"./math/math_cpu":61,"./math/math_gpu":62,"./math/ndarray":63,"./math/webgl/gpgpu_context":74,"./math/webgl/gpgpu_util":76,"./math/webgl/render_ndarray_gpu_util":85,"./math/webgl/webgl_util":93,"./test_util":94,"./util":95,"./version":96}],52:[function(require,module,exports){
+},{"./data/checkpoint_loader":3,"./data/dataset":4,"./data/input_provider":5,"./data/xhr-dataset":6,"./environment":8,"./graph/graph":9,"./graph/optimizers/adadelta_optimizer":31,"./graph/optimizers/adagrad_optimizer":32,"./graph/optimizers/adam_optimizer":33,"./graph/optimizers/adamax_optimizer":34,"./graph/optimizers/momentum_optimizer":35,"./graph/optimizers/optimizer":36,"./graph/optimizers/rmsprop_optimizer":37,"./graph/optimizers/sgd_optimizer":38,"./graph/session":40,"./graph_runner":43,"./initializers":45,"./math/conv_util":50,"./math/math":53,"./math/math_cpu":54,"./math/math_gpu":55,"./math/ndarray":56,"./math/webgl/gpgpu_context":67,"./math/webgl/gpgpu_util":69,"./math/webgl/render_ndarray_gpu_util":78,"./math/webgl/webgl_util":86,"./test_util":87,"./util":88,"./version":89}],45:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("./math/ndarray");
@@ -5069,7 +5146,7 @@ var RandomUniformInitializer = (function () {
 }());
 exports.RandomUniformInitializer = RandomUniformInitializer;
 
-},{"./math/ndarray":63}],53:[function(require,module,exports){
+},{"./math/ndarray":56}],46:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("./ndarray");
@@ -5140,7 +5217,7 @@ var SquareFunc = (function () {
 }());
 exports.SquareFunc = SquareFunc;
 
-},{"./ndarray":63}],54:[function(require,module,exports){
+},{"./ndarray":56}],47:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function axesAreInnerMostDims(axes, rank) {
@@ -5225,7 +5302,7 @@ function getInnerMostAxes(numAxes, rank) {
 }
 exports.getInnerMostAxes = getInnerMostAxes;
 
-},{}],55:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function getBroadcastDims(inShape, outShape) {
@@ -5268,7 +5345,7 @@ function assertAndGetBroadcastShape(shapeA, shapeB) {
 }
 exports.assertAndGetBroadcastShape = assertAndGetBroadcastShape;
 
-},{}],56:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../util");
@@ -5293,7 +5370,7 @@ function computeOutShape(x1Shape, x2Shape, axis) {
 }
 exports.computeOutShape = computeOutShape;
 
-},{"../util":95}],57:[function(require,module,exports){
+},{"../util":88}],50:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../util");
@@ -5380,7 +5457,7 @@ function computeDilatedRC(rc, origStride) {
 }
 exports.computeDilatedRC = computeDilatedRC;
 
-},{"../util":95}],58:[function(require,module,exports){
+},{"../util":88}],51:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function validateShapes(sourceSize, destSize) {
@@ -5395,7 +5472,7 @@ function validateShapes(sourceSize, destSize) {
 }
 exports.validateShapes = validateShapes;
 
-},{}],59:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = require("./ndarray");
@@ -5421,7 +5498,7 @@ var SquareCostFunc = (function () {
 }());
 exports.SquareCostFunc = SquareCostFunc;
 
-},{"./ndarray":63}],60:[function(require,module,exports){
+},{"./ndarray":56}],53:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../util");
@@ -6279,7 +6356,7 @@ function parseTupleParam(param) {
     return typeof param === 'number' ? [param, param] : param;
 }
 
-},{"../util":95,"./axis_util":54,"./broadcast_util":55,"./concat_util":56,"./conv_util":57,"./copy2d_util":58,"./ndarray":63,"./slice_util":64}],61:[function(require,module,exports){
+},{"../util":88,"./axis_util":47,"./broadcast_util":48,"./concat_util":49,"./conv_util":50,"./copy2d_util":51,"./ndarray":56,"./slice_util":57}],54:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -7283,7 +7360,7 @@ var NDArrayMathCPU = (function (_super) {
 }(math_1.NDArrayMath));
 exports.NDArrayMathCPU = NDArrayMathCPU;
 
-},{"../util":95,"./axis_util":54,"./broadcast_util":55,"./concat_util":56,"./conv_util":57,"./copy2d_util":58,"./math":60,"./ndarray":63,"seedrandom":2}],62:[function(require,module,exports){
+},{"../util":88,"./axis_util":47,"./broadcast_util":48,"./concat_util":49,"./conv_util":50,"./copy2d_util":51,"./math":53,"./ndarray":56,"seedrandom":90}],55:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -7664,7 +7741,7 @@ var NDArrayMathGPU = (function (_super) {
 }(math_1.NDArrayMath));
 exports.NDArrayMathGPU = NDArrayMathGPU;
 
-},{"./math":60,"./ndarray":63,"./webgl/addscaledmat_gpu":65,"./webgl/argminmax_gpu":66,"./webgl/batchnorm_gpu":67,"./webgl/binaryop_gpu":68,"./webgl/clip_gpu":69,"./webgl/concat_gpu":70,"./webgl/conv_backprop_gpu":71,"./webgl/conv_gpu":72,"./webgl/copy_gpu":73,"./webgl/gpgpu_context":74,"./webgl/gpgpu_math":75,"./webgl/gpgpu_util":76,"./webgl/logsumexp_gpu":77,"./webgl/max_pool_backprop_gpu":78,"./webgl/minmax_gpu":79,"./webgl/mulmat_gpu":80,"./webgl/multinomial_gpu":81,"./webgl/onehot_gpu":82,"./webgl/pool_gpu":83,"./webgl/reducesum_gpu":84,"./webgl/resize_bilinear_gpu":86,"./webgl/slice_gpu":88,"./webgl/texture_manager":90,"./webgl/transpose_gpu":91,"./webgl/unaryop_gpu":92,"./webgl/webgl_util":93}],63:[function(require,module,exports){
+},{"./math":53,"./ndarray":56,"./webgl/addscaledmat_gpu":58,"./webgl/argminmax_gpu":59,"./webgl/batchnorm_gpu":60,"./webgl/binaryop_gpu":61,"./webgl/clip_gpu":62,"./webgl/concat_gpu":63,"./webgl/conv_backprop_gpu":64,"./webgl/conv_gpu":65,"./webgl/copy_gpu":66,"./webgl/gpgpu_context":67,"./webgl/gpgpu_math":68,"./webgl/gpgpu_util":69,"./webgl/logsumexp_gpu":70,"./webgl/max_pool_backprop_gpu":71,"./webgl/minmax_gpu":72,"./webgl/mulmat_gpu":73,"./webgl/multinomial_gpu":74,"./webgl/onehot_gpu":75,"./webgl/pool_gpu":76,"./webgl/reducesum_gpu":77,"./webgl/resize_bilinear_gpu":79,"./webgl/slice_gpu":81,"./webgl/texture_manager":83,"./webgl/transpose_gpu":84,"./webgl/unaryop_gpu":85,"./webgl/webgl_util":86}],56:[function(require,module,exports){
 "use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -8452,7 +8529,7 @@ function float32ToTypedArray(a, dtype) {
     }
 }
 
-},{"../environment":15,"../util":95,"./webgl/tex_util":89,"./webgl/webgl_util":93}],64:[function(require,module,exports){
+},{"../environment":8,"../util":88,"./webgl/tex_util":82,"./webgl/webgl_util":86}],57:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../util");
@@ -8468,7 +8545,7 @@ function assertParamsValid(input, begin, size) {
 }
 exports.assertParamsValid = assertParamsValid;
 
-},{"../util":95}],65:[function(require,module,exports){
+},{"../util":88}],58:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var broadcast_util = require("../broadcast_util");
@@ -8484,7 +8561,7 @@ var AddScaledMatProgram = (function () {
 }());
 exports.AddScaledMatProgram = AddScaledMatProgram;
 
-},{"../broadcast_util":55}],66:[function(require,module,exports){
+},{"../broadcast_util":48}],59:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../../util");
@@ -8508,7 +8585,7 @@ var ArgMinMaxProgram = (function () {
 }());
 exports.ArgMinMaxProgram = ArgMinMaxProgram;
 
-},{"../../util":95,"../axis_util":54}],67:[function(require,module,exports){
+},{"../../util":88,"../axis_util":47}],60:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var broadcast_util = require("../broadcast_util");
@@ -8538,7 +8615,7 @@ var BatchNormProgram = (function () {
 }());
 exports.BatchNormProgram = BatchNormProgram;
 
-},{"../broadcast_util":55}],68:[function(require,module,exports){
+},{"../broadcast_util":48}],61:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var broadcast_util = require("../broadcast_util");
@@ -8559,7 +8636,7 @@ var BinaryOpProgram = (function () {
 }());
 exports.BinaryOpProgram = BinaryOpProgram;
 
-},{"../broadcast_util":55}],69:[function(require,module,exports){
+},{"../broadcast_util":48}],62:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ClipProgram = (function () {
@@ -8574,7 +8651,7 @@ var ClipProgram = (function () {
 }());
 exports.ClipProgram = ClipProgram;
 
-},{}],70:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var concat_util = require("../concat_util");
@@ -8644,7 +8721,7 @@ function getDataType(rank) {
     }
 }
 
-},{"../concat_util":56}],71:[function(require,module,exports){
+},{"../concat_util":49}],64:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var conv_util = require("../conv_util");
@@ -8690,7 +8767,7 @@ var Conv2DDerBiasProgram = (function () {
 }());
 exports.Conv2DDerBiasProgram = Conv2DDerBiasProgram;
 
-},{"../conv_util":57}],72:[function(require,module,exports){
+},{"../conv_util":50}],65:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Conv2DProgram = (function () {
@@ -8716,7 +8793,7 @@ var Conv2DProgram = (function () {
 }());
 exports.Conv2DProgram = Conv2DProgram;
 
-},{}],73:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Copy2DProgram = (function () {
@@ -8738,7 +8815,7 @@ var Copy2DProgram = (function () {
 }());
 exports.Copy2DProgram = Copy2DProgram;
 
-},{}],74:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9110,7 +9187,7 @@ var GPGPUContext = (function () {
 }());
 exports.GPGPUContext = GPGPUContext;
 
-},{"../../environment":15,"../../util":95,"./gpgpu_util":76,"./tex_util":89,"./webgl_util":93}],75:[function(require,module,exports){
+},{"../../environment":8,"../../util":88,"./gpgpu_util":69,"./tex_util":82,"./webgl_util":86}],68:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = require("../../environment");
@@ -9222,7 +9299,7 @@ function makeShaderKey(program, inputs, output) {
 }
 exports.makeShaderKey = makeShaderKey;
 
-},{"../../environment":15,"../../util":95,"./shader_compiler":87}],76:[function(require,module,exports){
+},{"../../environment":8,"../../util":88,"./shader_compiler":80}],69:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -9504,7 +9581,7 @@ function downloadMatrixFromPackedOutputTexture(gl, rows, columns) {
 }
 exports.downloadMatrixFromPackedOutputTexture = downloadMatrixFromPackedOutputTexture;
 
-},{"../../environment":15,"./tex_util":89,"./webgl_util":93}],77:[function(require,module,exports){
+},{"../../environment":8,"./tex_util":82,"./webgl_util":86}],70:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../../util");
@@ -9527,7 +9604,7 @@ var LogSumExpProgram = (function () {
 }());
 exports.LogSumExpProgram = LogSumExpProgram;
 
-},{"../../util":95,"../axis_util":54}],78:[function(require,module,exports){
+},{"../../util":88,"../axis_util":47}],71:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var MaxPool2DBackpropProgram = (function () {
@@ -9549,7 +9626,7 @@ var MaxPool2DBackpropProgram = (function () {
 }());
 exports.MaxPool2DBackpropProgram = MaxPool2DBackpropProgram;
 
-},{}],79:[function(require,module,exports){
+},{}],72:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../../util");
@@ -9572,7 +9649,7 @@ var MinMaxProgram = (function () {
 }());
 exports.MinMaxProgram = MinMaxProgram;
 
-},{"../../util":95,"../axis_util":54}],80:[function(require,module,exports){
+},{"../../util":88,"../axis_util":47}],73:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var math_1 = require("../math");
@@ -9603,7 +9680,7 @@ var MatMulProgram = (function () {
 }());
 exports.MatMulProgram = MatMulProgram;
 
-},{"../math":60}],81:[function(require,module,exports){
+},{"../math":53}],74:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var MultinomialProgram = (function () {
@@ -9626,7 +9703,7 @@ var MultinomialProgram = (function () {
 }());
 exports.MultinomialProgram = MultinomialProgram;
 
-},{}],82:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var OneHotProgram = (function () {
@@ -9648,7 +9725,7 @@ var OneHotProgram = (function () {
 }());
 exports.OneHotProgram = OneHotProgram;
 
-},{}],83:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var Pool2DProgram = (function () {
@@ -9696,7 +9773,7 @@ var Pool2DProgram = (function () {
 }());
 exports.Pool2DProgram = Pool2DProgram;
 
-},{}],84:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var util = require("../../util");
@@ -9719,7 +9796,7 @@ var ReduceSumProgram = (function () {
 }());
 exports.ReduceSumProgram = ReduceSumProgram;
 
-},{"../../util":95,"../axis_util":54}],85:[function(require,module,exports){
+},{"../../util":88,"../axis_util":47}],78:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var webgl_util = require("./webgl_util");
@@ -9741,7 +9818,7 @@ function renderToFramebuffer(gpgpu, renderShader, sourceTex) {
 }
 exports.renderToFramebuffer = renderToFramebuffer;
 
-},{"./webgl_util":93}],86:[function(require,module,exports){
+},{"./webgl_util":86}],79:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ResizeBilinear3DProgram = (function () {
@@ -9763,7 +9840,7 @@ var ResizeBilinear3DProgram = (function () {
 }());
 exports.ResizeBilinear3DProgram = ResizeBilinear3DProgram;
 
-},{}],87:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = require("../../environment");
@@ -10076,7 +10153,7 @@ function getSamplerAtOutputCoords(inputInfo, outShapeInfo, supportsBroadcasting)
     return "\n    float " + funcName + "() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + outTexShape[0] + ", " + outTexShape[1] + "));\n      int index = resTexRC.x * " + outTexShape[1] + " + resTexRC.y;\n      " + broadcastSnippet + "\n      int texR = index / " + inTexExpandedShape[1] + ";\n      int texC = index - texR * " + inTexExpandedShape[1] + ";\n\n      " + rgbaColorSnippet + "\n\n      vec2 uv = (vec2(texC, texR) + halfCR) /\n                 vec2(" + inTexShape[1] + ".0, " + inTexShape[0] + ".0);\n\n      " + sampleSnippet + "\n    }\n  ";
 }
 
-},{"../../environment":15,"../../util":95,"../broadcast_util":55,"./tex_util":89}],88:[function(require,module,exports){
+},{"../../environment":8,"../../util":88,"../broadcast_util":48,"./tex_util":82}],81:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var SliceProgram = (function () {
@@ -10156,7 +10233,7 @@ function getDataType(rank) {
     }
 }
 
-},{}],89:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TextureType;
@@ -10395,7 +10472,7 @@ function decodeMatrixFromPackedRGBA(packedRGBA, rows, columns, matrix) {
 }
 exports.decodeMatrixFromPackedRGBA = decodeMatrixFromPackedRGBA;
 
-},{}],90:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TextureManager = (function () {
@@ -10466,7 +10543,7 @@ function getKeyFromTextureShape(shapeRowsCol) {
     return shapeRowsCol[0] + "_" + shapeRowsCol[1];
 }
 
-},{}],91:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var TransposeProgram = (function () {
@@ -10515,7 +10592,7 @@ function getDataType(rank) {
     }
 }
 
-},{}],92:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var UnaryOpProgram = (function () {
@@ -10554,7 +10631,7 @@ exports.COSH = "\n  float e2x = exp(-x);\n  return (e2x + 1.0 / e2x) / 2.0;\n";
 exports.TANH = "\n  float e2x = exp(-2.0 * abs(x));\n  return sign(x) * (1.0 - e2x) / (1.0 + e2x);\n";
 exports.SQUARE = "\n  return x * x;\n";
 
-},{}],93:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var MAX_TEXTURE_SIZE = null;
@@ -10874,7 +10951,7 @@ function getTextureShapeFromLogicalShape(gl, logShape, preferredTexShape) {
 }
 exports.getTextureShapeFromLogicalShape = getTextureShapeFromLogicalShape;
 
-},{"../../environment":15,"../../util":95}],94:[function(require,module,exports){
+},{"../../environment":8,"../../util":88}],87:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment = require("./environment");
@@ -11050,7 +11127,7 @@ function assertIsNan(val, dtype) {
 }
 exports.assertIsNan = assertIsNan;
 
-},{"./environment":15,"./math/math_cpu":61,"./math/math_gpu":62,"./util":95}],95:[function(require,module,exports){
+},{"./environment":8,"./math/math_cpu":54,"./math/math_gpu":55,"./util":88}],88:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 function shuffle(array) {
@@ -11309,11 +11386,1109 @@ function isValNaN(val, dtype) {
 }
 exports.isValNaN = isValNaN;
 
-},{}],96:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var version = '0.3.7';
 exports.version = version;
 
-},{}]},{},[51])(51)
+},{}],90:[function(require,module,exports){
+// A library of seedable RNGs implemented in Javascript.
+//
+// Usage:
+//
+// var seedrandom = require('seedrandom');
+// var random = seedrandom(1); // or any seed.
+// var x = random();       // 0 <= x < 1.  Every bit is random.
+// var x = random.quick(); // 0 <= x < 1.  32 bits of randomness.
+
+// alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
+// Period: ~2^116
+// Reported to pass all BigCrush tests.
+var alea = require('./lib/alea');
+
+// xor128, a pure xor-shift generator by George Marsaglia.
+// Period: 2^128-1.
+// Reported to fail: MatrixRank and LinearComp.
+var xor128 = require('./lib/xor128');
+
+// xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
+// Period: 2^192-2^32
+// Reported to fail: CollisionOver, SimpPoker, and LinearComp.
+var xorwow = require('./lib/xorwow');
+
+// xorshift7, by François Panneton and Pierre L'ecuyer, takes
+// a different approach: it adds robustness by allowing more shifts
+// than Marsaglia's original three.  It is a 7-shift generator
+// with 256 bits, that passes BigCrush with no systmatic failures.
+// Period 2^256-1.
+// No systematic BigCrush failures reported.
+var xorshift7 = require('./lib/xorshift7');
+
+// xor4096, by Richard Brent, is a 4096-bit xor-shift with a
+// very long period that also adds a Weyl generator. It also passes
+// BigCrush with no systematic failures.  Its long period may
+// be useful if you have many generators and need to avoid
+// collisions.
+// Period: 2^4128-2^32.
+// No systematic BigCrush failures reported.
+var xor4096 = require('./lib/xor4096');
+
+// Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
+// number generator derived from ChaCha, a modern stream cipher.
+// https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
+// Period: ~2^127
+// No systematic BigCrush failures reported.
+var tychei = require('./lib/tychei');
+
+// The original ARC4-based prng included in this library.
+// Period: ~2^1600
+var sr = require('./seedrandom');
+
+sr.alea = alea;
+sr.xor128 = xor128;
+sr.xorwow = xorwow;
+sr.xorshift7 = xorshift7;
+sr.xor4096 = xor4096;
+sr.tychei = tychei;
+
+module.exports = sr;
+
+},{"./lib/alea":91,"./lib/tychei":92,"./lib/xor128":93,"./lib/xor4096":94,"./lib/xorshift7":95,"./lib/xorwow":96,"./seedrandom":97}],91:[function(require,module,exports){
+// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
+// http://baagoe.com/en/RandomMusings/javascript/
+// https://github.com/nquinlan/better-random-numbers-for-javascript-mirror
+// Original work is under MIT license -
+
+// Copyright (C) 2010 by Johannes Baagøe <baagoe@baagoe.org>
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+
+
+(function(global, module, define) {
+
+function Alea(seed) {
+  var me = this, mash = Mash();
+
+  me.next = function() {
+    var t = 2091639 * me.s0 + me.c * 2.3283064365386963e-10; // 2^-32
+    me.s0 = me.s1;
+    me.s1 = me.s2;
+    return me.s2 = t - (me.c = t | 0);
+  };
+
+  // Apply the seeding algorithm from Baagoe.
+  me.c = 1;
+  me.s0 = mash(' ');
+  me.s1 = mash(' ');
+  me.s2 = mash(' ');
+  me.s0 -= mash(seed);
+  if (me.s0 < 0) { me.s0 += 1; }
+  me.s1 -= mash(seed);
+  if (me.s1 < 0) { me.s1 += 1; }
+  me.s2 -= mash(seed);
+  if (me.s2 < 0) { me.s2 += 1; }
+  mash = null;
+}
+
+function copy(f, t) {
+  t.c = f.c;
+  t.s0 = f.s0;
+  t.s1 = f.s1;
+  t.s2 = f.s2;
+  return t;
+}
+
+function impl(seed, opts) {
+  var xg = new Alea(seed),
+      state = opts && opts.state,
+      prng = xg.next;
+  prng.int32 = function() { return (xg.next() * 0x100000000) | 0; }
+  prng.double = function() {
+    return prng() + (prng() * 0x200000 | 0) * 1.1102230246251565e-16; // 2^-53
+  };
+  prng.quick = prng;
+  if (state) {
+    if (typeof(state) == 'object') copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+function Mash() {
+  var n = 0xefc8249d;
+
+  var mash = function(data) {
+    data = data.toString();
+    for (var i = 0; i < data.length; i++) {
+      n += data.charCodeAt(i);
+      var h = 0.02519603282416938 * n;
+      n = h >>> 0;
+      h -= n;
+      h *= n;
+      n = h >>> 0;
+      h -= n;
+      n += h * 0x100000000; // 2^32
+    }
+    return (n >>> 0) * 2.3283064365386963e-10; // 2^-32
+  };
+
+  return mash;
+}
+
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.alea = impl;
+}
+
+})(
+  this,
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+
+
+},{}],92:[function(require,module,exports){
+// A Javascript implementaion of the "Tyche-i" prng algorithm by
+// Samuel Neves and Filipe Araujo.
+// See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
+
+(function(global, module, define) {
+
+function XorGen(seed) {
+  var me = this, strseed = '';
+
+  // Set up generator function.
+  me.next = function() {
+    var b = me.b, c = me.c, d = me.d, a = me.a;
+    b = (b << 25) ^ (b >>> 7) ^ c;
+    c = (c - d) | 0;
+    d = (d << 24) ^ (d >>> 8) ^ a;
+    a = (a - b) | 0;
+    me.b = b = (b << 20) ^ (b >>> 12) ^ c;
+    me.c = c = (c - d) | 0;
+    me.d = (d << 16) ^ (c >>> 16) ^ a;
+    return me.a = (a - b) | 0;
+  };
+
+  /* The following is non-inverted tyche, which has better internal
+   * bit diffusion, but which is about 25% slower than tyche-i in JS.
+  me.next = function() {
+    var a = me.a, b = me.b, c = me.c, d = me.d;
+    a = (me.a + me.b | 0) >>> 0;
+    d = me.d ^ a; d = d << 16 ^ d >>> 16;
+    c = me.c + d | 0;
+    b = me.b ^ c; b = b << 12 ^ d >>> 20;
+    me.a = a = a + b | 0;
+    d = d ^ a; me.d = d = d << 8 ^ d >>> 24;
+    me.c = c = c + d | 0;
+    b = b ^ c;
+    return me.b = (b << 7 ^ b >>> 25);
+  }
+  */
+
+  me.a = 0;
+  me.b = 0;
+  me.c = 2654435769 | 0;
+  me.d = 1367130551;
+
+  if (seed === Math.floor(seed)) {
+    // Integer seed.
+    me.a = (seed / 0x100000000) | 0;
+    me.b = seed | 0;
+  } else {
+    // String seed.
+    strseed += seed;
+  }
+
+  // Mix in string seed, then discard an initial batch of 64 values.
+  for (var k = 0; k < strseed.length + 20; k++) {
+    me.b ^= strseed.charCodeAt(k) | 0;
+    me.next();
+  }
+}
+
+function copy(f, t) {
+  t.a = f.a;
+  t.b = f.b;
+  t.c = f.c;
+  t.d = f.d;
+  return t;
+};
+
+function impl(seed, opts) {
+  var xg = new XorGen(seed),
+      state = opts && opts.state,
+      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
+  prng.double = function() {
+    do {
+      var top = xg.next() >>> 11,
+          bot = (xg.next() >>> 0) / 0x100000000,
+          result = (top + bot) / (1 << 21);
+    } while (result === 0);
+    return result;
+  };
+  prng.int32 = xg.next;
+  prng.quick = prng;
+  if (state) {
+    if (typeof(state) == 'object') copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.tychei = impl;
+}
+
+})(
+  this,
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+
+
+},{}],93:[function(require,module,exports){
+// A Javascript implementaion of the "xor128" prng algorithm by
+// George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
+
+(function(global, module, define) {
+
+function XorGen(seed) {
+  var me = this, strseed = '';
+
+  me.x = 0;
+  me.y = 0;
+  me.z = 0;
+  me.w = 0;
+
+  // Set up generator function.
+  me.next = function() {
+    var t = me.x ^ (me.x << 11);
+    me.x = me.y;
+    me.y = me.z;
+    me.z = me.w;
+    return me.w ^= (me.w >>> 19) ^ t ^ (t >>> 8);
+  };
+
+  if (seed === (seed | 0)) {
+    // Integer seed.
+    me.x = seed;
+  } else {
+    // String seed.
+    strseed += seed;
+  }
+
+  // Mix in string seed, then discard an initial batch of 64 values.
+  for (var k = 0; k < strseed.length + 64; k++) {
+    me.x ^= strseed.charCodeAt(k) | 0;
+    me.next();
+  }
+}
+
+function copy(f, t) {
+  t.x = f.x;
+  t.y = f.y;
+  t.z = f.z;
+  t.w = f.w;
+  return t;
+}
+
+function impl(seed, opts) {
+  var xg = new XorGen(seed),
+      state = opts && opts.state,
+      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
+  prng.double = function() {
+    do {
+      var top = xg.next() >>> 11,
+          bot = (xg.next() >>> 0) / 0x100000000,
+          result = (top + bot) / (1 << 21);
+    } while (result === 0);
+    return result;
+  };
+  prng.int32 = xg.next;
+  prng.quick = prng;
+  if (state) {
+    if (typeof(state) == 'object') copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.xor128 = impl;
+}
+
+})(
+  this,
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+
+
+},{}],94:[function(require,module,exports){
+// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
+//
+// This fast non-cryptographic random number generator is designed for
+// use in Monte-Carlo algorithms. It combines a long-period xorshift
+// generator with a Weyl generator, and it passes all common batteries
+// of stasticial tests for randomness while consuming only a few nanoseconds
+// for each prng generated.  For background on the generator, see Brent's
+// paper: "Some long-period random number generators using shifts and xors."
+// http://arxiv.org/pdf/1004.3115v1.pdf
+//
+// Usage:
+//
+// var xor4096 = require('xor4096');
+// random = xor4096(1);                        // Seed with int32 or string.
+// assert.equal(random(), 0.1520436450538547); // (0, 1) range, 53 bits.
+// assert.equal(random.int32(), 1806534897);   // signed int32, 32 bits.
+//
+// For nonzero numeric keys, this impelementation provides a sequence
+// identical to that by Brent's xorgens 3 implementaion in C.  This
+// implementation also provides for initalizing the generator with
+// string seeds, or for saving and restoring the state of the generator.
+//
+// On Chrome, this prng benchmarks about 2.1 times slower than
+// Javascript's built-in Math.random().
+
+(function(global, module, define) {
+
+function XorGen(seed) {
+  var me = this;
+
+  // Set up generator function.
+  me.next = function() {
+    var w = me.w,
+        X = me.X, i = me.i, t, v;
+    // Update Weyl generator.
+    me.w = w = (w + 0x61c88647) | 0;
+    // Update xor generator.
+    v = X[(i + 34) & 127];
+    t = X[i = ((i + 1) & 127)];
+    v ^= v << 13;
+    t ^= t << 17;
+    v ^= v >>> 15;
+    t ^= t >>> 12;
+    // Update Xor generator array state.
+    v = X[i] = v ^ t;
+    me.i = i;
+    // Result is the combination.
+    return (v + (w ^ (w >>> 16))) | 0;
+  };
+
+  function init(me, seed) {
+    var t, v, i, j, w, X = [], limit = 128;
+    if (seed === (seed | 0)) {
+      // Numeric seeds initialize v, which is used to generates X.
+      v = seed;
+      seed = null;
+    } else {
+      // String seeds are mixed into v and X one character at a time.
+      seed = seed + '\0';
+      v = 0;
+      limit = Math.max(limit, seed.length);
+    }
+    // Initialize circular array and weyl value.
+    for (i = 0, j = -32; j < limit; ++j) {
+      // Put the unicode characters into the array, and shuffle them.
+      if (seed) v ^= seed.charCodeAt((j + 32) % seed.length);
+      // After 32 shuffles, take v as the starting w value.
+      if (j === 0) w = v;
+      v ^= v << 10;
+      v ^= v >>> 15;
+      v ^= v << 4;
+      v ^= v >>> 13;
+      if (j >= 0) {
+        w = (w + 0x61c88647) | 0;     // Weyl.
+        t = (X[j & 127] ^= (v + w));  // Combine xor and weyl to init array.
+        i = (0 == t) ? i + 1 : 0;     // Count zeroes.
+      }
+    }
+    // We have detected all zeroes; make the key nonzero.
+    if (i >= 128) {
+      X[(seed && seed.length || 0) & 127] = -1;
+    }
+    // Run the generator 512 times to further mix the state before using it.
+    // Factoring this as a function slows the main generator, so it is just
+    // unrolled here.  The weyl generator is not advanced while warming up.
+    i = 127;
+    for (j = 4 * 128; j > 0; --j) {
+      v = X[(i + 34) & 127];
+      t = X[i = ((i + 1) & 127)];
+      v ^= v << 13;
+      t ^= t << 17;
+      v ^= v >>> 15;
+      t ^= t >>> 12;
+      X[i] = v ^ t;
+    }
+    // Storing state as object members is faster than using closure variables.
+    me.w = w;
+    me.X = X;
+    me.i = i;
+  }
+
+  init(me, seed);
+}
+
+function copy(f, t) {
+  t.i = f.i;
+  t.w = f.w;
+  t.X = f.X.slice();
+  return t;
+};
+
+function impl(seed, opts) {
+  if (seed == null) seed = +(new Date);
+  var xg = new XorGen(seed),
+      state = opts && opts.state,
+      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
+  prng.double = function() {
+    do {
+      var top = xg.next() >>> 11,
+          bot = (xg.next() >>> 0) / 0x100000000,
+          result = (top + bot) / (1 << 21);
+    } while (result === 0);
+    return result;
+  };
+  prng.int32 = xg.next;
+  prng.quick = prng;
+  if (state) {
+    if (state.X) copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.xor4096 = impl;
+}
+
+})(
+  this,                                     // window object or global
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+},{}],95:[function(require,module,exports){
+// A Javascript implementaion of the "xorshift7" algorithm by
+// François Panneton and Pierre L'ecuyer:
+// "On the Xorgshift Random Number Generators"
+// http://saluc.engr.uconn.edu/refs/crypto/rng/panneton05onthexorshift.pdf
+
+(function(global, module, define) {
+
+function XorGen(seed) {
+  var me = this;
+
+  // Set up generator function.
+  me.next = function() {
+    // Update xor generator.
+    var X = me.x, i = me.i, t, v, w;
+    t = X[i]; t ^= (t >>> 7); v = t ^ (t << 24);
+    t = X[(i + 1) & 7]; v ^= t ^ (t >>> 10);
+    t = X[(i + 3) & 7]; v ^= t ^ (t >>> 3);
+    t = X[(i + 4) & 7]; v ^= t ^ (t << 7);
+    t = X[(i + 7) & 7]; t = t ^ (t << 13); v ^= t ^ (t << 9);
+    X[i] = v;
+    me.i = (i + 1) & 7;
+    return v;
+  };
+
+  function init(me, seed) {
+    var j, w, X = [];
+
+    if (seed === (seed | 0)) {
+      // Seed state array using a 32-bit integer.
+      w = X[0] = seed;
+    } else {
+      // Seed state using a string.
+      seed = '' + seed;
+      for (j = 0; j < seed.length; ++j) {
+        X[j & 7] = (X[j & 7] << 15) ^
+            (seed.charCodeAt(j) + X[(j + 1) & 7] << 13);
+      }
+    }
+    // Enforce an array length of 8, not all zeroes.
+    while (X.length < 8) X.push(0);
+    for (j = 0; j < 8 && X[j] === 0; ++j);
+    if (j == 8) w = X[7] = -1; else w = X[j];
+
+    me.x = X;
+    me.i = 0;
+
+    // Discard an initial 256 values.
+    for (j = 256; j > 0; --j) {
+      me.next();
+    }
+  }
+
+  init(me, seed);
+}
+
+function copy(f, t) {
+  t.x = f.x.slice();
+  t.i = f.i;
+  return t;
+}
+
+function impl(seed, opts) {
+  if (seed == null) seed = +(new Date);
+  var xg = new XorGen(seed),
+      state = opts && opts.state,
+      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
+  prng.double = function() {
+    do {
+      var top = xg.next() >>> 11,
+          bot = (xg.next() >>> 0) / 0x100000000,
+          result = (top + bot) / (1 << 21);
+    } while (result === 0);
+    return result;
+  };
+  prng.int32 = xg.next;
+  prng.quick = prng;
+  if (state) {
+    if (state.x) copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.xorshift7 = impl;
+}
+
+})(
+  this,
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+
+},{}],96:[function(require,module,exports){
+// A Javascript implementaion of the "xorwow" prng algorithm by
+// George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
+
+(function(global, module, define) {
+
+function XorGen(seed) {
+  var me = this, strseed = '';
+
+  // Set up generator function.
+  me.next = function() {
+    var t = (me.x ^ (me.x >>> 2));
+    me.x = me.y; me.y = me.z; me.z = me.w; me.w = me.v;
+    return (me.d = (me.d + 362437 | 0)) +
+       (me.v = (me.v ^ (me.v << 4)) ^ (t ^ (t << 1))) | 0;
+  };
+
+  me.x = 0;
+  me.y = 0;
+  me.z = 0;
+  me.w = 0;
+  me.v = 0;
+
+  if (seed === (seed | 0)) {
+    // Integer seed.
+    me.x = seed;
+  } else {
+    // String seed.
+    strseed += seed;
+  }
+
+  // Mix in string seed, then discard an initial batch of 64 values.
+  for (var k = 0; k < strseed.length + 64; k++) {
+    me.x ^= strseed.charCodeAt(k) | 0;
+    if (k == strseed.length) {
+      me.d = me.x << 10 ^ me.x >>> 4;
+    }
+    me.next();
+  }
+}
+
+function copy(f, t) {
+  t.x = f.x;
+  t.y = f.y;
+  t.z = f.z;
+  t.w = f.w;
+  t.v = f.v;
+  t.d = f.d;
+  return t;
+}
+
+function impl(seed, opts) {
+  var xg = new XorGen(seed),
+      state = opts && opts.state,
+      prng = function() { return (xg.next() >>> 0) / 0x100000000; };
+  prng.double = function() {
+    do {
+      var top = xg.next() >>> 11,
+          bot = (xg.next() >>> 0) / 0x100000000,
+          result = (top + bot) / (1 << 21);
+    } while (result === 0);
+    return result;
+  };
+  prng.int32 = xg.next;
+  prng.quick = prng;
+  if (state) {
+    if (typeof(state) == 'object') copy(state, xg);
+    prng.state = function() { return copy(xg, {}); }
+  }
+  return prng;
+}
+
+if (module && module.exports) {
+  module.exports = impl;
+} else if (define && define.amd) {
+  define(function() { return impl; });
+} else {
+  this.xorwow = impl;
+}
+
+})(
+  this,
+  (typeof module) == 'object' && module,    // present in node.js
+  (typeof define) == 'function' && define   // present with an AMD loader
+);
+
+
+
+},{}],97:[function(require,module,exports){
+/*
+Copyright 2014 David Bau.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+*/
+
+(function (pool, math) {
+//
+// The following constants are related to IEEE 754 limits.
+//
+var global = this,
+    width = 256,        // each RC4 output is 0 <= x < 256
+    chunks = 6,         // at least six RC4 outputs for each double
+    digits = 52,        // there are 52 significant digits in a double
+    rngname = 'random', // rngname: name for Math.random and Math.seedrandom
+    startdenom = math.pow(width, chunks),
+    significance = math.pow(2, digits),
+    overflow = significance * 2,
+    mask = width - 1,
+    nodecrypto;         // node.js crypto module, initialized at the bottom.
+
+//
+// seedrandom()
+// This is the seedrandom function described above.
+//
+function seedrandom(seed, options, callback) {
+  var key = [];
+  options = (options == true) ? { entropy: true } : (options || {});
+
+  // Flatten the seed string or build one from local entropy if needed.
+  var shortseed = mixkey(flatten(
+    options.entropy ? [seed, tostring(pool)] :
+    (seed == null) ? autoseed() : seed, 3), key);
+
+  // Use the seed to initialize an ARC4 generator.
+  var arc4 = new ARC4(key);
+
+  // This function returns a random double in [0, 1) that contains
+  // randomness in every bit of the mantissa of the IEEE 754 value.
+  var prng = function() {
+    var n = arc4.g(chunks),             // Start with a numerator n < 2 ^ 48
+        d = startdenom,                 //   and denominator d = 2 ^ 48.
+        x = 0;                          //   and no 'extra last byte'.
+    while (n < significance) {          // Fill up all significant digits by
+      n = (n + x) * width;              //   shifting numerator and
+      d *= width;                       //   denominator and generating a
+      x = arc4.g(1);                    //   new least-significant-byte.
+    }
+    while (n >= overflow) {             // To avoid rounding up, before adding
+      n /= 2;                           //   last byte, shift everything
+      d /= 2;                           //   right using integer math until
+      x >>>= 1;                         //   we have exactly the desired bits.
+    }
+    return (n + x) / d;                 // Form the number within [0, 1).
+  };
+
+  prng.int32 = function() { return arc4.g(4) | 0; }
+  prng.quick = function() { return arc4.g(4) / 0x100000000; }
+  prng.double = prng;
+
+  // Mix the randomness into accumulated entropy.
+  mixkey(tostring(arc4.S), pool);
+
+  // Calling convention: what to return as a function of prng, seed, is_math.
+  return (options.pass || callback ||
+      function(prng, seed, is_math_call, state) {
+        if (state) {
+          // Load the arc4 state from the given state if it has an S array.
+          if (state.S) { copy(state, arc4); }
+          // Only provide the .state method if requested via options.state.
+          prng.state = function() { return copy(arc4, {}); }
+        }
+
+        // If called as a method of Math (Math.seedrandom()), mutate
+        // Math.random because that is how seedrandom.js has worked since v1.0.
+        if (is_math_call) { math[rngname] = prng; return seed; }
+
+        // Otherwise, it is a newer calling convention, so return the
+        // prng directly.
+        else return prng;
+      })(
+  prng,
+  shortseed,
+  'global' in options ? options.global : (this == math),
+  options.state);
+}
+math['seed' + rngname] = seedrandom;
+
+//
+// ARC4
+//
+// An ARC4 implementation.  The constructor takes a key in the form of
+// an array of at most (width) integers that should be 0 <= x < (width).
+//
+// The g(count) method returns a pseudorandom integer that concatenates
+// the next (count) outputs from ARC4.  Its return value is a number x
+// that is in the range 0 <= x < (width ^ count).
+//
+function ARC4(key) {
+  var t, keylen = key.length,
+      me = this, i = 0, j = me.i = me.j = 0, s = me.S = [];
+
+  // The empty key [] is treated as [0].
+  if (!keylen) { key = [keylen++]; }
+
+  // Set up S using the standard key scheduling algorithm.
+  while (i < width) {
+    s[i] = i++;
+  }
+  for (i = 0; i < width; i++) {
+    s[i] = s[j = mask & (j + key[i % keylen] + (t = s[i]))];
+    s[j] = t;
+  }
+
+  // The "g" method returns the next (count) outputs as one number.
+  (me.g = function(count) {
+    // Using instance members instead of closure state nearly doubles speed.
+    var t, r = 0,
+        i = me.i, j = me.j, s = me.S;
+    while (count--) {
+      t = s[i = mask & (i + 1)];
+      r = r * width + s[mask & ((s[i] = s[j = mask & (j + t)]) + (s[j] = t))];
+    }
+    me.i = i; me.j = j;
+    return r;
+    // For robust unpredictability, the function call below automatically
+    // discards an initial batch of values.  This is called RC4-drop[256].
+    // See http://google.com/search?q=rsa+fluhrer+response&btnI
+  })(width);
+}
+
+//
+// copy()
+// Copies internal state of ARC4 to or from a plain object.
+//
+function copy(f, t) {
+  t.i = f.i;
+  t.j = f.j;
+  t.S = f.S.slice();
+  return t;
+};
+
+//
+// flatten()
+// Converts an object tree to nested arrays of strings.
+//
+function flatten(obj, depth) {
+  var result = [], typ = (typeof obj), prop;
+  if (depth && typ == 'object') {
+    for (prop in obj) {
+      try { result.push(flatten(obj[prop], depth - 1)); } catch (e) {}
+    }
+  }
+  return (result.length ? result : typ == 'string' ? obj : obj + '\0');
+}
+
+//
+// mixkey()
+// Mixes a string seed into a key that is an array of integers, and
+// returns a shortened string seed that is equivalent to the result key.
+//
+function mixkey(seed, key) {
+  var stringseed = seed + '', smear, j = 0;
+  while (j < stringseed.length) {
+    key[mask & j] =
+      mask & ((smear ^= key[mask & j] * 19) + stringseed.charCodeAt(j++));
+  }
+  return tostring(key);
+}
+
+//
+// autoseed()
+// Returns an object for autoseeding, using window.crypto and Node crypto
+// module if available.
+//
+function autoseed() {
+  try {
+    var out;
+    if (nodecrypto && (out = nodecrypto.randomBytes)) {
+      // The use of 'out' to remember randomBytes makes tight minified code.
+      out = out(width);
+    } else {
+      out = new Uint8Array(width);
+      (global.crypto || global.msCrypto).getRandomValues(out);
+    }
+    return tostring(out);
+  } catch (e) {
+    var browser = global.navigator,
+        plugins = browser && browser.plugins;
+    return [+new Date, global, plugins, global.screen, tostring(pool)];
+  }
+}
+
+//
+// tostring()
+// Converts an array of charcodes to a string
+//
+function tostring(a) {
+  return String.fromCharCode.apply(0, a);
+}
+
+//
+// When seedrandom.js is loaded, we immediately mix a few bits
+// from the built-in RNG into the entropy pool.  Because we do
+// not want to interfere with deterministic PRNG state later,
+// seedrandom will not call math.random on its own again after
+// initialization.
+//
+mixkey(math.random(), pool);
+
+//
+// Nodejs and AMD support: export the implementation as a module using
+// either convention.
+//
+if ((typeof module) == 'object' && module.exports) {
+  module.exports = seedrandom;
+  // When in node.js, try using crypto package for autoseeding.
+  try {
+    nodecrypto = require('crypto');
+  } catch (ex) {}
+} else if ((typeof define) == 'function' && define.amd) {
+  define(function() { return seedrandom; });
+}
+
+// End anonymous scope, and pass initial values.
+})(
+  [],     // pool: entropy pool starts empty
+  Math    // math: package containing random, pow, and seedrandom
+);
+
+},{"crypto":2}],98:[function(require,module,exports){
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var deeplearn_1 = require("deeplearn");
+var imagenet_classes_1 = require("./imagenet_classes");
+var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
+var SqueezeNet = (function () {
+    function SqueezeNet(math) {
+        this.math = math;
+        this.preprocessOffset = deeplearn_1.Array1D.new([103.939, 116.779, 123.68]);
+        deeplearn_1.initializeGPU(this.math.getGPGPUContext(), this.math.getTextureManager());
+    }
+    SqueezeNet.prototype.load = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var checkpointLoader, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        checkpointLoader = new deeplearn_1.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'squeezenet1_1/');
+                        _a = this;
+                        return [4, checkpointLoader.getAllVariables()];
+                    case 1:
+                        _a.variables = _b.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    SqueezeNet.prototype.predict = function (input) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var namedActivations, avgpool10, layerNames;
+            return __generator(this, function (_a) {
+                namedActivations = {};
+                avgpool10 = this.math.scope(function (keep) {
+                    var preprocessedInput = _this.math.subtract(input, _this.preprocessOffset);
+                    var conv1 = _this.math.conv2d(preprocessedInput, _this.variables['conv1_W:0'], _this.variables['conv1_b:0'], 2, 0);
+                    var conv1relu = keep(_this.math.relu(conv1));
+                    namedActivations['conv_1'] = conv1relu;
+                    var pool1 = keep(_this.math.maxPool(conv1relu, 3, 2, 0));
+                    namedActivations['maxpool_1'] = pool1;
+                    var fire2 = keep(_this.fireModule(pool1, 2));
+                    namedActivations['fire2'] = fire2;
+                    var fire3 = keep(_this.fireModule(fire2, 3));
+                    namedActivations['fire3'] = fire3;
+                    var pool2 = keep(_this.math.maxPool(fire3, 3, 2, 'valid'));
+                    namedActivations['maxpool_2'] = pool2;
+                    var fire4 = keep(_this.fireModule(pool2, 4));
+                    namedActivations['fire4'] = fire4;
+                    var fire5 = keep(_this.fireModule(fire4, 5));
+                    namedActivations['fire5'] = fire5;
+                    var pool3 = keep(_this.math.maxPool(fire5, 3, 2, 0));
+                    namedActivations['maxpool_3'] = pool3;
+                    var fire6 = keep(_this.fireModule(pool3, 6));
+                    namedActivations['fire6'] = fire6;
+                    var fire7 = keep(_this.fireModule(fire6, 7));
+                    namedActivations['fire7'] = fire7;
+                    var fire8 = keep(_this.fireModule(fire7, 8));
+                    namedActivations['fire8'] = fire8;
+                    var fire9 = keep(_this.fireModule(fire8, 9));
+                    namedActivations['fire9'] = fire9;
+                    var conv10 = keep(_this.math.conv2d(fire9, _this.variables['conv10_W:0'], _this.variables['conv10_b:0'], 1, 0));
+                    namedActivations['conv10'] = conv10;
+                    return _this.math.avgPool(conv10, conv10.shape[0], 1, 0).as1D();
+                });
+                layerNames = Object.keys(namedActivations);
+                layerNames.forEach(function (layerName) { return _this.math.track(namedActivations[layerName]); });
+                return [2, { namedActivations: namedActivations, logits: avgpool10 }];
+            });
+        });
+    };
+    SqueezeNet.prototype.fireModule = function (input, fireId) {
+        var y1 = this.math.conv2d(input, this.variables["fire" + fireId + "/squeeze1x1_W:0"], this.variables["fire" + fireId + "/squeeze1x1_b:0"], 1, 0);
+        var y2 = this.math.relu(y1);
+        var left1 = this.math.conv2d(y2, this.variables["fire" + fireId + "/expand1x1_W:0"], this.variables["fire" + fireId + "/expand1x1_b:0"], 1, 0);
+        var left2 = this.math.relu(left1);
+        var right1 = this.math.conv2d(y2, this.variables["fire" + fireId + "/expand3x3_W:0"], this.variables["fire" + fireId + "/expand3x3_b:0"], 1, 1);
+        var right2 = this.math.relu(right1);
+        return this.math.concat3D(left2, right2, 2);
+    };
+    SqueezeNet.prototype.getTopKClasses = function (logits, topK) {
+        return __awaiter(this, void 0, void 0, function () {
+            var predictions, topk, topkIndices, topkValues, topClassesToProbability, i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        predictions = this.math.softmax(logits);
+                        topk = new deeplearn_1.NDArrayMathCPU().topK(predictions, topK);
+                        return [4, topk.indices.data()];
+                    case 1:
+                        topkIndices = _a.sent();
+                        return [4, topk.values.data()];
+                    case 2:
+                        topkValues = _a.sent();
+                        topClassesToProbability = {};
+                        for (i = 0; i < topkIndices.length; i++) {
+                            topClassesToProbability[imagenet_classes_1.IMAGENET_CLASSES[topkIndices[i]]] = topkValues[i];
+                        }
+                        return [2, topClassesToProbability];
+                }
+            });
+        });
+    };
+    SqueezeNet.prototype.dispose = function () {
+        this.preprocessOffset.dispose();
+        for (var varName in this.variables) {
+            this.variables[varName].dispose();
+        }
+    };
+    return SqueezeNet;
+}());
+exports.SqueezeNet = SqueezeNet;
+
+},{"./imagenet_classes":1,"deeplearn":44}]},{},[98])(98)
 });
