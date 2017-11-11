@@ -10607,7 +10607,7 @@ var ImageNet = function () {
 
   _createClass(ImageNet, [{
     key: 'predict',
-    value: function predict(img, callback) {
+    value: function predict(img, callback, num) {
       var _this2 = this;
 
       if (!this.squeezeNet) {
@@ -10628,7 +10628,7 @@ var ImageNet = function () {
                   case 2:
                     inferenceResult = _context2.sent;
                     _context2.next = 5;
-                    return _squeezeNet.getTopKClasses(inferenceResult.logits, 10);
+                    return _squeezeNet.getTopKClasses(inferenceResult.logits, num || 10);
 
                   case 5:
                     return _context2.abrupt('return', _context2.sent);
@@ -10650,7 +10650,19 @@ var ImageNet = function () {
         var _squeezeNet = this.squeezeNet;
 
         predictImage().then(function (data) {
-          return callback(data);
+
+          var results = [];
+          for (var value in data) {
+            var result = {
+              label: value,
+              probability: data[value]
+            };
+            results.push(result);
+          }
+          results.sort(function (a, b) {
+            return b.probability - a.probability;
+          });
+          callback(results);
         });
       }
     }

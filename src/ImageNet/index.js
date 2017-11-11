@@ -17,7 +17,7 @@ class ImageNet {
     loadSqueezNet().then(sn => this.squeezeNet = sn);
   }
 
-  predict(img, callback) {
+  predict(img, callback, num) {
     if (!this.squeezeNet) {
       setTimeout(() => {
         this.predict(img, callback)
@@ -27,9 +27,21 @@ class ImageNet {
       let _squeezeNet = this.squeezeNet;
       async function predictImage() {
         const inferenceResult = await _squeezeNet.predict(image);
-        return await _squeezeNet.getTopKClasses(inferenceResult.logits, 10);
+        return await _squeezeNet.getTopKClasses(inferenceResult.logits, num || 10);
       }
-      predictImage().then(data => callback(data));
+      predictImage().then(data => {
+
+        let results = [];
+        for (let value in data){
+          let result = {
+            label: value,
+            probability: data[value]
+          }
+          results.push(result);
+        }
+        results.sort((a,b) => b.probability - a.probability);
+        callback(results);
+      });
     }
   }
 
