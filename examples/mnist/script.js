@@ -75,7 +75,7 @@ function classify() {
   predict(gray);
 
   // Debug: Draw the greyscale 28x28 image in the corner
-  //copy(img.get(),0,0,28,28,0,0,28,28)  
+  //copy(img.get(),0,0,28,28,0,0,28,28)
 
 }
 
