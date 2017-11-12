@@ -52,7 +52,7 @@ See this [simple example](examples/lstm_1) and this [interactive example](exampl
 
 ### ImageNet
 
-> Classify an image using a given model. Returns an object.
+> Classify an image using a given model. Returns an array of objects containing categories and probabilities.
 
 ```javascript
 var imagenet = new p5ml.ImageNet(model);
