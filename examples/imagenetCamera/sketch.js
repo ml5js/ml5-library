@@ -16,8 +16,8 @@ function preload() {
 }
 
 function setup() {
+  createCanvas(320, 240).parent('canvasContainer');
   video = createCapture(VIDEO);
-  createCanvas(640, 480).parent('canvasContainer');
   background(0);
   video.attribute('width', 127);
   video.attribute('height', 127);
@@ -32,13 +32,13 @@ function guess() {
 
 function draw() {
   background(0);
-  image(video, 0, 0);
+  image(video, 0, 0, width, height);
 }
 
 function gotResult(results) {
   console.log(results);
   // The results are in an array ordered by probability.
-  select('#result').html(results[9].label);
-  // select('#probability').html(nf(results[9].probability, 0, 5));
+  select('#result').html(results[0].label);
+  select('#probability').html(nf(results[0].probability, 0, 2));
   setTimeout(guess, 250);
 }
