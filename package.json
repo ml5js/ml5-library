@@ -11,6 +11,7 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
+    "start:dev": "webpack-dev-server",
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename p5ml.js",
     "build:min": "uglifyjs dist/p5ml.js -o dist/p5ml.min.js",
