@@ -83,7 +83,7 @@ function classify() {
 var data, graphModel, session, input, probs;
 var math = new deeplearn.NDArrayMathGPU();
 
-var reader = new deeplearn.CheckpointLoader('../../../models/mnist/');
+var reader = new deeplearn.CheckpointLoader('mnist/');
 reader.getAllVariables().then(function(checkpoints) {
   graphModel = buildModelGraph(checkpoints);
   input = graphModel[0];

@@ -111,7 +111,7 @@ npm install
 
   Which means the library was successfully build and minified.
 
-  6. Commit your changes. We are using [commitizen](https://github.com/commitizen/cz-cli) to commit changes. Commitizen is a tool that allows you to specify commit is a more precise way. You can run instead of your regular `git commit -m 'msg'` with:
+  6. Commit your changes. We are using [commitizen](https://github.com/commitizen/cz-cli) to commit changes. Commitizen is a tool that allows you to specify commit in a more precise way. You can run it instead of your regular `git commit -m 'msg'` with:
 
   ```bash
   npm run commit
