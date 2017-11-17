@@ -28,12 +28,14 @@ npm install p5ML --save
 - [LSTM Simple](examples/lstm_1)
 - [LSTM Interactive](examples/lstm_2)
 - [Imagenet Simple](examples/imagenet)
-- [Imagenet Webcam](examples/imagenetCamera)
+- [Imagenet Webcam](examples/KNNImage)
+- [KNN Image Classifier](examples/imagenetCamera)
 
 ## API Reference
  
 - [LSTM](#lstm)
 - [ImageNet](#imagenet)
+- [KNNImage](#KNNImageClassifier)
 
 ### LSTM
 
@@ -65,6 +67,16 @@ var prediction = imagenet.predict(img, callback);
 
 See this [simple example ](examples/imagenet) and this [webcam example](examples/imagenetCamera)
 
+### KNN Image Classifier
+
+> A KNN Image Classifier
+
+```javascript
+var knn = new p5ml.KNNImageClassifier(callback);
+knn.addImage(video, index);
+knn.predict(video, callback);
+```
+
 ### Neural Network
 
 > A Simple Artificial Neural Network
@@ -74,6 +86,7 @@ var nn = new p5ml.NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learnin
 nn.train(inputs, targets);
 var result = nn.query(inputs)
 ```
+
 
 ## Contributing
 
