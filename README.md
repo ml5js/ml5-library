@@ -69,29 +69,15 @@ See this [simple example ](examples/imagenet) and this [webcam example](examples
 
 > A Simple Artificial Neural Network
 
-## Develop
-
-First clone the repo and install dependencies
-```bash
-git clone https://github.com/ITPNYU/p5ML.git
-cd p5ML
-yarn
+```javascript
+var nn = new p5ml.NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate);
+nn.train(inputs, targets);
+var result = nn.query(inputs)
 ```
 
-To devolop and run a server
-```bash
-webpack-dev-server
-```
+## Contributing
 
-To build:
-```bash
-yarn build
-```
-
-To commit:
-```bash
-yarn commit
-```
+See [CONTRIBUTING](CONTRIBUTING.md)
 
 
 

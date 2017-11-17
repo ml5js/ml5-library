@@ -73,7 +73,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 435);
+/******/ 	return __webpack_require__(__webpack_require__.s = 441);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -150,6 +150,19 @@ if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -410,20 +423,19 @@ function isValNaN(val, dtype) {
     }
 }
 exports.isValNaN = isValNaN;
+function squeezeShape(shape) {
+    var newShape = [];
+    var keptDims = [];
+    for (var i = 0; i < shape.length; ++i) {
+        if (shape[i] > 1) {
+            newShape.push(shape[i]);
+            keptDims.push(i);
+        }
+    }
+    return { newShape: newShape, keptDims: keptDims };
+}
+exports.squeezeShape = squeezeShape;
 //# sourceMappingURL=util.js.map
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = function (exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-
 
 /***/ }),
 /* 5 */
@@ -487,9 +499,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(32);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var tex_util_1 = __webpack_require__(67);
-var webgl_util = __webpack_require__(57);
+var webgl_util = __webpack_require__(58);
 exports.GPGPU = null;
 exports.TEXTURE_MANAGER = null;
 var DType;
@@ -547,6 +559,9 @@ var NDArray = (function () {
         return NDArray.make(another.shape, { values: newValues }, another.dtype);
     };
     NDArray.make = function (shape, data, dtype) {
+        if (data.isDisposed) {
+            throw new Error("Cannot make new NDArray from disposed NDArrayData.");
+        }
         switch (shape.length) {
             case 0:
                 return new Scalar(data, dtype);
@@ -575,6 +590,7 @@ var NDArray = (function () {
         return Array3D.make(shape, { texture: texture, textureShapeRC: textureShapeRC, textureType: textureType });
     };
     NDArray.prototype.reshape = function (newShape) {
+        this.throwIfDisposed();
         newShape = util.inferFromImplicitShape(newShape, this.size);
         if (util.arraysEqual(this.shape, newShape)) {
             return this;
@@ -605,6 +621,7 @@ var NDArray = (function () {
         return this.reshape([rows, columns, depth, depth2]);
     };
     NDArray.prototype.asType = function (dtype) {
+        this.throwIfDisposed();
         var newData = this.getData();
         if (newData.values != null) {
             newData = { values: toTypedArray(newData.values, dtype) };
@@ -613,6 +630,7 @@ var NDArray = (function () {
     };
     Object.defineProperty(NDArray.prototype, "rank", {
         get: function () {
+            this.throwIfDisposed();
             return this.shape.length;
         },
         enumerable: true,
@@ -623,6 +641,7 @@ var NDArray = (function () {
         for (var _i = 0; _i < arguments.length; _i++) {
             locs[_i] = arguments[_i];
         }
+        this.throwIfDisposed();
         var index = locs[locs.length - 1];
         for (var i = 0; i < locs.length - 1; ++i) {
             index += this.strides[i] * locs[i];
@@ -634,6 +653,7 @@ var NDArray = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             locs[_i - 1] = arguments[_i];
         }
+        this.throwIfDisposed();
         this.set.apply(this, [this.get.apply(this, locs) + value].concat(locs));
     };
     NDArray.prototype.set = function (value) {
@@ -641,6 +661,7 @@ var NDArray = (function () {
         for (var _i = 1; _i < arguments.length; _i++) {
             locs[_i - 1] = arguments[_i];
         }
+        this.throwIfDisposed();
         var index = locs[locs.length - 1];
         for (var i = 0; i < locs.length - 1; ++i) {
             index += this.strides[i] * locs[i];
@@ -655,7 +676,9 @@ var NDArray = (function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4, this.data()];
+                    case 0:
+                        this.throwIfDisposed();
+                        return [4, this.data()];
                     case 1:
                         _a.sent();
                         return [2, this.get.apply(this, locs)];
@@ -680,6 +703,7 @@ var NDArray = (function () {
         return locs;
     };
     NDArray.prototype.fill = function (value) {
+        this.throwIfDisposed();
         this.getValues().fill(value);
     };
     NDArray.prototype.getData = function () {
@@ -692,23 +716,38 @@ var NDArray = (function () {
         return this.data();
     };
     NDArray.prototype.data = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            if (_this.ndarrayData.values != null) {
-                resolve(_this.ndarrayData.values);
-                return;
-            }
-            if (!environment_1.ENV.get('WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_ENABLED')) {
-                resolve(_this.getValues());
-                return;
-            }
-            var queryFn = function () { };
-            exports.GPGPU.runQuery(queryFn).then(function () {
-                resolve(_this.getValues());
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, queryFn;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.throwIfDisposed();
+                        if (this.ndarrayData.values != null) {
+                            return [2, this.ndarrayData.values];
+                        }
+                        if (!(environment_1.ENV.get('WEBGL_GET_BUFFER_SUB_DATA_ASYNC_EXTENSION_ENABLED') &&
+                            this.ndarrayData.textureType === tex_util_1.TextureType.DEFAULT)) return [3, 2];
+                        _a = this.ndarrayData;
+                        return [4, exports.GPGPU.downloadMatrixFromTextureAsync(this.ndarrayData.texture, this.ndarrayData.textureShapeRC[0], this.ndarrayData.textureShapeRC[1])];
+                    case 1:
+                        _a.values = _b.sent();
+                        return [2, this.ndarrayData.values];
+                    case 2:
+                        if (!!environment_1.ENV.get('WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_ENABLED')) return [3, 4];
+                        return [4, this.dataSync()];
+                    case 3: return [2, _b.sent()];
+                    case 4:
+                        queryFn = function () { };
+                        return [4, exports.GPGPU.runQuery(queryFn)];
+                    case 5:
+                        _b.sent();
+                        return [2, this.dataSync()];
+                }
             });
         });
     };
     NDArray.prototype.dataSync = function () {
+        this.throwIfDisposed();
         if (this.ndarrayData.values == null) {
             throwIfGPUNotInitialized();
             var values = void 0;
@@ -723,31 +762,40 @@ var NDArray = (function () {
         }
         return this.ndarrayData.values;
     };
-    NDArray.prototype.uploadToGPU = function (preferredTexShape) {
+    NDArray.prototype.uploadToGPU = function () {
         throwIfGPUNotInitialized();
+        this.throwIfDisposed();
         this.ndarrayData.textureShapeRC =
-            webgl_util.getTextureShapeFromLogicalShape(exports.GPGPU.gl, this.shape, preferredTexShape);
+            webgl_util.getTextureShapeFromLogicalShape(exports.GPGPU.gl, this.shape);
         this.ndarrayData.texture =
             exports.TEXTURE_MANAGER.acquireTexture(this.ndarrayData.textureShapeRC);
         this.ndarrayData.textureType = tex_util_1.TextureType.DEFAULT;
         exports.GPGPU.uploadMatrixToTexture(this.ndarrayData.texture, this.ndarrayData.textureShapeRC[0], this.ndarrayData.textureShapeRC[1], typedArrayToFloat32(this.ndarrayData.values, this.dtype));
         this.ndarrayData.values = null;
     };
-    NDArray.prototype.getTexture = function (preferredShapeRC) {
+    NDArray.prototype.getTexture = function () {
+        this.throwIfDisposed();
         if (this.ndarrayData.texture == null) {
-            this.uploadToGPU(preferredShapeRC);
+            this.uploadToGPU();
         }
         return this.ndarrayData.texture;
     };
-    NDArray.prototype.getTextureShapeRC = function (preferredShapeRC) {
+    NDArray.prototype.getTextureShapeRC = function () {
+        this.throwIfDisposed();
         if (this.ndarrayData.textureShapeRC == null) {
-            this.uploadToGPU(preferredShapeRC);
+            this.uploadToGPU();
         }
         return this.ndarrayData.textureShapeRC;
+    };
+    NDArray.prototype.throwIfDisposed = function () {
+        if (this.ndarrayData.isDisposed) {
+            throw new Error("NDArray is disposed.");
+        }
     };
     NDArray.prototype.dispose = function () {
         this.ndarrayData.values = null;
         this.shape = null;
+        this.ndarrayData.isDisposed = true;
         if (this.ndarrayData.texture != null) {
             this.disposeTexture();
         }
@@ -760,9 +808,11 @@ var NDArray = (function () {
         this.ndarrayData.textureType = null;
     };
     NDArray.prototype.inGPU = function () {
+        this.throwIfDisposed();
         return this.ndarrayData.texture != null;
     };
     NDArray.prototype.equals = function (t) {
+        this.throwIfDisposed();
         return this.dtype === t.dtype && util.arraysEqual(this.shape, t.shape) &&
             util.arraysEqual(this.getValues(), t.getValues());
     };
@@ -1218,8 +1268,8 @@ function float32ToTypedArray(a, dtype) {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(79)('wks');
-var uid = __webpack_require__(48);
+var store = __webpack_require__(80)('wks');
+var uid = __webpack_require__(49);
 var Symbol = __webpack_require__(2).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
@@ -1236,7 +1286,7 @@ $exports.store = store;
 /***/ (function(module, exports, __webpack_require__) {
 
 // Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(4)(function () {
+module.exports = !__webpack_require__(3)(function () {
   return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -1246,7 +1296,7 @@ module.exports = !__webpack_require__(4)(function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(1);
-var IE8_DOM_DEFINE = __webpack_require__(120);
+var IE8_DOM_DEFINE = __webpack_require__(121);
 var toPrimitive = __webpack_require__(31);
 var dP = Object.defineProperty;
 
@@ -1328,7 +1378,7 @@ module.exports = function (it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(9);
-var createDesc = __webpack_require__(44);
+var createDesc = __webpack_require__(45);
 module.exports = __webpack_require__(8) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
@@ -1344,7 +1394,7 @@ module.exports = __webpack_require__(8) ? function (object, key, value) {
 var global = __webpack_require__(2);
 var hide = __webpack_require__(15);
 var has = __webpack_require__(14);
-var SRC = __webpack_require__(48)('src');
+var SRC = __webpack_require__(49)('src');
 var TO_STRING = 'toString';
 var $toString = Function[TO_STRING];
 var TPL = ('' + $toString).split(TO_STRING);
@@ -1379,7 +1429,7 @@ __webpack_require__(27).inspectSource = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 var defined = __webpack_require__(28);
 var quot = /"/g;
 // B.2.3.2.1 CreateHTML(string, tag, attribute, value)
@@ -1403,12 +1453,12 @@ module.exports = function (NAME, exec) {
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var pIE = __webpack_require__(62);
-var createDesc = __webpack_require__(44);
+var pIE = __webpack_require__(63);
+var createDesc = __webpack_require__(45);
 var toIObject = __webpack_require__(20);
 var toPrimitive = __webpack_require__(31);
 var has = __webpack_require__(14);
-var IE8_DOM_DEFINE = __webpack_require__(120);
+var IE8_DOM_DEFINE = __webpack_require__(121);
 var gOPD = Object.getOwnPropertyDescriptor;
 
 exports.f = __webpack_require__(8) ? gOPD : function getOwnPropertyDescriptor(O, P) {
@@ -1445,7 +1495,7 @@ module.exports = Object.getPrototypeOf || function (O) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(61);
+var IObject = __webpack_require__(62);
 var defined = __webpack_require__(28);
 module.exports = function (it) {
   return IObject(defined(it));
@@ -1459,9 +1509,9 @@ module.exports = function (it) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var graph_1 = __webpack_require__(63);
-var priority_queue = __webpack_require__(148);
-var priority_queue_1 = __webpack_require__(148);
+var graph_1 = __webpack_require__(64);
+var priority_queue = __webpack_require__(149);
+var priority_queue_1 = __webpack_require__(149);
 function getUnorderedEvaluationSet(nodes, terminatingNodes) {
     var terminatingNodeMap = {};
     var seen = {};
@@ -1586,7 +1636,7 @@ module.exports = function (fn, that, length) {
 
 "use strict";
 
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 
 module.exports = function (method, arg) {
   return !!method && fails(function () {
@@ -1608,7 +1658,7 @@ module.exports = function (method, arg) {
 // 5 -> Array#find
 // 6 -> Array#findIndex
 var ctx = __webpack_require__(24);
-var IObject = __webpack_require__(61);
+var IObject = __webpack_require__(62);
 var toObject = __webpack_require__(11);
 var toLength = __webpack_require__(10);
 var asc = __webpack_require__(84);
@@ -1672,7 +1722,7 @@ module.exports = function (it) {
 // most Object methods by ES6 should accept primitives
 var $export = __webpack_require__(0);
 var core = __webpack_require__(27);
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
   var exp = {};
@@ -1718,8 +1768,8 @@ module.exports = function (it, S) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var device_util = __webpack_require__(371);
-var util = __webpack_require__(3);
+var device_util = __webpack_require__(377);
+var util = __webpack_require__(4);
 var Type;
 (function (Type) {
     Type[Type["NUMBER"] = 0] = "NUMBER";
@@ -1729,7 +1779,10 @@ exports.URL_PROPERTIES = [
     { name: 'WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_ENABLED', type: Type.BOOLEAN },
     { name: 'WEBGL_DISJOINT_QUERY_TIMER_EXTENSION_RELIABLE', type: Type.BOOLEAN },
     { name: 'WEBGL_VERSION', type: Type.NUMBER },
-    { name: 'WEBGL_FLOAT_TEXTURE_ENABLED', type: Type.BOOLEAN }
+    { name: 'WEBGL_FLOAT_TEXTURE_ENABLED', type: Type.BOOLEAN }, {
+        name: 'WEBGL_GET_BUFFER_SUB_DATA_ASYNC_EXTENSION_ENABLED',
+        type: Type.BOOLEAN
+    }
 ];
 function getWebGLRenderingContext(webGLVersion) {
     if (webGLVersion === 0) {
@@ -1775,18 +1828,13 @@ function isFloatTextureReadPixelsEnabled(webGLVersion) {
         return false;
     }
     var gl = getWebGLRenderingContext(webGLVersion);
-    var floatExtension;
-    var colorBufferFloatExtension;
     if (webGLVersion === 1) {
-        floatExtension = gl.getExtension('OES_texture_float');
-        colorBufferFloatExtension = gl.getExtension('WEBGL_color_buffer_float');
-        if (floatExtension == null || colorBufferFloatExtension == null) {
+        if (gl.getExtension('OES_texture_float') == null) {
             return false;
         }
     }
     else {
-        colorBufferFloatExtension = gl.getExtension('EXT_color_buffer_float');
-        if (colorBufferFloatExtension == null) {
+        if (gl.getExtension('EXT_color_buffer_float') == null) {
             return false;
         }
     }
@@ -1798,8 +1846,20 @@ function isFloatTextureReadPixelsEnabled(webGLVersion) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
     var frameBufferComplete = (gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.FLOAT, new Float32Array(4));
+    var readPixelsNoError = gl.getError() === gl.NO_ERROR;
     loseContext(gl);
-    return frameBufferComplete;
+    return frameBufferComplete && readPixelsNoError;
+}
+function isWebGLGetBufferSubDataAsyncExtensionEnabled(webGLVersion) {
+    if (webGLVersion !== 2) {
+        return false;
+    }
+    var gl = getWebGLRenderingContext(webGLVersion);
+    var ext = gl.getExtension('WEBGL_get_buffer_sub_data_async');
+    var isEnabled = ext != null;
+    loseContext(gl);
+    return isEnabled;
 }
 var Environment = (function () {
     function Environment(features) {
@@ -1838,6 +1898,9 @@ var Environment = (function () {
         }
         else if (feature === 'WEBGL_FLOAT_TEXTURE_ENABLED') {
             return isFloatTextureReadPixelsEnabled(this.get('WEBGL_VERSION'));
+        }
+        else if (feature === 'WEBGL_GET_BUFFER_SUB_DATA_ASYNC_EXTENSION_ENABLED') {
+            return isWebGLGetBufferSubDataAsyncExtensionEnabled(this.get('WEBGL_VERSION'));
         }
         throw new Error("Unknown feature " + feature + ".");
     };
@@ -1887,10 +1950,10 @@ exports.setEnvironment = setEnvironment;
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Map = __webpack_require__(141);
+var Map = __webpack_require__(142);
 var $export = __webpack_require__(0);
-var shared = __webpack_require__(79)('metadata');
-var store = shared.store || (shared.store = new (__webpack_require__(144))());
+var shared = __webpack_require__(80)('metadata');
+var store = shared.store || (shared.store = new (__webpack_require__(145))());
 
 var getOrCreateMetadataMap = function (target, targetKey, create) {
   var targetMetadata = store.get(target);
@@ -1947,42 +2010,42 @@ module.exports = {
 "use strict";
 
 if (__webpack_require__(8)) {
-  var LIBRARY = __webpack_require__(40);
+  var LIBRARY = __webpack_require__(41);
   var global = __webpack_require__(2);
-  var fails = __webpack_require__(4);
+  var fails = __webpack_require__(3);
   var $export = __webpack_require__(0);
-  var $typed = __webpack_require__(81);
+  var $typed = __webpack_require__(82);
   var $buffer = __webpack_require__(105);
   var ctx = __webpack_require__(24);
-  var anInstance = __webpack_require__(38);
-  var propertyDesc = __webpack_require__(44);
+  var anInstance = __webpack_require__(39);
+  var propertyDesc = __webpack_require__(45);
   var hide = __webpack_require__(15);
-  var redefineAll = __webpack_require__(45);
+  var redefineAll = __webpack_require__(46);
   var toInteger = __webpack_require__(30);
   var toLength = __webpack_require__(10);
-  var toIndex = __webpack_require__(139);
-  var toAbsoluteIndex = __webpack_require__(47);
+  var toIndex = __webpack_require__(140);
+  var toAbsoluteIndex = __webpack_require__(48);
   var toPrimitive = __webpack_require__(31);
   var has = __webpack_require__(14);
-  var classof = __webpack_require__(60);
+  var classof = __webpack_require__(61);
   var isObject = __webpack_require__(5);
   var toObject = __webpack_require__(11);
   var isArrayIter = __webpack_require__(91);
-  var create = __webpack_require__(41);
+  var create = __webpack_require__(42);
   var getPrototypeOf = __webpack_require__(19);
-  var gOPN = __webpack_require__(42).f;
+  var gOPN = __webpack_require__(43).f;
   var getIterFn = __webpack_require__(107);
-  var uid = __webpack_require__(48);
+  var uid = __webpack_require__(49);
   var wks = __webpack_require__(7);
   var createArrayMethod = __webpack_require__(26);
-  var createArrayIncludes = __webpack_require__(68);
-  var speciesConstructor = __webpack_require__(80);
+  var createArrayIncludes = __webpack_require__(69);
+  var speciesConstructor = __webpack_require__(81);
   var ArrayIterators = __webpack_require__(108);
-  var Iterators = __webpack_require__(51);
-  var $iterDetect = __webpack_require__(74);
-  var setSpecies = __webpack_require__(46);
+  var Iterators = __webpack_require__(52);
+  var $iterDetect = __webpack_require__(75);
+  var setSpecies = __webpack_require__(47);
   var arrayFill = __webpack_require__(83);
-  var arrayCopyWithin = __webpack_require__(112);
+  var arrayCopyWithin = __webpack_require__(113);
   var $DP = __webpack_require__(9);
   var $GOPD = __webpack_require__(18);
   var dP = $DP.f;
@@ -2549,7 +2612,7 @@ module.exports = function (key) {
 /* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var META = __webpack_require__(48)('meta');
+var META = __webpack_require__(49)('meta');
 var isObject = __webpack_require__(5);
 var has = __webpack_require__(14);
 var setDesc = __webpack_require__(9).f;
@@ -2557,7 +2620,7 @@ var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
 };
-var FREEZE = !__webpack_require__(4)(function () {
+var FREEZE = !__webpack_require__(3)(function () {
   return isExtensible(Object.preventExtensions({}));
 });
 var setMeta = function (it) {
@@ -2606,6 +2669,97 @@ var meta = module.exports = {
 
 /***/ }),
 /* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var xhr_dataset = __webpack_require__(147);
+exports.xhr_dataset = xhr_dataset;
+var environment = __webpack_require__(32);
+exports.environment = environment;
+var conv_util = __webpack_require__(51);
+exports.conv_util = conv_util;
+var gpgpu_util = __webpack_require__(110);
+exports.gpgpu_util = gpgpu_util;
+var render_ndarray_gpu_util = __webpack_require__(424);
+exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
+var webgl_util = __webpack_require__(58);
+exports.webgl_util = webgl_util;
+var test_util = __webpack_require__(430);
+exports.test_util = test_util;
+var util = __webpack_require__(4);
+exports.util = util;
+var version_1 = __webpack_require__(431);
+exports.version = version_1.version;
+var checkpoint_loader_1 = __webpack_require__(375);
+exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
+var dataset_1 = __webpack_require__(146);
+exports.InMemoryDataset = dataset_1.InMemoryDataset;
+var input_provider_1 = __webpack_require__(376);
+exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
+exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
+var xhr_dataset_1 = __webpack_require__(147);
+exports.XhrDataset = xhr_dataset_1.XhrDataset;
+var environment_1 = __webpack_require__(32);
+exports.ENV = environment_1.ENV;
+exports.Environment = environment_1.Environment;
+var graph_1 = __webpack_require__(64);
+exports.Graph = graph_1.Graph;
+exports.Tensor = graph_1.Tensor;
+var adadelta_optimizer_1 = __webpack_require__(397);
+exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
+var adagrad_optimizer_1 = __webpack_require__(398);
+exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
+var adam_optimizer_1 = __webpack_require__(399);
+exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
+var adamax_optimizer_1 = __webpack_require__(400);
+exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
+var momentum_optimizer_1 = __webpack_require__(401);
+exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
+var optimizer_1 = __webpack_require__(50);
+exports.Optimizer = optimizer_1.Optimizer;
+var rmsprop_optimizer_1 = __webpack_require__(402);
+exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
+var sgd_optimizer_1 = __webpack_require__(148);
+exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
+var session_1 = __webpack_require__(150);
+exports.CostReduction = session_1.CostReduction;
+exports.Session = session_1.Session;
+var graph_runner_1 = __webpack_require__(403);
+exports.GraphRunner = graph_runner_1.GraphRunner;
+exports.MetricReduction = graph_runner_1.MetricReduction;
+var initializers_1 = __webpack_require__(152);
+exports.ConstantInitializer = initializers_1.ConstantInitializer;
+exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
+exports.OnesInitializer = initializers_1.OnesInitializer;
+exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
+exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
+exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
+exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
+exports.ZerosInitializer = initializers_1.ZerosInitializer;
+var math_1 = __webpack_require__(57);
+exports.MatrixOrientation = math_1.MatrixOrientation;
+exports.NDArrayMath = math_1.NDArrayMath;
+var math_cpu_1 = __webpack_require__(154);
+exports.NDArrayMathCPU = math_cpu_1.NDArrayMathCPU;
+var math_gpu_1 = __webpack_require__(155);
+exports.NDArrayMathGPU = math_gpu_1.NDArrayMathGPU;
+var ndarray_1 = __webpack_require__(6);
+exports.initializeGPU = ndarray_1.initializeGPU;
+var ndarray_2 = __webpack_require__(6);
+exports.Array1D = ndarray_2.Array1D;
+exports.Array2D = ndarray_2.Array2D;
+exports.Array3D = ndarray_2.Array3D;
+exports.Array4D = ndarray_2.Array4D;
+exports.NDArray = ndarray_2.NDArray;
+exports.Scalar = ndarray_2.Scalar;
+var gpgpu_context_1 = __webpack_require__(157);
+exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 39 */
 /***/ (function(module, exports) {
 
 module.exports = function (it, Constructor, name, forbiddenField) {
@@ -2616,11 +2770,11 @@ module.exports = function (it, Constructor, name, forbiddenField) {
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(24);
-var call = __webpack_require__(123);
+var call = __webpack_require__(124);
 var isArrayIter = __webpack_require__(91);
 var anObject = __webpack_require__(1);
 var toLength = __webpack_require__(10);
@@ -2647,19 +2801,19 @@ exports.RETURN = RETURN;
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports) {
 
 module.exports = false;
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 var anObject = __webpack_require__(1);
-var dPs = __webpack_require__(129);
+var dPs = __webpack_require__(130);
 var enumBugKeys = __webpack_require__(87);
 var IE_PROTO = __webpack_require__(99)('IE_PROTO');
 var Empty = function () { /* empty */ };
@@ -2701,11 +2855,11 @@ module.exports = Object.create || function create(O, Properties) {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-var $keys = __webpack_require__(131);
+var $keys = __webpack_require__(132);
 var hiddenKeys = __webpack_require__(87).concat('length', 'prototype');
 
 exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
@@ -2714,11 +2868,11 @@ exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 / 15.2.3.14 Object.keys(O)
-var $keys = __webpack_require__(131);
+var $keys = __webpack_require__(132);
 var enumBugKeys = __webpack_require__(87);
 
 module.exports = Object.keys || function keys(O) {
@@ -2727,7 +2881,7 @@ module.exports = Object.keys || function keys(O) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = function (bitmap, value) {
@@ -2741,7 +2895,7 @@ module.exports = function (bitmap, value) {
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var redefine = __webpack_require__(16);
@@ -2752,7 +2906,7 @@ module.exports = function (target, src, safe) {
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2772,7 +2926,7 @@ module.exports = function (KEY) {
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var toInteger = __webpack_require__(30);
@@ -2785,7 +2939,7 @@ module.exports = function (index, length) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 var id = 0;
@@ -2796,14 +2950,14 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var session_util = __webpack_require__(150);
+var session_util = __webpack_require__(151);
 var tensor_array_map_1 = __webpack_require__(35);
 var Optimizer = (function () {
     function Optimizer(learningRate, specifiedVariableList) {
@@ -2851,51 +3005,39 @@ exports.Optimizer = Optimizer;
 //# sourceMappingURL=optimizer.js.map
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-function computeConvInfo(inShape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad) {
-    if (typeof pad === 'number') {
-        var outShape_1 = computeOutputShape3D(inShape, filterHeight, outDepth, strideHeight, pad);
-        return {
-            inShape: inShape,
-            outShape: outShape_1,
-            padInfo: { top: pad, bottom: pad, left: pad, right: pad },
-            strideHeight: strideHeight,
-            strideWidth: strideWidth,
-            filterHeight: filterHeight,
-            filterWidth: filterWidth
-        };
-    }
+var util = __webpack_require__(4);
+function computeDepthwiseConv2DInfo(inShape, filterShape, strides, pad) {
+    var filterHeight = filterShape[0], filterWidth = filterShape[1], inChannels = filterShape[2], channelMul = filterShape[3];
+    var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
+    var inHeight = inShape[1];
+    var inWidth = inShape[2];
+    var batchSize = inShape[0];
+    var _b = getPadAndOutInfo(pad, inHeight, inWidth, strideHeight, strideWidth, filterHeight, filterWidth), padInfo = _b.padInfo, outHeight = _b.outHeight, outWidth = _b.outWidth;
+    var outChannels = inChannels * channelMul;
+    var outShape = [batchSize, outHeight, outWidth, outChannels];
+    return {
+        inShape: inShape,
+        outShape: outShape,
+        channelMul: channelMul,
+        strideHeight: strideHeight,
+        strideWidth: strideWidth,
+        filterHeight: filterHeight,
+        filterWidth: filterWidth,
+        padInfo: padInfo
+    };
+}
+exports.computeDepthwiseConv2DInfo = computeDepthwiseConv2DInfo;
+function computeConv2DInfo(inShape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad) {
     var inHeight = inShape[0];
     var inWidth = inShape[1];
-    var outShape;
-    var padInfo;
-    if (pad === 'same') {
-        var outHeight = Math.ceil(inHeight / strideHeight);
-        var outWidth = Math.ceil(inWidth / strideWidth);
-        outShape = [outHeight, outWidth, outDepth];
-        var padAlongHeight = (outHeight - 1) * strideHeight + filterHeight - inHeight;
-        var padAlongWidth = (outWidth - 1) * strideWidth + filterWidth - inWidth;
-        var top_1 = Math.floor(padAlongHeight / 2);
-        var bottom = padAlongHeight - top_1;
-        var left = Math.floor(padAlongWidth / 2);
-        var right = padAlongWidth - left;
-        padInfo = { top: top_1, bottom: bottom, left: left, right: right };
-    }
-    else if (pad === 'valid') {
-        var outHeight = Math.ceil((inHeight - filterHeight + 1) / strideHeight);
-        var outWidth = Math.ceil((inWidth - filterWidth + 1) / strideWidth);
-        outShape = [outHeight, outWidth, outDepth];
-        padInfo = { top: 0, bottom: 0, left: 0, right: 0 };
-    }
-    else {
-        throw Error("Unknown padding parameter: " + pad);
-    }
+    var _a = getPadAndOutInfo(pad, inHeight, inWidth, strideHeight, strideWidth, filterHeight, filterWidth), padInfo = _a.padInfo, outHeight = _a.outHeight, outWidth = _a.outWidth;
+    var outShape = [outHeight, outWidth, outDepth];
     return {
         inShape: inShape,
         outShape: outShape,
@@ -2906,7 +3048,7 @@ function computeConvInfo(inShape, filterHeight, filterWidth, outDepth, strideHei
         filterWidth: filterWidth
     };
 }
-exports.computeConvInfo = computeConvInfo;
+exports.computeConv2DInfo = computeConv2DInfo;
 function computeOutputShape3D(inShape, fieldSize, outDepth, stride, zeroPad) {
     if (zeroPad == null) {
         zeroPad = computeDefaultPad(inShape, fieldSize, stride);
@@ -2926,10 +3068,6 @@ function computeDefaultPad(inputShape, fieldSize, stride) {
     return Math.floor((inputShape[0] * (stride - 1) - stride + fieldSize) / 2);
 }
 exports.computeDefaultPad = computeDefaultPad;
-function computeTexShapeFrom3D(shapeRowColDepth) {
-    return [shapeRowColDepth[0], shapeRowColDepth[1] * shapeRowColDepth[2]];
-}
-exports.computeTexShapeFrom3D = computeTexShapeFrom3D;
 function computeWeightsShape4D(inputDepth, outputDepth, filterHeight, filterWidth) {
     return [filterHeight, filterWidth, inputDepth, outputDepth];
 }
@@ -2940,17 +3078,51 @@ function computeDilatedRC(rc, origStride) {
     return [rowsDilated, colsDilated];
 }
 exports.computeDilatedRC = computeDilatedRC;
+function parseTupleParam(param) {
+    return typeof param === 'number' ? [param, param] : param;
+}
+function getPadAndOutInfo(pad, inHeight, inWidth, strideHeight, strideWidth, filterHeight, filterWidth) {
+    var padInfo;
+    var outHeight;
+    var outWidth;
+    if (typeof pad === 'number') {
+        padInfo = { top: pad, bottom: pad, left: pad, right: pad };
+        var outShape = computeOutputShape3D([inHeight, inWidth, 1], filterHeight, 1, strideHeight, pad);
+        outHeight = outShape[0];
+        outWidth = outShape[1];
+    }
+    else if (pad === 'same') {
+        outHeight = Math.ceil(inHeight / strideHeight);
+        outWidth = Math.ceil(inWidth / strideWidth);
+        var padAlongHeight = (outHeight - 1) * strideHeight + filterHeight - inHeight;
+        var padAlongWidth = (outWidth - 1) * strideWidth + filterWidth - inWidth;
+        var top_1 = Math.floor(padAlongHeight / 2);
+        var bottom = padAlongHeight - top_1;
+        var left = Math.floor(padAlongWidth / 2);
+        var right = padAlongWidth - left;
+        padInfo = { top: top_1, bottom: bottom, left: left, right: right };
+    }
+    else if (pad === 'valid') {
+        padInfo = { top: 0, bottom: 0, left: 0, right: 0 };
+        outHeight = Math.ceil((inHeight - filterHeight + 1) / strideHeight);
+        outWidth = Math.ceil((inWidth - filterWidth + 1) / strideWidth);
+    }
+    else {
+        throw Error("Unknown padding parameter: " + pad);
+    }
+    return { padInfo: padInfo, outHeight: outHeight, outWidth: outWidth };
+}
 //# sourceMappingURL=conv_util.js.map
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = {};
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var def = __webpack_require__(9).f;
@@ -2963,12 +3135,12 @@ module.exports = function (it, tag, stat) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
 var defined = __webpack_require__(28);
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 var spaces = __webpack_require__(103);
 var space = '[' + spaces + ']';
 var non = '\u200b\u0085';
@@ -2999,7 +3171,7 @@ module.exports = exporter;
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(5);
@@ -3008,74 +3180,6 @@ module.exports = function (it, TYPE) {
   return it;
 };
 
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function axesAreInnerMostDims(axes, rank) {
-    for (var i = 0; i < axes.length; ++i) {
-        if (axes[axes.length - i - 1] !== rank - 1 - i) {
-            return false;
-        }
-    }
-    return true;
-}
-exports.axesAreInnerMostDims = axesAreInnerMostDims;
-function combineLocations(outputLoc, reduceLoc, axes) {
-    var rank = outputLoc.length + reduceLoc.length;
-    var loc = [];
-    var outIdx = 0;
-    var reduceIdx = 0;
-    for (var dim = 0; dim < rank; dim++) {
-        if (axes.indexOf(dim) === -1) {
-            loc.push(outputLoc[outIdx++]);
-        }
-        else {
-            loc.push(reduceLoc[reduceIdx++]);
-        }
-    }
-    return loc;
-}
-exports.combineLocations = combineLocations;
-function computeOutAndReduceShapes(aShape, axes) {
-    var outShape = [];
-    var rank = aShape.length;
-    for (var dim = 0; dim < rank; dim++) {
-        if (axes.indexOf(dim) === -1) {
-            outShape.push(aShape[dim]);
-        }
-    }
-    var reduceShape = axes.map(function (dim) { return aShape[dim]; });
-    return [outShape, reduceShape];
-}
-exports.computeOutAndReduceShapes = computeOutAndReduceShapes;
-function expandShapeToKeepDim(shape, axes) {
-    var reduceSubShape = axes.map(function (x) { return 1; });
-    return combineLocations(shape, reduceSubShape, axes);
-}
-exports.expandShapeToKeepDim = expandShapeToKeepDim;
-function parseAxisParam(axis, shape) {
-    if (axis == null) {
-        axis = shape.map(function (s, i) { return i; });
-    }
-    else if (typeof (axis) === 'number') {
-        axis = [axis];
-    }
-    return axis;
-}
-exports.parseAxisParam = parseAxisParam;
-function assertAxesAreInnerMostDims(msg, axes, rank) {
-    if (!axesAreInnerMostDims(axes, rank)) {
-        throw new Error(msg + " supports only inner-most axes for now. " +
-            ("Got axes " + axes + " and rank-" + rank + " input."));
-    }
-}
-exports.assertAxesAreInnerMostDims = assertAxesAreInnerMostDims;
-//# sourceMappingURL=axis_util.js.map
 
 /***/ }),
 /* 56 */
@@ -3132,8 +3236,929 @@ exports.assertAndGetBroadcastShape = assertAndGetBroadcastShape;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var util = __webpack_require__(4);
+var axis_util = __webpack_require__(109);
+var broadcast_util = __webpack_require__(56);
+var concat_util = __webpack_require__(65);
+var conv_util = __webpack_require__(51);
+var copy2d_util = __webpack_require__(153);
+var ndarray_1 = __webpack_require__(6);
+var slice_util = __webpack_require__(407);
+var SumTypesMap;
+(function (SumTypesMap) {
+    SumTypesMap["float32"] = "float32";
+    SumTypesMap["int32"] = "int32";
+    SumTypesMap["bool"] = "int32";
+})(SumTypesMap = exports.SumTypesMap || (exports.SumTypesMap = {}));
+var NDArrayMath = (function () {
+    function NDArrayMath(safeMode) {
+        this.safeMode = safeMode;
+        this.ndarrayScopes = [];
+        this.ndarraysToKeep = [];
+        this.activeScopeNDArraysToKeep = [];
+        this.debugMode = false;
+    }
+    NDArrayMath.prototype.scope = function (scopeFn) {
+        var _this = this;
+        this.startScope();
+        var keepFn = function (ndarray) { return _this.keep(ndarray); };
+        var trackFn = function (ndarray) { return _this.track(ndarray); };
+        var result = scopeFn(keepFn, trackFn);
+        if (result instanceof Promise) {
+            result.then(function (r) { return _this.endScope(r); });
+            return result;
+        }
+        else {
+            this.endScope(result);
+            return result;
+        }
+    };
+    NDArrayMath.prototype.enableDebugMode = function () {
+        this.debugMode = true;
+        console.warn('Debugging mode is ON. The output of every math call will ' +
+            'be downloaded to CPU and checked for NaNs. ' +
+            'This significantly impacts performance.');
+    };
+    NDArrayMath.prototype.startScope = function () {
+        var newScope = [];
+        this.ndarrayScopes.push(newScope);
+        this.activeScope = newScope;
+        var newNDArraysToKeep = [];
+        this.ndarraysToKeep.push(newNDArraysToKeep);
+        this.activeScopeNDArraysToKeep = newNDArraysToKeep;
+    };
+    NDArrayMath.prototype.extractNDArraysFromScopeResult = function (result) {
+        if (result == null) {
+            return [];
+        }
+        if (result instanceof ndarray_1.NDArray) {
+            return [result];
+        }
+        var list = [];
+        var resultObj = result;
+        for (var k in resultObj) {
+            var val = resultObj[k];
+            if (val instanceof ndarray_1.NDArray) {
+                list.push(val);
+            }
+        }
+        return list;
+    };
+    NDArrayMath.prototype.endScope = function (result) {
+        var _this = this;
+        var arraysToKeep = this.activeScopeNDArraysToKeep;
+        var resultArrays = this.extractNDArraysFromScopeResult(result);
+        arraysToKeep = arraysToKeep.concat(resultArrays);
+        for (var i = 0; i < this.activeScope.length; i++) {
+            var ndarray = this.activeScope[i];
+            if (this.isNDArrayDataInList(ndarray, arraysToKeep)) {
+                continue;
+            }
+            ndarray.dispose();
+        }
+        this.ndarrayScopes.pop();
+        this.activeScope = this.ndarrayScopes.length === 0 ?
+            null :
+            this.ndarrayScopes[this.ndarrayScopes.length - 1];
+        resultArrays.forEach(function (val) {
+            if (!_this.isNDArrayDataInList(val, _this.activeScopeNDArraysToKeep)) {
+                _this.track(val);
+            }
+        });
+        this.ndarraysToKeep.pop();
+        this.activeScopeNDArraysToKeep = this.ndarraysToKeep.length === 0 ?
+            null :
+            this.ndarraysToKeep[this.ndarraysToKeep.length - 1];
+    };
+    NDArrayMath.prototype.isNDArrayDataInList = function (ndarray, ndarrayList) {
+        for (var i = 0; i < ndarrayList.length; i++) {
+            if (ndarrayList[i].getData() === ndarray.getData()) {
+                return true;
+            }
+        }
+        return false;
+    };
+    NDArrayMath.prototype.keep = function (result) {
+        if (this.activeScope == null) {
+            if (this.safeMode) {
+                throw new Error('You are using math in safe mode. Enclose all ' +
+                    'math.method() calls inside a scope: ' +
+                    'math.scope(() => {math.method();...}) to avoid memory ' +
+                    'leaks.');
+            }
+            return result;
+        }
+        this.activeScopeNDArraysToKeep.push(result);
+        return result;
+    };
+    NDArrayMath.prototype.checkForNaN = function (vals, dtype, name) {
+        for (var i = 0; i < vals.length; i++) {
+            if (util.isValNaN(vals[i], dtype)) {
+                throw Error("The result of the last math." + name + " has NaNs.");
+            }
+        }
+    };
+    NDArrayMath.prototype.track = function (result) {
+        if (this.activeScope == null) {
+            if (this.safeMode) {
+                throw new Error('You are using math in safe mode. Enclose all ' +
+                    'math.method() calls inside a scope: ' +
+                    'math.scope(() => {math.method();...}) to avoid memory ' +
+                    'leaks.');
+            }
+            return result;
+        }
+        this.activeScope.push(result);
+        return result;
+    };
+    NDArrayMath.prototype.dispose = function () { };
+    NDArrayMath.prototype.matMul = function (a, b, aOrientation, bOrientation) {
+        var _this = this;
+        if (aOrientation === void 0) { aOrientation = MatrixOrientation.REGULAR; }
+        if (bOrientation === void 0) { bOrientation = MatrixOrientation.REGULAR; }
+        var innerShapeA = (aOrientation === MatrixOrientation.REGULAR) ? a.shape[1] : a.shape[0];
+        var innerShapeB = (bOrientation === MatrixOrientation.REGULAR) ? b.shape[0] : b.shape[1];
+        util.assert(a.rank === 2 && b.rank === 2, "Error in matMul: inputs must be rank 2, got ranks " + a.rank +
+            (" and " + b.rank + "."));
+        util.assert(innerShapeA === innerShapeB, "Error in matMul: inner shapes (" + innerShapeA + ") and (" +
+            (innerShapeB + ") of NDArrays with shapes " + a.shape + " and ") +
+            (b.shape + " and orientations " + MatrixOrientation[aOrientation]) +
+            (" and " + MatrixOrientation[bOrientation] + " must match."));
+        return this.executeOp('matMul', function () { return _this.matMulInternal(a, b, aOrientation, bOrientation); });
+    };
+    NDArrayMath.prototype.executeOp = function (name, f) {
+        var start;
+        if (this.debugMode) {
+            start = performance.now();
+        }
+        var result = f();
+        if (this.debugMode) {
+            var vals = result.getValues();
+            var time = util.rightPad(performance.now() - start + "ms", 9);
+            var paddedName = util.rightPad(name, 25);
+            var rank = result.rank;
+            var size = result.size;
+            var shape = util.rightPad(result.shape.toString(), 14);
+            console.log("%c" + paddedName + "\t%c" + time + "\t%c" + rank + "D " + shape + "\t%c" + size, 'font-weight:bold', 'color:red', 'color:blue', 'color: orange');
+            this.checkForNaN(vals, result.dtype, name);
+        }
+        return this.track(result);
+    };
+    NDArrayMath.prototype.vectorTimesMatrix = function (v, matrix) {
+        util.assert(v.rank === 1, "Error in vectorTimesMatrix: first input must be rank 1, but got " +
+            ("rank " + v.rank + "."));
+        util.assert(matrix.rank === 2, "Error in vectorTimesMatrix: second input must be rank 2, but got " +
+            ("rank " + matrix.rank + "."));
+        util.assert(v.size === matrix.shape[0], "Error in vectorTimesMatrix: size of vector (" + v.size + ") " +
+            ("must match first dimension of matrix (" + matrix.shape[0] + ")"));
+        return this.matMul(v.as2D(1, -1), matrix).as1D();
+    };
+    NDArrayMath.prototype.matrixTimesVector = function (matrix, v) {
+        util.assert(v.rank === 1, "Error in matrixTimesVector: second input must rank 1, but got " +
+            ("rank " + v.rank + "."));
+        util.assert(matrix.rank === 2, "Error in matrixTimesVector: first input must be a rank 2, but got " +
+            ("rank " + matrix.rank + "."));
+        util.assert(v.size === matrix.shape[1], "Error in matrixTimesVector: size of first rank 1 input " + v.size + " " +
+            "must match inner dimension of second rank 2 input, but got " +
+            ("shape " + matrix.shape + "."));
+        return this.matMul(matrix, v.as2D(-1, 1)).as1D();
+    };
+    NDArrayMath.prototype.dotProduct = function (v1, v2) {
+        util.assert(v1.rank === 1 && v2.rank === 1, "Error in dotProduct: inputs must be rank 1, but got ranks " +
+            (v1.rank + " and " + v2.rank + "."));
+        util.assert(v1.size === v2.size, "Error in dotProduct: size of inputs (" + v1.size + ") and (" +
+            (v2.size + ") must match."));
+        return this.matMul(v1.as2D(1, -1), v2.as2D(-1, 1)).asScalar();
+    };
+    NDArrayMath.prototype.outerProduct = function (v1, v2) {
+        util.assert(v1.rank === 1 && v2.rank === 1, "Error in outerProduct: inputs must be rank 1, but got ranks " +
+            (v1.rank + " and " + v2.rank + "."));
+        return this.matMul(v1.as2D(-1, 1), v2.as2D(1, -1));
+    };
+    NDArrayMath.prototype.clone = function (ndarray) {
+        var _this = this;
+        return this.executeOp('clone', function () { return _this.cloneInternal(ndarray); });
+    };
+    NDArrayMath.prototype.reshape = function (ndarray, newShape) {
+        console.warn('math.reshape() is deprecated. Please call reshape() ' +
+            'directly on the ndarray object');
+        return ndarray.reshape(newShape);
+    };
+    NDArrayMath.prototype.slice1D = function (input, begin, size) {
+        var _this = this;
+        slice_util.assertParamsValid(input, [begin], [size]);
+        return this.executeOp('slice1D', function () { return _this.slice1DInternal(input, begin, size); });
+    };
+    NDArrayMath.prototype.slice2D = function (input, begin, size) {
+        var _this = this;
+        slice_util.assertParamsValid(input, begin, size);
+        return this.executeOp('slice2D', function () { return _this.slice2DInternal(input, begin, size); });
+    };
+    NDArrayMath.prototype.slice3D = function (input, begin, size) {
+        var _this = this;
+        slice_util.assertParamsValid(input, begin, size);
+        return this.executeOp('slice3D', function () { return _this.slice3DInternal(input, begin, size); });
+    };
+    NDArrayMath.prototype.slice4D = function (input, begin, size) {
+        var _this = this;
+        slice_util.assertParamsValid(input, begin, size);
+        return this.executeOp('slice4D', function () { return _this.slice4DInternal(input, begin, size); });
+    };
+    NDArrayMath.prototype.copy2D = function (source, sourceBegin, sourceSize, dest, destBegin, destSize) {
+        var _this = this;
+        util.assert(sourceBegin[0] + sourceSize[0] <= source.shape[0] &&
+            sourceBegin[1] + sourceSize[1] <= source.shape[1], "Error in copy2D: requested source start position " + sourceBegin + " " +
+            ("and source size " + sourceSize + " would overflow source NDArray") +
+            ("of shape " + source.shape + "."));
+        util.assert(destBegin[0] + destSize[0] <= dest.shape[0] &&
+            destBegin[1] + destSize[1] <= dest.shape[1], "Error in copy2D: requested dest start position " + destBegin + " " +
+            ("and source size " + destSize + " would overflow dest NDArray of") +
+            ("shape " + dest.shape + "."));
+        copy2d_util.validateShapes(sourceSize, destSize);
+        this.executeOp('copy2D', function () {
+            _this.copy2DInternal(source, sourceBegin, sourceSize, dest, destBegin, destSize);
+            return dest;
+        });
+    };
+    NDArrayMath.prototype.concat1D = function (a, b) {
+        var _this = this;
+        concat_util.assertParams(a.shape, b.shape, 0);
+        return this.executeOp('concat1D', function () { return _this.concat1DInternal(a, b); });
+    };
+    NDArrayMath.prototype.concat2D = function (a, b, axis) {
+        var _this = this;
+        concat_util.assertParams(a.shape, b.shape, axis);
+        return this.executeOp('concat2D', function () { return _this.concat2DInternal(a, b, axis); });
+    };
+    NDArrayMath.prototype.concat3D = function (ndarray1, ndarray2, axis) {
+        var _this = this;
+        concat_util.assertParams(ndarray1.shape, ndarray2.shape, axis);
+        return this.executeOp('concat3D', function () { return _this.concat3DInternal(ndarray1, ndarray2, axis); });
+    };
+    NDArrayMath.prototype.concat4D = function (ndarray1, ndarray2, axis) {
+        var _this = this;
+        concat_util.assertParams(ndarray1.shape, ndarray2.shape, axis);
+        return this.executeOp('concat4D', function () { return _this.concat4DInternal(ndarray1, ndarray2, axis); });
+    };
+    NDArrayMath.prototype.logSumExp = function (input, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var axes = axis_util.parseAxisParam(axis, input.shape);
+        return this.executeOp('logSumExp', function () {
+            var xMax = _this.max(input, axes, true);
+            var a = _this.subtract(input, xMax);
+            var b = _this.exp(a);
+            var c = _this.sum(b, axes);
+            var d = _this.log(c);
+            var res = _this.add(xMax.reshape(d.shape), d);
+            if (keepDims) {
+                var newShape = axis_util.expandShapeToKeepDim(res.shape, axes);
+                return res.reshape(newShape);
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.sum = function (input, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var origAxes = axis_util.parseAxisParam(axis, input.shape);
+        var axes = origAxes;
+        var permutedAxes = axis_util.getPermutedAxes(axes, input.rank);
+        return this.executeOp('sum', function () {
+            if (permutedAxes != null) {
+                input = _this.transpose(input, permutedAxes);
+                axes = axis_util.getInnerMostAxes(axes.length, input.rank);
+            }
+            var res = _this.sumInternal(input, axes);
+            if (keepDims) {
+                var newShape = axis_util.expandShapeToKeepDim(res.shape, origAxes);
+                return res.reshape(newShape);
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.mean = function (x, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var axes = axis_util.parseAxisParam(axis, x.shape);
+        var shapes = axis_util.computeOutAndReduceShapes(x.shape, axes);
+        var reduceShape = shapes[1];
+        var reduceSize = util.sizeFromShape(reduceShape);
+        return this.executeOp('mean', function () {
+            return _this.scope(function (keep, track) {
+                var res = _this.divide(x, track(ndarray_1.Scalar.new(reduceSize)));
+                return _this.sum(res, axis, keepDims);
+            });
+        });
+    };
+    NDArrayMath.prototype.argMin = function (input, axis) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        var axes = axis_util.parseAxisParam(axis, input.shape);
+        var permutedAxes = axis_util.getPermutedAxes(axes, input.rank);
+        return this.executeOp('argMin', function () {
+            if (permutedAxes != null) {
+                input = _this.transpose(input, permutedAxes);
+                axes = axis_util.getInnerMostAxes(axes.length, input.rank);
+            }
+            return _this.argMinInternal(input, axes);
+        });
+    };
+    NDArrayMath.prototype.argMax = function (input, axis) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        var axes = axis_util.parseAxisParam(axis, input.shape);
+        var permutedAxes = axis_util.getPermutedAxes(axes, input.rank);
+        return this.executeOp('argMax', function () {
+            if (permutedAxes != null) {
+                input = _this.transpose(input, permutedAxes);
+                axes = axis_util.getInnerMostAxes(axes.length, input.rank);
+            }
+            return _this.argMaxInternal(input, axes);
+        });
+    };
+    NDArrayMath.prototype.argMaxEquals = function (x1, x2) {
+        var _this = this;
+        util.assertShapesMatch(x1.shape, x2.shape, 'Error in argMaxEquals: ');
+        return this.executeOp('argMaxEquals', function () { return _this.scope(function () {
+            return _this.equal(_this.argMax(x1), _this.argMax(x2));
+        }); });
+    };
+    NDArrayMath.prototype.equal = function (x, y) {
+        var _this = this;
+        return this.executeOp('equal', function () { return _this.equalInternal(x, y); });
+    };
+    NDArrayMath.prototype.equalStrict = function (x, y) {
+        util.assertShapesMatch(x.shape, y.shape, 'Error in equalStrict: ');
+        return this.equal(x, y);
+    };
+    NDArrayMath.prototype.topK = function (ndarray, k) {
+        var _this = this;
+        util.assert(k <= ndarray.size, "Error in topK: k value (" + k + ") must be less than size of input " +
+            ("ndarray, got shape " + ndarray.shape + "."));
+        var result;
+        this.executeOp('topK', function () {
+            result = _this.topKInternal(ndarray, k);
+            return result.values;
+        });
+        this.track(result.indices);
+        return result;
+    };
+    NDArrayMath.prototype.min = function (input, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var origAxes = axis_util.parseAxisParam(axis, input.shape);
+        var axes = origAxes;
+        var permutedAxes = axis_util.getPermutedAxes(axes, input.rank);
+        return this.executeOp('min', function () {
+            if (permutedAxes != null) {
+                input = _this.transpose(input, permutedAxes);
+                axes = axis_util.getInnerMostAxes(axes.length, input.rank);
+            }
+            var res = _this.minInternal(input, axes);
+            if (keepDims) {
+                var newShape = axis_util.expandShapeToKeepDim(res.shape, origAxes);
+                return res.reshape(newShape);
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.max = function (input, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var origAxes = axis_util.parseAxisParam(axis, input.shape);
+        var axes = origAxes;
+        var permutedAxes = axis_util.getPermutedAxes(axes, input.rank);
+        return this.executeOp('max', function () {
+            if (permutedAxes != null) {
+                input = _this.transpose(input, permutedAxes);
+                axes = axis_util.getInnerMostAxes(axes.length, input.rank);
+            }
+            var res = _this.maxInternal(input, axes);
+            if (keepDims) {
+                var newShape = axis_util.expandShapeToKeepDim(res.shape, origAxes);
+                return res.reshape(newShape);
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.softmax = function (logits, dim) {
+        var _this = this;
+        if (dim === void 0) { dim = -1; }
+        if (dim === -1) {
+            dim = logits.rank - 1;
+        }
+        if (dim !== logits.rank - 1) {
+            throw Error('Softmax along a non-last dimension is not yet supported. ' +
+                ("Logits was rank " + logits.rank + " and dim was " + dim));
+        }
+        return this.executeOp('softmax', function () {
+            return _this.scope(function () {
+                var lse = _this.logSumExp(logits, [dim], true);
+                var logResult = _this.subtract(logits, lse);
+                return _this.exp(logResult);
+            });
+        });
+    };
+    NDArrayMath.prototype.switchDim = function (a, newDim) {
+        return this.transpose(a, newDim);
+    };
+    NDArrayMath.prototype.tile = function (a, reps) {
+        var _this = this;
+        util.assert(a.rank === reps.length, "Error in transpose: rank of input " + a.rank + " " +
+            ("must match length of reps " + reps + "."));
+        return this.executeOp('tile', function () { return _this.tileInternal(a, reps); });
+    };
+    NDArrayMath.prototype.transpose = function (a, perm) {
+        var _this = this;
+        if (perm == null) {
+            perm = a.shape.map(function (s, i) { return i; }).reverse();
+        }
+        util.assert(a.rank === perm.length, "Error in transpose: rank of input " + a.rank + " " +
+            ("must match length of perm " + perm + "."));
+        return this.executeOp('transpose', function () { return _this.transposeInternal(a, perm); });
+    };
+    NDArrayMath.prototype.scalarPlusArray = function (c, a) {
+        util.assert(c.size === 1, "Error in scalarPlusArray: first argument must be rank 0, but got " +
+            ("rank " + c.rank + "."));
+        return this.add(c, a);
+    };
+    NDArrayMath.prototype.scalarMinusArray = function (c, a) {
+        util.assert(c.size === 1, "Error in scalarMinusArray: first argument must be rank 0, but got " +
+            ("rank " + c.rank + "."));
+        return this.subtract(c, a);
+    };
+    NDArrayMath.prototype.arrayMinusScalar = function (a, c) {
+        util.assert(c.size === 1, "Error in arrayMinusScalar: second argument must be rank 0, but " +
+            ("got rank " + c.rank + "."));
+        return this.subtract(a, c);
+    };
+    NDArrayMath.prototype.neg = function (a) {
+        var _this = this;
+        return this.executeOp('neg', function () { return _this.negInternal(a); });
+    };
+    NDArrayMath.prototype.add = function (a, b) {
+        var _this = this;
+        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
+        return this.executeOp('add', function () { return _this.addInternal(a, b); });
+    };
+    NDArrayMath.prototype.addStrict = function (a, b) {
+        util.assertShapesMatch(a.shape, b.shape, 'Error in addStrict: ');
+        return this.add(a, b);
+    };
+    NDArrayMath.prototype.subtract = function (a, b) {
+        var _this = this;
+        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
+        return this.executeOp('subtract', function () { return _this.subtractInternal(a, b); });
+    };
+    NDArrayMath.prototype.sub = function (a, b) {
+        return this.subtract(a, b);
+    };
+    NDArrayMath.prototype.subStrict = function (a, b) {
+        util.assertShapesMatch(a.shape, b.shape, 'Error in subStrict: ');
+        return this.subtract(a, b);
+    };
+    NDArrayMath.prototype.multiply = function (a, b) {
+        var _this = this;
+        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
+        return this.executeOp('multiply', function () { return _this.multiplyInternal(a, b); });
+    };
+    NDArrayMath.prototype.elementWiseMul = function (a, b) {
+        return this.multiplyStrict(a, b);
+    };
+    NDArrayMath.prototype.multiplyStrict = function (a, b) {
+        util.assertShapesMatch(a.shape, b.shape, 'Error in multiplyStrict: ');
+        return this.multiply(a, b);
+    };
+    NDArrayMath.prototype.divide = function (a, b) {
+        var _this = this;
+        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
+        return this.executeOp('divide', function () { return _this.divideInternal(a, b); });
+    };
+    NDArrayMath.prototype.divideStrict = function (a, b) {
+        util.assertShapesMatch(a.shape, b.shape, 'Error in divideStrict: ');
+        return this.divide(a, b);
+    };
+    NDArrayMath.prototype.scalarDividedByArray = function (c, a) {
+        util.assert(c.size === 1, "Error in scalarDividedByArray: first argument must be rank 0, but " +
+            ("got NDArray of rank " + c.rank + "."));
+        return this.divide(c, a);
+    };
+    NDArrayMath.prototype.arrayDividedByScalar = function (a, c) {
+        util.assert(c.size === 1, "Error in arrayDividedByScalar: second argument must be rank 0, " +
+            ("but got NDArray of rank " + c.rank + "."));
+        return this.divide(a, c);
+    };
+    NDArrayMath.prototype.ceil = function (ndarray) {
+        var _this = this;
+        return this.executeOp('ceil', function () { return _this.ceilInternal(ndarray); });
+    };
+    NDArrayMath.prototype.floor = function (ndarray) {
+        var _this = this;
+        return this.executeOp('floor', function () { return _this.floorInternal(ndarray); });
+    };
+    NDArrayMath.prototype.exp = function (ndarray) {
+        var _this = this;
+        return this.executeOp('exp', function () { return _this.expInternal(ndarray); });
+    };
+    NDArrayMath.prototype.log = function (ndarray) {
+        var _this = this;
+        return this.executeOp('log', function () { return _this.logInternal(ndarray); });
+    };
+    NDArrayMath.prototype.sqrt = function (ndarray) {
+        var _this = this;
+        return this.executeOp('sqrt', function () { return _this.sqrtInternal(ndarray); });
+    };
+    NDArrayMath.prototype.square = function (x) {
+        var _this = this;
+        return this.executeOp('square', function () { return _this.squareInternal(x); });
+    };
+    NDArrayMath.prototype.abs = function (ndarray) {
+        var _this = this;
+        return this.executeOp('abs', function () { return _this.absInternal(ndarray); });
+    };
+    NDArrayMath.prototype.clip = function (ndarray, min, max) {
+        var _this = this;
+        util.assert((min <= max), "Error in clip: min (" + min + ") must be" +
+            ("less than or equal to max (" + max + ")."));
+        return this.executeOp('clip', function () { return _this.clipInternal(ndarray, min, max); });
+    };
+    NDArrayMath.prototype.relu = function (ndarray) {
+        var _this = this;
+        return this.executeOp('relu', function () { return _this.reluInternal(ndarray); });
+    };
+    NDArrayMath.prototype.elu = function (ndarray) {
+        var _this = this;
+        return this.executeOp('elu', function () { return _this.eluInternal(ndarray); });
+    };
+    NDArrayMath.prototype.leakyRelu = function (ndarray, alpha) {
+        var _this = this;
+        if (alpha === void 0) { alpha = 0.2; }
+        return this.executeOp('leakyRelu', function () { return _this.leakyReluInternal(ndarray, alpha); });
+    };
+    NDArrayMath.prototype.sigmoid = function (ndarray) {
+        var _this = this;
+        return this.executeOp('sigmoid', function () { return _this.sigmoidInternal(ndarray); });
+    };
+    NDArrayMath.prototype.sin = function (ndarray) {
+        var _this = this;
+        return this.executeOp('sin', function () { return _this.sinInternal(ndarray); });
+    };
+    NDArrayMath.prototype.cos = function (ndarray) {
+        var _this = this;
+        return this.executeOp('cos', function () { return _this.cosInternal(ndarray); });
+    };
+    NDArrayMath.prototype.tan = function (ndarray) {
+        var _this = this;
+        return this.executeOp('tan', function () { return _this.tanInternal(ndarray); });
+    };
+    NDArrayMath.prototype.asin = function (ndarray) {
+        var _this = this;
+        return this.executeOp('asin', function () { return _this.asinInternal(ndarray); });
+    };
+    NDArrayMath.prototype.acos = function (ndarray) {
+        var _this = this;
+        return this.executeOp('acos', function () { return _this.acosInternal(ndarray); });
+    };
+    NDArrayMath.prototype.atan = function (ndarray) {
+        var _this = this;
+        return this.executeOp('atan', function () { return _this.atanInternal(ndarray); });
+    };
+    NDArrayMath.prototype.sinh = function (ndarray) {
+        var _this = this;
+        return this.executeOp('sinh', function () { return _this.sinhInternal(ndarray); });
+    };
+    NDArrayMath.prototype.cosh = function (ndarray) {
+        var _this = this;
+        return this.executeOp('cosh', function () { return _this.coshInternal(ndarray); });
+    };
+    NDArrayMath.prototype.tanh = function (ndarray) {
+        var _this = this;
+        return this.executeOp('tanh', function () { return _this.tanhInternal(ndarray); });
+    };
+    NDArrayMath.prototype.step = function (ndarray, alpha) {
+        var _this = this;
+        if (alpha === void 0) { alpha = 0.0; }
+        return this.executeOp('step', function () { return _this.stepInternal(ndarray, alpha); });
+    };
+    NDArrayMath.prototype.scaledArrayAdd = function (c1, a, c2, b) {
+        var _this = this;
+        util.assert(c1.size === 1, "Error in scaledArrayAdd: first argument must rank 0, but got " +
+            (" rank " + c1.rank + "."));
+        util.assert(c2.size === 1, "Error in scaledArrayAdd: third argument must be rank 0, but got " +
+            ("NDArray of rank " + c2.rank + "."));
+        util.assertShapesMatch(a.shape, b.shape, 'Error in scaledArrayAdd: ');
+        return this.executeOp('scaledArrayAdd', function () { return _this.scaledArrayAddInternal(c1, a, c2, b); });
+    };
+    NDArrayMath.prototype.scalarTimesArray = function (c, a) {
+        util.assert(c.size === 1, "Error in arrayDividedByScalar: first argument must be rank 0, but " +
+            ("got rank " + c.rank + "."));
+        return this.multiply(c, a);
+    };
+    NDArrayMath.prototype.elementWiseMulBroadcast = function (a, b) {
+        util.assert(a.rank === 2, "Error in elementWiseMulBroadcast: first argument must be " +
+            ("rank 2, but got rank " + a.rank + "."));
+        util.assert(b.rank === 2, "Error in elementWiseMulBroadcast: second argument must be " +
+            ("rank 2, but got rank " + b.rank + "."));
+        return this.multiply(a, b);
+    };
+    NDArrayMath.prototype.conv2d = function (x, filter, bias, strides, pad) {
+        var _this = this;
+        util.assert(x.rank === 3, "Error in conv2d: x must be rank 3, but got rank " + x.rank + ".");
+        util.assert(filter.rank === 4, "Error in conv2d: filter must be rank 4, but got rank " +
+            (filter.rank + "."));
+        if (bias != null) {
+            util.assert(bias.rank === 1, "Error in conv2d: bias must be rank 1, but got rank " +
+                (bias.rank + "."));
+        }
+        util.assert(x.shape[2] === filter.shape[2], "Error in conv2d: depth of input (" + x.shape[2] + ") must match  " +
+            ("input depth for filter " + filter.shape[2] + "."));
+        var filterHeight = filter.shape[0];
+        var filterWidth = filter.shape[1];
+        var outDepth = filter.shape[3];
+        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('conv2d', function () { return _this.conv2dInternal(x, filter, bias, convInfo); });
+    };
+    NDArrayMath.prototype.conv2dBackProp = function (x, dy, filter, strides, pad) {
+        var dw = this.conv2dDerFilter(x, dy, filter.shape, strides, pad);
+        var db = this.conv2dDerBias(dy);
+        var dx = this.conv2dDerInput(x.shape, dy, filter, strides, pad);
+        return { db: db, dw: dw, dx: dx };
+    };
+    NDArrayMath.prototype.conv2dDerInput = function (inShape, dy, filter, strides, pad) {
+        var _this = this;
+        var inDepth = inShape[2];
+        var outDepth = dy.shape[2];
+        util.assert(inShape.length === 3, "Error in conv2dDerInput: x must be rank 3, but got rank " +
+            (inShape.length + "."));
+        util.assert(dy.rank === 3, "Error in conv2dDerInput: dy must be rank 3, but got " +
+            ("rank " + dy.rank));
+        util.assert(filter.rank === 4, "Error in conv2dDerInput: filter must be rank 4, but got " +
+            ("rank " + filter.rank));
+        util.assert(inDepth === filter.shape[2], "Error in conv2dDerInput: depth of input (" + inDepth + ") must " +
+            ("match input depth for filter " + filter.shape[2] + "."));
+        util.assert(outDepth === filter.shape[3], "Error in conv2dDerInput: depth of output (" + outDepth + ") must" +
+            ("match output depth for filter " + filter.shape[3] + "."));
+        var filterHeight = filter.shape[0];
+        var filterWidth = filter.shape[1];
+        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
+        var convInfo = conv_util.computeConv2DInfo(inShape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('conv2dDerInput', function () { return _this.conv2dDerInputInternal(dy, filter, convInfo); });
+    };
+    NDArrayMath.prototype.conv2dDerBias = function (dy) {
+        return this.track(this.conv2dDerBiasInternal(dy));
+    };
+    NDArrayMath.prototype.conv2dDerFilter = function (x, dy, filterSize, strides, pad) {
+        util.assert(x.rank === 3, "Error in conv2dDerFilter: x must be rank 3, but got shape " +
+            (x.shape + "."));
+        util.assert(dy.rank === 3, "Error in conv2dDerFilter: dy must be rank 3, but got shape " +
+            (dy.shape + "."));
+        util.assert(filterSize.length === 4, "Error in conv2dDerFilter: filterSize must be length 4, but got " +
+            (filterSize + "."));
+        util.assert(x.shape[2] === filterSize[2], "Error in conv2dDerFilter: depth of x " + x.shape[2] + ") must " +
+            ("match input depth in filter (" + filterSize[2] + "."));
+        util.assert(dy.shape[2] === filterSize[3], "Error in conv2dDerFilter: depth of dy (" + dy.shape[2] + ") must " +
+            ("match output depth for filter (" + filterSize[3] + ")."));
+        var filterHeight = filterSize[0];
+        var filterWidth = filterSize[1];
+        var outDepth = filterSize[3];
+        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.track(this.conv2dDerFilterInternal(x, dy, convInfo));
+    };
+    NDArrayMath.prototype.conv2dTranspose = function (x, filter, outputShape, strides, pad) {
+        return this.conv2dDerInput(outputShape, x, filter, strides, pad);
+    };
+    NDArrayMath.prototype.depthwiseConv2D = function (input, filter, strides, pad, rates) {
+        var _this = this;
+        if (rates === void 0) { rates = [1, 1]; }
+        var input4D = input;
+        var reshapedTo4D = false;
+        if (input.rank === 3) {
+            reshapedTo4D = true;
+            input4D = input.as4D(1, input.shape[0], input.shape[1], input.shape[2]);
+        }
+        util.assert(input4D.rank === 4, "Error in depthwiseConv2D: input must be rank 4, but got " +
+            ("rank " + input4D.rank + "."));
+        util.assert(filter.rank === 4, "Error in depthwiseConv2D: filter must be rank 4, but got rank " +
+            (filter.rank + "."));
+        util.assert(input4D.shape[3] === filter.shape[2], "Error in depthwiseConv2D: number of input channels " +
+            ("(" + input4D.shape[3] + ") must match the inChannels dimension in ") +
+            ("filter " + filter.shape[2] + "."));
+        rates = rates || [1, 1];
+        var _a = parseTupleParam(rates), rateHeight = _a[0], rateWidth = _a[1];
+        util.assert(rateHeight === 1 && rateWidth === 1, 'Error in depthwiseConv2D: rates greater than 1 are not yet ' +
+            ("supported. Got rates '" + rates + "'"));
+        var convInfo = conv_util.computeDepthwiseConv2DInfo(input4D.shape, filter.shape, strides, pad);
+        return this.executeOp('depthwiseConv2D', function () {
+            var res = _this.depthwiseConv2DInternal(input4D, filter, convInfo);
+            if (reshapedTo4D) {
+                return res.as3D(res.shape[1], res.shape[2], res.shape[3]);
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.maxPool = function (x, filterSize, strides, pad) {
+        var _this = this;
+        util.assert(x.rank === 3, "Error in maxPool: x must be rank 3 but got rank " + x.rank + ".");
+        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
+        var outDepth = x.shape[2];
+        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('maxPool', function () { return _this.maxPoolInternal(x, convInfo); });
+    };
+    NDArrayMath.prototype.maxPoolBackprop = function (dy, x, filterSize, strides, pad) {
+        var _this = this;
+        util.assert(dy.rank === 3, "Error in maxPoolBackprop: dy must be rank 3 but got rank " +
+            (dy.rank + "."));
+        util.assert(x.rank === 3, "Error in maxPoolBackprop: x must be rank 3 but got rank " +
+            (x.rank + "."));
+        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
+        var outDepth = x.shape[2];
+        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('maxPoolBackprop', function () { return _this.maxPoolBackpropInternal(dy, x, convInfo); });
+    };
+    NDArrayMath.prototype.minPool = function (x, filterSize, strides, pad) {
+        var _this = this;
+        util.assert(x.rank === 3, "Error in minPool: x must be rank 3 but got rank " + x.rank + ".");
+        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
+        var outDepth = x.shape[2];
+        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('minPool', function () { return _this.minPoolInternal(x, convInfo); });
+    };
+    NDArrayMath.prototype.avgPool = function (x, filterSize, strides, pad) {
+        var _this = this;
+        util.assert(x.rank === 3, "Error in avgPool: x must be rank 3 but got rank " + x.rank + ".");
+        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
+        var outDepth = x.shape[2];
+        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
+        var convInfo = conv_util.computeConv2DInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
+        return this.executeOp('avgPool', function () { return _this.avgPoolInternal(x, convInfo); });
+    };
+    NDArrayMath.prototype.resizeBilinear3D = function (x, newShape2D, alignCorners) {
+        var _this = this;
+        if (alignCorners === void 0) { alignCorners = false; }
+        util.assert(x.rank === 3, "Error in resizeBilinear3D: x must be rank 3 but got rank " + x.rank + ".");
+        util.assert(newShape2D.length === 2, "Error in resizeBilinear3D: new shape must 2D, but got shape " +
+            (newShape2D + "."));
+        return this.executeOp('resizeBilinear3D', function () { return _this.resizeBilinear3DInternal(x, newShape2D, alignCorners); });
+    };
+    NDArrayMath.prototype.batchNormalization2D = function (x, mean, variance, varianceEpsilon, scale, offset) {
+        var _this = this;
+        if (varianceEpsilon === void 0) { varianceEpsilon = .001; }
+        util.assert(x.rank === 2, "Error in batchNormalization3D: x must be rank 3 but got rank " +
+            (x.rank + "."));
+        util.assert(mean.rank === 2 || mean.rank === 1, "Error in batchNormalization2D: mean must be rank 2 or rank 1 but " +
+            ("got rank " + mean.rank + "."));
+        util.assert(variance.rank === 2 || variance.rank === 1, "Error in batchNormalization2D: variance must be rank 2 or rank 1 " +
+            ("but got rank " + variance.rank + "."));
+        if (scale != null) {
+            util.assert(scale.rank === 2 || scale.rank === 1, "Error in batchNormalization2D: scale must be rank 2 or rank 1 " +
+                ("but got rank " + scale.rank + "."));
+        }
+        if (offset != null) {
+            util.assert(offset.rank === 2 || offset.rank === 1, "Error in batchNormalization2D: offset must be rank 2 or rank 1 " +
+                ("but got rank " + offset.rank + "."));
+        }
+        return this.executeOp('batchNorm2D', function () { return _this.batchNormalization2DInternal(x, mean, variance, varianceEpsilon, scale, offset); });
+    };
+    NDArrayMath.prototype.batchNormalization3D = function (x, mean, variance, varianceEpsilon, scale, offset) {
+        var _this = this;
+        if (varianceEpsilon === void 0) { varianceEpsilon = .001; }
+        util.assert(x.rank === 3, "Error in batchNormalization3D: x must be rank 3 but got rank " +
+            (x.rank + "."));
+        util.assert(mean.rank === 3 || mean.rank === 1, "Error in batchNormalization3D: mean must be rank 3 or rank 1 but " +
+            ("got rank " + mean.rank + "."));
+        util.assert(variance.rank === 3 || variance.rank === 1, "Error in batchNormalization3D: variance must be rank 3 or rank 1 " +
+            ("but got rank " + variance.rank + "."));
+        if (scale != null) {
+            util.assert(scale.rank === 3 || scale.rank === 1, "Error in batchNormalization3D: scale must be rank 3 or rank 1 " +
+                ("but got rank " + scale.rank + "."));
+        }
+        if (offset != null) {
+            util.assert(offset.rank === 3 || offset.rank === 1, "Error in batchNormalization3D: offset must be rank 3 or rank 1 " +
+                ("but got rank " + offset.rank + "."));
+        }
+        return this.executeOp('batchNorm3D', function () { return _this.batchNormalization3DInternal(x, mean, variance, varianceEpsilon, scale, offset); });
+    };
+    NDArrayMath.prototype.multiRNNCell = function (lstmCells, data, c, h) {
+        var res = this.scope(function () {
+            var input = data;
+            var newStates = [];
+            for (var i = 0; i < lstmCells.length; i++) {
+                var output = lstmCells[i](input, c[i], h[i]);
+                newStates.push(output[0]);
+                newStates.push(output[1]);
+                input = output[1];
+            }
+            return newStates;
+        });
+        var newC = [];
+        var newH = [];
+        for (var i = 0; i < res.length; i += 2) {
+            newC.push(res[i]);
+            newH.push(res[i + 1]);
+        }
+        return [newC, newH];
+    };
+    NDArrayMath.prototype.basicLSTMCell = function (forgetBias, lstmKernel, lstmBias, data, c, h) {
+        var _this = this;
+        var res = this.scope(function () {
+            var combined = _this.concat2D(data, h, 1);
+            var weighted = _this.matMul(combined, lstmKernel);
+            var res = _this.add(weighted, lstmBias);
+            var batchSize = res.shape[0];
+            var sliceCols = res.shape[1] / 4;
+            var sliceSize = [batchSize, sliceCols];
+            var i = _this.slice2D(res, [0, 0], sliceSize);
+            var j = _this.slice2D(res, [0, sliceCols], sliceSize);
+            var f = _this.slice2D(res, [0, sliceCols * 2], sliceSize);
+            var o = _this.slice2D(res, [0, sliceCols * 3], sliceSize);
+            var newC = _this.addStrict(_this.multiplyStrict(c, _this.sigmoid(_this.scalarPlusArray(forgetBias, f))), _this.multiplyStrict(_this.sigmoid(i), _this.tanh(j)));
+            var newH = _this.multiplyStrict(_this.tanh(newC), _this.sigmoid(o));
+            return [newC, newH];
+        });
+        return [res[0], res[1]];
+    };
+    NDArrayMath.prototype.multinomial = function (probabilities, numSamples, seed) {
+        var _this = this;
+        var numOutcomes = probabilities.size;
+        if (numOutcomes < 2) {
+            throw new Error("Error in multinomial: you need at least 2 outcomes, but got " +
+                (numOutcomes + "."));
+        }
+        if (probabilities.rank > 2) {
+            throw new Error("Rank of probabilities must be 1 or 2, but is " + probabilities.rank);
+        }
+        seed = seed || Math.random();
+        var origRank = probabilities.rank;
+        if (probabilities.rank === 1) {
+            probabilities = probabilities.as2D(1, -1);
+        }
+        return this.executeOp('multinomial', function () {
+            var res = _this.multinomialInternal(probabilities, numSamples, seed);
+            if (origRank === 1) {
+                return res.as1D();
+            }
+            return res;
+        });
+    };
+    NDArrayMath.prototype.oneHot = function (indices, depth, onValue, offValue) {
+        var _this = this;
+        if (onValue === void 0) { onValue = 1; }
+        if (offValue === void 0) { offValue = 0; }
+        if (depth < 2) {
+            throw new Error("Error in oneHot: depth must be >=2, but it is " + depth);
+        }
+        return this.executeOp('oneHot', function () { return _this.oneHotInternal(indices, depth, onValue, offValue); });
+    };
+    NDArrayMath.prototype.moments = function (x, axis, keepDims) {
+        var _this = this;
+        if (axis === void 0) { axis = null; }
+        if (keepDims === void 0) { keepDims = false; }
+        var axes = axis_util.parseAxisParam(axis, x.shape);
+        var result = this.scope(function () {
+            var mean = _this.mean(x, axes, keepDims);
+            var keepDimsShape = mean.shape;
+            if (!keepDims) {
+                keepDimsShape = axis_util.expandShapeToKeepDim(mean.shape, axes);
+            }
+            var devSquared = _this.square(_this.subtract(x, mean.reshape(keepDimsShape)));
+            var variance = _this.mean(devSquared, axes, keepDims);
+            return { mean: mean, variance: variance };
+        });
+        return result;
+    };
+    return NDArrayMath;
+}());
+exports.NDArrayMath = NDArrayMath;
+var MatrixOrientation;
+(function (MatrixOrientation) {
+    MatrixOrientation[MatrixOrientation["REGULAR"] = 0] = "REGULAR";
+    MatrixOrientation[MatrixOrientation["TRANSPOSED"] = 1] = "TRANSPOSED";
+})(MatrixOrientation = exports.MatrixOrientation || (exports.MatrixOrientation = {}));
+function parseTupleParam(param) {
+    return typeof param === 'number' ? [param, param] : param;
+}
+//# sourceMappingURL=math.js.map
+
+/***/ }),
+/* 58 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var MAX_TEXTURE_SIZE = null;
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var environment_1 = __webpack_require__(32);
 function createWebGLRenderingContext(attributes) {
     var canvas = document.createElement('canvas');
@@ -3416,18 +4441,13 @@ function validateTextureUnit(gl, textureUnit) {
         throw new Error("textureUnit must be in " + textureUnitRange + ".");
     }
 }
-function getTextureShapeFromLogicalShape(gl, logShape, preferredTexShape) {
+function getTextureShapeFromLogicalShape(gl, logShape) {
+    if (logShape.length !== 2) {
+        var squeezeResult = util.squeezeShape(logShape);
+        logShape = squeezeResult.newShape;
+    }
     var maxTexSize = queryMaxTextureSize(gl);
     var size = util.sizeFromShape(logShape);
-    if (preferredTexShape != null) {
-        var sizePreferred = util.sizeFromShape(preferredTexShape);
-        util.assert(size === sizePreferred, "Size of shape (" + size + ") must match size of " +
-            ("preferredShape (" + sizePreferred + ")"));
-        if (preferredTexShape[0] <= maxTexSize &&
-            preferredTexShape[1] <= maxTexSize) {
-            return preferredTexShape;
-        }
-    }
     if (logShape.length <= 1 && size <= maxTexSize) {
         return [size, 1];
     }
@@ -3451,7 +4471,7 @@ exports.getTextureShapeFromLogicalShape = getTextureShapeFromLogicalShape;
 //# sourceMappingURL=webgl_util.js.map
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports) {
 
 /* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {/* globals __webpack_amd_options__ */
@@ -3460,7 +4480,7 @@ module.exports = __webpack_amd_options__;
 /* WEBPACK VAR INJECTION */}.call(exports, {}))
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -3488,7 +4508,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // getting tag from 19.1.3.6 Object.prototype.toString()
@@ -3517,7 +4537,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
@@ -3529,14 +4549,14 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, exports) {
 
 exports.f = {}.propertyIsEnumerable;
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3552,11 +4572,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var initializers_1 = __webpack_require__(151);
+var initializers_1 = __webpack_require__(152);
 var concat_util = __webpack_require__(65);
-var conv_util = __webpack_require__(50);
+var conv_util = __webpack_require__(51);
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var GraphLayers = (function () {
     function GraphLayers(g) {
         this.g = g;
@@ -3652,6 +4672,9 @@ var Graph = (function () {
     };
     Graph.prototype.relu = function (x) {
         return this.addNodeAndReturnOutput(new ReLUNode(this, x));
+    };
+    Graph.prototype.leakyRelu = function (x, alpha) {
+        return this.addNodeAndReturnOutput(new LeakyReLUNode(this, x, alpha));
     };
     Graph.prototype.tanh = function (x) {
         return this.addNodeAndReturnOutput(new TanHNode(this, x));
@@ -4002,6 +5025,18 @@ var ReLUNode = (function (_super) {
     return ReLUNode;
 }(Node));
 exports.ReLUNode = ReLUNode;
+var LeakyReLUNode = (function (_super) {
+    __extends(LeakyReLUNode, _super);
+    function LeakyReLUNode(graph, x, alpha) {
+        var _this = _super.call(this, graph, 'LeakyReLU', { x: x }, new Tensor(x.shape)) || this;
+        _this.alpha = alpha;
+        return _this;
+    }
+    LeakyReLUNode.prototype.validate = function () { };
+    LeakyReLUNode.X = 'x';
+    return LeakyReLUNode;
+}(Node));
+exports.LeakyReLUNode = LeakyReLUNode;
 var ExpNode = (function (_super) {
     __extends(ExpNode, _super);
     function ExpNode(graph, x) {
@@ -4135,102 +5170,13 @@ exports.ArgMaxEqualsNode = ArgMaxEqualsNode;
 //# sourceMappingURL=graph.js.map
 
 /***/ }),
-/* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var xhr_dataset = __webpack_require__(146);
-exports.xhr_dataset = xhr_dataset;
-var environment = __webpack_require__(32);
-exports.environment = environment;
-var conv_util = __webpack_require__(50);
-exports.conv_util = conv_util;
-var gpgpu_util = __webpack_require__(109);
-exports.gpgpu_util = gpgpu_util;
-var render_ndarray_gpu_util = __webpack_require__(418);
-exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
-var webgl_util = __webpack_require__(57);
-exports.webgl_util = webgl_util;
-var test_util = __webpack_require__(424);
-exports.test_util = test_util;
-var util = __webpack_require__(3);
-exports.util = util;
-var version_1 = __webpack_require__(425);
-exports.version = version_1.version;
-var checkpoint_loader_1 = __webpack_require__(369);
-exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
-var dataset_1 = __webpack_require__(145);
-exports.InMemoryDataset = dataset_1.InMemoryDataset;
-var input_provider_1 = __webpack_require__(370);
-exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
-exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
-var xhr_dataset_1 = __webpack_require__(146);
-exports.XhrDataset = xhr_dataset_1.XhrDataset;
-var environment_1 = __webpack_require__(32);
-exports.ENV = environment_1.ENV;
-exports.Environment = environment_1.Environment;
-var graph_1 = __webpack_require__(63);
-exports.Graph = graph_1.Graph;
-exports.Tensor = graph_1.Tensor;
-var adadelta_optimizer_1 = __webpack_require__(391);
-exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
-var adagrad_optimizer_1 = __webpack_require__(392);
-exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
-var adam_optimizer_1 = __webpack_require__(393);
-exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
-var adamax_optimizer_1 = __webpack_require__(394);
-exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
-var momentum_optimizer_1 = __webpack_require__(395);
-exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
-var optimizer_1 = __webpack_require__(49);
-exports.Optimizer = optimizer_1.Optimizer;
-var rmsprop_optimizer_1 = __webpack_require__(396);
-exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
-var sgd_optimizer_1 = __webpack_require__(147);
-exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
-var session_1 = __webpack_require__(149);
-exports.CostReduction = session_1.CostReduction;
-exports.Session = session_1.Session;
-var graph_runner_1 = __webpack_require__(397);
-exports.GraphRunner = graph_runner_1.GraphRunner;
-exports.MetricReduction = graph_runner_1.MetricReduction;
-var initializers_1 = __webpack_require__(151);
-exports.ConstantInitializer = initializers_1.ConstantInitializer;
-exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
-exports.OnesInitializer = initializers_1.OnesInitializer;
-exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
-exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
-exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
-exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
-exports.ZerosInitializer = initializers_1.ZerosInitializer;
-var math_1 = __webpack_require__(66);
-exports.MatrixOrientation = math_1.MatrixOrientation;
-exports.NDArrayMath = math_1.NDArrayMath;
-var math_cpu_1 = __webpack_require__(153);
-exports.NDArrayMathCPU = math_cpu_1.NDArrayMathCPU;
-var math_gpu_1 = __webpack_require__(154);
-exports.NDArrayMathGPU = math_gpu_1.NDArrayMathGPU;
-var ndarray_1 = __webpack_require__(6);
-exports.Array1D = ndarray_1.Array1D;
-exports.Array2D = ndarray_1.Array2D;
-exports.Array3D = ndarray_1.Array3D;
-exports.Array4D = ndarray_1.Array4D;
-exports.NDArray = ndarray_1.NDArray;
-exports.Scalar = ndarray_1.Scalar;
-var gpgpu_context_1 = __webpack_require__(156);
-exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
-//# sourceMappingURL=index.js.map
-
-/***/ }),
 /* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 function assertParams(aShape, bShape, axis) {
     var aRank = aShape.length;
     var bRank = bShape.length;
@@ -4260,790 +5206,340 @@ exports.computeOutShape = computeOutShape;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
+var environment_1 = __webpack_require__(32);
+var util = __webpack_require__(4);
 var broadcast_util = __webpack_require__(56);
-var concat_util = __webpack_require__(65);
-var conv_util = __webpack_require__(50);
-var copy2d_util = __webpack_require__(152);
-var ndarray_1 = __webpack_require__(6);
-var slice_util = __webpack_require__(400);
-var SumTypesMap;
-(function (SumTypesMap) {
-    SumTypesMap["float32"] = "float32";
-    SumTypesMap["int32"] = "int32";
-    SumTypesMap["bool"] = "int32";
-})(SumTypesMap = exports.SumTypesMap || (exports.SumTypesMap = {}));
-var NDArrayMath = (function () {
-    function NDArrayMath(safeMode) {
-        this.safeMode = safeMode;
-        this.ndarrayScopes = [];
-        this.ndarraysToKeep = [];
-        this.activeScopeNDArraysToKeep = [];
-        this.debugMode = false;
+var tex_util = __webpack_require__(67);
+var tex_util_1 = __webpack_require__(67);
+function makeShader(inputsInfo, outputShape, userCode, broadcast) {
+    var sampleSnippet = getSampleSnippet();
+    var setOutputSnippet = getSetOutputSnippet();
+    var inputPrefixSnippet = inputsInfo.map(function (x) { return "uniform sampler2D " + x.name + ";"; }).join('\n');
+    var inputSamplingSnippet = inputsInfo.map(function (x) { return getInputSamplingSnippet(x, outputShape, broadcast); })
+        .join('\n');
+    var outTexShape = outputShape.texShape;
+    var outputSamplingSnippet = getOutputSamplingSnippet(outputShape.logicalShape, outTexShape);
+    var source = [
+        SHADER_PREFIX, sampleSnippet, setOutputSnippet, inputPrefixSnippet,
+        outputSamplingSnippet, inputSamplingSnippet, userCode
+    ].join('\n');
+    return source;
+}
+exports.makeShader = makeShader;
+function getSampleSnippet() {
+    return environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED') ?
+        FLOAT_TEXTURE_SAMPLE_SNIPPET :
+        UNSIGNED_BYTE_TEXTURE_SAMPLE_SNIPPET;
+}
+function getSetOutputSnippet() {
+    return environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED') ?
+        FLOAT_TEXTURE_SETOUTPUT_SNIPPET :
+        UNSIGNED_BYTE_TEXTURE_SETOUTPUT_SNIPPET;
+}
+function getSamplerFromInInfo(inInfo) {
+    var shape = inInfo.shapeInfo.logicalShape;
+    switch (shape.length) {
+        case 0:
+            return getSamplerScalar(inInfo);
+        case 1:
+            return getSampler1D(inInfo);
+        case 2:
+            return getSampler2D(inInfo);
+        case 3:
+            return getSampler3D(inInfo);
+        case 4:
+            return getSampler4D(inInfo);
+        default:
+            throw new Error(shape.length + "-D input sampling" +
+                " is not yet supported");
     }
-    NDArrayMath.prototype.scope = function (scopeFn) {
-        var _this = this;
-        this.startScope();
-        var keepFn = function (ndarray) { return _this.keep(ndarray); };
-        var trackFn = function (ndarray) { return _this.track(ndarray); };
-        var result = scopeFn(keepFn, trackFn);
-        if (result instanceof Promise) {
-            result.then(function (r) { return _this.endScope(r); });
-            return result;
+}
+function getInputSamplingSnippet(inInfo, outShapeInfo, broadcast) {
+    var res = getSamplerFlat(inInfo);
+    res += getSamplerFromInInfo(inInfo);
+    if (broadcast ||
+        util.arraysEqual(inInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape)) {
+        res += getSamplerAtOutputCoords(inInfo, outShapeInfo, broadcast);
+    }
+    return res;
+}
+function getOutputSamplingSnippet(outShape, outTexShape) {
+    switch (outShape.length) {
+        case 0:
+            return getOutputScalarCoords();
+        case 1:
+            return getOutput1DCoords(outShape, outTexShape);
+        case 2:
+            return getOutput2DCoords(outShape, outTexShape);
+        case 3:
+            return getOutput3DCoords(outShape, outTexShape);
+        case 4:
+            return getOutput4DCoords(outShape, outTexShape);
+        default:
+            throw new Error(outShape.length + "-D output sampling is not yet supported");
+    }
+}
+var SAMPLE_1D_SNIPPET = "\nvec2 UVfrom1D(int texNumR, int texNumC, int index) {\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
+var SAMPLE_2D_SNIPPET = "\nvec2 UVfrom2D(int texNumR, int texNumC, int numC, int row, int col) {\n  int index = row * numC + col;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
+var SAMPLE_3D_SNIPPET = "\nvec2 UVfrom3D(int texNumR, int texNumC, int stride0,\n    int stride1, int row, int col, int depth) {\n  // Explicitly use integer operations as dot() only works on floats.\n  int index = row * stride0 + col * stride1 + depth;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
+var SAMPLE_4D_SNIPPET = "\nvec2 UVfrom4D(int texNumR, int texNumC, int stride0,\n    int stride1, int stride2, int row, int col, int depth,\n    int depth2) {\n  // Explicitly use integer operations as dot() only works on floats.\n  int index = row * stride0 + col * stride1 + depth * stride2 + depth2;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
+var UNSIGNED_BYTE_TEXTURE_SAMPLE_SNIPPET = "\n  uniform float NaN;\n\n  const vec4 floatDeltas = vec4(\n      1.0,\n      1.0 / 255.0,\n      1.0 / (255.0 * 255.0),\n      1.0 / (255.0 * 255.0 * 255.0)\n  );\n  const float minValue = " + tex_util.FLOAT_MIN + ".0;\n  const float maxValue = " + tex_util.FLOAT_MAX + ".0;\n  const float range = (maxValue - minValue) / 255.0;\n  const vec2 dotRange = vec2(1.0, range);\n\n  float sample(sampler2D texture, vec2 uv) {\n    vec4 sampleValue = texture2D(texture, uv);\n    if (all(equal(sampleValue, vec4(" + tex_util.BYTE_NAN_VALUE + ")))) {\n      return NaN;\n    }\n\n    vec4 encValue = floor(sampleValue * 255.0 + 0.5);\n    float decodedValue = dot(encValue, floatDeltas);\n    return dot(vec2(minValue, decodedValue), dotRange);\n  }\n";
+var UNSIGNED_BYTE_TEXTURE_SETOUTPUT_SNIPPET = "\n  const vec4 floatPowers = vec4(\n    1.0,\n    255.0,\n    255.0 * 255.0,\n    255.0 * 255.0 * 255.0\n  );\n  const vec2 recipRange = vec2(1.0/range);\n  const vec2 recipRange255 = vec2(1.0/(maxValue - minValue));\n\n  void setOutput(float decodedValue) {\n    if (isNaN(decodedValue)) {\n      gl_FragColor = vec4(" + tex_util.BYTE_NAN_VALUE + ");\n      return;\n    }\n\n    float a = dot(vec2(decodedValue, -minValue), recipRange);\n    float b = fract(a) * 255.0;\n    float c = fract(b) * 255.0;\n    float d = fract(c) * 255.0;\n    gl_FragColor = floor(vec4(a, b, c, d)) / 255.0;\n\n    // TODO(dsmilkov): Version above gets better accuracy but probably slower\n    // than the version below. Benchmark to determine if the accuracy is worth\n    // the cost.\n\n    // float normValue = dot(vec2(decodedValue, -minValue), recipRange255);\n    // vec4 f = normValue * floatPowers;\n    // gl_FragColor = floor(fract(f) * 255.0) / 255.0;\n  }\n";
+var FLOAT_TEXTURE_SAMPLE_SNIPPET = "\n  float sample(sampler2D texture, vec2 uv) {\n    return texture2D(texture, uv).r;\n  }\n";
+var FLOAT_TEXTURE_SETOUTPUT_SNIPPET = "\n  void setOutput(float val) {\n    gl_FragColor = vec4(val, 0, 0, 0);\n  }\n";
+var SHADER_PREFIX = "\n  precision highp float;\n  precision highp int;\n  varying vec2 resultUV;\n  const vec2 halfCR = vec2(0.5, 0.5);\n\n  bool isNaN(float val) {\n    return val == val ? false : true;\n  }\n\n  bool hasNaN(vec4 values) {\n    return any(notEqual(values, values));\n  }\n\n  float getNaN(vec4 values) {\n    return dot(vec4(1), values);\n  }\n\n  int round(float value) {\n    return int(floor(value + 0.5));\n  }\n\n  int imod(int x, int y) {\n    return x - y * (x / y);\n  }\n\n  const vec2 randomConst = vec2(\n    23.14069263277926, // e^pi (Gelfond's constant)\n     2.665144142690225 // 2^sqrt(2) (Gelfond\u2013Schneider constant)\n  );\n\n  float random(float seed) {\n      return fract(cos(dot(resultUV * seed, randomConst)) * 12345.6789);\n  }\n\n  float sampleUVAndDepth(sampler2D texture, vec2 uv, int depth) {\n    float value;\n    if (depth == 0) {\n      value = texture2D(texture, uv).r;\n    } else if (depth == 1) {\n      value = texture2D(texture, uv).g;\n    } else if (depth == 2) {\n      value = texture2D(texture, uv).b;\n    } else if (depth == 3) {\n      value = texture2D(texture, uv).a;\n    }\n    return floor(value * 255.0 + 0.5);\n  }\n\n  " + SAMPLE_1D_SNIPPET + "\n  " + SAMPLE_2D_SNIPPET + "\n  " + SAMPLE_3D_SNIPPET + "\n  " + SAMPLE_4D_SNIPPET + "\n";
+function getOutputScalarCoords() {
+    return "\n    int getOutputCoords() {\n      return 0;\n    }\n  ";
+}
+function getOutput1DCoords(shape, texShape) {
+    if (texShape[0] === 1) {
+        return "\n      int getOutputCoords() {\n        return int(resultUV.x * " + texShape[1] + ".0);\n      }\n    ";
+    }
+    if (texShape[1] === 1) {
+        return "\n      int getOutputCoords() {\n        return int(resultUV.y * " + texShape[0] + ".0);\n      }\n    ";
+    }
+    return "\n    int getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      return resTexRC.x * " + texShape[1] + " + resTexRC.y;\n    }\n  ";
+}
+function getOutput3DCoords(shape, texShape) {
+    var stride0 = shape[1] * shape[2];
+    var stride1 = shape[2];
+    return "\n    ivec3 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n      int r = index / " + stride0 + ";\n      index -= r * " + stride0 + ";\n      int c = index / " + stride1 + ";\n      int d = index - c * " + stride1 + ";\n      return ivec3(r, c, d);\n    }\n  ";
+}
+function getOutput4DCoords(shape, texShape) {
+    var stride2 = shape[3];
+    var stride1 = shape[2] * stride2;
+    var stride0 = shape[1] * stride1;
+    return "\n    ivec4 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n        vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n\n      int r = index / " + stride0 + ";\n      index -= r * " + stride0 + ";\n\n      int c = index / " + stride1 + ";\n      index -= c * " + stride1 + ";\n\n      int d = index / " + stride2 + ";\n      int d2 = index - d * " + stride2 + ";\n\n      return ivec4(r, c, d, d2);\n    }\n  ";
+}
+function getOutput2DCoords(shape, texShape) {
+    if (util.arraysEqual(shape, texShape)) {
+        return "\n      ivec2 getOutputCoords() {\n        return ivec2(resultUV.yx * vec2(" + texShape[0] + ", " + texShape[1] + "));\n      }\n    ";
+    }
+    if (shape[1] === 1) {
+        return "\n      ivec2 getOutputCoords() {\n        ivec2 resTexRC = ivec2(resultUV.yx *\n                               vec2(" + texShape[0] + ", " + texShape[1] + "));\n        int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n        return ivec2(index, 0);\n      }\n    ";
+    }
+    if (shape[0] === 1) {
+        return "\n      ivec2 getOutputCoords() {\n        ivec2 resTexRC = ivec2(resultUV.yx *\n                               vec2(" + texShape[0] + ", " + texShape[1] + "));\n        int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n        return ivec2(0, index);\n      }\n    ";
+    }
+    return "\n    ivec2 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n      int r = index / " + shape[1] + ";\n      int c = index - r * " + shape[1] + ";\n      return ivec2(r, c);\n    }\n  ";
+}
+function getSamplerScalar(inputInfo) {
+    var texName = inputInfo.name;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
+    return "\n    float " + funcName + "() {\n      return sample(" + texName + ", halfCR);\n    }\n  ";
+}
+function getSampler1D(inputInfo) {
+    var texName = inputInfo.name;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
+    return "\n    float " + funcName + "(int index) {\n      return " + funcName + "Flat(index);\n    }\n  ";
+}
+function getSampler2D(inputInfo) {
+    var shape = inputInfo.shapeInfo.logicalShape;
+    var texShape = inputInfo.shapeInfo.texShape;
+    var texName = inputInfo.name;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
+    var texNumR = texShape[0];
+    var texNumC = texShape[1];
+    if (util.arraysEqual(shape, texShape)) {
+        return "\n    float " + funcName + "(int row, int col) {\n      vec2 uv = (vec2(col, row) + halfCR) / vec2(" + texNumC + ".0, " + texNumR + ".0);\n      return sample(" + texName + ", uv);\n    }\n  ";
+    }
+    var _a = util.squeezeShape(shape), newShape = _a.newShape, keptDims = _a.keptDims;
+    var squeezedShape = newShape;
+    if (squeezedShape.length < shape.length) {
+        var newInputInfo = squeezeInputInfo(inputInfo, squeezedShape);
+        var params = ['row', 'col'];
+        return "\n      " + getSamplerFromInInfo(newInputInfo) + "\n      float " + funcName + "(int row, int col) {\n        return " + funcName + "(" + getSqueezedParams(params, keptDims) + ");\n      }\n    ";
+    }
+    if (texNumC === 1) {
+        return "\n    float " + funcName + "(int row, int col) {\n      int index = row * " + shape[1] + " + col;\n      vec2 uv = vec2(0.5, (float(index) + 0.5) / " + texNumR + ".0);\n      return sample(" + texName + ", uv);\n    }\n  ";
+    }
+    if (texNumR === 1) {
+        return "\n    float " + funcName + "(int row, int col) {\n      int index = row * " + shape[1] + " + col;\n      vec2 uv = vec2((float(index) + 0.5) / " + texNumC + ".0, 0.5);\n      return sample(" + texName + ", uv);\n    }\n  ";
+    }
+    return "\n  float " + funcName + "(int row, int col) {\n    vec2 uv = UVfrom2D(" + texNumR + ", " + texNumC + ", " + shape[1] + ", row, col);\n    return sample(" + texName + ", uv);\n  }\n";
+}
+function getSampler3D(inputInfo) {
+    var texShape = inputInfo.shapeInfo.texShape;
+    var shape = inputInfo.shapeInfo.logicalShape;
+    var texName = inputInfo.name;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
+    var texNumR = texShape[0];
+    var texNumC = texShape[1];
+    var stride0 = shape[1] * shape[2];
+    var stride1 = shape[2];
+    var texType = inputInfo.shapeInfo.textureType;
+    if (texType === tex_util_1.TextureType.DEFAULT) {
+        var _a = util.squeezeShape(shape), newShape = _a.newShape, keptDims = _a.keptDims;
+        var squeezedShape = newShape;
+        if (squeezedShape.length < shape.length) {
+            var newInputInfo = squeezeInputInfo(inputInfo, squeezedShape);
+            var params = ['row', 'col', 'depth'];
+            return "\n        " + getSamplerFromInInfo(newInputInfo) + "\n        float " + funcName + "(int row, int col, int depth) {\n          return " + funcName + "(" + getSqueezedParams(params, keptDims) + ");\n        }\n      ";
+        }
+    }
+    if (texNumC === stride0) {
+        if (texType === tex_util_1.TextureType.DEFAULT) {
+            return "\n        float " + funcName + "(int row, int col, int depth) {\n          int texR = row;\n          int texC = col * " + stride1 + " + depth;\n          vec2 uv = (vec2(texC, texR) + halfCR) /\n                     vec2(" + texNumC + ".0, " + texNumR + ".0);\n          return sample(" + texName + ", uv);\n        }\n      ";
+        }
+        else if (texType === tex_util_1.TextureType.RGBA_COLOR) {
+            return "\n        float " + funcName + "(int row, int col, int depth) {\n          vec2 uv = (vec2(col, row) + halfCR) /\n                     vec2(" + texNumC + ".0, " + texNumR + ".0);\n          return sampleUVAndDepth(" + texName + ", uv, depth);\n        }\n      ";
         }
         else {
-            this.endScope(result);
-            return result;
+            throw new Error("Unknown TextureType " + texType + ".");
         }
-    };
-    NDArrayMath.prototype.enableDebugMode = function () {
-        this.debugMode = true;
-        console.warn('Debugging mode is ON. The output of every math call will ' +
-            'be downloaded to CPU and checked for NaNs. ' +
-            'This significantly impacts performance.');
-    };
-    NDArrayMath.prototype.startScope = function () {
-        var newScope = [];
-        this.ndarrayScopes.push(newScope);
-        this.activeScope = newScope;
-        var newNDArraysToKeep = [];
-        this.ndarraysToKeep.push(newNDArraysToKeep);
-        this.activeScopeNDArraysToKeep = newNDArraysToKeep;
-    };
-    NDArrayMath.prototype.endScope = function (result) {
-        var _this = this;
-        var arraysToKeep = this.activeScopeNDArraysToKeep;
-        if (result != null) {
-            arraysToKeep = arraysToKeep.concat(result);
-        }
-        for (var i = 0; i < this.activeScope.length; i++) {
-            var ndarray = this.activeScope[i];
-            if (this.isNDArrayDataInList(ndarray, arraysToKeep)) {
-                continue;
-            }
-            ndarray.dispose();
-        }
-        this.ndarrayScopes.pop();
-        this.activeScope = this.ndarrayScopes.length === 0 ?
-            null :
-            this.ndarrayScopes[this.ndarrayScopes.length - 1];
-        if (result instanceof ndarray_1.NDArray &&
-            !this.isNDArrayDataInList(result, this.activeScopeNDArraysToKeep)) {
-            this.track(result);
-        }
-        else if (Array.isArray(result)) {
-            result.forEach(function (r) {
-                if (r instanceof ndarray_1.NDArray &&
-                    !_this.isNDArrayDataInList(r, _this.activeScopeNDArraysToKeep)) {
-                    _this.track(r);
-                }
-            });
-        }
-        this.ndarraysToKeep.pop();
-        this.activeScopeNDArraysToKeep = this.ndarraysToKeep.length === 0 ?
-            null :
-            this.ndarraysToKeep[this.ndarraysToKeep.length - 1];
-    };
-    NDArrayMath.prototype.isNDArrayDataInList = function (ndarray, ndarrayList) {
-        for (var i = 0; i < ndarrayList.length; i++) {
-            if (ndarrayList[i].getData() === ndarray.getData()) {
-                return true;
-            }
-        }
-        return false;
-    };
-    NDArrayMath.prototype.keep = function (result) {
-        if (this.activeScope == null) {
-            if (this.safeMode) {
-                throw new Error('You are using math in safe mode. Enclose all ' +
-                    'math.method() calls inside a scope: ' +
-                    'math.scope(() => {math.method();...}) to avoid memory ' +
-                    'leaks.');
-            }
-            return result;
-        }
-        this.activeScopeNDArraysToKeep.push(result);
-        return result;
-    };
-    NDArrayMath.prototype.checkForNaN = function (vals, dtype, name) {
-        for (var i = 0; i < vals.length; i++) {
-            if (util.isValNaN(vals[i], dtype)) {
-                throw Error("The result of the last math." + name + " has NaNs.");
-            }
-        }
-    };
-    NDArrayMath.prototype.track = function (result) {
-        if (this.activeScope == null) {
-            if (this.safeMode) {
-                throw new Error('You are using math in safe mode. Enclose all ' +
-                    'math.method() calls inside a scope: ' +
-                    'math.scope(() => {math.method();...}) to avoid memory ' +
-                    'leaks.');
-            }
-            return result;
-        }
-        this.activeScope.push(result);
-        return result;
-    };
-    NDArrayMath.prototype.dispose = function () { };
-    NDArrayMath.prototype.matMul = function (a, b, aOrientation, bOrientation) {
-        var _this = this;
-        if (aOrientation === void 0) { aOrientation = MatrixOrientation.REGULAR; }
-        if (bOrientation === void 0) { bOrientation = MatrixOrientation.REGULAR; }
-        var innerShapeA = (aOrientation === MatrixOrientation.REGULAR) ? a.shape[1] : a.shape[0];
-        var innerShapeB = (bOrientation === MatrixOrientation.REGULAR) ? b.shape[0] : b.shape[1];
-        util.assert(a.rank === 2 && b.rank === 2, "Error in matMul: inputs must be rank 2, got ranks " + a.rank +
-            ("and " + b.rank + "."));
-        util.assert(innerShapeA === innerShapeB, "Error in matMul: inner shapes (" + innerShapeA + ") and (" +
-            (innerShapeB + ") of NDArrays with shapes " + a.shape + " and ") +
-            (b.shape + " and orientations " + MatrixOrientation[aOrientation]) +
-            (" and " + MatrixOrientation[bOrientation] + " must match."));
-        return this.executeOp('matMul', function () { return _this.matMulInternal(a, b, aOrientation, bOrientation); });
-    };
-    NDArrayMath.prototype.executeOp = function (name, f) {
-        var start;
-        if (this.debugMode) {
-            start = performance.now();
-        }
-        var result = f();
-        if (this.debugMode) {
-            var vals = result.getValues();
-            var time = util.rightPad(performance.now() - start + "ms", 9);
-            var paddedName = util.rightPad(name, 25);
-            var rank = result.rank;
-            var size = result.size;
-            var shape = util.rightPad(result.shape.toString(), 14);
-            console.log("%c" + paddedName + "\t%c" + time + "\t%c" + rank + "D " + shape + "\t%c" + size, 'font-weight:bold', 'color:red', 'color:blue', 'color: orange');
-            this.checkForNaN(vals, result.dtype, name);
-        }
-        return this.track(result);
-    };
-    NDArrayMath.prototype.vectorTimesMatrix = function (v, matrix) {
-        util.assert(v.rank === 1, "Error in vectorTimesMatrix: first input must be rank 1, but got " +
-            ("rank " + v.rank + "."));
-        util.assert(matrix.rank === 2, "Error in vectorTimesMatrix: second input must be rank 2, but got " +
-            ("rank " + matrix.rank + "."));
-        util.assert(v.size === matrix.shape[0], "Error in vectorTimesMatrix: size of vector (" + v.size + ") " +
-            ("must match first dimension of matrix (" + matrix.shape[0] + ")"));
-        return this.matMul(v.as2D(1, -1), matrix).as1D();
-    };
-    NDArrayMath.prototype.matrixTimesVector = function (matrix, v) {
-        util.assert(v.rank === 1, "Error in matrixTimesVector: second input must rank 1, but got " +
-            ("rank " + v.rank + "."));
-        util.assert(matrix.rank === 2, "Error in matrixTimesVector: first input must be a rank 2, but got " +
-            ("rank " + matrix.rank + "."));
-        util.assert(v.size === matrix.shape[1], "Error in matrixTimesVector: size of first rank 1 input " + v.size + " " +
-            "must match inner dimension of second rank 2 input, but got " +
-            ("shape " + matrix.shape + "."));
-        return this.matMul(matrix, v.as2D(-1, 1)).as1D();
-    };
-    NDArrayMath.prototype.dotProduct = function (v1, v2) {
-        util.assert(v1.rank === 1 && v2.rank === 1, "Error in dotProduct: inputs must be rank 1, but got ranks " +
-            (v1.rank + " and " + v2.rank + "."));
-        util.assert(v1.size === v2.size, "Error in dotProduct: size of inputs (" + v1.size + ") and (" +
-            (v2.size + ") must match."));
-        return this.matMul(v1.as2D(1, -1), v2.as2D(-1, 1)).asScalar();
-    };
-    NDArrayMath.prototype.outerProduct = function (v1, v2) {
-        util.assert(v1.rank === 1 && v2.rank === 1, "Error in outerProduct: inputs must be rank 1, but got ranks " +
-            (v1.rank + " and " + v2.rank + "."));
-        return this.matMul(v1.as2D(-1, 1), v2.as2D(1, -1));
-    };
-    NDArrayMath.prototype.clone = function (ndarray) {
-        var _this = this;
-        return this.executeOp('clone', function () { return _this.cloneInternal(ndarray); });
-    };
-    NDArrayMath.prototype.reshape = function (ndarray, newShape) {
-        console.warn('math.reshape() is deprecated. Please call reshape() ' +
-            'directly on the ndarray object');
-        return ndarray.reshape(newShape);
-    };
-    NDArrayMath.prototype.slice1D = function (input, begin, size) {
-        var _this = this;
-        slice_util.assertParamsValid(input, [begin], [size]);
-        return this.executeOp('slice1D', function () { return _this.slice1DInternal(input, begin, size); });
-    };
-    NDArrayMath.prototype.slice2D = function (input, begin, size) {
-        var _this = this;
-        slice_util.assertParamsValid(input, begin, size);
-        return this.executeOp('slice2D', function () { return _this.slice2DInternal(input, begin, size); });
-    };
-    NDArrayMath.prototype.slice3D = function (input, begin, size) {
-        var _this = this;
-        slice_util.assertParamsValid(input, begin, size);
-        return this.executeOp('slice3D', function () { return _this.slice3DInternal(input, begin, size); });
-    };
-    NDArrayMath.prototype.slice4D = function (input, begin, size) {
-        var _this = this;
-        slice_util.assertParamsValid(input, begin, size);
-        return this.executeOp('slice4D', function () { return _this.slice4DInternal(input, begin, size); });
-    };
-    NDArrayMath.prototype.copy2D = function (source, sourceBegin, sourceSize, dest, destBegin, destSize) {
-        var _this = this;
-        util.assert(sourceBegin[0] + sourceSize[0] <= source.shape[0] &&
-            sourceBegin[1] + sourceSize[1] <= source.shape[1], "Error in copy2D: requested source start position " + sourceBegin + " " +
-            ("and source size " + sourceSize + " would overflow source NDArray") +
-            ("of shape " + source.shape + "."));
-        util.assert(destBegin[0] + destSize[0] <= dest.shape[0] &&
-            destBegin[1] + destSize[1] <= dest.shape[1], "Error in copy2D: requested dest start position " + destBegin + " " +
-            ("and source size " + destSize + " would overflow dest NDArray of") +
-            ("shape " + dest.shape + "."));
-        copy2d_util.validateShapes(sourceSize, destSize);
-        this.executeOp('copy2D', function () {
-            _this.copy2DInternal(source, sourceBegin, sourceSize, dest, destBegin, destSize);
-            return dest;
-        });
-    };
-    NDArrayMath.prototype.concat1D = function (a, b) {
-        var _this = this;
-        concat_util.assertParams(a.shape, b.shape, 0);
-        return this.executeOp('concat1D', function () { return _this.concat1DInternal(a, b); });
-    };
-    NDArrayMath.prototype.concat2D = function (a, b, axis) {
-        var _this = this;
-        concat_util.assertParams(a.shape, b.shape, axis);
-        return this.executeOp('concat2D', function () { return _this.concat2DInternal(a, b, axis); });
-    };
-    NDArrayMath.prototype.concat3D = function (ndarray1, ndarray2, axis) {
-        var _this = this;
-        concat_util.assertParams(ndarray1.shape, ndarray2.shape, axis);
-        return this.executeOp('concat3D', function () { return _this.concat3DInternal(ndarray1, ndarray2, axis); });
-    };
-    NDArrayMath.prototype.concat4D = function (ndarray1, ndarray2, axis) {
-        var _this = this;
-        concat_util.assertParams(ndarray1.shape, ndarray2.shape, axis);
-        return this.executeOp('concat4D', function () { return _this.concat4DInternal(ndarray1, ndarray2, axis); });
-    };
-    NDArrayMath.prototype.logSumExp = function (input, axis, keepDims) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        if (keepDims === void 0) { keepDims = false; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('logSumExp', axes, input.rank);
-        return this.executeOp('logSumExp', function () {
-            var res = _this.logSumExpInternal(input, axes);
-            if (keepDims) {
-                var newShape = axis_util.expandShapeToKeepDim(res.shape, axes);
-                return res.reshape(newShape);
-            }
-            return res;
-        });
-    };
-    NDArrayMath.prototype.sum = function (input, axis, keepDims) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        if (keepDims === void 0) { keepDims = false; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('sum', axes, input.rank);
-        return this.executeOp('sum', function () {
-            var res = _this.sumInternal(input, axes);
-            if (keepDims) {
-                var newShape = axis_util.expandShapeToKeepDim(res.shape, axes);
-                return res.reshape(newShape);
-            }
-            return res;
-        });
-    };
-    NDArrayMath.prototype.argMin = function (input, axis) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('argMin', axes, input.rank);
-        return this.executeOp('argMin', function () { return _this.argMinInternal(input, axes); });
-    };
-    NDArrayMath.prototype.argMax = function (input, axis) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('argMax', axes, input.rank);
-        return this.executeOp('argMax', function () { return _this.argMaxInternal(input, axes); });
-    };
-    NDArrayMath.prototype.argMaxEquals = function (x1, x2) {
-        var _this = this;
-        util.assertShapesMatch(x1.shape, x2.shape, 'Error in argMaxEquals: ');
-        return this.executeOp('argMaxEquals', function () { return _this.scope(function () {
-            return _this.equal(_this.argMax(x1), _this.argMax(x2));
-        }); });
-    };
-    NDArrayMath.prototype.equal = function (x, y) {
-        var _this = this;
-        return this.executeOp('equal', function () { return _this.equalInternal(x, y); });
-    };
-    NDArrayMath.prototype.equalStrict = function (x, y) {
-        util.assertShapesMatch(x.shape, y.shape, 'Error in equalStrict: ');
-        return this.equal(x, y);
-    };
-    NDArrayMath.prototype.topK = function (ndarray, k) {
-        var _this = this;
-        util.assert(k <= ndarray.size, "Error in topK: k value (" + k + ") must be less than size of input " +
-            ("ndarray, got shape " + ndarray.shape + "."));
-        var result;
-        this.executeOp('topK', function () {
-            result = _this.topKInternal(ndarray, k);
-            return result.values;
-        });
-        this.track(result.indices);
-        return result;
-    };
-    NDArrayMath.prototype.min = function (input, axis, keepDims) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        if (keepDims === void 0) { keepDims = false; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('min', axes, input.rank);
-        return this.executeOp('min', function () {
-            var res = _this.minInternal(input, axes);
-            if (keepDims) {
-                var newShape = axis_util.expandShapeToKeepDim(res.shape, axes);
-                return res.reshape(newShape);
-            }
-            return res;
-        });
-    };
-    NDArrayMath.prototype.max = function (input, axis, keepDims) {
-        var _this = this;
-        if (axis === void 0) { axis = null; }
-        if (keepDims === void 0) { keepDims = false; }
-        var axes = axis_util.parseAxisParam(axis, input.shape);
-        axis_util.assertAxesAreInnerMostDims('max', axes, input.rank);
-        return this.executeOp('max', function () {
-            var res = _this.maxInternal(input, axes);
-            if (keepDims) {
-                var newShape = axis_util.expandShapeToKeepDim(res.shape, axes);
-                return res.reshape(newShape);
-            }
-            return res;
-        });
-    };
-    NDArrayMath.prototype.softmax = function (logits, dim) {
-        var _this = this;
-        if (dim === void 0) { dim = -1; }
-        if (dim === -1) {
-            dim = logits.rank - 1;
-        }
-        if (dim !== logits.rank - 1) {
-            throw Error('Softmax along a non-last dimension is not yet supported. ' +
-                ("Logits was rank " + logits.rank + " and dim was " + dim));
-        }
-        return this.executeOp('softmax', function () {
-            return _this.scope(function () {
-                var lse = _this.logSumExp(logits, [dim], true);
-                var logResult = _this.subtract(logits, lse);
-                return _this.exp(logResult);
-            });
-        });
-    };
-    NDArrayMath.prototype.switchDim = function (a, newDim) {
-        return this.transpose(a, newDim);
-    };
-    NDArrayMath.prototype.transpose = function (a, perm) {
-        var _this = this;
-        if (perm == null) {
-            perm = a.shape.map(function (s, i) { return i; }).reverse();
-        }
-        util.assert(a.rank === perm.length, "Error in switchDim: length of input shape " + a.shape + " " +
-            ("must match size of newDim array " + perm + "."));
-        return this.executeOp('transpose', function () { return _this.transposeInternal(a, perm); });
-    };
-    NDArrayMath.prototype.scalarPlusArray = function (c, a) {
-        util.assert(c.size === 1, "Error in scalarPlusArray: first argument must be rank 0, but got " +
-            ("rank " + c.rank + "."));
-        return this.add(c, a);
-    };
-    NDArrayMath.prototype.scalarMinusArray = function (c, a) {
-        util.assert(c.size === 1, "Error in scalarMinusArray: first argument must be rank 0, but got " +
-            ("rank " + c.rank + "."));
-        return this.subtract(c, a);
-    };
-    NDArrayMath.prototype.arrayMinusScalar = function (a, c) {
-        util.assert(c.size === 1, "Error in arrayMinusScalar: second argument must be rank 0, but " +
-            ("got rank " + c.rank + "."));
-        return this.subtract(a, c);
-    };
-    NDArrayMath.prototype.neg = function (a) {
-        var _this = this;
-        return this.executeOp('neg', function () { return _this.negInternal(a); });
-    };
-    NDArrayMath.prototype.add = function (a, b) {
-        var _this = this;
-        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
-        return this.executeOp('add', function () { return _this.addInternal(a, b); });
-    };
-    NDArrayMath.prototype.addStrict = function (a, b) {
-        util.assertShapesMatch(a.shape, b.shape, 'Error in addStrict: ');
-        return this.add(a, b);
-    };
-    NDArrayMath.prototype.subtract = function (a, b) {
-        var _this = this;
-        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
-        return this.executeOp('subtract', function () { return _this.subtractInternal(a, b); });
-    };
-    NDArrayMath.prototype.sub = function (a, b) {
-        return this.subtract(a, b);
-    };
-    NDArrayMath.prototype.subStrict = function (a, b) {
-        util.assertShapesMatch(a.shape, b.shape, 'Error in subStrict: ');
-        return this.subtract(a, b);
-    };
-    NDArrayMath.prototype.multiply = function (a, b) {
-        var _this = this;
-        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
-        return this.executeOp('multiply', function () { return _this.multiplyInternal(a, b); });
-    };
-    NDArrayMath.prototype.elementWiseMul = function (a, b) {
-        return this.multiplyStrict(a, b);
-    };
-    NDArrayMath.prototype.multiplyStrict = function (a, b) {
-        util.assertShapesMatch(a.shape, b.shape, 'Error in multiplyStrict: ');
-        return this.multiply(a, b);
-    };
-    NDArrayMath.prototype.divide = function (a, b) {
-        var _this = this;
-        broadcast_util.assertAndGetBroadcastShape(a.shape, b.shape);
-        return this.executeOp('divide', function () { return _this.divideInternal(a, b); });
-    };
-    NDArrayMath.prototype.divideStrict = function (a, b) {
-        util.assertShapesMatch(a.shape, b.shape, 'Error in divideStrict: ');
-        return this.divide(a, b);
-    };
-    NDArrayMath.prototype.scalarDividedByArray = function (c, a) {
-        util.assert(c.size === 1, "Error in scalarDividedByArray: first argument must be rank 0, but " +
-            ("got NDArray of rank " + c.rank + "."));
-        return this.divide(c, a);
-    };
-    NDArrayMath.prototype.arrayDividedByScalar = function (a, c) {
-        util.assert(c.size === 1, "Error in arrayDividedByScalar: second argument must be rank 0, " +
-            ("but got NDArray of rank " + c.rank + "."));
-        return this.divide(a, c);
-    };
-    NDArrayMath.prototype.ceil = function (ndarray) {
-        var _this = this;
-        return this.executeOp('ceil', function () { return _this.ceilInternal(ndarray); });
-    };
-    NDArrayMath.prototype.floor = function (ndarray) {
-        var _this = this;
-        return this.executeOp('floor', function () { return _this.floorInternal(ndarray); });
-    };
-    NDArrayMath.prototype.exp = function (ndarray) {
-        var _this = this;
-        return this.executeOp('exp', function () { return _this.expInternal(ndarray); });
-    };
-    NDArrayMath.prototype.log = function (ndarray) {
-        var _this = this;
-        return this.executeOp('log', function () { return _this.logInternal(ndarray); });
-    };
-    NDArrayMath.prototype.sqrt = function (ndarray) {
-        var _this = this;
-        return this.executeOp('sqrt', function () { return _this.sqrtInternal(ndarray); });
-    };
-    NDArrayMath.prototype.abs = function (ndarray) {
-        var _this = this;
-        return this.executeOp('abs', function () { return _this.absInternal(ndarray); });
-    };
-    NDArrayMath.prototype.clip = function (ndarray, min, max) {
-        var _this = this;
-        util.assert((min <= max), "Error in clip: min (" + min + ") must be" +
-            ("less than or equal to max (" + max + ")."));
-        return this.executeOp('clip', function () { return _this.clipInternal(ndarray, min, max); });
-    };
-    NDArrayMath.prototype.relu = function (ndarray) {
-        var _this = this;
-        return this.executeOp('relu', function () { return _this.reluInternal(ndarray); });
-    };
-    NDArrayMath.prototype.elu = function (ndarray) {
-        var _this = this;
-        return this.executeOp('elu', function () { return _this.eluInternal(ndarray); });
-    };
-    NDArrayMath.prototype.leakyRelu = function (ndarray, alpha) {
-        var _this = this;
-        if (alpha === void 0) { alpha = 0.2; }
-        return this.executeOp('leakyRelu', function () {
-            return _this.leakyReluInternal(ndarray, alpha);
-        });
-    };
-    NDArrayMath.prototype.sigmoid = function (ndarray) {
-        var _this = this;
-        return this.executeOp('sigmoid', function () { return _this.sigmoidInternal(ndarray); });
-    };
-    NDArrayMath.prototype.sin = function (ndarray) {
-        var _this = this;
-        return this.executeOp('sin', function () { return _this.sinInternal(ndarray); });
-    };
-    NDArrayMath.prototype.cos = function (ndarray) {
-        var _this = this;
-        return this.executeOp('cos', function () { return _this.cosInternal(ndarray); });
-    };
-    NDArrayMath.prototype.tan = function (ndarray) {
-        var _this = this;
-        return this.executeOp('tan', function () { return _this.tanInternal(ndarray); });
-    };
-    NDArrayMath.prototype.asin = function (ndarray) {
-        var _this = this;
-        return this.executeOp('asin', function () { return _this.asinInternal(ndarray); });
-    };
-    NDArrayMath.prototype.acos = function (ndarray) {
-        var _this = this;
-        return this.executeOp('acos', function () { return _this.acosInternal(ndarray); });
-    };
-    NDArrayMath.prototype.atan = function (ndarray) {
-        var _this = this;
-        return this.executeOp('atan', function () { return _this.atanInternal(ndarray); });
-    };
-    NDArrayMath.prototype.sinh = function (ndarray) {
-        var _this = this;
-        return this.executeOp('sinh', function () { return _this.sinhInternal(ndarray); });
-    };
-    NDArrayMath.prototype.cosh = function (ndarray) {
-        var _this = this;
-        return this.executeOp('cosh', function () { return _this.coshInternal(ndarray); });
-    };
-    NDArrayMath.prototype.tanh = function (ndarray) {
-        var _this = this;
-        return this.executeOp('tanh', function () { return _this.tanhInternal(ndarray); });
-    };
-    NDArrayMath.prototype.step = function (ndarray) {
-        var _this = this;
-        return this.executeOp('step', function () { return _this.stepInternal(ndarray); });
-    };
-    NDArrayMath.prototype.scaledArrayAdd = function (c1, a, c2, b) {
-        var _this = this;
-        util.assert(c1.size === 1, "Error in scaledArrayAdd: first argument must rank 0, but got " +
-            (" rank " + c1.rank + "."));
-        util.assert(c2.size === 1, "Error in scaledArrayAdd: third argument must be rank 0, but got " +
-            ("NDArray of rank " + c2.rank + "."));
-        util.assertShapesMatch(a.shape, b.shape, 'Error in scaledArrayAdd: ');
-        return this.executeOp('scaledArrayAdd', function () { return _this.scaledArrayAddInternal(c1, a, c2, b); });
-    };
-    NDArrayMath.prototype.scalarTimesArray = function (c, a) {
-        util.assert(c.size === 1, "Error in arrayDividedByScalar: first argument must be rank 0, but " +
-            ("got rank " + c.rank + "."));
-        return this.multiply(c, a);
-    };
-    NDArrayMath.prototype.elementWiseMulBroadcast = function (a, b) {
-        util.assert(a.rank === 2, "Error in elementWiseMulBroadcast: first argument must be " +
-            ("rank 2, but got rank " + a.rank + "."));
-        util.assert(b.rank === 2, "Error in elementWiseMulBroadcast: second argument must be " +
-            ("rank 2, but got rank " + b.rank + "."));
-        return this.multiply(a, b);
-    };
-    NDArrayMath.prototype.conv2d = function (x, filter, bias, strides, pad) {
-        var _this = this;
-        util.assert(x.rank === 3, "Error in conv2d: x must be rank 3, but got rank " + x.rank + ".");
-        util.assert(filter.rank === 4, "Error in conv2d: filter must be rank 4, but got rank " +
-            (filter.rank + "."));
-        if (bias != null) {
-            util.assert(bias.rank === 1, "Error in conv2d: bias must be rank 1, but got rank " +
-                (bias.rank + "."));
-        }
-        util.assert(x.shape[2] === filter.shape[2], "Error in conv2d: depth of input (" + x.shape[2] + ") must match  " +
-            ("input depth for filter " + filter.shape[2] + "."));
-        var filterHeight = filter.shape[0];
-        var filterWidth = filter.shape[1];
-        var outDepth = filter.shape[3];
-        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('conv2d', function () { return _this.conv2dInternal(x, filter, bias, convInfo); });
-    };
-    NDArrayMath.prototype.conv2dBackProp = function (x, dy, filter, strides, pad) {
-        var dw = this.conv2dDerFilter(x, dy, filter.shape, strides, pad);
-        var db = this.conv2dDerBias(dy);
-        var dx = this.conv2dDerInput(x.shape, dy, filter, strides, pad);
-        return { db: db, dw: dw, dx: dx };
-    };
-    NDArrayMath.prototype.conv2dDerInput = function (inShape, dy, filter, strides, pad) {
-        var _this = this;
-        var inDepth = inShape[2];
-        var outDepth = dy.shape[2];
-        util.assert(inShape.length === 3, "Error in conv2dDerInput: x must be rank 3, but got rank " +
-            (inShape.length + "."));
-        util.assert(dy.rank === 3, "Error in conv2dDerInput: dy must be rank 3, but got " +
-            ("rank " + dy.rank));
-        util.assert(filter.rank === 4, "Error in conv2dDerInput: filter must be rank 4, but got " +
-            ("rank " + filter.rank));
-        util.assert(inDepth === filter.shape[2], "Error in conv2dDerInput: depth of input (" + inDepth + ") must " +
-            ("match input depth for filter " + filter.shape[2] + "."));
-        util.assert(outDepth === filter.shape[3], "Error in conv2dDerInput: depth of output (" + outDepth + ") must" +
-            ("match output depth for filter " + filter.shape[3] + "."));
-        var filterHeight = filter.shape[0];
-        var filterWidth = filter.shape[1];
-        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
-        var convInfo = conv_util.computeConvInfo(inShape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('conv2dDerInput', function () { return _this.conv2dDerInputInternal(dy, filter, convInfo); });
-    };
-    NDArrayMath.prototype.conv2dDerBias = function (dy) {
-        return this.track(this.conv2dDerBiasInternal(dy));
-    };
-    NDArrayMath.prototype.conv2dDerFilter = function (x, dy, filterSize, strides, pad) {
-        util.assert(x.rank === 3, "Error in conv2dDerFilter: x must be rank 3, but got shape " +
-            (x.shape + "."));
-        util.assert(dy.rank === 3, "Error in conv2dDerFilter: dy must be rank 3, but got shape " +
-            (dy.shape + "."));
-        util.assert(filterSize.length === 4, "Error in conv2dDerFilter: filterSize must be length 4, but got " +
-            (filterSize + "."));
-        util.assert(x.shape[2] === filterSize[2], "Error in conv2dDerFilter: depth of x " + x.shape[2] + ") must " +
-            ("match input depth in filter (" + filterSize[2] + "."));
-        util.assert(dy.shape[2] === filterSize[3], "Error in conv2dDerFilter: depth of dy (" + dy.shape[2] + ") must " +
-            ("match output depth for filter (" + filterSize[3] + ")."));
-        var filterHeight = filterSize[0];
-        var filterWidth = filterSize[1];
-        var outDepth = filterSize[3];
-        var _a = parseTupleParam(strides), strideHeight = _a[0], strideWidth = _a[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.track(this.conv2dDerFilterInternal(x, dy, convInfo));
-    };
-    NDArrayMath.prototype.conv2dTranspose = function (x, filter, outputShape, strides, pad) {
-        return this.conv2dDerInput(outputShape, x, filter, strides, pad);
-    };
-    NDArrayMath.prototype.maxPool = function (x, filterSize, strides, pad) {
-        var _this = this;
-        util.assert(x.rank === 3, "Error in maxPool: x must be rank 3 but got rank " + x.rank + ".");
-        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
-        var outDepth = x.shape[2];
-        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('maxPool', function () { return _this.maxPoolInternal(x, convInfo); });
-    };
-    NDArrayMath.prototype.maxPoolBackprop = function (dy, x, filterSize, strides, pad) {
-        var _this = this;
-        util.assert(dy.rank === 3, "Error in maxPoolBackprop: dy must be rank 3 but got rank " +
-            (dy.rank + "."));
-        util.assert(x.rank === 3, "Error in maxPoolBackprop: x must be rank 3 but got rank " +
-            (x.rank + "."));
-        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
-        var outDepth = x.shape[2];
-        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('maxPoolBackprop', function () { return _this.maxPoolBackpropInternal(dy, x, convInfo); });
-    };
-    NDArrayMath.prototype.minPool = function (x, filterSize, strides, pad) {
-        var _this = this;
-        util.assert(x.rank === 3, "Error in minPool: x must be rank 3 but got rank " + x.rank + ".");
-        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
-        var outDepth = x.shape[2];
-        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('minPool', function () { return _this.minPoolInternal(x, convInfo); });
-    };
-    NDArrayMath.prototype.avgPool = function (x, filterSize, strides, pad) {
-        var _this = this;
-        util.assert(x.rank === 3, "Error in avgPool: x must be rank 3 but got rank " + x.rank + ".");
-        var _a = parseTupleParam(filterSize), filterHeight = _a[0], filterWidth = _a[1];
-        var outDepth = x.shape[2];
-        var _b = parseTupleParam(strides), strideHeight = _b[0], strideWidth = _b[1];
-        var convInfo = conv_util.computeConvInfo(x.shape, filterHeight, filterWidth, outDepth, strideHeight, strideWidth, pad);
-        return this.executeOp('avgPool', function () { return _this.avgPoolInternal(x, convInfo); });
-    };
-    NDArrayMath.prototype.resizeBilinear3D = function (x, newShape2D, alignCorners) {
-        var _this = this;
-        if (alignCorners === void 0) { alignCorners = false; }
-        util.assert(x.rank === 3, "Error in resizeBilinear3D: x must be rank 3 but got rank " + x.rank + ".");
-        util.assert(newShape2D.length === 2, "Error in resizeBilinear3D: new shape must 2D, but got shape " +
-            (newShape2D + "."));
-        return this.executeOp('resizeBilinear3D', function () { return _this.resizeBilinear3DInternal(x, newShape2D, alignCorners); });
-    };
-    NDArrayMath.prototype.batchNormalization3D = function (x, mean, variance, varianceEpsilon, scale, offset) {
-        var _this = this;
-        if (varianceEpsilon === void 0) { varianceEpsilon = .001; }
-        util.assert(x.rank === 3, "Error in batchNormalization3D: x must be rank 3 but got rank " +
-            (x.rank + "."));
-        util.assert(mean.rank === 3 || mean.rank === 1, "Error in batchNormalization3D: mean must be rank 3 or rank 1 but " +
-            ("got rank " + mean.rank + "."));
-        util.assert(variance.rank === 3 || variance.rank === 1, "Error in batchNormalization3D: variance must be rank 3 or rank 1 " +
-            ("but got rank " + variance.rank + "."));
-        if (scale != null) {
-            util.assert(scale.rank === 3 || scale.rank === 1, "Error in batchNormalization3D: scale must be rank 3 or rank 1 " +
-                ("but got rank " + scale.rank + "."));
-        }
-        if (offset != null) {
-            util.assert(offset.rank === 3 || offset.rank === 1, "Error in batchNormalization3D: offset must be rank 3 or rank 1 " +
-                ("but got rank " + offset.rank + "."));
-        }
-        return this.executeOp('batchNorm3D', function () { return _this.batchNormalization3DInternal(x, mean, variance, varianceEpsilon, scale, offset); });
-    };
-    NDArrayMath.prototype.multiRNNCell = function (lstmCells, data, c, h) {
-        var res = this.scope(function () {
-            var input = data;
-            var newStates = [];
-            for (var i = 0; i < lstmCells.length; i++) {
-                var output = lstmCells[i](input, c[i], h[i]);
-                newStates.push(output[0]);
-                newStates.push(output[1]);
-                input = output[1];
-            }
-            return newStates;
-        });
-        var newC = [];
-        var newH = [];
-        for (var i = 0; i < res.length; i += 2) {
-            newC.push(res[i]);
-            newH.push(res[i + 1]);
-        }
-        return [newC, newH];
-    };
-    NDArrayMath.prototype.basicLSTMCell = function (forgetBias, lstmKernel, lstmBias, data, c, h) {
-        var _this = this;
-        var res = this.scope(function () {
-            var combined = _this.concat2D(data, h, 1);
-            var weighted = _this.matMul(combined, lstmKernel);
-            var res = _this.add(weighted, lstmBias);
-            var batchSize = res.shape[0];
-            var sliceCols = res.shape[1] / 4;
-            var sliceSize = [batchSize, sliceCols];
-            var i = _this.slice2D(res, [0, 0], sliceSize);
-            var j = _this.slice2D(res, [0, sliceCols], sliceSize);
-            var f = _this.slice2D(res, [0, sliceCols * 2], sliceSize);
-            var o = _this.slice2D(res, [0, sliceCols * 3], sliceSize);
-            var newC = _this.addStrict(_this.multiplyStrict(c, _this.sigmoid(_this.scalarPlusArray(forgetBias, f))), _this.multiplyStrict(_this.sigmoid(i), _this.tanh(j)));
-            var newH = _this.multiplyStrict(_this.tanh(newC), _this.sigmoid(o));
-            return [newC, newH];
-        });
-        return [res[0], res[1]];
-    };
-    NDArrayMath.prototype.multinomial = function (probabilities, numSamples, seed) {
-        var _this = this;
-        var numOutcomes = probabilities.size;
-        if (numOutcomes < 2) {
-            throw new Error("Error in multinomial: you need at least 2 outcomes, but got " +
-                (numOutcomes + "."));
-        }
-        if (probabilities.rank > 2) {
-            throw new Error("Rank of probabilities must be 1 or 2, but is " + probabilities.rank);
-        }
-        seed = seed || Math.random();
-        var origRank = probabilities.rank;
-        if (probabilities.rank === 1) {
-            probabilities = probabilities.as2D(1, -1);
-        }
-        return this.executeOp('multinomial', function () {
-            var res = _this.multinomialInternal(probabilities, numSamples, seed);
-            if (origRank === 1) {
-                return res.as1D();
-            }
-            return res;
-        });
-    };
-    NDArrayMath.prototype.oneHot = function (indices, depth, onValue, offValue) {
-        var _this = this;
-        if (onValue === void 0) { onValue = 1; }
-        if (offValue === void 0) { offValue = 0; }
-        if (depth < 2) {
-            throw new Error("Error in oneHot: depth must be >=2, but it is " + depth);
-        }
-        return this.executeOp('oneHot', function () { return _this.oneHotInternal(indices, depth, onValue, offValue); });
-    };
-    return NDArrayMath;
-}());
-exports.NDArrayMath = NDArrayMath;
-var MatrixOrientation;
-(function (MatrixOrientation) {
-    MatrixOrientation[MatrixOrientation["REGULAR"] = 0] = "REGULAR";
-    MatrixOrientation[MatrixOrientation["TRANSPOSED"] = 1] = "TRANSPOSED";
-})(MatrixOrientation = exports.MatrixOrientation || (exports.MatrixOrientation = {}));
-function parseTupleParam(param) {
-    return typeof param === 'number' ? [param, param] : param;
+    }
+    if (texNumC === stride1 && texType === tex_util_1.TextureType.DEFAULT) {
+        return "\n    float " + funcName + "(int row, int col, int depth) {\n      int texR = row * " + shape[1] + " + col;\n      int texC = depth;\n      vec2 uv = (vec2(texC, texR) + halfCR) / vec2(" + texNumC + ".0, " + texNumR + ".0);\n      return sample(" + texName + ", uv);\n    }\n  ";
+    }
+    if (texType === tex_util_1.TextureType.DEFAULT) {
+        return "\n      float " + funcName + "(int row, int col, int depth) {\n        vec2 uv = UVfrom3D(\n            " + texNumR + ", " + texNumC + ", " + stride0 + ", " + stride1 + ", row, col, depth);\n        return sample(" + texName + ", uv);\n      }\n  ";
+    }
+    else if (texType === tex_util_1.TextureType.RGBA_COLOR) {
+        return "\n      float " + funcName + "(int row, int col, int depth) {\n        vec2 uv = UVfrom2D(" + texNumR + ", " + texNumC + ", " + shape[1] + ", row, col);\n        return sampleUVAndDepth(" + texName + ", uv, depth);\n      }\n    ";
+    }
+    else {
+        throw new Error("Unknown TextureType " + texType + ".");
+    }
 }
-//# sourceMappingURL=math.js.map
+function getSampler4D(inputInfo) {
+    var shape = inputInfo.shapeInfo.logicalShape;
+    var texShape = inputInfo.shapeInfo.texShape;
+    var texName = inputInfo.name;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
+    var texNumR = texShape[0];
+    var texNumC = texShape[1];
+    var stride2 = shape[3];
+    var stride1 = shape[2] * stride2;
+    var stride0 = shape[1] * stride1;
+    var _a = util.squeezeShape(shape), newShape = _a.newShape, keptDims = _a.keptDims;
+    if (newShape.length < shape.length) {
+        var newInputInfo = squeezeInputInfo(inputInfo, newShape);
+        var params = ['row', 'col', 'depth', 'depth2'];
+        return "\n      " + getSamplerFromInInfo(newInputInfo) + "\n      float " + funcName + "(int row, int col, int depth, int depth2) {\n        return " + funcName + "(" + getSqueezedParams(params, keptDims) + ");\n      }\n    ";
+    }
+    if (texNumC === stride0) {
+        return "\n      float " + funcName + "(int row, int col, int depth, int depth2) {\n        int texR = row;\n        int texC = col * " + stride1 + " + depth * " + stride2 + " + depth2;\n        vec2 uv = (vec2(texC, texR) + halfCR) /\n                   vec2(" + texNumC + ".0, " + texNumR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
+    }
+    if (texNumC === stride2) {
+        return "\n      float " + funcName + "(int row, int col, int depth, int depth2) {\n        int texR = row * " + shape[1] * shape[2] + " + col * " + shape[2] + " + depth;\n        int texC = depth2;\n        vec2 uv = (vec2(texC, texR) + halfCR) /\n                  vec2(" + texNumC + ".0, " + texNumR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
+    }
+    return "\n    float " + funcName + "(int row, int col, int depth, int depth2) {\n      vec2 uv = UVfrom4D(" + texNumR + ", " + texNumC + ", " + stride0 + ", " + stride1 + ",\n          " + stride2 + ", row, col, depth, depth2);\n      return sample(" + texName + ", uv);\n    }\n  ";
+}
+function getSamplerFlat(inputInfo) {
+    var texName = inputInfo.name;
+    var texShape = inputInfo.shapeInfo.texShape;
+    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1) + 'Flat';
+    var tNumR = texShape[0];
+    var tNumC = texShape[1];
+    if (tNumC === 1 && tNumR === 1) {
+        return "\n      float " + funcName + "(int index) {\n        return sample(" + texName + ", halfCR);\n      }\n    ";
+    }
+    if (tNumC === 1) {
+        return "\n      float " + funcName + "(int index) {\n        vec2 uv = vec2(0.5, (float(index) + 0.5) / " + tNumR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
+    }
+    if (tNumR === 1) {
+        return "\n      float " + funcName + "(int index) {\n        vec2 uv = vec2((float(index) + 0.5) / " + tNumC + ".0, 0.5);\n        return sample(" + texName + ", uv);\n      }\n    ";
+    }
+    return "\n    float " + funcName + "(int index) {\n      vec2 uv = UVfrom1D(" + tNumR + ", " + tNumC + ", index);\n      return sample(" + texName + ", uv);\n    }\n  ";
+}
+function getBroadcastOutputCoordsSampler(inputInfo, outShapeInfo, texFuncSnippet, funcName) {
+    var inRank = inputInfo.shapeInfo.logicalShape.length;
+    var outRank = outShapeInfo.logicalShape.length;
+    var type = 'int';
+    if (outRank === 2) {
+        type = 'ivec2';
+    }
+    else if (outRank === 3) {
+        type = 'ivec3';
+    }
+    else if (outRank === 4) {
+        type = 'ivec4';
+    }
+    var broadcastDims = broadcast_util.getBroadcastDims(inputInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape);
+    var rankDiff = outRank - inRank;
+    var coordsSnippet;
+    if (inRank === 0) {
+        coordsSnippet = '';
+    }
+    else if (outRank < 2 && broadcastDims.length >= 1) {
+        coordsSnippet = 'coords = 0;';
+    }
+    else {
+        coordsSnippet =
+            broadcastDims.map(function (d) { return "coords[" + (d + rankDiff) + "] = 0;"; }).join('\n');
+    }
+    var unpackedCoordsSnippet = '';
+    if (outRank < 2 && inRank > 0) {
+        unpackedCoordsSnippet = 'coords';
+    }
+    else {
+        unpackedCoordsSnippet = inputInfo.shapeInfo.logicalShape
+            .map(function (s, i) { return "coords[" + (i + rankDiff) + "]"; })
+            .join(', ');
+    }
+    return "\n    float " + funcName + "() {\n      " + type + " coords = getOutputCoords();\n      " + coordsSnippet + "\n      return get" + texFuncSnippet + "(" + unpackedCoordsSnippet + ");\n    }\n  ";
+}
+function getSamplerAtOutputCoords(inputInfo, outShapeInfo, supportsBroadcasting) {
+    var inTexShape = inputInfo.shapeInfo.texShape;
+    var texName = inputInfo.name;
+    var isRGBAColorTexture = inputInfo.shapeInfo.textureType === tex_util_1.TextureType.RGBA_COLOR;
+    var texFuncSnippet = texName.charAt(0).toUpperCase() + texName.slice(1);
+    var funcName = 'get' + texFuncSnippet + 'AtOutCoords';
+    var broadcastDims = broadcast_util.getBroadcastDims(inputInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape);
+    var inRank = inputInfo.shapeInfo.logicalShape.length;
+    var outRank = outShapeInfo.logicalShape.length;
+    var doBroadcast = supportsBroadcasting && ((outRank > inRank) || broadcastDims.length > 0);
+    var broadcastOverOuter = broadcast_util.broadcastDimsAreOuter(broadcastDims);
+    if (doBroadcast && !broadcastOverOuter) {
+        return getBroadcastOutputCoordsSampler(inputInfo, outShapeInfo, texFuncSnippet, funcName);
+    }
+    var outTexShape = outShapeInfo.texShape;
+    if (util.arraysEqual(inTexShape, outTexShape) && !isRGBAColorTexture) {
+        return "\n      float " + funcName + "() {\n        return sample(" + texName + ", resultUV);\n      }\n    ";
+    }
+    var inTexExpandedShape = isRGBAColorTexture ?
+        [inTexShape[0], inTexShape[1] * inputInfo.shapeInfo.logicalShape[2]] :
+        inTexShape;
+    var sampleSnippet = "return sample(" + texName + ", uv);";
+    var rgbaColorSnippet = '';
+    if (isRGBAColorTexture) {
+        rgbaColorSnippet = "\n      int col = texC / " + inputInfo.shapeInfo.logicalShape[2] + ";\n      int texD = texC - col * " + inputInfo.shapeInfo.logicalShape[2] + ";\n      texC = col;\n    ";
+        sampleSnippet = "return sampleUVAndDepth(" + texName + ", uv, texD);";
+    }
+    var inSize = util.sizeFromShape(inTexExpandedShape);
+    var broadcastSnippet = '';
+    if (doBroadcast && broadcastOverOuter) {
+        broadcastSnippet = "\n        int mainPart = index / " + inSize + ";\n        index -= mainPart * " + inSize + ";\n      ";
+    }
+    return "\n    float " + funcName + "() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + outTexShape[0] + ", " + outTexShape[1] + "));\n      int index = resTexRC.x * " + outTexShape[1] + " + resTexRC.y;\n      " + broadcastSnippet + "\n      int texR = index / " + inTexExpandedShape[1] + ";\n      int texC = index - texR * " + inTexExpandedShape[1] + ";\n\n      " + rgbaColorSnippet + "\n\n      vec2 uv = (vec2(texC, texR) + halfCR) /\n                 vec2(" + inTexShape[1] + ".0, " + inTexShape[0] + ".0);\n\n      " + sampleSnippet + "\n    }\n  ";
+}
+function getCoordsDataType(rank) {
+    if (rank === 1) {
+        return 'int';
+    }
+    else if (rank === 2) {
+        return 'ivec2';
+    }
+    else if (rank === 3) {
+        return 'ivec3';
+    }
+    else if (rank === 4) {
+        return 'ivec4';
+    }
+    else {
+        throw Error("GPU for rank " + rank + " is not yet supported");
+    }
+}
+exports.getCoordsDataType = getCoordsDataType;
+function squeezeInputInfo(inInfo, squeezedShape) {
+    var newInputInfo = JSON.parse(JSON.stringify(inInfo));
+    newInputInfo.shapeInfo.logicalShape = squeezedShape;
+    return newInputInfo;
+}
+function getSqueezedParams(params, keptDims) {
+    return keptDims.map(function (d) { return params[d]; }).join(', ');
+}
+//# sourceMappingURL=shader_compiler.js.map
 
 /***/ }),
 /* 67 */
@@ -5293,11 +5789,58 @@ exports.decodeMatrixFromPackedRGBA = decodeMatrixFromPackedRGBA;
 /* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _random = __webpack_require__(167);
+
+Object.keys(_random).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _random[key];
+    }
+  });
+});
+
+var _math = __webpack_require__(111);
+
+Object.keys(_math).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _math[key];
+    }
+  });
+});
+
+var _sample = __webpack_require__(168);
+
+Object.keys(_sample).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _sample[key];
+    }
+  });
+});
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // false -> Array#indexOf
 // true  -> Array#includes
 var toIObject = __webpack_require__(20);
 var toLength = __webpack_require__(10);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 module.exports = function (IS_INCLUDES) {
   return function ($this, el, fromIndex) {
     var O = toIObject($this);
@@ -5319,7 +5862,7 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 69 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5327,14 +5870,14 @@ module.exports = function (IS_INCLUDES) {
 var global = __webpack_require__(2);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(16);
-var redefineAll = __webpack_require__(45);
+var redefineAll = __webpack_require__(46);
 var meta = __webpack_require__(37);
-var forOf = __webpack_require__(39);
-var anInstance = __webpack_require__(38);
+var forOf = __webpack_require__(40);
+var anInstance = __webpack_require__(39);
 var isObject = __webpack_require__(5);
-var fails = __webpack_require__(4);
-var $iterDetect = __webpack_require__(74);
-var setToStringTag = __webpack_require__(52);
+var fails = __webpack_require__(3);
+var $iterDetect = __webpack_require__(75);
+var setToStringTag = __webpack_require__(53);
 var inheritIfRequired = __webpack_require__(90);
 
 module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
@@ -5411,14 +5954,14 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var hide = __webpack_require__(15);
 var redefine = __webpack_require__(16);
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 var defined = __webpack_require__(28);
 var wks = __webpack_require__(7);
 
@@ -5446,7 +5989,7 @@ module.exports = function (KEY, length, exec) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5466,7 +6009,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
@@ -5477,7 +6020,7 @@ module.exports = Array.isArray || function isArray(arg) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.8 IsRegExp(argument)
@@ -5491,7 +6034,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR = __webpack_require__(7)('iterator');
@@ -5519,13 +6062,13 @@ module.exports = function (exec, skipClosing) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // Forced replacement prototype accessors methods
-module.exports = __webpack_require__(40) || !__webpack_require__(4)(function () {
+module.exports = __webpack_require__(41) || !__webpack_require__(3)(function () {
   var K = Math.random();
   // In FF throws only define methods
   // eslint-disable-next-line no-undef, no-useless-call
@@ -5535,14 +6078,14 @@ module.exports = __webpack_require__(40) || !__webpack_require__(4)(function () 
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports) {
 
 exports.f = Object.getOwnPropertySymbols;
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5551,7 +6094,7 @@ exports.f = Object.getOwnPropertySymbols;
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(13);
 var ctx = __webpack_require__(24);
-var forOf = __webpack_require__(39);
+var forOf = __webpack_require__(40);
 
 module.exports = function (COLLECTION) {
   $export($export.S, COLLECTION, { from: function from(source /* , mapFn, thisArg */) {
@@ -5577,7 +6120,7 @@ module.exports = function (COLLECTION) {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5596,7 +6139,7 @@ module.exports = function (COLLECTION) {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
@@ -5608,7 +6151,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
@@ -5623,12 +6166,12 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
 var hide = __webpack_require__(15);
-var uid = __webpack_require__(48);
+var uid = __webpack_require__(49);
 var TYPED = uid('typed_array');
 var VIEW = uid('view');
 var ABV = !!(global.ArrayBuffer && global.DataView);
@@ -5657,53 +6200,6 @@ module.exports = {
 
 
 /***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _random = __webpack_require__(166);
-
-Object.keys(_random).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _random[key];
-    }
-  });
-});
-
-var _math = __webpack_require__(110);
-
-Object.keys(_math).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _math[key];
-    }
-  });
-});
-
-var _sample = __webpack_require__(167);
-
-Object.keys(_sample).forEach(function (key) {
-  if (key === "default" || key === "__esModule") return;
-  Object.defineProperty(exports, key, {
-    enumerable: true,
-    get: function get() {
-      return _sample[key];
-    }
-  });
-});
-
-/***/ }),
 /* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -5711,7 +6207,7 @@ Object.keys(_sample).forEach(function (key) {
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 
 var toObject = __webpack_require__(11);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 var toLength = __webpack_require__(10);
 module.exports = function fill(value /* , start = 0, end = @length */) {
   var O = toObject(this);
@@ -5730,7 +6226,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 9.4.2.3 ArraySpeciesCreate(originalArray, length)
-var speciesConstructor = __webpack_require__(170);
+var speciesConstructor = __webpack_require__(171);
 
 module.exports = function (original, length) {
   return new (speciesConstructor(original))(length);
@@ -5744,7 +6240,7 @@ module.exports = function (original, length) {
 "use strict";
 
 var $defineProperty = __webpack_require__(9);
-var createDesc = __webpack_require__(44);
+var createDesc = __webpack_require__(45);
 
 module.exports = function (object, index, value) {
   if (index in object) $defineProperty.f(object, index, createDesc(0, value));
@@ -5821,7 +6317,7 @@ module.exports = function (that, target, C) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // check on default Array iterator
-var Iterators = __webpack_require__(51);
+var Iterators = __webpack_require__(52);
 var ITERATOR = __webpack_require__(7)('iterator');
 var ArrayProto = Array.prototype;
 
@@ -5836,9 +6332,9 @@ module.exports = function (it) {
 
 "use strict";
 
-var create = __webpack_require__(41);
-var descriptor = __webpack_require__(44);
-var setToStringTag = __webpack_require__(52);
+var create = __webpack_require__(42);
+var descriptor = __webpack_require__(45);
+var setToStringTag = __webpack_require__(53);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
@@ -5856,14 +6352,14 @@ module.exports = function (Constructor, NAME, next) {
 
 "use strict";
 
-var LIBRARY = __webpack_require__(40);
+var LIBRARY = __webpack_require__(41);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(16);
 var hide = __webpack_require__(15);
 var has = __webpack_require__(14);
-var Iterators = __webpack_require__(51);
+var Iterators = __webpack_require__(52);
 var $iterCreate = __webpack_require__(92);
-var setToStringTag = __webpack_require__(52);
+var setToStringTag = __webpack_require__(53);
 var getPrototypeOf = __webpack_require__(19);
 var ITERATOR = __webpack_require__(7)('iterator');
 var BUGGY = !([].keys && 'next' in [].keys()); // Safari has buggy iterators w/o `next`
@@ -6088,8 +6584,8 @@ module.exports = {
 /* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(79)('keys');
-var uid = __webpack_require__(48);
+var shared = __webpack_require__(80)('keys');
+var uid = __webpack_require__(49);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
 };
@@ -6123,7 +6619,7 @@ module.exports = function (TO_STRING) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // helper for String#{startsWith, endsWith, includes}
-var isRegExp = __webpack_require__(73);
+var isRegExp = __webpack_require__(74);
 var defined = __webpack_require__(28);
 
 module.exports = function (that, searchString, NAME) {
@@ -6164,7 +6660,7 @@ module.exports = '\x09\x0A\x0B\x0C\x0D\x20\xA0\u1680\u180E\u2000\u2001\u2002\u20
 /***/ (function(module, exports, __webpack_require__) {
 
 var ctx = __webpack_require__(24);
-var invoke = __webpack_require__(121);
+var invoke = __webpack_require__(122);
 var html = __webpack_require__(89);
 var cel = __webpack_require__(86);
 var global = __webpack_require__(2);
@@ -6257,19 +6753,19 @@ module.exports = {
 
 var global = __webpack_require__(2);
 var DESCRIPTORS = __webpack_require__(8);
-var LIBRARY = __webpack_require__(40);
-var $typed = __webpack_require__(81);
+var LIBRARY = __webpack_require__(41);
+var $typed = __webpack_require__(82);
 var hide = __webpack_require__(15);
-var redefineAll = __webpack_require__(45);
-var fails = __webpack_require__(4);
-var anInstance = __webpack_require__(38);
+var redefineAll = __webpack_require__(46);
+var fails = __webpack_require__(3);
+var anInstance = __webpack_require__(39);
 var toInteger = __webpack_require__(30);
 var toLength = __webpack_require__(10);
-var toIndex = __webpack_require__(139);
-var gOPN = __webpack_require__(42).f;
+var toIndex = __webpack_require__(140);
+var gOPN = __webpack_require__(43).f;
 var dP = __webpack_require__(9).f;
 var arrayFill = __webpack_require__(83);
-var setToStringTag = __webpack_require__(52);
+var setToStringTag = __webpack_require__(53);
 var ARRAY_BUFFER = 'ArrayBuffer';
 var DATA_VIEW = 'DataView';
 var PROTOTYPE = 'prototype';
@@ -6538,8 +7034,8 @@ exports[DATA_VIEW] = $DataView;
 
 var global = __webpack_require__(2);
 var core = __webpack_require__(27);
-var LIBRARY = __webpack_require__(40);
-var wksExt = __webpack_require__(140);
+var LIBRARY = __webpack_require__(41);
+var wksExt = __webpack_require__(141);
 var defineProperty = __webpack_require__(9).f;
 module.exports = function (name) {
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
@@ -6551,9 +7047,9 @@ module.exports = function (name) {
 /* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var classof = __webpack_require__(60);
+var classof = __webpack_require__(61);
 var ITERATOR = __webpack_require__(7)('iterator');
-var Iterators = __webpack_require__(51);
+var Iterators = __webpack_require__(52);
 module.exports = __webpack_require__(27).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
@@ -6568,8 +7064,8 @@ module.exports = __webpack_require__(27).getIteratorMethod = function (it) {
 "use strict";
 
 var addToUnscopables = __webpack_require__(36);
-var step = __webpack_require__(124);
-var Iterators = __webpack_require__(51);
+var step = __webpack_require__(125);
+var Iterators = __webpack_require__(52);
 var toIObject = __webpack_require__(20);
 
 // 22.1.3.4 Array.prototype.entries()
@@ -6609,9 +7105,134 @@ addToUnscopables('entries');
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+function axesAreInnerMostDims(axes, rank) {
+    for (var i = 0; i < axes.length; ++i) {
+        if (axes[axes.length - i - 1] !== rank - 1 - i) {
+            return false;
+        }
+    }
+    return true;
+}
+exports.axesAreInnerMostDims = axesAreInnerMostDims;
+function combineLocations(outputLoc, reduceLoc, axes) {
+    var rank = outputLoc.length + reduceLoc.length;
+    var loc = [];
+    var outIdx = 0;
+    var reduceIdx = 0;
+    for (var dim = 0; dim < rank; dim++) {
+        if (axes.indexOf(dim) === -1) {
+            loc.push(outputLoc[outIdx++]);
+        }
+        else {
+            loc.push(reduceLoc[reduceIdx++]);
+        }
+    }
+    return loc;
+}
+exports.combineLocations = combineLocations;
+function computeOutAndReduceShapes(aShape, axes) {
+    var outShape = [];
+    var rank = aShape.length;
+    for (var dim = 0; dim < rank; dim++) {
+        if (axes.indexOf(dim) === -1) {
+            outShape.push(aShape[dim]);
+        }
+    }
+    var reduceShape = axes.map(function (dim) { return aShape[dim]; });
+    return [outShape, reduceShape];
+}
+exports.computeOutAndReduceShapes = computeOutAndReduceShapes;
+function expandShapeToKeepDim(shape, axes) {
+    var reduceSubShape = axes.map(function (x) { return 1; });
+    return combineLocations(shape, reduceSubShape, axes);
+}
+exports.expandShapeToKeepDim = expandShapeToKeepDim;
+function parseAxisParam(axis, shape) {
+    if (axis == null) {
+        axis = shape.map(function (s, i) { return i; });
+    }
+    else if (typeof (axis) === 'number') {
+        axis = [axis];
+    }
+    return axis;
+}
+exports.parseAxisParam = parseAxisParam;
+function assertAxesAreInnerMostDims(msg, axes, rank) {
+    if (!axesAreInnerMostDims(axes, rank)) {
+        throw new Error(msg + " supports only inner-most axes for now. " +
+            ("Got axes " + axes + " and rank-" + rank + " input."));
+    }
+}
+exports.assertAxesAreInnerMostDims = assertAxesAreInnerMostDims;
+function getPermutedAxes(axes, rank) {
+    if (axesAreInnerMostDims(axes, rank)) {
+        return null;
+    }
+    var result = [];
+    for (var i = 0; i < rank; ++i) {
+        if (axes.indexOf(i) === -1) {
+            result.push(i);
+        }
+    }
+    axes.forEach(function (axis) { return result.push(axis); });
+    return result;
+}
+exports.getPermutedAxes = getPermutedAxes;
+function getInnerMostAxes(numAxes, rank) {
+    var res = [];
+    for (var i = rank - numAxes; i < rank; ++i) {
+        res.push(i);
+    }
+    return res;
+}
+exports.getInnerMostAxes = getInnerMostAxes;
+//# sourceMappingURL=axis_util.js.map
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(32);
 var tex_util = __webpack_require__(67);
-var webgl_util = __webpack_require__(57);
+var webgl_util = __webpack_require__(58);
 function getWebGLContextAttributes() {
     return {
         alpha: false,
@@ -6773,9 +7394,7 @@ function uploadMatrixToPackedTexture(gl, texture, rows, columns, matrix) {
     uploadDataToTexture(gl, texture, w, h, packedRGBA, numChannels);
 }
 exports.uploadMatrixToPackedTexture = uploadMatrixToPackedTexture;
-function downloadMatrixFromOutputTexture(gl, rows, columns) {
-    var _a = tex_util.getUnpackedMatrixTextureShapeWidthHeight(rows, columns), w = _a[0], h = _a[1];
-    var channelsPerTexture = 4;
+function getDownloadTargetArrayBuffer(rows, columns, channelsPerTexture) {
     var isFloatTexture = environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED');
     var downloadTarget;
     if (isFloatTexture) {
@@ -6785,15 +7404,52 @@ function downloadMatrixFromOutputTexture(gl, rows, columns) {
     else {
         downloadTarget = new Uint8Array(rows * columns * channelsPerTexture);
     }
-    webgl_util.callAndCheck(gl, function () { return gl.readPixels(0, 0, w, h, gl.RGBA, getTextureType(gl), downloadTarget); });
+    return downloadTarget;
+}
+function decodeDownloadTargetArrayBuffer(downloadTarget, rows, columns, channelsPerPixel) {
+    var isFloatTexture = environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED');
     if (isFloatTexture) {
         var matrix = new Float32Array(rows * columns);
-        tex_util.decodeMatrixFromUnpackedArray(downloadTarget, matrix, channelsPerTexture);
+        tex_util.decodeMatrixFromUnpackedArray(downloadTarget, matrix, channelsPerPixel);
         return matrix;
     }
     else {
         return tex_util.decodeToFloatArray(downloadTarget);
     }
+}
+function downloadMatrixFromOutputTextureAsync(gl, getBufferSubDataAsyncExtension, rows, columns) {
+    return __awaiter(this, void 0, void 0, function () {
+        var gl2, channelsPerPixel, downloadTarget, bufferSizeBytes, buffer;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    gl2 = gl;
+                    channelsPerPixel = 4;
+                    downloadTarget = getDownloadTargetArrayBuffer(rows, columns, channelsPerPixel);
+                    bufferSizeBytes = downloadTarget instanceof Float32Array ?
+                        downloadTarget.length * 4 :
+                        downloadTarget;
+                    buffer = gl.createBuffer();
+                    webgl_util.callAndCheck(gl, function () { return gl.bindBuffer(gl2.PIXEL_PACK_BUFFER, buffer); });
+                    webgl_util.callAndCheck(gl, function () { return gl.bufferData(gl2.PIXEL_PACK_BUFFER, bufferSizeBytes, gl.STATIC_DRAW); });
+                    webgl_util.callAndCheck(gl, function () {
+                        return gl2.readPixels(0, 0, columns, rows, gl.RGBA, getTextureType(gl), 0);
+                    });
+                    return [4, getBufferSubDataAsyncExtension.getBufferSubDataAsync(gl2.PIXEL_PACK_BUFFER, 0, downloadTarget)];
+                case 1:
+                    _a.sent();
+                    return [2, decodeDownloadTargetArrayBuffer(downloadTarget, rows, columns, channelsPerPixel)];
+            }
+        });
+    });
+}
+exports.downloadMatrixFromOutputTextureAsync = downloadMatrixFromOutputTextureAsync;
+function downloadMatrixFromOutputTexture(gl, rows, columns) {
+    var _a = tex_util.getUnpackedMatrixTextureShapeWidthHeight(rows, columns), w = _a[0], h = _a[1];
+    var channelsPerPixel = 4;
+    var downloadTarget = getDownloadTargetArrayBuffer(rows, columns, channelsPerPixel);
+    webgl_util.callAndCheck(gl, function () { return gl.readPixels(0, 0, w, h, gl.RGBA, getTextureType(gl), downloadTarget); });
+    return decodeDownloadTargetArrayBuffer(downloadTarget, rows, columns, channelsPerPixel);
 }
 exports.downloadMatrixFromOutputTexture = downloadMatrixFromOutputTexture;
 function downloadMatrixFromRGBAColorTexture(gl, rows, columns, channels) {
@@ -6820,7 +7476,7 @@ exports.downloadMatrixFromPackedOutputTexture = downloadMatrixFromPackedOutputTe
 //# sourceMappingURL=gpgpu_util.js.map
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6831,14 +7487,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.math = undefined;
 
-var _deeplearn = __webpack_require__(64);
+var _deeplearn = __webpack_require__(38);
 
 var math = new _deeplearn.NDArrayMathGPU(); // Math deeplearn
 
 exports.math = math;
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var cof = __webpack_require__(23);
@@ -6849,14 +7505,14 @@ module.exports = function (it, msg) {
 
 
 /***/ }),
-/* 112 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 
 var toObject = __webpack_require__(11);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 var toLength = __webpack_require__(10);
 
 module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /* = 0, end = @length */) {
@@ -6882,10 +7538,10 @@ module.exports = [].copyWithin || function copyWithin(target /* = 0 */, start /*
 
 
 /***/ }),
-/* 113 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var forOf = __webpack_require__(39);
+var forOf = __webpack_require__(40);
 
 module.exports = function (iter, ITERATOR) {
   var result = [];
@@ -6895,12 +7551,12 @@ module.exports = function (iter, ITERATOR) {
 
 
 /***/ }),
-/* 114 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var aFunction = __webpack_require__(13);
 var toObject = __webpack_require__(11);
-var IObject = __webpack_require__(61);
+var IObject = __webpack_require__(62);
 var toLength = __webpack_require__(10);
 
 module.exports = function (that, callbackfn, aLen, memo, isRight) {
@@ -6929,14 +7585,14 @@ module.exports = function (that, callbackfn, aLen, memo, isRight) {
 
 
 /***/ }),
-/* 115 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var aFunction = __webpack_require__(13);
 var isObject = __webpack_require__(5);
-var invoke = __webpack_require__(121);
+var invoke = __webpack_require__(122);
 var arraySlice = [].slice;
 var factories = {};
 
@@ -6961,23 +7617,23 @@ module.exports = Function.bind || function bind(that /* , ...args */) {
 
 
 /***/ }),
-/* 116 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var dP = __webpack_require__(9).f;
-var create = __webpack_require__(41);
-var redefineAll = __webpack_require__(45);
+var create = __webpack_require__(42);
+var redefineAll = __webpack_require__(46);
 var ctx = __webpack_require__(24);
-var anInstance = __webpack_require__(38);
-var forOf = __webpack_require__(39);
+var anInstance = __webpack_require__(39);
+var forOf = __webpack_require__(40);
 var $iterDefine = __webpack_require__(93);
-var step = __webpack_require__(124);
-var setSpecies = __webpack_require__(46);
+var step = __webpack_require__(125);
+var setSpecies = __webpack_require__(47);
 var DESCRIPTORS = __webpack_require__(8);
 var fastKey = __webpack_require__(37).fastKey;
-var validate = __webpack_require__(54);
+var validate = __webpack_require__(55);
 var SIZE = DESCRIPTORS ? '_s' : 'size';
 
 var getEntry = function (that, key) {
@@ -7112,12 +7768,12 @@ module.exports = {
 
 
 /***/ }),
-/* 117 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var classof = __webpack_require__(60);
-var from = __webpack_require__(113);
+var classof = __webpack_require__(61);
+var from = __webpack_require__(114);
 module.exports = function (NAME) {
   return function toJSON() {
     if (classof(this) != NAME) throw TypeError(NAME + "#toJSON isn't generic");
@@ -7127,20 +7783,20 @@ module.exports = function (NAME) {
 
 
 /***/ }),
-/* 118 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var redefineAll = __webpack_require__(45);
+var redefineAll = __webpack_require__(46);
 var getWeak = __webpack_require__(37).getWeak;
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(5);
-var anInstance = __webpack_require__(38);
-var forOf = __webpack_require__(39);
+var anInstance = __webpack_require__(39);
+var forOf = __webpack_require__(40);
 var createArrayMethod = __webpack_require__(26);
 var $has = __webpack_require__(14);
-var validate = __webpack_require__(54);
+var validate = __webpack_require__(55);
 var arrayFind = createArrayMethod(5);
 var arrayFindIndex = createArrayMethod(6);
 var id = 0;
@@ -7219,13 +7875,13 @@ module.exports = {
 
 
 /***/ }),
-/* 119 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // https://tc39.github.io/proposal-flatMap/#sec-FlattenIntoArray
-var isArray = __webpack_require__(72);
+var isArray = __webpack_require__(73);
 var isObject = __webpack_require__(5);
 var toLength = __webpack_require__(10);
 var ctx = __webpack_require__(24);
@@ -7265,16 +7921,16 @@ module.exports = flattenIntoArray;
 
 
 /***/ }),
-/* 120 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(8) && !__webpack_require__(4)(function () {
+module.exports = !__webpack_require__(8) && !__webpack_require__(3)(function () {
   return Object.defineProperty(__webpack_require__(86)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
 
 /***/ }),
-/* 121 */
+/* 122 */
 /***/ (function(module, exports) {
 
 // fast apply, http://jsperf.lnkit.com/fast-apply/5
@@ -7296,7 +7952,7 @@ module.exports = function (fn, args, that) {
 
 
 /***/ }),
-/* 122 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.3 Number.isInteger(number)
@@ -7308,7 +7964,7 @@ module.exports = function isInteger(it) {
 
 
 /***/ }),
-/* 123 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
@@ -7326,7 +7982,7 @@ module.exports = function (iterator, fn, value, entries) {
 
 
 /***/ }),
-/* 124 */
+/* 125 */
 /***/ (function(module, exports) {
 
 module.exports = function (done, value) {
@@ -7335,7 +7991,7 @@ module.exports = function (done, value) {
 
 
 /***/ }),
-/* 125 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.16 Math.fround(x)
@@ -7364,7 +8020,7 @@ module.exports = Math.fround || function fround(x) {
 
 
 /***/ }),
-/* 126 */
+/* 127 */
 /***/ (function(module, exports) {
 
 // 20.2.2.20 Math.log1p(x)
@@ -7374,7 +8030,7 @@ module.exports = Math.log1p || function log1p(x) {
 
 
 /***/ }),
-/* 127 */
+/* 128 */
 /***/ (function(module, exports) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -7398,21 +8054,21 @@ module.exports = Math.scale || function scale(x, inLow, inHigh, outLow, outHigh)
 
 
 /***/ }),
-/* 128 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 19.1.2.1 Object.assign(target, source, ...)
-var getKeys = __webpack_require__(43);
-var gOPS = __webpack_require__(76);
-var pIE = __webpack_require__(62);
+var getKeys = __webpack_require__(44);
+var gOPS = __webpack_require__(77);
+var pIE = __webpack_require__(63);
 var toObject = __webpack_require__(11);
-var IObject = __webpack_require__(61);
+var IObject = __webpack_require__(62);
 var $assign = Object.assign;
 
 // should work with symbols and should have deterministic property order (V8 bug)
-module.exports = !$assign || __webpack_require__(4)(function () {
+module.exports = !$assign || __webpack_require__(3)(function () {
   var A = {};
   var B = {};
   // eslint-disable-next-line no-undef
@@ -7439,12 +8095,12 @@ module.exports = !$assign || __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 129 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(9);
 var anObject = __webpack_require__(1);
-var getKeys = __webpack_require__(43);
+var getKeys = __webpack_require__(44);
 
 module.exports = __webpack_require__(8) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
@@ -7458,12 +8114,12 @@ module.exports = __webpack_require__(8) ? Object.defineProperties : function def
 
 
 /***/ }),
-/* 130 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 var toIObject = __webpack_require__(20);
-var gOPN = __webpack_require__(42).f;
+var gOPN = __webpack_require__(43).f;
 var toString = {}.toString;
 
 var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
@@ -7483,12 +8139,12 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 
 /***/ }),
-/* 131 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var has = __webpack_require__(14);
 var toIObject = __webpack_require__(20);
-var arrayIndexOf = __webpack_require__(68)(false);
+var arrayIndexOf = __webpack_require__(69)(false);
 var IE_PROTO = __webpack_require__(99)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -7506,12 +8162,12 @@ module.exports = function (object, names) {
 
 
 /***/ }),
-/* 132 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getKeys = __webpack_require__(43);
+var getKeys = __webpack_require__(44);
 var toIObject = __webpack_require__(20);
-var isEnum = __webpack_require__(62).f;
+var isEnum = __webpack_require__(63).f;
 module.exports = function (isEntries) {
   return function (it) {
     var O = toIObject(it);
@@ -7528,12 +8184,12 @@ module.exports = function (isEntries) {
 
 
 /***/ }),
-/* 133 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all object keys, includes non-enumerable and symbols
-var gOPN = __webpack_require__(42);
-var gOPS = __webpack_require__(76);
+var gOPN = __webpack_require__(43);
+var gOPS = __webpack_require__(77);
 var anObject = __webpack_require__(1);
 var Reflect = __webpack_require__(2).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
@@ -7544,11 +8200,11 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 
 
 /***/ }),
-/* 134 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseFloat = __webpack_require__(2).parseFloat;
-var $trim = __webpack_require__(53).trim;
+var $trim = __webpack_require__(54).trim;
 
 module.exports = 1 / $parseFloat(__webpack_require__(103) + '-0') !== -Infinity ? function parseFloat(str) {
   var string = $trim(String(str), 3);
@@ -7558,11 +8214,11 @@ module.exports = 1 / $parseFloat(__webpack_require__(103) + '-0') !== -Infinity 
 
 
 /***/ }),
-/* 135 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $parseInt = __webpack_require__(2).parseInt;
-var $trim = __webpack_require__(53).trim;
+var $trim = __webpack_require__(54).trim;
 var ws = __webpack_require__(103);
 var hex = /^[-+]?0[xX]/;
 
@@ -7573,7 +8229,7 @@ module.exports = $parseInt(ws + '08') !== 8 || $parseInt(ws + '0x16') !== 22 ? f
 
 
 /***/ }),
-/* 136 */
+/* 137 */
 /***/ (function(module, exports) {
 
 module.exports = function (exec) {
@@ -7586,7 +8242,7 @@ module.exports = function (exec) {
 
 
 /***/ }),
-/* 137 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var anObject = __webpack_require__(1);
@@ -7604,7 +8260,7 @@ module.exports = function (C, x) {
 
 
 /***/ }),
-/* 138 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-string-pad-start-end
@@ -7626,7 +8282,7 @@ module.exports = function (that, maxLength, fillString, left) {
 
 
 /***/ }),
-/* 139 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/ecma262/#sec-toindex
@@ -7642,24 +8298,24 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 140 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 exports.f = __webpack_require__(7);
 
 
 /***/ }),
-/* 141 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var strong = __webpack_require__(116);
-var validate = __webpack_require__(54);
+var strong = __webpack_require__(117);
+var validate = __webpack_require__(55);
 var MAP = 'Map';
 
 // 23.1 Map Objects
-module.exports = __webpack_require__(69)(MAP, function (get) {
+module.exports = __webpack_require__(70)(MAP, function (get) {
   return function Map() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.1.3.6 Map.prototype.get(key)
@@ -7675,28 +8331,28 @@ module.exports = __webpack_require__(69)(MAP, function (get) {
 
 
 /***/ }),
-/* 142 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 21.2.5.3 get RegExp.prototype.flags()
 if (__webpack_require__(8) && /./g.flags != 'g') __webpack_require__(9).f(RegExp.prototype, 'flags', {
   configurable: true,
-  get: __webpack_require__(71)
+  get: __webpack_require__(72)
 });
 
 
 /***/ }),
-/* 143 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var strong = __webpack_require__(116);
-var validate = __webpack_require__(54);
+var strong = __webpack_require__(117);
+var validate = __webpack_require__(55);
 var SET = 'Set';
 
 // 23.2 Set Objects
-module.exports = __webpack_require__(69)(SET, function (get) {
+module.exports = __webpack_require__(70)(SET, function (get) {
   return function Set() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.2.3.1 Set.prototype.add(value)
@@ -7707,7 +8363,7 @@ module.exports = __webpack_require__(69)(SET, function (get) {
 
 
 /***/ }),
-/* 144 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7715,11 +8371,11 @@ module.exports = __webpack_require__(69)(SET, function (get) {
 var each = __webpack_require__(26)(0);
 var redefine = __webpack_require__(16);
 var meta = __webpack_require__(37);
-var assign = __webpack_require__(128);
-var weak = __webpack_require__(118);
+var assign = __webpack_require__(129);
+var weak = __webpack_require__(119);
 var isObject = __webpack_require__(5);
-var fails = __webpack_require__(4);
-var validate = __webpack_require__(54);
+var fails = __webpack_require__(3);
+var validate = __webpack_require__(55);
 var WEAK_MAP = 'WeakMap';
 var getWeak = meta.getWeak;
 var isExtensible = Object.isExtensible;
@@ -7749,7 +8405,7 @@ var methods = {
 };
 
 // 23.3 WeakMap Objects
-var $WeakMap = module.exports = __webpack_require__(69)(WEAK_MAP, wrapper, methods, weak, true, true);
+var $WeakMap = module.exports = __webpack_require__(70)(WEAK_MAP, wrapper, methods, weak, true, true);
 
 // IE11 WeakMap frozen keys fix
 if (fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7; })) {
@@ -7773,14 +8429,14 @@ if (fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp)
 
 
 /***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var STATS_SAMPLE_PERCENTAGE = 0.1;
 var InMemoryDataset = (function () {
     function InMemoryDataset(dataShapes) {
@@ -7943,7 +8599,7 @@ exports.InMemoryDataset = InMemoryDataset;
 //# sourceMappingURL=dataset.js.map
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7960,8 +8616,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
-var dataset_1 = __webpack_require__(145);
+var util = __webpack_require__(4);
+var dataset_1 = __webpack_require__(146);
 var PARSING_IMAGE_CANVAS_HEIGHT_PX = 1000;
 function getXhrDatasetConfig(jsonConfigPath) {
     return new Promise(function (resolve, reject) {
@@ -8095,7 +8751,7 @@ function parseTypedArrayFromPng(info, shape) {
 //# sourceMappingURL=xhr-dataset.js.map
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8112,7 +8768,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var SGDOptimizer = (function (_super) {
     __extends(SGDOptimizer, _super);
     function SGDOptimizer(learningRate, specifiedVariableList) {
@@ -8147,7 +8803,7 @@ exports.SGDOptimizer = SGDOptimizer;
 //# sourceMappingURL=sgd_optimizer.js.map
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8283,16 +8939,16 @@ exports.PriorityQueue = PriorityQueue;
 //# sourceMappingURL=priority_queue.js.map
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
-var operation_emitter = __webpack_require__(372);
-var session_util = __webpack_require__(150);
+var util = __webpack_require__(4);
+var operation_emitter = __webpack_require__(378);
+var session_util = __webpack_require__(151);
 var tensor_array_map_1 = __webpack_require__(35);
 var FeedDictionary = (function () {
     function FeedDictionary(feedEntries) {
@@ -8426,15 +9082,15 @@ exports.Session = Session;
 //# sourceMappingURL=session.js.map
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
-var graph_1 = __webpack_require__(63);
+var util = __webpack_require__(4);
+var graph_1 = __webpack_require__(64);
 var graph_util = __webpack_require__(21);
 function getTerminatingNodesFromFeedDictionary(feedDictionary) {
     return Object.keys(feedDictionary.dict)
@@ -8559,7 +9215,7 @@ exports.throwErrorIfEvaluationSetContainsPlaceholderNodes = throwErrorIfEvaluati
 //# sourceMappingURL=session_util.js.map
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8688,7 +9344,7 @@ exports.RandomUniformInitializer = RandomUniformInitializer;
 //# sourceMappingURL=initializers.js.map
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8708,7 +9364,7 @@ exports.validateShapes = validateShapes;
 //# sourceMappingURL=copy2d_util.js.map
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8724,14 +9380,14 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var seedrandom = __webpack_require__(426);
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
+var seedrandom = __webpack_require__(432);
+var util = __webpack_require__(4);
+var axis_util = __webpack_require__(109);
 var broadcast_util = __webpack_require__(56);
 var concat_util = __webpack_require__(65);
-var conv_util = __webpack_require__(50);
-var copy2D_util = __webpack_require__(152);
-var math_1 = __webpack_require__(66);
+var conv_util = __webpack_require__(51);
+var copy2D_util = __webpack_require__(153);
+var math_1 = __webpack_require__(57);
 var ndarray_1 = __webpack_require__(6);
 var NDArrayMathCPU = (function (_super) {
     __extends(NDArrayMathCPU, _super);
@@ -8965,7 +9621,7 @@ var NDArrayMathCPU = (function (_super) {
         for (var i = 0; i < newValues.length; ++i) {
             newValues[i] = aValues[i % a.size] / bValues[i % b.size];
         }
-        return ndarray_1.NDArray.make(newShape, { values: newValues });
+        return ndarray_1.NDArray.make(newShape, { values: newValues }, 'float32');
     };
     NDArrayMathCPU.prototype.sumInternal = function (input, axes) {
         axis_util.assertAxesAreInnerMostDims('sum', axes, input.rank);
@@ -8986,7 +9642,7 @@ var NDArrayMathCPU = (function (_super) {
         return result;
     };
     NDArrayMathCPU.prototype.argMinInternal = function (input, axes) {
-        axis_util.assertAxesAreInnerMostDims('argMax', axes, input.rank);
+        axis_util.assertAxesAreInnerMostDims('argMin', axes, input.rank);
         var _a = axis_util.computeOutAndReduceShapes(input.shape, axes), outShape = _a[0], reduceShape = _a[1];
         var result = ndarray_1.NDArray.zeros(outShape, 'int32');
         var reduceSize = util.sizeFromShape(reduceShape);
@@ -9097,7 +9753,7 @@ var NDArrayMathCPU = (function (_super) {
         var aVals = input.getValues();
         for (var i = 0; i < vals.length; ++i) {
             var offset = i * reduceSize;
-            var max = aVals[0];
+            var max = aVals[offset];
             for (var j = 0; j < reduceSize; ++j) {
                 var value = aVals[offset + j];
                 if (isNaN(value)) {
@@ -9154,15 +9810,14 @@ var NDArrayMathCPU = (function (_super) {
         }
         return ndarray_1.NDArray.make(ndarray.shape, { values: newValues });
     };
-    NDArrayMathCPU.prototype.logSumExpInternal = function (input, axes) {
-        axis_util.assertAxesAreInnerMostDims('logSumExp', axes, input.rank);
-        var xMax = this.max(input, axes, true);
-        var a = this.subtract(input, xMax);
-        var b = this.exp(a);
-        var c = this.sum(b, axes);
-        var d = this.log(c);
-        var result = this.add(xMax.reshape(d.shape), d);
-        return result;
+    NDArrayMathCPU.prototype.squareInternal = function (x) {
+        var values = x.getValues();
+        var newValues = new Float32Array(values.length);
+        for (var i = 0; i < values.length; ++i) {
+            var value = values[i];
+            newValues[i] = value * value;
+        }
+        return ndarray_1.NDArray.make(x.shape, { values: newValues });
     };
     NDArrayMathCPU.prototype.reluInternal = function (input) {
         var res = ndarray_1.NDArray.zeros(input.shape, input.dtype);
@@ -9303,12 +9958,13 @@ var NDArrayMathCPU = (function (_super) {
         }
         return ndarray_1.NDArray.make(ndarray.shape, { values: resultValues });
     };
-    NDArrayMathCPU.prototype.stepInternal = function (ndarray) {
+    NDArrayMathCPU.prototype.stepInternal = function (ndarray, alpha) {
+        if (alpha === void 0) { alpha = 0; }
         var resultValues = new Float32Array(ndarray.size);
         var values = ndarray.getValues();
         for (var i = 0; i < values.length; ++i) {
             var value = values[i];
-            resultValues[i] = value > 0 ? 1 : (value < 0 ? 0 : value);
+            resultValues[i] = value > 0 ? 1 : (value < 0 ? alpha : value);
         }
         return ndarray_1.NDArray.make(ndarray.shape, { values: resultValues });
     };
@@ -9441,6 +10097,77 @@ var NDArrayMathCPU = (function (_super) {
         }
         return ndarray_1.Array1D.new(values);
     };
+    NDArrayMathCPU.prototype.depthwiseConv2DInternal = function (input, filter, convInfo) {
+        var _a = convInfo.inShape, numBatches = _a[0], xRows = _a[1], xCols = _a[2], inChannels = _a[3];
+        var filterHeight = convInfo.filterHeight;
+        var filterWidth = convInfo.filterWidth;
+        var padLeft = convInfo.padInfo.left;
+        var padTop = convInfo.padInfo.top;
+        var yRows = convInfo.outShape[1];
+        var yCols = convInfo.outShape[2];
+        var chMul = convInfo.channelMul;
+        var y = ndarray_1.Array4D.zeros(convInfo.outShape);
+        for (var b = 0; b < numBatches; ++b) {
+            for (var d1 = 0; d1 < inChannels; ++d1) {
+                for (var yR = 0; yR < yRows; ++yR) {
+                    var xRCorner = yR * convInfo.strideHeight - padLeft;
+                    var xRMin = Math.max(0, xRCorner);
+                    var xRMax = Math.min(xRows, filterHeight + xRCorner);
+                    for (var yC = 0; yC < yCols; ++yC) {
+                        var xCCorner = yC * convInfo.strideWidth - padTop;
+                        var xCMin = Math.max(0, xCCorner);
+                        var xCMax = Math.min(xCols, filterWidth + xCCorner);
+                        for (var q = 0; q < chMul; ++q) {
+                            var dotProd = 0;
+                            for (var xR = xRMin; xR < xRMax; ++xR) {
+                                var wR = xR - xRCorner;
+                                for (var xC = xCMin; xC < xCMax; ++xC) {
+                                    var wC = xC - xCCorner;
+                                    var pixel = input.get(b, xR, xC, d1);
+                                    var weight = filter.get(wR, wC, d1, q);
+                                    dotProd += pixel * weight;
+                                }
+                            }
+                            y.set(dotProd, b, yR, yC, d1 * chMul + q);
+                        }
+                    }
+                }
+            }
+        }
+        return y;
+    };
+    NDArrayMathCPU.prototype.tileInternal = function (a, reps) {
+        var newShape = new Array(a.rank);
+        for (var i = 0; i < newShape.length; i++) {
+            newShape[i] = a.shape[i] * reps[i];
+        }
+        var dtype;
+        if (a.dtype === 'float32') {
+            dtype = Float32Array;
+        }
+        else if (a.dtype === 'int32') {
+            dtype = Int32Array;
+        }
+        else if (a.dtype === 'bool') {
+            dtype = Uint8Array;
+        }
+        else {
+            throw new Error("Dtype " + a.dtype + " not supported for tile");
+        }
+        var resultValues = new dtype(util.sizeFromShape(newShape));
+        var result = ndarray_1.NDArray.make(newShape, { values: resultValues }, a.dtype);
+        var values = a.getValues();
+        for (var i = 0; i < result.size; ++i) {
+            var newLoc = result.indexToLoc(i);
+            var originalLoc = new Array(a.rank);
+            for (var i_1 = 0; i_1 < originalLoc.length; i_1++) {
+                originalLoc[i_1] = newLoc[i_1] % a.shape[i_1];
+            }
+            var originalIndex = a.locToIndex(originalLoc);
+            resultValues[i] = values[originalIndex];
+        }
+        return result;
+    };
     NDArrayMathCPU.prototype.transposeInternal = function (a, perm) {
         var newShape = new Array(a.rank);
         for (var i = 0; i < newShape.length; i++) {
@@ -9452,8 +10179,8 @@ var NDArrayMathCPU = (function (_super) {
         for (var i = 0; i < a.size; ++i) {
             var loc = a.indexToLoc(i);
             var newLoc = new Array(loc.length);
-            for (var i_1 = 0; i_1 < newLoc.length; i_1++) {
-                newLoc[i_1] = loc[perm[i_1]];
+            for (var i_2 = 0; i_2 < newLoc.length; i_2++) {
+                newLoc[i_2] = loc[perm[i_2]];
             }
             var newIndex = result.locToIndex(newLoc);
             resultValues[newIndex] = values[i];
@@ -9627,8 +10354,22 @@ var NDArrayMathCPU = (function (_super) {
         }
         return output;
     };
+    NDArrayMathCPU.prototype.batchNormalization2DInternal = function (x, mean, variance, varianceEpsilon, scale, offset) {
+        var xValues = x.getValues();
+        var meanValues = mean.getValues();
+        var varianceValues = variance.getValues();
+        var scaleValues = scale ? scale.getValues() : new Float32Array([1]);
+        var offsetValues = offset ? offset.getValues() : new Float32Array([0]);
+        var outValues = new Float32Array(xValues.length);
+        for (var i = 0; i < xValues.length; i++) {
+            outValues[i] = offsetValues[i % offsetValues.length] +
+                (xValues[i] - meanValues[i % meanValues.length]) *
+                    scaleValues[i % scaleValues.length] /
+                    Math.sqrt(varianceValues[i % varianceValues.length] + varianceEpsilon);
+        }
+        return ndarray_1.Array2D.new(x.shape, outValues);
+    };
     NDArrayMathCPU.prototype.batchNormalization3DInternal = function (x, mean, variance, varianceEpsilon, scale, offset) {
-        if (varianceEpsilon === void 0) { varianceEpsilon = .001; }
         var xValues = x.getValues();
         var meanValues = mean.getValues();
         var varianceValues = variance.getValues();
@@ -9708,7 +10449,7 @@ exports.NDArrayMathCPU = NDArrayMathCPU;
 //# sourceMappingURL=math_cpu.js.map
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9724,37 +10465,40 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var math_1 = __webpack_require__(66);
+var util = __webpack_require__(4);
+var axis_util = __webpack_require__(109);
+var math_1 = __webpack_require__(57);
 var ndarray = __webpack_require__(6);
 var ndarray_1 = __webpack_require__(6);
-var addscaledmat_gpu_1 = __webpack_require__(401);
-var argminmax_gpu_1 = __webpack_require__(402);
-var batchnorm_gpu_1 = __webpack_require__(403);
-var binaryop_gpu = __webpack_require__(155);
-var binaryop_gpu_1 = __webpack_require__(155);
-var clip_gpu_1 = __webpack_require__(404);
-var concat_gpu_1 = __webpack_require__(405);
-var conv_backprop_gpu_1 = __webpack_require__(406);
-var conv_gpu_1 = __webpack_require__(407);
-var copy_gpu_1 = __webpack_require__(408);
-var gpgpu_context_1 = __webpack_require__(156);
-var gpgpu_math = __webpack_require__(409);
-var gpgpu_util = __webpack_require__(109);
-var logsumexp_gpu_1 = __webpack_require__(410);
-var max_pool_backprop_gpu_1 = __webpack_require__(411);
-var minmax_gpu_1 = __webpack_require__(412);
-var mulmat_gpu_1 = __webpack_require__(413);
-var multinomial_gpu_1 = __webpack_require__(414);
-var onehot_gpu_1 = __webpack_require__(415);
-var pool_gpu_1 = __webpack_require__(416);
-var reducesum_gpu_1 = __webpack_require__(417);
-var resize_bilinear_gpu_1 = __webpack_require__(419);
-var slice_gpu_1 = __webpack_require__(421);
-var texture_manager_1 = __webpack_require__(422);
-var transpose_gpu_1 = __webpack_require__(423);
-var unary_op = __webpack_require__(157);
-var unaryop_gpu_1 = __webpack_require__(157);
-var webgl_util = __webpack_require__(57);
+var reduce_util = __webpack_require__(406);
+var addscaledmat_gpu_1 = __webpack_require__(408);
+var argminmax_gpu_1 = __webpack_require__(409);
+var batchnorm_gpu_1 = __webpack_require__(410);
+var binaryop_gpu = __webpack_require__(156);
+var binaryop_gpu_1 = __webpack_require__(156);
+var clip_gpu_1 = __webpack_require__(411);
+var concat_gpu_1 = __webpack_require__(412);
+var conv_backprop_gpu_1 = __webpack_require__(413);
+var conv_gpu_1 = __webpack_require__(414);
+var conv_gpu_depthwise_1 = __webpack_require__(415);
+var copy_gpu_1 = __webpack_require__(416);
+var gpgpu_context_1 = __webpack_require__(157);
+var gpgpu_math = __webpack_require__(417);
+var gpgpu_util = __webpack_require__(110);
+var max_pool_backprop_gpu_1 = __webpack_require__(418);
+var mulmat_gpu_1 = __webpack_require__(419);
+var multinomial_gpu_1 = __webpack_require__(420);
+var onehot_gpu_1 = __webpack_require__(421);
+var pool_gpu_1 = __webpack_require__(422);
+var reduce_gpu_1 = __webpack_require__(423);
+var resize_bilinear_gpu_1 = __webpack_require__(425);
+var slice_gpu_1 = __webpack_require__(426);
+var texture_manager_1 = __webpack_require__(427);
+var tile_gpu_1 = __webpack_require__(428);
+var transpose_gpu_1 = __webpack_require__(429);
+var unary_op = __webpack_require__(158);
+var unaryop_gpu_1 = __webpack_require__(158);
+var webgl_util = __webpack_require__(58);
 var NDArrayMathGPU = (function (_super) {
     __extends(NDArrayMathGPU, _super);
     function NDArrayMathGPU(gpgpu, safeMode) {
@@ -9858,11 +10602,8 @@ var NDArrayMathGPU = (function (_super) {
         var program = new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.MUL, a.shape, b.shape);
         return this.compileAndRun(program, [a, b]);
     };
-    NDArrayMathGPU.prototype.batchNormalization3DInternal = function (x, mean, variance, varianceEpsilon, scale, offset) {
+    NDArrayMathGPU.prototype.batchNormalization2DInternal = function (x, mean, variance, varianceEpsilon, scale, offset) {
         var inputs = [x, mean, variance];
-        if (varianceEpsilon == null) {
-            varianceEpsilon = 0.000001;
-        }
         var offsetShape = null;
         if (offset != null) {
             offsetShape = offset.shape;
@@ -9876,24 +10617,87 @@ var NDArrayMathGPU = (function (_super) {
         var program = new batchnorm_gpu_1.BatchNormProgram(x.shape, mean.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon);
         return this.compileAndRun(program, inputs);
     };
+    NDArrayMathGPU.prototype.batchNormalization3DInternal = function (x, mean, variance, varianceEpsilon, scale, offset) {
+        var inputs = [x, mean, variance];
+        var offsetShape = null;
+        if (offset != null) {
+            offsetShape = offset.shape;
+            inputs.push(offset);
+        }
+        var scaleShape = null;
+        if (scale != null) {
+            scaleShape = scale.shape;
+            inputs.push(scale);
+        }
+        var program = new batchnorm_gpu_1.BatchNormProgram(x.shape, mean.shape, variance.shape, offsetShape, scaleShape, varianceEpsilon);
+        return this.compileAndRun(program, inputs);
+    };
+    NDArrayMathGPU.prototype.tileInternal = function (a, reps) {
+        var program = new tile_gpu_1.TileProgram(a.shape, reps);
+        return this.compileAndRun(program, [a]);
+    };
     NDArrayMathGPU.prototype.transposeInternal = function (a, perm) {
         var program = new transpose_gpu_1.TransposeProgram(a.shape, perm);
         return this.compileAndRun(program, [a]);
     };
+    NDArrayMathGPU.prototype.reduce = function (a, reduceType, dtype) {
+        var batchSize = a.shape[0];
+        var inSize = a.shape[1];
+        var windowSize = reduce_util.computeOptimalWindowSize(inSize);
+        var reduceInfo = { windowSize: windowSize, inSize: inSize, batchSize: batchSize };
+        var program = new reduce_gpu_1.ReduceProgram(reduceInfo, reduceType);
+        var _a = program.outputShape, rows = _a[0], cols = _a[1];
+        var output = this.makeOutputArray(program.outputShape, dtype).as2D(rows, cols);
+        this.compileAndRun(program, [a], output);
+        if (output.shape[1] === 1) {
+            return output;
+        }
+        return this.reduce(output, reduceType, dtype);
+    };
+    NDArrayMathGPU.prototype.argReduce = function (a, reduceType, bestIndicesA) {
+        if (bestIndicesA === void 0) { bestIndicesA = null; }
+        var batchSize = a.shape[0];
+        var inSize = a.shape[1];
+        if (bestIndicesA != null) {
+            batchSize = bestIndicesA.shape[0];
+            inSize = bestIndicesA.shape[1];
+        }
+        var windowSize = reduce_util.computeOptimalWindowSize(inSize);
+        var reduceInfo = { windowSize: windowSize, inSize: inSize, batchSize: batchSize };
+        var program = new argminmax_gpu_1.ArgMinMaxProgram(reduceInfo, reduceType, bestIndicesA == null);
+        var _a = program.outputShape, rows = _a[0], cols = _a[1];
+        var output = this.makeOutputArray(program.outputShape, 'int32').as2D(rows, cols);
+        var inputs = [a];
+        if (bestIndicesA != null) {
+            inputs.push(bestIndicesA);
+        }
+        this.compileAndRun(program, inputs, output);
+        if (output.shape[1] === 1) {
+            return output;
+        }
+        return this.argReduce(a, reduceType, output);
+    };
     NDArrayMathGPU.prototype.sumInternal = function (a, axes) {
-        var program = new reducesum_gpu_1.ReduceSumProgram(a.shape, axes);
-        var output = this.makeOutputArray(program.outputShape, math_1.SumTypesMap[a.dtype]);
-        return this.compileAndRun(program, [a], output);
+        axis_util.assertAxesAreInnerMostDims('sum', axes, a.rank);
+        var _a = axis_util.computeOutAndReduceShapes(a.shape, axes), outShape = _a[0], reduceShape = _a[1];
+        var inSize = util.sizeFromShape(reduceShape);
+        var a2D = a.as2D(-1, inSize);
+        var outputDType = math_1.SumTypesMap[a.dtype];
+        return this.reduce(a2D, 'sum', outputDType).reshape(outShape);
     };
     NDArrayMathGPU.prototype.argMinInternal = function (a, axes) {
-        var program = new argminmax_gpu_1.ArgMinMaxProgram(a.shape, axes, 'min');
-        var output = this.makeOutputArray(program.outputShape, 'int32');
-        return this.compileAndRun(program, [a], output);
+        axis_util.assertAxesAreInnerMostDims('argMin', axes, a.rank);
+        var _a = axis_util.computeOutAndReduceShapes(a.shape, axes), outShape = _a[0], reduceShape = _a[1];
+        var inSize = util.sizeFromShape(reduceShape);
+        var a2D = a.as2D(-1, inSize);
+        return this.argReduce(a2D, 'min').reshape(outShape);
     };
     NDArrayMathGPU.prototype.argMaxInternal = function (a, axes) {
-        var program = new argminmax_gpu_1.ArgMinMaxProgram(a.shape, axes, 'max');
-        var output = this.makeOutputArray(program.outputShape, 'int32');
-        return this.compileAndRun(program, [a], output);
+        axis_util.assertAxesAreInnerMostDims('argMax', axes, a.rank);
+        var _a = axis_util.computeOutAndReduceShapes(a.shape, axes), outShape = _a[0], reduceShape = _a[1];
+        var inSize = util.sizeFromShape(reduceShape);
+        var a2D = a.as2D(-1, inSize);
+        return this.argReduce(a2D, 'max').reshape(outShape);
     };
     NDArrayMathGPU.prototype.equalInternal = function (x, y) {
         var program = new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.EQUAL, x.shape, y.shape);
@@ -9904,16 +10708,23 @@ var NDArrayMathGPU = (function (_super) {
         throw new Error('topK GPU not yet implemented!');
     };
     NDArrayMathGPU.prototype.minInternal = function (a, axes) {
-        var program = new minmax_gpu_1.MinMaxProgram(a.shape, axes, 'min');
-        return this.compileAndRun(program, [a]);
+        axis_util.assertAxesAreInnerMostDims('min', axes, a.rank);
+        var _a = axis_util.computeOutAndReduceShapes(a.shape, axes), outShape = _a[0], reduceShape = _a[1];
+        var inSize = util.sizeFromShape(reduceShape);
+        var a2D = a.as2D(-1, inSize);
+        return this.reduce(a2D, 'min', a2D.dtype).reshape(outShape);
     };
     NDArrayMathGPU.prototype.maxInternal = function (a, axes) {
-        var program = new minmax_gpu_1.MinMaxProgram(a.shape, axes, 'max');
-        return this.compileAndRun(program, [a]);
+        axis_util.assertAxesAreInnerMostDims('max', axes, a.rank);
+        var _a = axis_util.computeOutAndReduceShapes(a.shape, axes), outShape = _a[0], reduceShape = _a[1];
+        var inSize = util.sizeFromShape(reduceShape);
+        var a2D = a.as2D(-1, inSize);
+        return this.reduce(a2D, 'max', a2D.dtype).reshape(outShape);
     };
     NDArrayMathGPU.prototype.divideInternal = function (a, b) {
         var program = new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.DIV, a.shape, b.shape);
-        return this.compileAndRun(program, [a, b]);
+        var output = this.makeOutputArray(program.outputShape, 'float32');
+        return this.compileAndRun(program, [a, b], output);
     };
     NDArrayMathGPU.prototype.addInternal = function (a, b) {
         var program = new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.ADD, a.shape, b.shape);
@@ -9922,10 +10733,6 @@ var NDArrayMathGPU = (function (_super) {
     NDArrayMathGPU.prototype.subtractInternal = function (a, b) {
         var program = new binaryop_gpu_1.BinaryOpProgram(binaryop_gpu.SUB, a.shape, b.shape);
         return this.compileAndRun(program, [a, b]);
-    };
-    NDArrayMathGPU.prototype.logSumExpInternal = function (a, axes) {
-        var program = new logsumexp_gpu_1.LogSumExpProgram(a.shape, axes);
-        return this.compileAndRun(program, [a]);
     };
     NDArrayMathGPU.prototype.ceilInternal = function (a) {
         var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.CEIL);
@@ -9946,6 +10753,10 @@ var NDArrayMathGPU = (function (_super) {
     NDArrayMathGPU.prototype.sqrtInternal = function (a) {
         var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.SQRT);
         return this.compileAndRun(program, [a]);
+    };
+    NDArrayMathGPU.prototype.squareInternal = function (x) {
+        var program = new unaryop_gpu_1.UnaryOpProgram(x.shape, unary_op.SQUARE);
+        return this.compileAndRun(program, [x]);
     };
     NDArrayMathGPU.prototype.reluInternal = function (a) {
         var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.RELU);
@@ -10007,8 +10818,8 @@ var NDArrayMathGPU = (function (_super) {
         var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.TANH);
         return this.compileAndRun(program, [a]);
     };
-    NDArrayMathGPU.prototype.stepInternal = function (a) {
-        var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.STEP);
+    NDArrayMathGPU.prototype.stepInternal = function (a, alpha) {
+        var program = new unaryop_gpu_1.UnaryOpProgram(a.shape, unary_op.STEP(alpha));
         return this.compileAndRun(program, [a]);
     };
     NDArrayMathGPU.prototype.conv2dInternal = function (x, filter, bias, convInfo) {
@@ -10027,6 +10838,10 @@ var NDArrayMathGPU = (function (_super) {
     NDArrayMathGPU.prototype.conv2dDerBiasInternal = function (dY) {
         var program = new conv_backprop_gpu_1.Conv2DDerBiasProgram(dY.shape);
         return this.compileAndRun(program, [dY]);
+    };
+    NDArrayMathGPU.prototype.depthwiseConv2DInternal = function (input, filter, convInfo) {
+        var program = new conv_gpu_depthwise_1.DepthwiseConv2DProgram(convInfo);
+        return this.compileAndRun(program, [input, filter]);
     };
     NDArrayMathGPU.prototype.maxPoolInternal = function (x, convInfo) {
         var program = new pool_gpu_1.Pool2DProgram(convInfo, 'max', false);
@@ -10089,7 +10904,7 @@ exports.NDArrayMathGPU = NDArrayMathGPU;
 //# sourceMappingURL=math_gpu.js.map
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10105,7 +10920,6 @@ var BinaryOpProgram = (function () {
     function BinaryOpProgram(op, aShape, bShape) {
         this.variableNames = ['A', 'B'];
         this.supportsBroadcasting = true;
-        this.params = [op];
         this.outputShape =
             broadcast_util.assertAndGetBroadcastShape(aShape, bShape);
         this.userCode = "\n      float binaryOperation(float a, float b) {\n        " + op + "\n      }\n\n      void main() {\n        float a = getAAtOutCoords();\n        float b = getBAtOutCoords();\n        setOutput(binaryOperation(a, b));\n      }\n    ";
@@ -10116,17 +10930,52 @@ exports.BinaryOpProgram = BinaryOpProgram;
 //# sourceMappingURL=binaryop_gpu.js.map
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(32);
-var util = __webpack_require__(3);
-var gpgpu_util = __webpack_require__(109);
+var util = __webpack_require__(4);
+var gpgpu_util = __webpack_require__(110);
 var tex_util = __webpack_require__(67);
-var webgl_util = __webpack_require__(57);
+var webgl_util = __webpack_require__(58);
 var GPGPUContext = (function () {
     function GPGPUContext(gl) {
         this.outputTexture = null;
@@ -10151,6 +11000,10 @@ var GPGPUContext = (function () {
         }
         this.loseContextExtension =
             webgl_util.getExtensionOrThrow(this.gl, 'WEBGL_lose_context');
+        if (environment_1.ENV.get('WEBGL_GET_BUFFER_SUB_DATA_ASYNC_EXTENSION_ENABLED')) {
+            this.getBufferSubDataAsyncExtension =
+                this.gl.getExtension('WEBGL_get_buffer_sub_data_async');
+        }
         this.vertexBuffer = gpgpu_util.createVertexBuffer(this.gl);
         this.indexBuffer = gpgpu_util.createIndexBuffer(this.gl);
         this.framebuffer = webgl_util.createFramebuffer(this.gl);
@@ -10218,6 +11071,18 @@ var GPGPUContext = (function () {
         var _this = this;
         return this.downloadMatrixDriver(texture, function () {
             return gpgpu_util.downloadMatrixFromOutputTexture(_this.gl, rows, columns);
+        });
+    };
+    GPGPUContext.prototype.downloadMatrixFromTextureAsync = function (texture, rows, columns) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                if (this.getBufferSubDataAsyncExtension == null) {
+                    throw new Error("Cannot download matrix from output texture asynchronously, " +
+                        "WEBGL_get_buffer_sub_data_async is not enabled.");
+                }
+                return [2, this.downloadMatrixDriverAsync(texture, function () { return gpgpu_util.downloadMatrixFromOutputTextureAsync(_this.gl, _this.getBufferSubDataAsyncExtension, rows, columns); })];
+            });
         });
     };
     GPGPUContext.prototype.downloadMatrixFromRGBAColorTexture = function (texture, rows, columns, channels) {
@@ -10370,13 +11235,14 @@ var GPGPUContext = (function () {
             util.repeatedTry(queryGPU).then(getTimeElapsed).catch(resolveWithWarning);
         });
     };
-    GPGPUContext.prototype.downloadMatrixDriver = function (texture, downloadAndDecode) {
+    GPGPUContext.prototype.downloadMatrixDriverSetup = function (texture) {
         this.throwIfDisposed();
         webgl_util.bindColorTextureToFramebuffer(this.gl, texture, this.framebuffer);
         if (this.autoDebugValidate) {
             webgl_util.validateFramebuffer(this.gl);
         }
-        var result = downloadAndDecode();
+    };
+    GPGPUContext.prototype.downloadMatrixDriverTeardown = function () {
         if (this.outputTexture != null) {
             webgl_util.bindColorTextureToFramebuffer(this.gl, this.outputTexture, this.framebuffer);
             if (this.autoDebugValidate) {
@@ -10386,7 +11252,28 @@ var GPGPUContext = (function () {
         else {
             webgl_util.unbindColorTextureFromFramebuffer(this.gl, this.framebuffer);
         }
+    };
+    GPGPUContext.prototype.downloadMatrixDriver = function (texture, downloadAndDecode) {
+        this.downloadMatrixDriverSetup(texture);
+        var result = downloadAndDecode();
+        this.downloadMatrixDriverTeardown();
         return result;
+    };
+    GPGPUContext.prototype.downloadMatrixDriverAsync = function (texture, downloadAndDecode) {
+        return __awaiter(this, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.downloadMatrixDriverSetup(texture);
+                        return [4, downloadAndDecode()];
+                    case 1:
+                        result = _a.sent();
+                        this.downloadMatrixDriverTeardown();
+                        return [2, result];
+                }
+            });
+        });
     };
     GPGPUContext.prototype.setOutputMatrixTextureDriver = function (outputMatrixTextureMaybePacked, width, height) {
         this.throwIfDisposed();
@@ -10420,7 +11307,7 @@ exports.GPGPUContext = GPGPUContext;
 //# sourceMappingURL=gpgpu_context.js.map
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10430,7 +11317,6 @@ var UnaryOpProgram = (function () {
     function UnaryOpProgram(aShape, opSnippet) {
         this.variableNames = ['A'];
         this.outputShape = aShape;
-        this.params = [opSnippet];
         this.userCode = "\n      float unaryOperation(float x) {\n        " + opSnippet + "\n      }\n\n      void main() {\n        float x = getAAtOutCoords();\n        float y = unaryOperation(x);\n\n        setOutput(y);\n      }\n    ";
     }
     return UnaryOpProgram;
@@ -10441,10 +11327,14 @@ exports.ABS = "\n  return abs(x);\n";
 exports.RELU = "\n  return (x < 0.0) ? 0.0 : x;\n";
 exports.ELU = "\n  return (x >= 0.0) ? x : (exp(x) - 1.0);\n";
 function LEAKY_RELU(alpha) {
-    return "\n  return (x >= 0.0) ? x : " + alpha + " * x;\n  ";
+    return "\n    return (x >= 0.0) ? x : " + alpha + " * x;\n  ";
 }
 exports.LEAKY_RELU = LEAKY_RELU;
-exports.STEP = "\n  return (x == x) ? (x > 0.0 ? 1.0 : 0.0) : x;\n";
+function STEP(alpha) {
+    if (alpha === void 0) { alpha = 0.0; }
+    return "\n    return (x == x) ? (x > 0.0 ? 1.0 : float(" + alpha + ")) : x;\n  ";
+}
+exports.STEP = STEP;
 exports.NEG = "\n  return -x;\n";
 exports.CEIL = "\n  return ceil(x);\n";
 exports.FLOOR = "\n  return floor(x);\n";
@@ -10461,10 +11351,11 @@ exports.ATAN = exports.CHECK_NAN_SNIPPET + "\n  return atan(x);\n";
 exports.SINH = "\n  float e2x = exp(x);\n  return (e2x - 1.0 / e2x) / 2.0;\n";
 exports.COSH = "\n  float e2x = exp(-x);\n  return (e2x + 1.0 / e2x) / 2.0;\n";
 exports.TANH = "\n  float e2x = exp(-2.0 * abs(x));\n  return sign(x) * (1.0 - e2x) / (1.0 + e2x);\n";
+exports.SQUARE = "\n  return x * x;\n";
 //# sourceMappingURL=unaryop_gpu.js.map
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports) {
 
 var g;
@@ -10491,7 +11382,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10504,17 +11395,19 @@ Made @ NYU ITP
 
 
 
-var _index = __webpack_require__(165);
+var _index = __webpack_require__(166);
 
-var _index2 = __webpack_require__(163);
+var _index2 = __webpack_require__(165);
 
-var _index3 = __webpack_require__(161);
+var _index3 = __webpack_require__(162);
 
-var _deeplearn = __webpack_require__(64);
+var _index4 = __webpack_require__(164);
+
+var _deeplearn = __webpack_require__(38);
 
 var deeplearn = _interopRequireWildcard(_deeplearn);
 
-var _math = __webpack_require__(110);
+var _math = __webpack_require__(111);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -10526,21 +11419,22 @@ module.exports = {
   NeuralNetwork: _index.NeuralNetwork,
   LSTMGenerator: _index2.LSTMGenerator,
   ImageNet: _index3.ImageNet,
+  KNNImageClassifier: _index4.KNNImageClassifier,
   math: _math.math
 };
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-__webpack_require__(368);
-
-__webpack_require__(168);
+__webpack_require__(369);
 
 __webpack_require__(169);
+
+__webpack_require__(170);
 
 if (global._babelPolyfill) {
   throw new Error("only one instance of babel-polyfill is allowed");
@@ -10562,10 +11456,10 @@ define(String.prototype, "padRight", "".padEnd);
 "pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(158)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(159)))
 
 /***/ }),
-/* 161 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10580,11 +11474,11 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Image net Class
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _index = __webpack_require__(82);
+var _index = __webpack_require__(68);
 
-var _deeplearn = __webpack_require__(64);
+var _deeplearn = __webpack_require__(38);
 
-var _squeezenet = __webpack_require__(162);
+var _squeezenet = __webpack_require__(163);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -10703,7 +11597,7 @@ var ImageNet = function () {
 exports.ImageNet = ImageNet;
 
 /***/ }),
-/* 162 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10989,7 +11883,128 @@ Math// math: package containing random, pow, and seedrandom
 );},{"crypto":2}],98:[function(require,module,exports){"use strict";var __awaiter=this&&this.__awaiter||function(thisArg,_arguments,P,generator){return new(P||(P=Promise))(function(resolve,reject){function fulfilled(value){try{step(generator.next(value));}catch(e){reject(e);}}function rejected(value){try{step(generator["throw"](value));}catch(e){reject(e);}}function step(result){result.done?resolve(result.value):new P(function(resolve){resolve(result.value);}).then(fulfilled,rejected);}step((generator=generator.apply(thisArg,_arguments||[])).next());});};var __generator=this&&this.__generator||function(thisArg,body){var _={label:0,sent:function sent(){if(t[0]&1)throw t[1];return t[1];},trys:[],ops:[]},f,y,t,g;return g={next:verb(0),"throw":verb(1),"return":verb(2)},typeof Symbol==="function"&&(g[Symbol.iterator]=function(){return this;}),g;function verb(n){return function(v){return step([n,v]);};}function step(op){if(f)throw new TypeError("Generator is already executing.");while(_){try{if(f=1,y&&(t=y[op[0]&2?"return":op[0]?"throw":"next"])&&!(t=t.call(y,op[1])).done)return t;if(y=0,t)op=[0,t.value];switch(op[0]){case 0:case 1:t=op;break;case 4:_.label++;return{value:op[1],done:false};case 5:_.label++;y=op[1];op=[0];continue;case 7:op=_.ops.pop();_.trys.pop();continue;default:if(!(t=_.trys,t=t.length>0&&t[t.length-1])&&(op[0]===6||op[0]===2)){_=0;continue;}if(op[0]===3&&(!t||op[1]>t[0]&&op[1]<t[3])){_.label=op[1];break;}if(op[0]===6&&_.label<t[1]){_.label=t[1];t=op;break;}if(t&&_.label<t[2]){_.label=t[2];_.ops.push(op);break;}if(t[2])_.ops.pop();_.trys.pop();continue;}op=body.call(thisArg,_);}catch(e){op=[6,e];y=0;}finally{f=t=0;}}if(op[0]&5)throw op[1];return{value:op[0]?op[1]:void 0,done:true};}};Object.defineProperty(exports,"__esModule",{value:true});var deeplearn_1=require("deeplearn");var imagenet_classes_1=require("./imagenet_classes");var GOOGLE_CLOUD_STORAGE_DIR='https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';var SqueezeNet=function(){function SqueezeNet(math){this.math=math;this.preprocessOffset=deeplearn_1.Array1D.new([103.939,116.779,123.68]);deeplearn_1.initializeGPU(this.math.getGPGPUContext(),this.math.getTextureManager());}SqueezeNet.prototype.load=function(){return __awaiter(this,void 0,void 0,function(){var checkpointLoader,_a;return __generator(this,function(_b){switch(_b.label){case 0:checkpointLoader=new deeplearn_1.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR+'squeezenet1_1/');_a=this;return[4,checkpointLoader.getAllVariables()];case 1:_a.variables=_b.sent();return[2];}});});};SqueezeNet.prototype.predict=function(input){return __awaiter(this,void 0,void 0,function(){var _this=this;var namedActivations,avgpool10,layerNames;return __generator(this,function(_a){namedActivations={};avgpool10=this.math.scope(function(keep){var preprocessedInput=_this.math.subtract(input,_this.preprocessOffset);var conv1=_this.math.conv2d(preprocessedInput,_this.variables['conv1_W:0'],_this.variables['conv1_b:0'],2,0);var conv1relu=keep(_this.math.relu(conv1));namedActivations['conv_1']=conv1relu;var pool1=keep(_this.math.maxPool(conv1relu,3,2,0));namedActivations['maxpool_1']=pool1;var fire2=keep(_this.fireModule(pool1,2));namedActivations['fire2']=fire2;var fire3=keep(_this.fireModule(fire2,3));namedActivations['fire3']=fire3;var pool2=keep(_this.math.maxPool(fire3,3,2,'valid'));namedActivations['maxpool_2']=pool2;var fire4=keep(_this.fireModule(pool2,4));namedActivations['fire4']=fire4;var fire5=keep(_this.fireModule(fire4,5));namedActivations['fire5']=fire5;var pool3=keep(_this.math.maxPool(fire5,3,2,0));namedActivations['maxpool_3']=pool3;var fire6=keep(_this.fireModule(pool3,6));namedActivations['fire6']=fire6;var fire7=keep(_this.fireModule(fire6,7));namedActivations['fire7']=fire7;var fire8=keep(_this.fireModule(fire7,8));namedActivations['fire8']=fire8;var fire9=keep(_this.fireModule(fire8,9));namedActivations['fire9']=fire9;var conv10=keep(_this.math.conv2d(fire9,_this.variables['conv10_W:0'],_this.variables['conv10_b:0'],1,0));namedActivations['conv10']=conv10;return _this.math.avgPool(conv10,conv10.shape[0],1,0).as1D();});layerNames=Object.keys(namedActivations);layerNames.forEach(function(layerName){return _this.math.track(namedActivations[layerName]);});return[2,{namedActivations:namedActivations,logits:avgpool10}];});});};SqueezeNet.prototype.fireModule=function(input,fireId){var y1=this.math.conv2d(input,this.variables["fire"+fireId+"/squeeze1x1_W:0"],this.variables["fire"+fireId+"/squeeze1x1_b:0"],1,0);var y2=this.math.relu(y1);var left1=this.math.conv2d(y2,this.variables["fire"+fireId+"/expand1x1_W:0"],this.variables["fire"+fireId+"/expand1x1_b:0"],1,0);var left2=this.math.relu(left1);var right1=this.math.conv2d(y2,this.variables["fire"+fireId+"/expand3x3_W:0"],this.variables["fire"+fireId+"/expand3x3_b:0"],1,1);var right2=this.math.relu(right1);return this.math.concat3D(left2,right2,2);};SqueezeNet.prototype.getTopKClasses=function(logits,topK){return __awaiter(this,void 0,void 0,function(){var predictions,topk,topkIndices,topkValues,topClassesToProbability,i;return __generator(this,function(_a){switch(_a.label){case 0:predictions=this.math.softmax(logits);topk=new deeplearn_1.NDArrayMathCPU().topK(predictions,topK);return[4,topk.indices.data()];case 1:topkIndices=_a.sent();return[4,topk.values.data()];case 2:topkValues=_a.sent();topClassesToProbability={};for(i=0;i<topkIndices.length;i++){topClassesToProbability[imagenet_classes_1.IMAGENET_CLASSES[topkIndices[i]]]=topkValues[i];}return[2,topClassesToProbability];}});});};SqueezeNet.prototype.dispose=function(){this.preprocessOffset.dispose();for(var varName in this.variables){this.variables[varName].dispose();}};return SqueezeNet;}();exports.SqueezeNet=SqueezeNet;},{"./imagenet_classes":1,"deeplearn":44}]},{},[98])(98);});
 
 /***/ }),
-/* 163 */
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.KNNImageClassifier = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     KNN Image Classifier model
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+
+var _deeplearnKnnImageClassifier = __webpack_require__(370);
+
+var _deeplearn = __webpack_require__(38);
+
+var _utils = __webpack_require__(68);
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var KNNImageClassifier = function () {
+  function KNNImageClassifier(callback) {
+    var _this = this;
+
+    _classCallCheck(this, KNNImageClassifier);
+
+    this.knnKValue = 5;
+    this.maxControls = 15;
+    this.modelLoaded = false;
+    this.classifier = new _deeplearnKnnImageClassifier.KNNImageClassifier(this.maxControls, this.knnKValue, _utils.math);
+    var loadModel = this.classifier.load();
+    loadModel.then(function () {
+      _this.modelLoaded = true;
+      callback();
+    });
+  }
+
+  _createClass(KNNImageClassifier, [{
+    key: 'addImage',
+    value: function addImage(input, index) {
+      var _this2 = this;
+
+      if (this.modelLoaded) {
+        _utils.math.scope(function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(keep, track) {
+            var image;
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    image = track(_deeplearn.Array3D.fromPixels(input));
+                    _context.next = 3;
+                    return _this2.classifier.addImage(image, index);
+
+                  case 3:
+                  case 'end':
+                    return _context.stop();
+                }
+              }
+            }, _callee, _this2);
+          }));
+
+          return function (_x, _x2) {
+            return _ref.apply(this, arguments);
+          };
+        }());
+      } else {
+        console.log('The Model has not finished loading. Wait until it loads and try again');
+      }
+    }
+  }, {
+    key: 'predict',
+    value: function predict(input, callback) {
+      var _this3 = this;
+
+      if (this.modelLoaded) {
+        _utils.math.scope(function () {
+          var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(keep, track) {
+            var image, results;
+            return regeneratorRuntime.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    image = _deeplearn.Array3D.fromPixels(input);
+                    _context2.next = 3;
+                    return _this3.classifier.predict(image);
+
+                  case 3:
+                    results = _context2.sent;
+
+                    callback(results);
+
+                  case 5:
+                  case 'end':
+                    return _context2.stop();
+                }
+              }
+            }, _callee2, _this3);
+          }));
+
+          return function (_x3, _x4) {
+            return _ref2.apply(this, arguments);
+          };
+        }());
+      } else {
+        console.log('The Model has not finished loading. Wait until it loads and try again');
+      }
+    }
+  }]);
+
+  return KNNImageClassifier;
+}();
+
+exports.KNNImageClassifier = KNNImageClassifier;
+
+/***/ }),
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11005,9 +12020,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Currently working with models trained using https://github.com/sherjilozair/char-rnn-tensorflow
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(64);
+var _deeplearn = __webpack_require__(38);
 
-var _utils = __webpack_require__(82);
+var _utils = __webpack_require__(68);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11167,42 +12182,7 @@ var LSTMGenerator = function () {
 exports.LSTMGenerator = LSTMGenerator;
 
 /***/ }),
-/* 164 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-// Utils
-// Activation Functions
-
-// Activation Functions
-var activationFunctions = {
-  sigmoid: function sigmoid(x) {
-    return 1 / (1 + pow(Math.E, -x));
-  },
-  tanh: function tanh(x) {
-    return Math.tanh(x);
-  }
-
-  // Derivatives
-};var derivatives = {
-  sigmoid: function sigmoid(x) {
-    return x * (1 - x);
-  },
-  tanh: function tanh(x) {
-    return 1 / pow(Math.cosh(x), 2);
-  }
-};
-
-exports.activationFunctions = activationFunctions;
-exports.derivatives = derivatives;
-
-/***/ }),
-/* 165 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11220,11 +12200,14 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      https://github.com/makeyourownneuralnetwork/
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _activationFunctions = __webpack_require__(164);
+//import { activationFunctions, derivatives } from './activationFunctions';
 
-var _index = __webpack_require__(82);
 
-var _deeplearn = __webpack_require__(64);
+var _index = __webpack_require__(68);
+
+var _deeplearn = __webpack_require__(38);
+
+var _math = __webpack_require__(57);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -11244,11 +12227,10 @@ var NeuralNetwork = function () {
     this.wih = _deeplearn.Array2D.randNormal([this.hnodes, this.inodes]);
     this.who = _deeplearn.Array2D.randNormal([this.onodes, this.hnodes]);
 
-    this.activation = _activationFunctions.activationFunctions[activation];
-    this.derivative = _activationFunctions.derivatives[activation];
+    //this.activation = activationFunctions[activation];
+    //this.derivative = derivatives[activation];
 
-    this.learning_rate = learning_rate;
-    this.train([2, 3, 4], [4, 6, 8]);
+    this.learning_rate = _deeplearn.Scalar.new(learning_rate);
   }
 
   _createClass(NeuralNetwork, [{
@@ -11272,25 +12254,31 @@ var NeuralNetwork = function () {
       var output_errors = _index.math.subtract(targets, final_outputs);
       // hidden layer error is the output_errors, split by weights, recombined at hidden node
       var hidden_errors = _index.math.matMul(_index.math.transpose(this.who), output_errors);
+      // Start Backpropagation
+      // Update the weights for the links between the hidden and output layers  
+      this.who = _index.math.add(this.who, _index.math.multiply(this.learning_rate, _index.math.matMul(_index.math.multiply(_index.math.multiply(output_errors, final_outputs), _index.math.subtract(_deeplearn.Scalar.new(1), final_outputs)), _index.math.transpose(hidden_outputs))));
 
-      // Update the weights for the links between the hidden and output layers
-      this.who = this.learning_rate * _index.math.matMul(_index.math.matMul(_index.math.matMul(output_errors, final_outputs), _index.math.subtract(1, final_outputs)), _index.math.transpose(hidden_outputs));
+      // Update the weights for the links between the input and the hidden layer
+      this.wih = _index.math.add(this.wih, _index.math.multiply(this.learning_rate, _index.math.matMul(_index.math.multiply(_index.math.multiply(hidden_errors, hidden_outputs), _index.math.subtract(_deeplearn.Scalar.new(1), hidden_outputs)), _index.math.transpose(inputs))));
     }
   }, {
     key: 'query',
-    value: function query(inputsArray) {}
+    value: function query(inputs_array) {
+      // convert inputs list to 2d array
+      var inputs = _index.math.transpose(_deeplearn.Array2D.new([1, inputs_array.length], inputs_array));
 
-    // Adjust weights ever so slightly
+      // Calculate signals into hidden layer
+      var hidden_inputs = _index.math.matMul(this.wih, inputs);
+      // Calculate the signals emerging from the hidden layer
+      var hidden_outputs = _index.math.sigmoid(hidden_inputs);
 
-  }], [{
-    key: 'mutate',
-    value: function mutate(x) {
-      if ((0, _index.randomFloat)() < 0.1) {
-        var offset = (0, _index.randomGaussian)() * 0.5;
-        return x + offset;
-      } else {
-        return x;
-      }
+      // Calculate signals into final output layer
+      var final_inputs = _index.math.matMul(this.who, hidden_outputs);
+      var final_outputs = _index.math.sigmoid(final_inputs);
+      return {
+        argMax: _index.math.argMax(final_outputs).getValues()[0],
+        result: Array.from(final_outputs.getValues())
+      };
     }
   }]);
 
@@ -11300,7 +12288,7 @@ var NeuralNetwork = function () {
 exports.NeuralNetwork = NeuralNetwork;
 
 /***/ }),
-/* 166 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11361,7 +12349,7 @@ exports.randomInt = randomInt;
 exports.randomGaussian = randomGaussian;
 
 /***/ }),
-/* 167 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11390,7 +12378,7 @@ var sampleFromDistribution = function sampleFromDistribution(input) {
 exports.sampleFromDistribution = sampleFromDistribution;
 
 /***/ }),
-/* 168 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
@@ -12130,22 +13118,22 @@ exports.sampleFromDistribution = sampleFromDistribution;
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(158)))
-
-/***/ }),
-/* 169 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(176);
-module.exports = __webpack_require__(27).RegExp.escape;
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(159)))
 
 /***/ }),
 /* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
+__webpack_require__(177);
+module.exports = __webpack_require__(27).RegExp.escape;
+
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var isObject = __webpack_require__(5);
-var isArray = __webpack_require__(72);
+var isArray = __webpack_require__(73);
 var SPECIES = __webpack_require__(7)('species');
 
 module.exports = function (original) {
@@ -12163,13 +13151,13 @@ module.exports = function (original) {
 
 
 /***/ }),
-/* 171 */
+/* 172 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 20.3.4.36 / 15.9.5.43 Date.prototype.toISOString()
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 var getTime = Date.prototype.getTime;
 var $toISOString = Date.prototype.toISOString;
 
@@ -12196,7 +13184,7 @@ module.exports = (fails(function () {
 
 
 /***/ }),
-/* 172 */
+/* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12212,13 +13200,13 @@ module.exports = function (hint) {
 
 
 /***/ }),
-/* 173 */
+/* 174 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // all enumerable object keys, includes symbols
-var getKeys = __webpack_require__(43);
-var gOPS = __webpack_require__(76);
-var pIE = __webpack_require__(62);
+var getKeys = __webpack_require__(44);
+var gOPS = __webpack_require__(77);
+var pIE = __webpack_require__(63);
 module.exports = function (it) {
   var result = getKeys(it);
   var getSymbols = gOPS.f;
@@ -12233,7 +13221,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 174 */
+/* 175 */
 /***/ (function(module, exports) {
 
 module.exports = function (regExp, replace) {
@@ -12247,7 +13235,7 @@ module.exports = function (regExp, replace) {
 
 
 /***/ }),
-/* 175 */
+/* 176 */
 /***/ (function(module, exports) {
 
 // 7.2.9 SameValue(x, y)
@@ -12258,30 +13246,30 @@ module.exports = Object.is || function is(x, y) {
 
 
 /***/ }),
-/* 176 */
+/* 177 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/benjamingr/RexExp.escape
 var $export = __webpack_require__(0);
-var $re = __webpack_require__(174)(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+var $re = __webpack_require__(175)(/[\\^$*+?.()|[\]{}]/g, '\\$&');
 
 $export($export.S, 'RegExp', { escape: function escape(it) { return $re(it); } });
 
 
 /***/ }),
-/* 177 */
+/* 178 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 var $export = __webpack_require__(0);
 
-$export($export.P, 'Array', { copyWithin: __webpack_require__(112) });
+$export($export.P, 'Array', { copyWithin: __webpack_require__(113) });
 
 __webpack_require__(36)('copyWithin');
 
 
 /***/ }),
-/* 178 */
+/* 179 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12298,7 +13286,7 @@ $export($export.P + $export.F * !__webpack_require__(25)([].every, true), 'Array
 
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
@@ -12310,7 +13298,7 @@ __webpack_require__(36)('fill');
 
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12327,7 +13315,7 @@ $export($export.P + $export.F * !__webpack_require__(25)([].filter, true), 'Arra
 
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12348,7 +13336,7 @@ __webpack_require__(36)(KEY);
 
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12369,7 +13357,7 @@ __webpack_require__(36)(KEY);
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12387,7 +13375,7 @@ $export($export.P + $export.F * !STRICT, 'Array', {
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12395,13 +13383,13 @@ $export($export.P + $export.F * !STRICT, 'Array', {
 var ctx = __webpack_require__(24);
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(11);
-var call = __webpack_require__(123);
+var call = __webpack_require__(124);
 var isArrayIter = __webpack_require__(91);
 var toLength = __webpack_require__(10);
 var createProperty = __webpack_require__(85);
 var getIterFn = __webpack_require__(107);
 
-$export($export.S + $export.F * !__webpack_require__(74)(function (iter) { Array.from(iter); }), 'Array', {
+$export($export.S + $export.F * !__webpack_require__(75)(function (iter) { Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
     var O = toObject(arrayLike);
@@ -12431,13 +13419,13 @@ $export($export.S + $export.F * !__webpack_require__(74)(function (iter) { Array
 
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(0);
-var $indexOf = __webpack_require__(68)(false);
+var $indexOf = __webpack_require__(69)(false);
 var $native = [].indexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].indexOf(1, -0) < 0;
 
@@ -12453,17 +13441,17 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(25)($nati
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.2.2 / 15.4.3.2 Array.isArray(arg)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Array', { isArray: __webpack_require__(72) });
+$export($export.S, 'Array', { isArray: __webpack_require__(73) });
 
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12474,7 +13462,7 @@ var toIObject = __webpack_require__(20);
 var arrayJoin = [].join;
 
 // fallback for not array-like strings
-$export($export.P + $export.F * (__webpack_require__(61) != Object || !__webpack_require__(25)(arrayJoin)), 'Array', {
+$export($export.P + $export.F * (__webpack_require__(62) != Object || !__webpack_require__(25)(arrayJoin)), 'Array', {
   join: function join(separator) {
     return arrayJoin.call(toIObject(this), separator === undefined ? ',' : separator);
   }
@@ -12482,7 +13470,7 @@ $export($export.P + $export.F * (__webpack_require__(61) != Object || !__webpack
 
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12511,7 +13499,7 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(25)($nati
 
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12528,7 +13516,7 @@ $export($export.P + $export.F * !__webpack_require__(25)([].map, true), 'Array',
 
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12537,7 +13525,7 @@ var $export = __webpack_require__(0);
 var createProperty = __webpack_require__(85);
 
 // WebKit Array.of isn't generic
-$export($export.S + $export.F * __webpack_require__(4)(function () {
+$export($export.S + $export.F * __webpack_require__(3)(function () {
   function F() { /* empty */ }
   return !(Array.of.call(F) instanceof F);
 }), 'Array', {
@@ -12554,35 +13542,18 @@ $export($export.S + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 191 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $export = __webpack_require__(0);
-var $reduce = __webpack_require__(114);
-
-$export($export.P + $export.F * !__webpack_require__(25)([].reduceRight, true), 'Array', {
-  // 22.1.3.19 / 15.4.4.22 Array.prototype.reduceRight(callbackfn [, initialValue])
-  reduceRight: function reduceRight(callbackfn /* , initialValue */) {
-    return $reduce(this, callbackfn, arguments.length, arguments[1], true);
-  }
-});
-
-
-/***/ }),
 /* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(0);
-var $reduce = __webpack_require__(114);
+var $reduce = __webpack_require__(115);
 
-$export($export.P + $export.F * !__webpack_require__(25)([].reduce, true), 'Array', {
-  // 22.1.3.18 / 15.4.4.21 Array.prototype.reduce(callbackfn [, initialValue])
-  reduce: function reduce(callbackfn /* , initialValue */) {
-    return $reduce(this, callbackfn, arguments.length, arguments[1], false);
+$export($export.P + $export.F * !__webpack_require__(25)([].reduceRight, true), 'Array', {
+  // 22.1.3.19 / 15.4.4.22 Array.prototype.reduceRight(callbackfn [, initialValue])
+  reduceRight: function reduceRight(callbackfn /* , initialValue */) {
+    return $reduce(this, callbackfn, arguments.length, arguments[1], true);
   }
 });
 
@@ -12594,14 +13565,31 @@ $export($export.P + $export.F * !__webpack_require__(25)([].reduce, true), 'Arra
 "use strict";
 
 var $export = __webpack_require__(0);
+var $reduce = __webpack_require__(115);
+
+$export($export.P + $export.F * !__webpack_require__(25)([].reduce, true), 'Array', {
+  // 22.1.3.18 / 15.4.4.21 Array.prototype.reduce(callbackfn [, initialValue])
+  reduce: function reduce(callbackfn /* , initialValue */) {
+    return $reduce(this, callbackfn, arguments.length, arguments[1], false);
+  }
+});
+
+
+/***/ }),
+/* 194 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__(0);
 var html = __webpack_require__(89);
 var cof = __webpack_require__(23);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 var toLength = __webpack_require__(10);
 var arraySlice = [].slice;
 
 // fallback for not array-like ES3 strings and DOM objects
-$export($export.P + $export.F * __webpack_require__(4)(function () {
+$export($export.P + $export.F * __webpack_require__(3)(function () {
   if (html) arraySlice.call(html);
 }), 'Array', {
   slice: function slice(begin, end) {
@@ -12623,7 +13611,7 @@ $export($export.P + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12640,7 +13628,7 @@ $export($export.P + $export.F * !__webpack_require__(25)([].some, true), 'Array'
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12648,7 +13636,7 @@ $export($export.P + $export.F * !__webpack_require__(25)([].some, true), 'Array'
 var $export = __webpack_require__(0);
 var aFunction = __webpack_require__(13);
 var toObject = __webpack_require__(11);
-var fails = __webpack_require__(4);
+var fails = __webpack_require__(3);
 var $sort = [].sort;
 var test = [1, 2, 3];
 
@@ -12670,14 +13658,14 @@ $export($export.P + $export.F * (fails(function () {
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(46)('Array');
+__webpack_require__(47)('Array');
 
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.3.3.1 / 15.9.4.4 Date.now()
@@ -12687,12 +13675,12 @@ $export($export.S, 'Date', { now: function () { return new Date().getTime(); } }
 
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.3.4.36 / 15.9.5.43 Date.prototype.toISOString()
 var $export = __webpack_require__(0);
-var toISOString = __webpack_require__(171);
+var toISOString = __webpack_require__(172);
 
 // PhantomJS / old WebKit has a broken implementations
 $export($export.P + $export.F * (Date.prototype.toISOString !== toISOString), 'Date', {
@@ -12701,7 +13689,7 @@ $export($export.P + $export.F * (Date.prototype.toISOString !== toISOString), 'D
 
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12710,7 +13698,7 @@ var $export = __webpack_require__(0);
 var toObject = __webpack_require__(11);
 var toPrimitive = __webpack_require__(31);
 
-$export($export.P + $export.F * __webpack_require__(4)(function () {
+$export($export.P + $export.F * __webpack_require__(3)(function () {
   return new Date(NaN).toJSON() !== null
     || Date.prototype.toJSON.call({ toISOString: function () { return 1; } }) !== 1;
 }), 'Date', {
@@ -12724,17 +13712,17 @@ $export($export.P + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var TO_PRIMITIVE = __webpack_require__(7)('toPrimitive');
 var proto = Date.prototype;
 
-if (!(TO_PRIMITIVE in proto)) __webpack_require__(15)(proto, TO_PRIMITIVE, __webpack_require__(172));
+if (!(TO_PRIMITIVE in proto)) __webpack_require__(15)(proto, TO_PRIMITIVE, __webpack_require__(173));
 
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var DateProto = Date.prototype;
@@ -12752,17 +13740,17 @@ if (new Date(NaN) + '' != INVALID_DATE) {
 
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.2.3.2 / 15.3.4.5 Function.prototype.bind(thisArg, args...)
 var $export = __webpack_require__(0);
 
-$export($export.P, 'Function', { bind: __webpack_require__(115) });
+$export($export.P, 'Function', { bind: __webpack_require__(116) });
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12782,7 +13770,7 @@ if (!(HAS_INSTANCE in FunctionProto)) __webpack_require__(9).f(FunctionProto, HA
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var dP = __webpack_require__(9).f;
@@ -12804,12 +13792,12 @@ NAME in FProto || __webpack_require__(8) && dP(FProto, NAME, {
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.3 Math.acosh(x)
 var $export = __webpack_require__(0);
-var log1p = __webpack_require__(126);
+var log1p = __webpack_require__(127);
 var sqrt = Math.sqrt;
 var $acosh = Math.acosh;
 
@@ -12828,7 +13816,7 @@ $export($export.S + $export.F * !($acosh
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.5 Math.asinh(x)
@@ -12844,7 +13832,7 @@ $export($export.S + $export.F * !($asinh && 1 / $asinh(0) > 0), 'Math', { asinh:
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.7 Math.atanh(x)
@@ -12860,7 +13848,7 @@ $export($export.S + $export.F * !($atanh && 1 / $atanh(-0) < 0), 'Math', {
 
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.9 Math.cbrt(x)
@@ -12875,7 +13863,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.11 Math.clz32(x)
@@ -12889,7 +13877,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.12 Math.cosh(x)
@@ -12904,7 +13892,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.14 Math.expm1(x)
@@ -12915,17 +13903,17 @@ $export($export.S + $export.F * ($expm1 != Math.expm1), 'Math', { expm1: $expm1 
 
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.16 Math.fround(x)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Math', { fround: __webpack_require__(125) });
+$export($export.S, 'Math', { fround: __webpack_require__(126) });
 
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.17 Math.hypot([value1[, value2[, … ]]])
@@ -12956,7 +13944,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.18 Math.imul(x, y)
@@ -12964,7 +13952,7 @@ var $export = __webpack_require__(0);
 var $imul = Math.imul;
 
 // some WebKit versions fails with big numbers, some has wrong arity
-$export($export.S + $export.F * __webpack_require__(4)(function () {
+$export($export.S + $export.F * __webpack_require__(3)(function () {
   return $imul(0xffffffff, 5) != -5 || $imul.length != 2;
 }), 'Math', {
   imul: function imul(x, y) {
@@ -12979,7 +13967,7 @@ $export($export.S + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.21 Math.log10(x)
@@ -12993,17 +13981,17 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.20 Math.log1p(x)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Math', { log1p: __webpack_require__(126) });
+$export($export.S, 'Math', { log1p: __webpack_require__(127) });
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.22 Math.log2(x)
@@ -13017,7 +14005,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.28 Math.sign(x)
@@ -13027,7 +14015,7 @@ $export($export.S, 'Math', { sign: __webpack_require__(95) });
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.30 Math.sinh(x)
@@ -13036,7 +14024,7 @@ var expm1 = __webpack_require__(94);
 var exp = Math.exp;
 
 // V8 near Chromium 38 has a problem with very small numbers
-$export($export.S + $export.F * __webpack_require__(4)(function () {
+$export($export.S + $export.F * __webpack_require__(3)(function () {
   return !Math.sinh(-2e-17) != -2e-17;
 }), 'Math', {
   sinh: function sinh(x) {
@@ -13048,7 +14036,7 @@ $export($export.S + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.33 Math.tanh(x)
@@ -13066,7 +14054,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.2.2.34 Math.trunc(x)
@@ -13080,7 +14068,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13090,17 +14078,17 @@ var has = __webpack_require__(14);
 var cof = __webpack_require__(23);
 var inheritIfRequired = __webpack_require__(90);
 var toPrimitive = __webpack_require__(31);
-var fails = __webpack_require__(4);
-var gOPN = __webpack_require__(42).f;
+var fails = __webpack_require__(3);
+var gOPN = __webpack_require__(43).f;
 var gOPD = __webpack_require__(18).f;
 var dP = __webpack_require__(9).f;
-var $trim = __webpack_require__(53).trim;
+var $trim = __webpack_require__(54).trim;
 var NUMBER = 'Number';
 var $Number = global[NUMBER];
 var Base = $Number;
 var proto = $Number.prototype;
 // Opera ~12 has broken Object#toString
-var BROKEN_COF = cof(__webpack_require__(41)(proto)) == NUMBER;
+var BROKEN_COF = cof(__webpack_require__(42)(proto)) == NUMBER;
 var TRIM = 'trim' in String.prototype;
 
 // 7.1.3 ToNumber(argument)
@@ -13156,7 +14144,7 @@ if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
 
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.1 Number.EPSILON
@@ -13166,7 +14154,7 @@ $export($export.S, 'Number', { EPSILON: Math.pow(2, -52) });
 
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.2 Number.isFinite(number)
@@ -13181,17 +14169,17 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.3 Number.isInteger(number)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Number', { isInteger: __webpack_require__(122) });
+$export($export.S, 'Number', { isInteger: __webpack_require__(123) });
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.4 Number.isNaN(number)
@@ -13206,12 +14194,12 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.5 Number.isSafeInteger(number)
 var $export = __webpack_require__(0);
-var isInteger = __webpack_require__(122);
+var isInteger = __webpack_require__(123);
 var abs = Math.abs;
 
 $export($export.S, 'Number', {
@@ -13222,7 +14210,7 @@ $export($export.S, 'Number', {
 
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.6 Number.MAX_SAFE_INTEGER
@@ -13232,7 +14220,7 @@ $export($export.S, 'Number', { MAX_SAFE_INTEGER: 0x1fffffffffffff });
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 20.1.2.10 Number.MIN_SAFE_INTEGER
@@ -13242,34 +14230,34 @@ $export($export.S, 'Number', { MIN_SAFE_INTEGER: -0x1fffffffffffff });
 
 
 /***/ }),
-/* 230 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__(0);
-var $parseFloat = __webpack_require__(134);
-// 20.1.2.12 Number.parseFloat(string)
-$export($export.S + $export.F * (Number.parseFloat != $parseFloat), 'Number', { parseFloat: $parseFloat });
-
-
-/***/ }),
 /* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var $parseInt = __webpack_require__(135);
-// 20.1.2.13 Number.parseInt(string, radix)
-$export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', { parseInt: $parseInt });
+var $parseFloat = __webpack_require__(135);
+// 20.1.2.12 Number.parseFloat(string)
+$export($export.S + $export.F * (Number.parseFloat != $parseFloat), 'Number', { parseFloat: $parseFloat });
 
 
 /***/ }),
 /* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var $export = __webpack_require__(0);
+var $parseInt = __webpack_require__(136);
+// 20.1.2.13 Number.parseInt(string, radix)
+$export($export.S + $export.F * (Number.parseInt != $parseInt), 'Number', { parseInt: $parseInt });
+
+
+/***/ }),
+/* 233 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 var $export = __webpack_require__(0);
 var toInteger = __webpack_require__(30);
-var aNumberValue = __webpack_require__(111);
+var aNumberValue = __webpack_require__(112);
 var repeat = __webpack_require__(102);
 var $toFixed = 1.0.toFixed;
 var floor = Math.floor;
@@ -13326,7 +14314,7 @@ $export($export.P + $export.F * (!!$toFixed && (
   0.9.toFixed(0) !== '1' ||
   1.255.toFixed(2) !== '1.25' ||
   1000000000000000128.0.toFixed(0) !== '1000000000000000128'
-) || !__webpack_require__(4)(function () {
+) || !__webpack_require__(3)(function () {
   // V8 ~ Android 4.3-
   $toFixed.call({});
 })), 'Number', {
@@ -13383,14 +14371,14 @@ $export($export.P + $export.F * (!!$toFixed && (
 
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(0);
-var $fails = __webpack_require__(4);
-var aNumberValue = __webpack_require__(111);
+var $fails = __webpack_require__(3);
+var aNumberValue = __webpack_require__(112);
 var $toPrecision = 1.0.toPrecision;
 
 $export($export.P + $export.F * ($fails(function () {
@@ -13408,22 +14396,13 @@ $export($export.P + $export.F * ($fails(function () {
 
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
 var $export = __webpack_require__(0);
 
-$export($export.S + $export.F, 'Object', { assign: __webpack_require__(128) });
-
-
-/***/ }),
-/* 235 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__(0);
-// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-$export($export.S, 'Object', { create: __webpack_require__(41) });
+$export($export.S + $export.F, 'Object', { assign: __webpack_require__(129) });
 
 
 /***/ }),
@@ -13431,12 +14410,21 @@ $export($export.S, 'Object', { create: __webpack_require__(41) });
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-// 19.1.2.3 / 15.2.3.7 Object.defineProperties(O, Properties)
-$export($export.S + $export.F * !__webpack_require__(8), 'Object', { defineProperties: __webpack_require__(129) });
+// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
+$export($export.S, 'Object', { create: __webpack_require__(42) });
 
 
 /***/ }),
 /* 237 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $export = __webpack_require__(0);
+// 19.1.2.3 / 15.2.3.7 Object.defineProperties(O, Properties)
+$export($export.S + $export.F * !__webpack_require__(8), 'Object', { defineProperties: __webpack_require__(130) });
+
+
+/***/ }),
+/* 238 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -13445,7 +14433,7 @@ $export($export.S + $export.F * !__webpack_require__(8), 'Object', { definePrope
 
 
 /***/ }),
-/* 238 */
+/* 239 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.5 Object.freeze(O)
@@ -13460,7 +14448,7 @@ __webpack_require__(29)('freeze', function ($freeze) {
 
 
 /***/ }),
-/* 239 */
+/* 240 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
@@ -13475,17 +14463,17 @@ __webpack_require__(29)('getOwnPropertyDescriptor', function () {
 
 
 /***/ }),
-/* 240 */
+/* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 Object.getOwnPropertyNames(O)
 __webpack_require__(29)('getOwnPropertyNames', function () {
-  return __webpack_require__(130).f;
+  return __webpack_require__(131).f;
 });
 
 
 /***/ }),
-/* 241 */
+/* 242 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 Object.getPrototypeOf(O)
@@ -13500,7 +14488,7 @@ __webpack_require__(29)('getPrototypeOf', function () {
 
 
 /***/ }),
-/* 242 */
+/* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.11 Object.isExtensible(O)
@@ -13514,7 +14502,7 @@ __webpack_require__(29)('isExtensible', function ($isExtensible) {
 
 
 /***/ }),
-/* 243 */
+/* 244 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.12 Object.isFrozen(O)
@@ -13528,7 +14516,7 @@ __webpack_require__(29)('isFrozen', function ($isFrozen) {
 
 
 /***/ }),
-/* 244 */
+/* 245 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.13 Object.isSealed(O)
@@ -13542,21 +14530,21 @@ __webpack_require__(29)('isSealed', function ($isSealed) {
 
 
 /***/ }),
-/* 245 */
+/* 246 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.10 Object.is(value1, value2)
 var $export = __webpack_require__(0);
-$export($export.S, 'Object', { is: __webpack_require__(175) });
+$export($export.S, 'Object', { is: __webpack_require__(176) });
 
 
 /***/ }),
-/* 246 */
+/* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.14 Object.keys(O)
 var toObject = __webpack_require__(11);
-var $keys = __webpack_require__(43);
+var $keys = __webpack_require__(44);
 
 __webpack_require__(29)('keys', function () {
   return function keys(it) {
@@ -13566,7 +14554,7 @@ __webpack_require__(29)('keys', function () {
 
 
 /***/ }),
-/* 247 */
+/* 248 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.15 Object.preventExtensions(O)
@@ -13581,7 +14569,7 @@ __webpack_require__(29)('preventExtensions', function ($preventExtensions) {
 
 
 /***/ }),
-/* 248 */
+/* 249 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.17 Object.seal(O)
@@ -13596,7 +14584,7 @@ __webpack_require__(29)('seal', function ($seal) {
 
 
 /***/ }),
-/* 249 */
+/* 250 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
@@ -13605,13 +14593,13 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(98).set });
 
 
 /***/ }),
-/* 250 */
+/* 251 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 19.1.3.6 Object.prototype.toString()
-var classof = __webpack_require__(60);
+var classof = __webpack_require__(61);
 var test = {};
 test[__webpack_require__(7)('toStringTag')] = 'z';
 if (test + '' != '[object z]') {
@@ -13622,46 +14610,46 @@ if (test + '' != '[object z]') {
 
 
 /***/ }),
-/* 251 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var $export = __webpack_require__(0);
-var $parseFloat = __webpack_require__(134);
-// 18.2.4 parseFloat(string)
-$export($export.G + $export.F * (parseFloat != $parseFloat), { parseFloat: $parseFloat });
-
-
-/***/ }),
 /* 252 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var $parseInt = __webpack_require__(135);
-// 18.2.5 parseInt(string, radix)
-$export($export.G + $export.F * (parseInt != $parseInt), { parseInt: $parseInt });
+var $parseFloat = __webpack_require__(135);
+// 18.2.4 parseFloat(string)
+$export($export.G + $export.F * (parseFloat != $parseFloat), { parseFloat: $parseFloat });
 
 
 /***/ }),
 /* 253 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var $export = __webpack_require__(0);
+var $parseInt = __webpack_require__(136);
+// 18.2.5 parseInt(string, radix)
+$export($export.G + $export.F * (parseInt != $parseInt), { parseInt: $parseInt });
+
+
+/***/ }),
+/* 254 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
-var LIBRARY = __webpack_require__(40);
+var LIBRARY = __webpack_require__(41);
 var global = __webpack_require__(2);
 var ctx = __webpack_require__(24);
-var classof = __webpack_require__(60);
+var classof = __webpack_require__(61);
 var $export = __webpack_require__(0);
 var isObject = __webpack_require__(5);
 var aFunction = __webpack_require__(13);
-var anInstance = __webpack_require__(38);
-var forOf = __webpack_require__(39);
-var speciesConstructor = __webpack_require__(80);
+var anInstance = __webpack_require__(39);
+var forOf = __webpack_require__(40);
+var speciesConstructor = __webpack_require__(81);
 var task = __webpack_require__(104).set;
 var microtask = __webpack_require__(96)();
 var newPromiseCapabilityModule = __webpack_require__(97);
-var perform = __webpack_require__(136);
-var promiseResolve = __webpack_require__(137);
+var perform = __webpack_require__(137);
+var promiseResolve = __webpack_require__(138);
 var PROMISE = 'Promise';
 var TypeError = global.TypeError;
 var process = global.process;
@@ -13831,7 +14819,7 @@ if (!USE_NATIVE) {
     this._h = 0;              // <- rejection state, 0 - default, 1 - handled, 2 - unhandled
     this._n = false;          // <- notify
   };
-  Internal.prototype = __webpack_require__(45)($Promise.prototype, {
+  Internal.prototype = __webpack_require__(46)($Promise.prototype, {
     // 25.4.5.3 Promise.prototype.then(onFulfilled, onRejected)
     then: function then(onFulfilled, onRejected) {
       var reaction = newPromiseCapability(speciesConstructor(this, $Promise));
@@ -13862,8 +14850,8 @@ if (!USE_NATIVE) {
 }
 
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
-__webpack_require__(52)($Promise, PROMISE);
-__webpack_require__(46)(PROMISE);
+__webpack_require__(53)($Promise, PROMISE);
+__webpack_require__(47)(PROMISE);
 Wrapper = __webpack_require__(27)[PROMISE];
 
 // statics
@@ -13882,7 +14870,7 @@ $export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
     return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
   }
 });
-$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(74)(function (iter) {
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(75)(function (iter) {
   $Promise.all(iter)['catch'](empty);
 })), PROMISE, {
   // 25.4.4.1 Promise.all(iterable)
@@ -13929,7 +14917,7 @@ $export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(74)(function
 
 
 /***/ }),
-/* 254 */
+/* 255 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.1 Reflect.apply(target, thisArgument, argumentsList)
@@ -13939,7 +14927,7 @@ var anObject = __webpack_require__(1);
 var rApply = (__webpack_require__(2).Reflect || {}).apply;
 var fApply = Function.apply;
 // MS Edge argumentsList argument is optional
-$export($export.S + $export.F * !__webpack_require__(4)(function () {
+$export($export.S + $export.F * !__webpack_require__(3)(function () {
   rApply(function () { /* empty */ });
 }), 'Reflect', {
   apply: function apply(target, thisArgument, argumentsList) {
@@ -13951,17 +14939,17 @@ $export($export.S + $export.F * !__webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 255 */
+/* 256 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 var $export = __webpack_require__(0);
-var create = __webpack_require__(41);
+var create = __webpack_require__(42);
 var aFunction = __webpack_require__(13);
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(5);
-var fails = __webpack_require__(4);
-var bind = __webpack_require__(115);
+var fails = __webpack_require__(3);
+var bind = __webpack_require__(116);
 var rConstruct = (__webpack_require__(2).Reflect || {}).construct;
 
 // MS Edge supports only 2 arguments and argumentsList argument is optional
@@ -14004,7 +14992,7 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
 
 
 /***/ }),
-/* 256 */
+/* 257 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.3 Reflect.defineProperty(target, propertyKey, attributes)
@@ -14014,7 +15002,7 @@ var anObject = __webpack_require__(1);
 var toPrimitive = __webpack_require__(31);
 
 // MS Edge has broken Reflect.defineProperty - throwing instead of returning false
-$export($export.S + $export.F * __webpack_require__(4)(function () {
+$export($export.S + $export.F * __webpack_require__(3)(function () {
   // eslint-disable-next-line no-undef
   Reflect.defineProperty(dP.f({}, 1, { value: 1 }), 1, { value: 2 });
 }), 'Reflect', {
@@ -14033,7 +15021,7 @@ $export($export.S + $export.F * __webpack_require__(4)(function () {
 
 
 /***/ }),
-/* 257 */
+/* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.4 Reflect.deleteProperty(target, propertyKey)
@@ -14050,7 +15038,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 258 */
+/* 259 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14083,7 +15071,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 259 */
+/* 260 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.7 Reflect.getOwnPropertyDescriptor(target, propertyKey)
@@ -14099,7 +15087,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 260 */
+/* 261 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.8 Reflect.getPrototypeOf(target)
@@ -14115,7 +15103,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 261 */
+/* 262 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.6 Reflect.get(target, propertyKey [, receiver])
@@ -14142,7 +15130,7 @@ $export($export.S, 'Reflect', { get: get });
 
 
 /***/ }),
-/* 262 */
+/* 263 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.9 Reflect.has(target, propertyKey)
@@ -14156,7 +15144,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 263 */
+/* 264 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.10 Reflect.isExtensible(target)
@@ -14173,17 +15161,17 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 264 */
+/* 265 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.11 Reflect.ownKeys(target)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Reflect', { ownKeys: __webpack_require__(133) });
+$export($export.S, 'Reflect', { ownKeys: __webpack_require__(134) });
 
 
 /***/ }),
-/* 265 */
+/* 266 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.12 Reflect.preventExtensions(target)
@@ -14205,7 +15193,7 @@ $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 266 */
+/* 267 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.14 Reflect.setPrototypeOf(target, proto)
@@ -14226,7 +15214,7 @@ if (setProto) $export($export.S, 'Reflect', {
 
 
 /***/ }),
-/* 267 */
+/* 268 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 26.1.13 Reflect.set(target, propertyKey, V [, receiver])
@@ -14235,7 +15223,7 @@ var gOPD = __webpack_require__(18);
 var getPrototypeOf = __webpack_require__(19);
 var has = __webpack_require__(14);
 var $export = __webpack_require__(0);
-var createDesc = __webpack_require__(44);
+var createDesc = __webpack_require__(45);
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(5);
 
@@ -14263,15 +15251,15 @@ $export($export.S, 'Reflect', { set: set });
 
 
 /***/ }),
-/* 268 */
+/* 269 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
 var inheritIfRequired = __webpack_require__(90);
 var dP = __webpack_require__(9).f;
-var gOPN = __webpack_require__(42).f;
-var isRegExp = __webpack_require__(73);
-var $flags = __webpack_require__(71);
+var gOPN = __webpack_require__(43).f;
+var isRegExp = __webpack_require__(74);
+var $flags = __webpack_require__(72);
 var $RegExp = global.RegExp;
 var Base = $RegExp;
 var proto = $RegExp.prototype;
@@ -14280,7 +15268,7 @@ var re2 = /a/g;
 // "new" creates a new object, old webkit buggy here
 var CORRECT_NEW = new $RegExp(re1) !== re1;
 
-if (__webpack_require__(8) && (!CORRECT_NEW || __webpack_require__(4)(function () {
+if (__webpack_require__(8) && (!CORRECT_NEW || __webpack_require__(3)(function () {
   re2[__webpack_require__(7)('match')] = false;
   // RegExp constructor can alter flags and IsRegExp works correct with @@match
   return $RegExp(re1) != re1 || $RegExp(re2) == re2 || $RegExp(re1, 'i') != '/a/i';
@@ -14308,15 +15296,15 @@ if (__webpack_require__(8) && (!CORRECT_NEW || __webpack_require__(4)(function (
   __webpack_require__(16)(global, 'RegExp', $RegExp);
 }
 
-__webpack_require__(46)('RegExp');
+__webpack_require__(47)('RegExp');
 
 
 /***/ }),
-/* 269 */
+/* 270 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@match logic
-__webpack_require__(70)('match', 1, function (defined, MATCH, $match) {
+__webpack_require__(71)('match', 1, function (defined, MATCH, $match) {
   // 21.1.3.11 String.prototype.match(regexp)
   return [function match(regexp) {
     'use strict';
@@ -14328,11 +15316,11 @@ __webpack_require__(70)('match', 1, function (defined, MATCH, $match) {
 
 
 /***/ }),
-/* 270 */
+/* 271 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@replace logic
-__webpack_require__(70)('replace', 2, function (defined, REPLACE, $replace) {
+__webpack_require__(71)('replace', 2, function (defined, REPLACE, $replace) {
   // 21.1.3.14 String.prototype.replace(searchValue, replaceValue)
   return [function replace(searchValue, replaceValue) {
     'use strict';
@@ -14346,11 +15334,11 @@ __webpack_require__(70)('replace', 2, function (defined, REPLACE, $replace) {
 
 
 /***/ }),
-/* 271 */
+/* 272 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@search logic
-__webpack_require__(70)('search', 1, function (defined, SEARCH, $search) {
+__webpack_require__(71)('search', 1, function (defined, SEARCH, $search) {
   // 21.1.3.15 String.prototype.search(regexp)
   return [function search(regexp) {
     'use strict';
@@ -14362,13 +15350,13 @@ __webpack_require__(70)('search', 1, function (defined, SEARCH, $search) {
 
 
 /***/ }),
-/* 272 */
+/* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@split logic
-__webpack_require__(70)('split', 2, function (defined, SPLIT, $split) {
+__webpack_require__(71)('split', 2, function (defined, SPLIT, $split) {
   'use strict';
-  var isRegExp = __webpack_require__(73);
+  var isRegExp = __webpack_require__(74);
   var _split = $split;
   var $push = [].push;
   var $SPLIT = 'split';
@@ -14439,14 +15427,14 @@ __webpack_require__(70)('split', 2, function (defined, SPLIT, $split) {
 
 
 /***/ }),
-/* 273 */
+/* 274 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-__webpack_require__(142);
+__webpack_require__(143);
 var anObject = __webpack_require__(1);
-var $flags = __webpack_require__(71);
+var $flags = __webpack_require__(72);
 var DESCRIPTORS = __webpack_require__(8);
 var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
@@ -14456,7 +15444,7 @@ var define = function (fn) {
 };
 
 // 21.2.5.14 RegExp.prototype.toString()
-if (__webpack_require__(4)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
+if (__webpack_require__(3)(function () { return $toString.call({ source: 'a', flags: 'b' }) != '/a/b'; })) {
   define(function toString() {
     var R = anObject(this);
     return '/'.concat(R.source, '/',
@@ -14471,7 +15459,7 @@ if (__webpack_require__(4)(function () { return $toString.call({ source: 'a', fl
 
 
 /***/ }),
-/* 274 */
+/* 275 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14485,7 +15473,7 @@ __webpack_require__(17)('anchor', function (createHTML) {
 
 
 /***/ }),
-/* 275 */
+/* 276 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14499,7 +15487,7 @@ __webpack_require__(17)('big', function (createHTML) {
 
 
 /***/ }),
-/* 276 */
+/* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14513,7 +15501,7 @@ __webpack_require__(17)('blink', function (createHTML) {
 
 
 /***/ }),
-/* 277 */
+/* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14527,7 +15515,7 @@ __webpack_require__(17)('bold', function (createHTML) {
 
 
 /***/ }),
-/* 278 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14543,7 +15531,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 279 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14570,7 +15558,7 @@ $export($export.P + $export.F * __webpack_require__(88)(ENDS_WITH), 'String', {
 
 
 /***/ }),
-/* 280 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14584,7 +15572,7 @@ __webpack_require__(17)('fixed', function (createHTML) {
 
 
 /***/ }),
-/* 281 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14598,7 +15586,7 @@ __webpack_require__(17)('fontcolor', function (createHTML) {
 
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14612,11 +15600,11 @@ __webpack_require__(17)('fontsize', function (createHTML) {
 
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 var fromCharCode = String.fromCharCode;
 var $fromCodePoint = String.fromCodePoint;
 
@@ -14641,7 +15629,7 @@ $export($export.S + $export.F * (!!$fromCodePoint && $fromCodePoint.length != 1)
 
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14660,7 +15648,7 @@ $export($export.P + $export.F * __webpack_require__(88)(INCLUDES), 'String', {
 
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14674,7 +15662,7 @@ __webpack_require__(17)('italics', function (createHTML) {
 
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14698,7 +15686,7 @@ __webpack_require__(93)(String, 'String', function (iterated) {
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14712,7 +15700,7 @@ __webpack_require__(17)('link', function (createHTML) {
 
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -14736,7 +15724,7 @@ $export($export.S, 'String', {
 
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -14748,7 +15736,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14762,7 +15750,7 @@ __webpack_require__(17)('small', function (createHTML) {
 
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14787,7 +15775,7 @@ $export($export.P + $export.F * __webpack_require__(88)(STARTS_WITH), 'String', 
 
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14801,7 +15789,7 @@ __webpack_require__(17)('strike', function (createHTML) {
 
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14815,7 +15803,7 @@ __webpack_require__(17)('sub', function (createHTML) {
 
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14829,13 +15817,13 @@ __webpack_require__(17)('sup', function (createHTML) {
 
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // 21.1.3.25 String.prototype.trim()
-__webpack_require__(53)('trim', function ($trim) {
+__webpack_require__(54)('trim', function ($trim) {
   return function trim() {
     return $trim(this, 3);
   };
@@ -14843,7 +15831,7 @@ __webpack_require__(53)('trim', function ($trim) {
 
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14855,24 +15843,24 @@ var DESCRIPTORS = __webpack_require__(8);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(16);
 var META = __webpack_require__(37).KEY;
-var $fails = __webpack_require__(4);
-var shared = __webpack_require__(79);
-var setToStringTag = __webpack_require__(52);
-var uid = __webpack_require__(48);
+var $fails = __webpack_require__(3);
+var shared = __webpack_require__(80);
+var setToStringTag = __webpack_require__(53);
+var uid = __webpack_require__(49);
 var wks = __webpack_require__(7);
-var wksExt = __webpack_require__(140);
+var wksExt = __webpack_require__(141);
 var wksDefine = __webpack_require__(106);
-var enumKeys = __webpack_require__(173);
-var isArray = __webpack_require__(72);
+var enumKeys = __webpack_require__(174);
+var isArray = __webpack_require__(73);
 var anObject = __webpack_require__(1);
 var toIObject = __webpack_require__(20);
 var toPrimitive = __webpack_require__(31);
-var createDesc = __webpack_require__(44);
-var _create = __webpack_require__(41);
-var gOPNExt = __webpack_require__(130);
+var createDesc = __webpack_require__(45);
+var _create = __webpack_require__(42);
+var gOPNExt = __webpack_require__(131);
 var $GOPD = __webpack_require__(18);
 var $DP = __webpack_require__(9);
-var $keys = __webpack_require__(43);
+var $keys = __webpack_require__(44);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
 var gOPN = gOPNExt.f;
@@ -14995,11 +15983,11 @@ if (!USE_NATIVE) {
 
   $GOPD.f = $getOwnPropertyDescriptor;
   $DP.f = $defineProperty;
-  __webpack_require__(42).f = gOPNExt.f = $getOwnPropertyNames;
-  __webpack_require__(62).f = $propertyIsEnumerable;
-  __webpack_require__(76).f = $getOwnPropertySymbols;
+  __webpack_require__(43).f = gOPNExt.f = $getOwnPropertyNames;
+  __webpack_require__(63).f = $propertyIsEnumerable;
+  __webpack_require__(77).f = $getOwnPropertySymbols;
 
-  if (DESCRIPTORS && !__webpack_require__(40)) {
+  if (DESCRIPTORS && !__webpack_require__(41)) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
   }
 
@@ -15084,20 +16072,20 @@ setToStringTag(global.JSON, 'JSON', true);
 
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 var $export = __webpack_require__(0);
-var $typed = __webpack_require__(81);
+var $typed = __webpack_require__(82);
 var buffer = __webpack_require__(105);
 var anObject = __webpack_require__(1);
-var toAbsoluteIndex = __webpack_require__(47);
+var toAbsoluteIndex = __webpack_require__(48);
 var toLength = __webpack_require__(10);
 var isObject = __webpack_require__(5);
 var ArrayBuffer = __webpack_require__(2).ArrayBuffer;
-var speciesConstructor = __webpack_require__(80);
+var speciesConstructor = __webpack_require__(81);
 var $ArrayBuffer = buffer.ArrayBuffer;
 var $DataView = buffer.DataView;
 var $isView = $typed.ABV && ArrayBuffer.isView;
@@ -15114,7 +16102,7 @@ $export($export.S + $export.F * !$typed.CONSTR, ARRAY_BUFFER, {
   }
 });
 
-$export($export.P + $export.U + $export.F * __webpack_require__(4)(function () {
+$export($export.P + $export.U + $export.F * __webpack_require__(3)(function () {
   return !new $ArrayBuffer(2).slice(1, undefined).byteLength;
 }), ARRAY_BUFFER, {
   // 24.1.4.3 ArrayBuffer.prototype.slice(start, end)
@@ -15133,21 +16121,21 @@ $export($export.P + $export.U + $export.F * __webpack_require__(4)(function () {
   }
 });
 
-__webpack_require__(46)(ARRAY_BUFFER);
+__webpack_require__(47)(ARRAY_BUFFER);
 
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-$export($export.G + $export.W + $export.F * !__webpack_require__(81).ABV, {
+$export($export.G + $export.W + $export.F * !__webpack_require__(82).ABV, {
   DataView: __webpack_require__(105).DataView
 });
 
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Float32', 4, function (init) {
@@ -15158,7 +16146,7 @@ __webpack_require__(34)('Float32', 4, function (init) {
 
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Float64', 8, function (init) {
@@ -15169,7 +16157,7 @@ __webpack_require__(34)('Float64', 8, function (init) {
 
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Int16', 2, function (init) {
@@ -15180,7 +16168,7 @@ __webpack_require__(34)('Int16', 2, function (init) {
 
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Int32', 4, function (init) {
@@ -15191,7 +16179,7 @@ __webpack_require__(34)('Int32', 4, function (init) {
 
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Int8', 1, function (init) {
@@ -15202,7 +16190,7 @@ __webpack_require__(34)('Int8', 1, function (init) {
 
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Uint16', 2, function (init) {
@@ -15213,7 +16201,7 @@ __webpack_require__(34)('Uint16', 2, function (init) {
 
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Uint32', 4, function (init) {
@@ -15224,7 +16212,7 @@ __webpack_require__(34)('Uint32', 4, function (init) {
 
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Uint8', 1, function (init) {
@@ -15235,7 +16223,7 @@ __webpack_require__(34)('Uint8', 1, function (init) {
 
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(34)('Uint8', 1, function (init) {
@@ -15246,17 +16234,17 @@ __webpack_require__(34)('Uint8', 1, function (init) {
 
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var weak = __webpack_require__(118);
-var validate = __webpack_require__(54);
+var weak = __webpack_require__(119);
+var validate = __webpack_require__(55);
 var WEAK_SET = 'WeakSet';
 
 // 23.4 WeakSet Objects
-__webpack_require__(69)(WEAK_SET, function (get) {
+__webpack_require__(70)(WEAK_SET, function (get) {
   return function WeakSet() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.4.3.1 WeakSet.prototype.add(value)
@@ -15267,14 +16255,14 @@ __webpack_require__(69)(WEAK_SET, function (get) {
 
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatMap
 var $export = __webpack_require__(0);
-var flattenIntoArray = __webpack_require__(119);
+var flattenIntoArray = __webpack_require__(120);
 var toObject = __webpack_require__(11);
 var toLength = __webpack_require__(10);
 var aFunction = __webpack_require__(13);
@@ -15296,14 +16284,14 @@ __webpack_require__(36)('flatMap');
 
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatten
 var $export = __webpack_require__(0);
-var flattenIntoArray = __webpack_require__(119);
+var flattenIntoArray = __webpack_require__(120);
 var toObject = __webpack_require__(11);
 var toLength = __webpack_require__(10);
 var toInteger = __webpack_require__(30);
@@ -15324,14 +16312,14 @@ __webpack_require__(36)('flatten');
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 // https://github.com/tc39/Array.prototype.includes
 var $export = __webpack_require__(0);
-var $includes = __webpack_require__(68)(true);
+var $includes = __webpack_require__(69)(true);
 
 $export($export.P, 'Array', {
   includes: function includes(el /* , fromIndex = 0 */) {
@@ -15343,7 +16331,7 @@ __webpack_require__(36)('includes');
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/rwaldron/tc39-notes/blob/master/es6/2014-09/sept-25.md#510-globalasap-for-enqueuing-a-microtask
@@ -15361,7 +16349,7 @@ $export($export.G, {
 
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/ljharb/proposal-is-error
@@ -15376,7 +16364,7 @@ $export($export.S, 'Error', {
 
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-global
@@ -15386,18 +16374,10 @@ $export($export.G, { global: __webpack_require__(2) });
 
 
 /***/ }),
-/* 315 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// https://tc39.github.io/proposal-setmap-offrom/#sec-map.from
-__webpack_require__(77)('Map');
-
-
-/***/ }),
 /* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://tc39.github.io/proposal-setmap-offrom/#sec-map.of
+// https://tc39.github.io/proposal-setmap-offrom/#sec-map.from
 __webpack_require__(78)('Map');
 
 
@@ -15405,14 +16385,22 @@ __webpack_require__(78)('Map');
 /* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var $export = __webpack_require__(0);
-
-$export($export.P + $export.R, 'Map', { toJSON: __webpack_require__(117)('Map') });
+// https://tc39.github.io/proposal-setmap-offrom/#sec-map.of
+__webpack_require__(79)('Map');
 
 
 /***/ }),
 /* 318 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+var $export = __webpack_require__(0);
+
+$export($export.P + $export.R, 'Map', { toJSON: __webpack_require__(118)('Map') });
+
+
+/***/ }),
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -15426,7 +16414,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -15436,7 +16424,7 @@ $export($export.S, 'Math', { DEG_PER_RAD: Math.PI / 180 });
 
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -15451,13 +16439,13 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
 var $export = __webpack_require__(0);
-var scale = __webpack_require__(127);
-var fround = __webpack_require__(125);
+var scale = __webpack_require__(128);
+var fround = __webpack_require__(126);
 
 $export($export.S, 'Math', {
   fscale: function fscale(x, inLow, inHigh, outLow, outHigh) {
@@ -15467,7 +16455,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -15484,7 +16472,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -15506,7 +16494,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -15523,7 +16511,7 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -15533,7 +16521,7 @@ $export($export.S, 'Math', { RAD_PER_DEG: 180 / Math.PI });
 
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
@@ -15548,17 +16536,17 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://rwaldron.github.io/proposal-math-extensions/
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Math', { scale: __webpack_require__(127) });
+$export($export.S, 'Math', { scale: __webpack_require__(128) });
 
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // http://jfbastien.github.io/papers/Math.signbit.html
@@ -15571,7 +16559,7 @@ $export($export.S, 'Math', { signbit: function signbit(x) {
 
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://gist.github.com/BrendanEich/4294d5c212a6d2254703
@@ -15593,25 +16581,6 @@ $export($export.S, 'Math', {
 
 
 /***/ }),
-/* 330 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var $export = __webpack_require__(0);
-var toObject = __webpack_require__(11);
-var aFunction = __webpack_require__(13);
-var $defineProperty = __webpack_require__(9);
-
-// B.2.2.2 Object.prototype.__defineGetter__(P, getter)
-__webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object', {
-  __defineGetter__: function __defineGetter__(P, getter) {
-    $defineProperty.f(toObject(this), P, { get: aFunction(getter), enumerable: true, configurable: true });
-  }
-});
-
-
-/***/ }),
 /* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -15622,10 +16591,10 @@ var toObject = __webpack_require__(11);
 var aFunction = __webpack_require__(13);
 var $defineProperty = __webpack_require__(9);
 
-// B.2.2.3 Object.prototype.__defineSetter__(P, setter)
-__webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object', {
-  __defineSetter__: function __defineSetter__(P, setter) {
-    $defineProperty.f(toObject(this), P, { set: aFunction(setter), enumerable: true, configurable: true });
+// B.2.2.2 Object.prototype.__defineGetter__(P, getter)
+__webpack_require__(8) && $export($export.P + __webpack_require__(76), 'Object', {
+  __defineGetter__: function __defineGetter__(P, getter) {
+    $defineProperty.f(toObject(this), P, { get: aFunction(getter), enumerable: true, configurable: true });
   }
 });
 
@@ -15634,9 +16603,28 @@ __webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object',
 /* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+var $export = __webpack_require__(0);
+var toObject = __webpack_require__(11);
+var aFunction = __webpack_require__(13);
+var $defineProperty = __webpack_require__(9);
+
+// B.2.2.3 Object.prototype.__defineSetter__(P, setter)
+__webpack_require__(8) && $export($export.P + __webpack_require__(76), 'Object', {
+  __defineSetter__: function __defineSetter__(P, setter) {
+    $defineProperty.f(toObject(this), P, { set: aFunction(setter), enumerable: true, configurable: true });
+  }
+});
+
+
+/***/ }),
+/* 333 */
+/***/ (function(module, exports, __webpack_require__) {
+
 // https://github.com/tc39/proposal-object-values-entries
 var $export = __webpack_require__(0);
-var $entries = __webpack_require__(132)(true);
+var $entries = __webpack_require__(133)(true);
 
 $export($export.S, 'Object', {
   entries: function entries(it) {
@@ -15646,12 +16634,12 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-getownpropertydescriptors
 var $export = __webpack_require__(0);
-var ownKeys = __webpack_require__(133);
+var ownKeys = __webpack_require__(134);
 var toIObject = __webpack_require__(20);
 var gOPD = __webpack_require__(18);
 var createProperty = __webpack_require__(85);
@@ -15674,7 +16662,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15686,7 +16674,7 @@ var getPrototypeOf = __webpack_require__(19);
 var getOwnPropertyDescriptor = __webpack_require__(18).f;
 
 // B.2.2.4 Object.prototype.__lookupGetter__(P)
-__webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(76), 'Object', {
   __lookupGetter__: function __lookupGetter__(P) {
     var O = toObject(this);
     var K = toPrimitive(P, true);
@@ -15699,7 +16687,7 @@ __webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object',
 
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15711,7 +16699,7 @@ var getPrototypeOf = __webpack_require__(19);
 var getOwnPropertyDescriptor = __webpack_require__(18).f;
 
 // B.2.2.5 Object.prototype.__lookupSetter__(P)
-__webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(76), 'Object', {
   __lookupSetter__: function __lookupSetter__(P) {
     var O = toObject(this);
     var K = toPrimitive(P, true);
@@ -15724,12 +16712,12 @@ __webpack_require__(8) && $export($export.P + __webpack_require__(75), 'Object',
 
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-object-values-entries
 var $export = __webpack_require__(0);
-var $values = __webpack_require__(132)(false);
+var $values = __webpack_require__(133)(false);
 
 $export($export.S, 'Object', {
   values: function values(it) {
@@ -15739,7 +16727,7 @@ $export($export.S, 'Object', {
 
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15752,10 +16740,10 @@ var microtask = __webpack_require__(96)();
 var OBSERVABLE = __webpack_require__(7)('observable');
 var aFunction = __webpack_require__(13);
 var anObject = __webpack_require__(1);
-var anInstance = __webpack_require__(38);
-var redefineAll = __webpack_require__(45);
+var anInstance = __webpack_require__(39);
+var redefineAll = __webpack_require__(46);
 var hide = __webpack_require__(15);
-var forOf = __webpack_require__(39);
+var forOf = __webpack_require__(40);
 var RETURN = forOf.RETURN;
 
 var getMethod = function (fn) {
@@ -15941,11 +16929,11 @@ hide($Observable.prototype, OBSERVABLE, function () { return this; });
 
 $export($export.G, { Observable: $Observable });
 
-__webpack_require__(46)('Observable');
+__webpack_require__(47)('Observable');
 
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15954,8 +16942,8 @@ __webpack_require__(46)('Observable');
 var $export = __webpack_require__(0);
 var core = __webpack_require__(27);
 var global = __webpack_require__(2);
-var speciesConstructor = __webpack_require__(80);
-var promiseResolve = __webpack_require__(137);
+var speciesConstructor = __webpack_require__(81);
+var promiseResolve = __webpack_require__(138);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
   var C = speciesConstructor(this, core.Promise || global.Promise);
@@ -15972,7 +16960,7 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15980,7 +16968,7 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
 // https://github.com/tc39/proposal-promise-try
 var $export = __webpack_require__(0);
 var newPromiseCapability = __webpack_require__(97);
-var perform = __webpack_require__(136);
+var perform = __webpack_require__(137);
 
 $export($export.S, 'Promise', { 'try': function (callbackfn) {
   var promiseCapability = newPromiseCapability.f(this);
@@ -15991,7 +16979,7 @@ $export($export.S, 'Promise', { 'try': function (callbackfn) {
 
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16005,7 +16993,7 @@ metadata.exp({ defineMetadata: function defineMetadata(metadataKey, metadataValu
 
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16026,11 +17014,11 @@ metadata.exp({ deleteMetadata: function deleteMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Set = __webpack_require__(143);
-var from = __webpack_require__(113);
+var Set = __webpack_require__(144);
+var from = __webpack_require__(114);
 var metadata = __webpack_require__(33);
 var anObject = __webpack_require__(1);
 var getPrototypeOf = __webpack_require__(19);
@@ -16051,7 +17039,7 @@ metadata.exp({ getMetadataKeys: function getMetadataKeys(target /* , targetKey *
 
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16074,7 +17062,7 @@ metadata.exp({ getMetadata: function getMetadata(metadataKey, target /* , target
 
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16088,7 +17076,7 @@ metadata.exp({ getOwnMetadataKeys: function getOwnMetadataKeys(target /* , targe
 
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16103,7 +17091,7 @@ metadata.exp({ getOwnMetadata: function getOwnMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16125,7 +17113,7 @@ metadata.exp({ hasMetadata: function hasMetadata(metadataKey, target /* , target
 
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var metadata = __webpack_require__(33);
@@ -16140,7 +17128,7 @@ metadata.exp({ hasOwnMetadata: function hasOwnMetadata(metadataKey, target /* , 
 
 
 /***/ }),
-/* 348 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $metadata = __webpack_require__(33);
@@ -16161,18 +17149,10 @@ $metadata.exp({ metadata: function metadata(metadataKey, metadataValue) {
 
 
 /***/ }),
-/* 349 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// https://tc39.github.io/proposal-setmap-offrom/#sec-set.from
-__webpack_require__(77)('Set');
-
-
-/***/ }),
 /* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://tc39.github.io/proposal-setmap-offrom/#sec-set.of
+// https://tc39.github.io/proposal-setmap-offrom/#sec-set.from
 __webpack_require__(78)('Set');
 
 
@@ -16180,14 +17160,22 @@ __webpack_require__(78)('Set');
 /* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://github.com/DavidBruant/Map-Set.prototype.toJSON
-var $export = __webpack_require__(0);
-
-$export($export.P + $export.R, 'Set', { toJSON: __webpack_require__(117)('Set') });
+// https://tc39.github.io/proposal-setmap-offrom/#sec-set.of
+__webpack_require__(79)('Set');
 
 
 /***/ }),
 /* 352 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+var $export = __webpack_require__(0);
+
+$export($export.P + $export.R, 'Set', { toJSON: __webpack_require__(118)('Set') });
+
+
+/***/ }),
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16204,7 +17192,7 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 353 */
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16213,8 +17201,8 @@ $export($export.P, 'String', {
 var $export = __webpack_require__(0);
 var defined = __webpack_require__(28);
 var toLength = __webpack_require__(10);
-var isRegExp = __webpack_require__(73);
-var getFlags = __webpack_require__(71);
+var isRegExp = __webpack_require__(74);
+var getFlags = __webpack_require__(72);
 var RegExpProto = RegExp.prototype;
 
 var $RegExpStringIterator = function (regexp, string) {
@@ -16241,23 +17229,6 @@ $export($export.P, 'String', {
 
 
 /***/ }),
-/* 354 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-// https://github.com/tc39/proposal-string-pad-start-end
-var $export = __webpack_require__(0);
-var $pad = __webpack_require__(138);
-
-$export($export.P, 'String', {
-  padEnd: function padEnd(maxLength /* , fillString = ' ' */) {
-    return $pad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, false);
-  }
-});
-
-
-/***/ }),
 /* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -16265,11 +17236,11 @@ $export($export.P, 'String', {
 
 // https://github.com/tc39/proposal-string-pad-start-end
 var $export = __webpack_require__(0);
-var $pad = __webpack_require__(138);
+var $pad = __webpack_require__(139);
 
 $export($export.P, 'String', {
-  padStart: function padStart(maxLength /* , fillString = ' ' */) {
-    return $pad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, true);
+  padEnd: function padEnd(maxLength /* , fillString = ' ' */) {
+    return $pad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, false);
   }
 });
 
@@ -16280,12 +17251,15 @@ $export($export.P, 'String', {
 
 "use strict";
 
-// https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(53)('trimLeft', function ($trim) {
-  return function trimLeft() {
-    return $trim(this, 1);
-  };
-}, 'trimStart');
+// https://github.com/tc39/proposal-string-pad-start-end
+var $export = __webpack_require__(0);
+var $pad = __webpack_require__(139);
+
+$export($export.P, 'String', {
+  padStart: function padStart(maxLength /* , fillString = ' ' */) {
+    return $pad(this, maxLength, arguments.length > 1 ? arguments[1] : undefined, true);
+  }
+});
 
 
 /***/ }),
@@ -16295,7 +17269,21 @@ __webpack_require__(53)('trimLeft', function ($trim) {
 "use strict";
 
 // https://github.com/sebmarkbage/ecmascript-string-left-right-trim
-__webpack_require__(53)('trimRight', function ($trim) {
+__webpack_require__(54)('trimLeft', function ($trim) {
+  return function trimLeft() {
+    return $trim(this, 1);
+  };
+}, 'trimStart');
+
+
+/***/ }),
+/* 358 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://github.com/sebmarkbage/ecmascript-string-left-right-trim
+__webpack_require__(54)('trimRight', function ($trim) {
   return function trimRight() {
     return $trim(this, 2);
   };
@@ -16303,21 +17291,21 @@ __webpack_require__(53)('trimRight', function ($trim) {
 
 
 /***/ }),
-/* 358 */
+/* 359 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(106)('asyncIterator');
 
 
 /***/ }),
-/* 359 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(106)('observable');
 
 
 /***/ }),
-/* 360 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://github.com/tc39/proposal-global
@@ -16327,18 +17315,10 @@ $export($export.S, 'System', { global: __webpack_require__(2) });
 
 
 /***/ }),
-/* 361 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.from
-__webpack_require__(77)('WeakMap');
-
-
-/***/ }),
 /* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.of
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.from
 __webpack_require__(78)('WeakMap');
 
 
@@ -16346,15 +17326,15 @@ __webpack_require__(78)('WeakMap');
 /* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.from
-__webpack_require__(77)('WeakSet');
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.of
+__webpack_require__(79)('WeakMap');
 
 
 /***/ }),
 /* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.of
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.from
 __webpack_require__(78)('WeakSet');
 
 
@@ -16362,12 +17342,20 @@ __webpack_require__(78)('WeakSet');
 /* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.of
+__webpack_require__(79)('WeakSet');
+
+
+/***/ }),
+/* 366 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var $iterators = __webpack_require__(108);
-var getKeys = __webpack_require__(43);
+var getKeys = __webpack_require__(44);
 var redefine = __webpack_require__(16);
 var global = __webpack_require__(2);
 var hide = __webpack_require__(15);
-var Iterators = __webpack_require__(51);
+var Iterators = __webpack_require__(52);
 var wks = __webpack_require__(7);
 var ITERATOR = wks('iterator');
 var TO_STRING_TAG = wks('toStringTag');
@@ -16423,7 +17411,7 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
 
 
 /***/ }),
-/* 366 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
@@ -16435,7 +17423,7 @@ $export($export.G + $export.B, {
 
 
 /***/ }),
-/* 367 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // ie9- setTimeout & setInterval additional parameters fix
@@ -16461,36 +17449,35 @@ $export($export.G + $export.B + $export.F * MSIE, {
 
 
 /***/ }),
-/* 368 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(296);
-__webpack_require__(235);
-__webpack_require__(237);
+__webpack_require__(297);
 __webpack_require__(236);
-__webpack_require__(239);
-__webpack_require__(241);
-__webpack_require__(246);
-__webpack_require__(240);
 __webpack_require__(238);
-__webpack_require__(248);
-__webpack_require__(247);
-__webpack_require__(243);
-__webpack_require__(244);
+__webpack_require__(237);
+__webpack_require__(240);
 __webpack_require__(242);
-__webpack_require__(234);
-__webpack_require__(245);
+__webpack_require__(247);
+__webpack_require__(241);
+__webpack_require__(239);
 __webpack_require__(249);
+__webpack_require__(248);
+__webpack_require__(244);
+__webpack_require__(245);
+__webpack_require__(243);
+__webpack_require__(235);
+__webpack_require__(246);
 __webpack_require__(250);
-__webpack_require__(202);
-__webpack_require__(204);
-__webpack_require__(203);
-__webpack_require__(252);
 __webpack_require__(251);
-__webpack_require__(222);
-__webpack_require__(232);
-__webpack_require__(233);
+__webpack_require__(203);
+__webpack_require__(205);
+__webpack_require__(204);
+__webpack_require__(253);
+__webpack_require__(252);
 __webpack_require__(223);
+__webpack_require__(233);
+__webpack_require__(234);
 __webpack_require__(224);
 __webpack_require__(225);
 __webpack_require__(226);
@@ -16499,7 +17486,7 @@ __webpack_require__(228);
 __webpack_require__(229);
 __webpack_require__(230);
 __webpack_require__(231);
-__webpack_require__(205);
+__webpack_require__(232);
 __webpack_require__(206);
 __webpack_require__(207);
 __webpack_require__(208);
@@ -16516,155 +17503,1621 @@ __webpack_require__(218);
 __webpack_require__(219);
 __webpack_require__(220);
 __webpack_require__(221);
-__webpack_require__(283);
-__webpack_require__(288);
-__webpack_require__(295);
-__webpack_require__(286);
-__webpack_require__(278);
-__webpack_require__(279);
+__webpack_require__(222);
 __webpack_require__(284);
 __webpack_require__(289);
-__webpack_require__(291);
-__webpack_require__(274);
+__webpack_require__(296);
+__webpack_require__(287);
+__webpack_require__(279);
+__webpack_require__(280);
+__webpack_require__(285);
+__webpack_require__(290);
+__webpack_require__(292);
 __webpack_require__(275);
 __webpack_require__(276);
 __webpack_require__(277);
-__webpack_require__(280);
+__webpack_require__(278);
 __webpack_require__(281);
 __webpack_require__(282);
-__webpack_require__(285);
-__webpack_require__(287);
-__webpack_require__(290);
-__webpack_require__(292);
+__webpack_require__(283);
+__webpack_require__(286);
+__webpack_require__(288);
+__webpack_require__(291);
 __webpack_require__(293);
 __webpack_require__(294);
-__webpack_require__(197);
-__webpack_require__(199);
+__webpack_require__(295);
 __webpack_require__(198);
-__webpack_require__(201);
 __webpack_require__(200);
-__webpack_require__(186);
+__webpack_require__(199);
+__webpack_require__(202);
+__webpack_require__(201);
+__webpack_require__(187);
+__webpack_require__(185);
+__webpack_require__(191);
+__webpack_require__(188);
+__webpack_require__(194);
+__webpack_require__(196);
 __webpack_require__(184);
 __webpack_require__(190);
-__webpack_require__(187);
-__webpack_require__(193);
-__webpack_require__(195);
-__webpack_require__(183);
-__webpack_require__(189);
-__webpack_require__(180);
-__webpack_require__(194);
-__webpack_require__(178);
-__webpack_require__(192);
-__webpack_require__(191);
-__webpack_require__(185);
-__webpack_require__(188);
-__webpack_require__(177);
-__webpack_require__(179);
-__webpack_require__(182);
 __webpack_require__(181);
-__webpack_require__(196);
+__webpack_require__(195);
+__webpack_require__(179);
+__webpack_require__(193);
+__webpack_require__(192);
+__webpack_require__(186);
+__webpack_require__(189);
+__webpack_require__(178);
+__webpack_require__(180);
+__webpack_require__(183);
+__webpack_require__(182);
+__webpack_require__(197);
 __webpack_require__(108);
-__webpack_require__(268);
-__webpack_require__(273);
-__webpack_require__(142);
 __webpack_require__(269);
+__webpack_require__(274);
+__webpack_require__(143);
 __webpack_require__(270);
 __webpack_require__(271);
 __webpack_require__(272);
-__webpack_require__(253);
-__webpack_require__(141);
-__webpack_require__(143);
+__webpack_require__(273);
+__webpack_require__(254);
+__webpack_require__(142);
 __webpack_require__(144);
-__webpack_require__(308);
-__webpack_require__(297);
+__webpack_require__(145);
+__webpack_require__(309);
 __webpack_require__(298);
-__webpack_require__(303);
-__webpack_require__(306);
-__webpack_require__(307);
-__webpack_require__(301);
+__webpack_require__(299);
 __webpack_require__(304);
+__webpack_require__(307);
+__webpack_require__(308);
 __webpack_require__(302);
 __webpack_require__(305);
-__webpack_require__(299);
+__webpack_require__(303);
+__webpack_require__(306);
 __webpack_require__(300);
-__webpack_require__(254);
+__webpack_require__(301);
 __webpack_require__(255);
 __webpack_require__(256);
 __webpack_require__(257);
 __webpack_require__(258);
-__webpack_require__(261);
 __webpack_require__(259);
-__webpack_require__(260);
 __webpack_require__(262);
+__webpack_require__(260);
+__webpack_require__(261);
 __webpack_require__(263);
 __webpack_require__(264);
 __webpack_require__(265);
-__webpack_require__(267);
 __webpack_require__(266);
-__webpack_require__(311);
-__webpack_require__(309);
+__webpack_require__(268);
+__webpack_require__(267);
+__webpack_require__(312);
 __webpack_require__(310);
-__webpack_require__(352);
-__webpack_require__(355);
-__webpack_require__(354);
-__webpack_require__(356);
-__webpack_require__(357);
+__webpack_require__(311);
 __webpack_require__(353);
+__webpack_require__(356);
+__webpack_require__(355);
+__webpack_require__(357);
 __webpack_require__(358);
+__webpack_require__(354);
 __webpack_require__(359);
-__webpack_require__(333);
-__webpack_require__(336);
-__webpack_require__(332);
-__webpack_require__(330);
-__webpack_require__(331);
+__webpack_require__(360);
 __webpack_require__(334);
+__webpack_require__(337);
+__webpack_require__(333);
+__webpack_require__(331);
+__webpack_require__(332);
 __webpack_require__(335);
+__webpack_require__(336);
+__webpack_require__(318);
+__webpack_require__(352);
 __webpack_require__(317);
 __webpack_require__(351);
+__webpack_require__(363);
+__webpack_require__(365);
 __webpack_require__(316);
 __webpack_require__(350);
 __webpack_require__(362);
 __webpack_require__(364);
 __webpack_require__(315);
-__webpack_require__(349);
 __webpack_require__(361);
-__webpack_require__(363);
 __webpack_require__(314);
-__webpack_require__(360);
-__webpack_require__(313);
-__webpack_require__(318);
 __webpack_require__(319);
 __webpack_require__(320);
 __webpack_require__(321);
 __webpack_require__(322);
-__webpack_require__(324);
 __webpack_require__(323);
 __webpack_require__(325);
+__webpack_require__(324);
 __webpack_require__(326);
 __webpack_require__(327);
-__webpack_require__(329);
 __webpack_require__(328);
-__webpack_require__(338);
+__webpack_require__(330);
+__webpack_require__(329);
 __webpack_require__(339);
 __webpack_require__(340);
 __webpack_require__(341);
-__webpack_require__(343);
 __webpack_require__(342);
-__webpack_require__(345);
 __webpack_require__(344);
+__webpack_require__(343);
 __webpack_require__(346);
+__webpack_require__(345);
 __webpack_require__(347);
 __webpack_require__(348);
-__webpack_require__(312);
-__webpack_require__(337);
+__webpack_require__(349);
+__webpack_require__(313);
+__webpack_require__(338);
+__webpack_require__(368);
 __webpack_require__(367);
 __webpack_require__(366);
-__webpack_require__(365);
 module.exports = __webpack_require__(27);
 
 
 /***/ }),
-/* 369 */
+/* 370 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var knn_image_classifier_1 = __webpack_require__(371);
+exports.KNNImageClassifier = knn_image_classifier_1.KNNImageClassifier;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 371 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var deeplearn_1 = __webpack_require__(38);
+var deeplearn_squeezenet_1 = __webpack_require__(373);
+var KNNImageClassifier = (function () {
+    function KNNImageClassifier(numClasses, k, math) {
+        this.numClasses = numClasses;
+        this.k = k;
+        this.math = math;
+        this.classLogitsMatrices = [];
+        this.classExampleCount = [];
+        this.varsLoaded = false;
+        this.squashLogitsDenominator = deeplearn_1.Scalar.new(300);
+        this.mathCPU = new deeplearn_1.NDArrayMathCPU();
+        for (var i = 0; i < this.numClasses; i++) {
+            this.classLogitsMatrices.push(null);
+            this.classExampleCount.push(0);
+        }
+        this.squeezeNet = new deeplearn_squeezenet_1.SqueezeNet(this.math);
+    }
+    KNNImageClassifier.prototype.load = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4, this.squeezeNet.load()];
+                    case 1:
+                        _a.sent();
+                        this.varsLoaded = true;
+                        return [2];
+                }
+            });
+        });
+    };
+    KNNImageClassifier.prototype.clearClass = function (classIndex) {
+        if (classIndex >= this.numClasses) {
+            console.log('Cannot clear invalid class ${classIndex}');
+            return;
+        }
+        this.classLogitsMatrices[classIndex] = null;
+        this.classExampleCount[classIndex] = 0;
+        this.clearTrainLogitsMatrix();
+    };
+    KNNImageClassifier.prototype.addImage = function (image, classIndex) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.varsLoaded) {
+                            console.warn('Cannot add images until vars have been loaded.');
+                            return [2];
+                        }
+                        if (classIndex >= this.numClasses) {
+                            console.warn('Cannot add to invalid class ${classIndex}');
+                        }
+                        this.clearTrainLogitsMatrix();
+                        return [4, this.math.scope(function (keep, track) { return __awaiter(_this, void 0, void 0, function () {
+                                var predResults, imageLogits, logitsSize, newTrainLogitsMatrix;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4, this.squeezeNet.predict(image)];
+                                        case 1:
+                                            predResults = _a.sent();
+                                            imageLogits = this.normalizeVector(predResults.logits);
+                                            logitsSize = imageLogits.shape[0];
+                                            if (this.classLogitsMatrices[classIndex] == null) {
+                                                this.classLogitsMatrices[classIndex] = imageLogits.as2D(1, logitsSize);
+                                            }
+                                            else {
+                                                newTrainLogitsMatrix = this.math.concat2D(this.classLogitsMatrices[classIndex].as2D(this.classExampleCount[classIndex], logitsSize), imageLogits.as2D(1, logitsSize), 0);
+                                                this.classLogitsMatrices[classIndex].dispose();
+                                                this.classLogitsMatrices[classIndex] = newTrainLogitsMatrix;
+                                            }
+                                            keep(this.classLogitsMatrices[classIndex]);
+                                            this.classExampleCount[classIndex]++;
+                                            return [2];
+                                    }
+                                });
+                            }); })];
+                    case 1:
+                        _a.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    KNNImageClassifier.prototype.predict = function (image) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var imageClass, confidences, topKIndices, indices, indicesForClasses, topKCountsForClasses, i, num, i, classForEntry, topConfidence, kVal, i, probability;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        imageClass = -1;
+                        confidences = new Array(this.numClasses);
+                        if (!this.varsLoaded) {
+                            console.warn('Cannot predict until vars have been loaded.');
+                            return [2, { classIndex: imageClass, confidences: confidences }];
+                        }
+                        return [4, this.math.scope(function (keep) { return __awaiter(_this, void 0, void 0, function () {
+                                var predResults, imageLogits, logitsSize, newTrainLogitsMatrix, i, numExamples, knn, kVal, topK;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4, this.squeezeNet.predict(image)];
+                                        case 1:
+                                            predResults = _a.sent();
+                                            imageLogits = this.normalizeVector(predResults.logits);
+                                            logitsSize = imageLogits.shape[0];
+                                            if (this.trainLogitsMatrix == null) {
+                                                newTrainLogitsMatrix = null;
+                                                for (i = 0; i < this.numClasses; i++) {
+                                                    newTrainLogitsMatrix = this.concatWithNulls(newTrainLogitsMatrix, this.classLogitsMatrices[i]);
+                                                }
+                                                this.trainLogitsMatrix = newTrainLogitsMatrix;
+                                            }
+                                            if (this.trainLogitsMatrix == null) {
+                                                console.warn('Cannot predict without providing training images.');
+                                                return [2, null];
+                                            }
+                                            keep(this.trainLogitsMatrix);
+                                            numExamples = this.getNumExamples();
+                                            knn = this.math
+                                                .matMul(this.trainLogitsMatrix.as2D(numExamples, logitsSize), imageLogits.as2D(logitsSize, 1))
+                                                .as1D();
+                                            return [4, knn.data()];
+                                        case 2:
+                                            _a.sent();
+                                            kVal = Math.min(this.k, numExamples);
+                                            topK = this.mathCPU.topK(knn, kVal);
+                                            return [2, topK.indices];
+                                    }
+                                });
+                            }); })];
+                    case 1:
+                        topKIndices = _a.sent();
+                        if (topKIndices == null) {
+                            return [2, { classIndex: imageClass, confidences: confidences }];
+                        }
+                        indices = topKIndices.dataSync();
+                        indicesForClasses = [];
+                        topKCountsForClasses = [];
+                        for (i = 0; i < this.numClasses; i++) {
+                            topKCountsForClasses.push(0);
+                            num = this.classExampleCount[i];
+                            if (i > 0) {
+                                num += indicesForClasses[i - 1];
+                            }
+                            indicesForClasses.push(num);
+                        }
+                        for (i = 0; i < indices.length; i++) {
+                            for (classForEntry = 0; classForEntry < indicesForClasses.length; classForEntry++) {
+                                if (indices[i] < indicesForClasses[classForEntry]) {
+                                    topKCountsForClasses[classForEntry]++;
+                                    break;
+                                }
+                            }
+                        }
+                        topConfidence = 0;
+                        kVal = Math.min(this.k, this.getNumExamples());
+                        for (i = 0; i < this.numClasses; i++) {
+                            probability = topKCountsForClasses[i] / kVal;
+                            if (probability > topConfidence) {
+                                topConfidence = probability;
+                                imageClass = i;
+                            }
+                            confidences[i] = probability;
+                        }
+                        return [2, { classIndex: imageClass, confidences: confidences }];
+                }
+            });
+        });
+    };
+    KNNImageClassifier.prototype.getClassExampleCount = function () {
+        return this.classExampleCount;
+    };
+    KNNImageClassifier.prototype.clearTrainLogitsMatrix = function () {
+        if (this.trainLogitsMatrix != null) {
+            this.trainLogitsMatrix.dispose();
+            this.trainLogitsMatrix = null;
+        }
+    };
+    KNNImageClassifier.prototype.concatWithNulls = function (ndarray1, ndarray2) {
+        if (ndarray1 == null && ndarray2 == null) {
+            return null;
+        }
+        if (ndarray1 == null) {
+            return this.math.clone(ndarray2);
+        }
+        else if (ndarray2 === null) {
+            return this.math.clone(ndarray1);
+        }
+        return this.math.concat2D(ndarray1, ndarray2, 0);
+    };
+    KNNImageClassifier.prototype.normalizeVector = function (vec) {
+        var squashedVec = this.math.divide(vec, this.squashLogitsDenominator);
+        var squared = this.math.multiplyStrict(squashedVec, squashedVec);
+        var sum = this.math.sum(squared);
+        var sqrtSum = this.math.sqrt(sum);
+        return this.math.divide(squashedVec, sqrtSum);
+    };
+    KNNImageClassifier.prototype.getNumExamples = function () {
+        var total = 0;
+        for (var i = 0; i < this.classExampleCount.length; i++) {
+            total += this.classExampleCount[i];
+        }
+        return total;
+    };
+    KNNImageClassifier.prototype.dispose = function () {
+        this.squeezeNet.dispose();
+        this.clearTrainLogitsMatrix();
+        this.classLogitsMatrices.forEach(function (classLogitsMatrix) { return classLogitsMatrix.dispose(); });
+        this.squashLogitsDenominator.dispose();
+    };
+    return KNNImageClassifier;
+}());
+exports.KNNImageClassifier = KNNImageClassifier;
+//# sourceMappingURL=knn_image_classifier.js.map
+
+/***/ }),
+/* 372 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.IMAGENET_CLASSES = {
+    0: 'tench, Tinca tinca',
+    1: 'goldfish, Carassius auratus',
+    2: 'great white shark, white shark, man-eater, man-eating shark, ' +
+        'Carcharodon carcharias',
+    3: 'tiger shark, Galeocerdo cuvieri',
+    4: 'hammerhead, hammerhead shark',
+    5: 'electric ray, crampfish, numbfish, torpedo',
+    6: 'stingray',
+    7: 'cock',
+    8: 'hen',
+    9: 'ostrich, Struthio camelus',
+    10: 'brambling, Fringilla montifringilla',
+    11: 'goldfinch, Carduelis carduelis',
+    12: 'house finch, linnet, Carpodacus mexicanus',
+    13: 'junco, snowbird',
+    14: 'indigo bunting, indigo finch, indigo bird, Passerina cyanea',
+    15: 'robin, American robin, Turdus migratorius',
+    16: 'bulbul',
+    17: 'jay',
+    18: 'magpie',
+    19: 'chickadee',
+    20: 'water ouzel, dipper',
+    21: 'kite',
+    22: 'bald eagle, American eagle, Haliaeetus leucocephalus',
+    23: 'vulture',
+    24: 'great grey owl, great gray owl, Strix nebulosa',
+    25: 'European fire salamander, Salamandra salamandra',
+    26: 'common newt, Triturus vulgaris',
+    27: 'eft',
+    28: 'spotted salamander, Ambystoma maculatum',
+    29: 'axolotl, mud puppy, Ambystoma mexicanum',
+    30: 'bullfrog, Rana catesbeiana',
+    31: 'tree frog, tree-frog',
+    32: 'tailed frog, bell toad, ribbed toad, tailed toad, Ascaphus trui',
+    33: 'loggerhead, loggerhead turtle, Caretta caretta',
+    34: 'leatherback turtle, leatherback, leathery turtle, Dermochelys coriacea',
+    35: 'mud turtle',
+    36: 'terrapin',
+    37: 'box turtle, box tortoise',
+    38: 'banded gecko',
+    39: 'common iguana, iguana, Iguana iguana',
+    40: 'American chameleon, anole, Anolis carolinensis',
+    41: 'whiptail, whiptail lizard',
+    42: 'agama',
+    43: 'frilled lizard, Chlamydosaurus kingi',
+    44: 'alligator lizard',
+    45: 'Gila monster, Heloderma suspectum',
+    46: 'green lizard, Lacerta viridis',
+    47: 'African chameleon, Chamaeleo chamaeleon',
+    48: 'Komodo dragon, Komodo lizard, dragon lizard, giant lizard, ' +
+        'Varanus komodoensis',
+    49: 'African crocodile, Nile crocodile, Crocodylus niloticus',
+    50: 'American alligator, Alligator mississipiensis',
+    51: 'triceratops',
+    52: 'thunder snake, worm snake, Carphophis amoenus',
+    53: 'ringneck snake, ring-necked snake, ring snake',
+    54: 'hognose snake, puff adder, sand viper',
+    55: 'green snake, grass snake',
+    56: 'king snake, kingsnake',
+    57: 'garter snake, grass snake',
+    58: 'water snake',
+    59: 'vine snake',
+    60: 'night snake, Hypsiglena torquata',
+    61: 'boa constrictor, Constrictor constrictor',
+    62: 'rock python, rock snake, Python sebae',
+    63: 'Indian cobra, Naja naja',
+    64: 'green mamba',
+    65: 'sea snake',
+    66: 'horned viper, cerastes, sand viper, horned asp, Cerastes cornutus',
+    67: 'diamondback, diamondback rattlesnake, Crotalus adamanteus',
+    68: 'sidewinder, horned rattlesnake, Crotalus cerastes',
+    69: 'trilobite',
+    70: 'harvestman, daddy longlegs, Phalangium opilio',
+    71: 'scorpion',
+    72: 'black and gold garden spider, Argiope aurantia',
+    73: 'barn spider, Araneus cavaticus',
+    74: 'garden spider, Aranea diademata',
+    75: 'black widow, Latrodectus mactans',
+    76: 'tarantula',
+    77: 'wolf spider, hunting spider',
+    78: 'tick',
+    79: 'centipede',
+    80: 'black grouse',
+    81: 'ptarmigan',
+    82: 'ruffed grouse, partridge, Bonasa umbellus',
+    83: 'prairie chicken, prairie grouse, prairie fowl',
+    84: 'peacock',
+    85: 'quail',
+    86: 'partridge',
+    87: 'African grey, African gray, Psittacus erithacus',
+    88: 'macaw',
+    89: 'sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita',
+    90: 'lorikeet',
+    91: 'coucal',
+    92: 'bee eater',
+    93: 'hornbill',
+    94: 'hummingbird',
+    95: 'jacamar',
+    96: 'toucan',
+    97: 'drake',
+    98: 'red-breasted merganser, Mergus serrator',
+    99: 'goose',
+    100: 'black swan, Cygnus atratus',
+    101: 'tusker',
+    102: 'echidna, spiny anteater, anteater',
+    103: 'platypus, duckbill, duckbilled platypus, duck-billed platypus, ' +
+        'Ornithorhynchus anatinus',
+    104: 'wallaby, brush kangaroo',
+    105: 'koala, koala bear, kangaroo bear, native bear, Phascolarctos cinereus',
+    106: 'wombat',
+    107: 'jelly fish',
+    108: 'sea anemone, anemone',
+    109: 'brain coral',
+    110: 'flatworm, platyhelminth',
+    111: 'nematode, nematode worm, roundworm',
+    112: 'conch',
+    113: 'snail',
+    114: 'slug',
+    115: 'sea slug, nudibranch',
+    116: 'chiton, coat-of-mail shell, sea cradle, polyplacophore',
+    117: 'chambered nautilus, pearly nautilus, nautilus',
+    118: 'Dungeness crab, Cancer magister',
+    119: 'rock crab, Cancer irroratus',
+    120: 'fiddler crab',
+    121: 'king crab, Alaska crab, Alaskan king crab, Alaska king crab, ' +
+        'Paralithodes camtschatica',
+    122: 'American lobster, Northern lobster, Maine lobster, Homarus americanus',
+    123: 'spiny lobster, langouste, rock lobster, crawfish, crayfish, sea ' +
+        'crawfish',
+    124: 'crayfish, crawfish, crawdad, crawdaddy',
+    125: 'hermit crab',
+    126: 'isopod',
+    127: 'white stork, Ciconia ciconia',
+    128: 'black stork, Ciconia nigra',
+    129: 'spoonbill',
+    130: 'flamingo',
+    131: 'little blue heron, Egretta caerulea',
+    132: 'American egret, great white heron, Egretta albus',
+    133: 'bittern',
+    134: 'crane',
+    135: 'limpkin, Aramus pictus',
+    136: 'European gallinule, Porphyrio porphyrio',
+    137: 'American coot, marsh hen, mud hen, water hen, Fulica americana',
+    138: 'bustard',
+    139: 'ruddy turnstone, Arenaria interpres',
+    140: 'red-backed sandpiper, dunlin, Erolia alpina',
+    141: 'redshank, Tringa totanus',
+    142: 'dowitcher',
+    143: 'oystercatcher, oyster catcher',
+    144: 'pelican',
+    145: 'king penguin, Aptenodytes patagonica',
+    146: 'albatross, mollymawk',
+    147: 'grey whale, gray whale, devilfish, Eschrichtius gibbosus, ' +
+        'Eschrichtius robustus',
+    148: 'killer whale, killer, orca, grampus, sea wolf, Orcinus orca',
+    149: 'dugong, Dugong dugon',
+    150: 'sea lion',
+    151: 'Chihuahua',
+    152: 'Japanese spaniel',
+    153: 'Maltese dog, Maltese terrier, Maltese',
+    154: 'Pekinese, Pekingese, Peke',
+    155: 'Shih-Tzu',
+    156: 'Blenheim spaniel',
+    157: 'papillon',
+    158: 'toy terrier',
+    159: 'Rhodesian ridgeback',
+    160: 'Afghan hound, Afghan',
+    161: 'basset, basset hound',
+    162: 'beagle',
+    163: 'bloodhound, sleuthhound',
+    164: 'bluetick',
+    165: 'black-and-tan coonhound',
+    166: 'Walker hound, Walker foxhound',
+    167: 'English foxhound',
+    168: 'redbone',
+    169: 'borzoi, Russian wolfhound',
+    170: 'Irish wolfhound',
+    171: 'Italian greyhound',
+    172: 'whippet',
+    173: 'Ibizan hound, Ibizan Podenco',
+    174: 'Norwegian elkhound, elkhound',
+    175: 'otterhound, otter hound',
+    176: 'Saluki, gazelle hound',
+    177: 'Scottish deerhound, deerhound',
+    178: 'Weimaraner',
+    179: 'Staffordshire bullterrier, Staffordshire bull terrier',
+    180: 'American Staffordshire terrier, Staffordshire terrier, American pit ' +
+        'bull terrier, pit bull terrier',
+    181: 'Bedlington terrier',
+    182: 'Border terrier',
+    183: 'Kerry blue terrier',
+    184: 'Irish terrier',
+    185: 'Norfolk terrier',
+    186: 'Norwich terrier',
+    187: 'Yorkshire terrier',
+    188: 'wire-haired fox terrier',
+    189: 'Lakeland terrier',
+    190: 'Sealyham terrier, Sealyham',
+    191: 'Airedale, Airedale terrier',
+    192: 'cairn, cairn terrier',
+    193: 'Australian terrier',
+    194: 'Dandie Dinmont, Dandie Dinmont terrier',
+    195: 'Boston bull, Boston terrier',
+    196: 'miniature schnauzer',
+    197: 'giant schnauzer',
+    198: 'standard schnauzer',
+    199: 'Scotch terrier, Scottish terrier, Scottie',
+    200: 'Tibetan terrier, chrysanthemum dog',
+    201: 'silky terrier, Sydney silky',
+    202: 'soft-coated wheaten terrier',
+    203: 'West Highland white terrier',
+    204: 'Lhasa, Lhasa apso',
+    205: 'flat-coated retriever',
+    206: 'curly-coated retriever',
+    207: 'golden retriever',
+    208: 'Labrador retriever',
+    209: 'Chesapeake Bay retriever',
+    210: 'German short-haired pointer',
+    211: 'vizsla, Hungarian pointer',
+    212: 'English setter',
+    213: 'Irish setter, red setter',
+    214: 'Gordon setter',
+    215: 'Brittany spaniel',
+    216: 'clumber, clumber spaniel',
+    217: 'English springer, English springer spaniel',
+    218: 'Welsh springer spaniel',
+    219: 'cocker spaniel, English cocker spaniel, cocker',
+    220: 'Sussex spaniel',
+    221: 'Irish water spaniel',
+    222: 'kuvasz',
+    223: 'schipperke',
+    224: 'groenendael',
+    225: 'malinois',
+    226: 'briard',
+    227: 'kelpie',
+    228: 'komondor',
+    229: 'Old English sheepdog, bobtail',
+    230: 'Shetland sheepdog, Shetland sheep dog, Shetland',
+    231: 'collie',
+    232: 'Border collie',
+    233: 'Bouvier des Flandres, Bouviers des Flandres',
+    234: 'Rottweiler',
+    235: 'German shepherd, German shepherd dog, German police dog, alsatian',
+    236: 'Doberman, Doberman pinscher',
+    237: 'miniature pinscher',
+    238: 'Greater Swiss Mountain dog',
+    239: 'Bernese mountain dog',
+    240: 'Appenzeller',
+    241: 'EntleBucher',
+    242: 'boxer',
+    243: 'bull mastiff',
+    244: 'Tibetan mastiff',
+    245: 'French bulldog',
+    246: 'Great Dane',
+    247: 'Saint Bernard, St Bernard',
+    248: 'Eskimo dog, husky',
+    249: 'malamute, malemute, Alaskan malamute',
+    250: 'Siberian husky',
+    251: 'dalmatian, coach dog, carriage dog',
+    252: 'affenpinscher, monkey pinscher, monkey dog',
+    253: 'basenji',
+    254: 'pug, pug-dog',
+    255: 'Leonberg',
+    256: 'Newfoundland, Newfoundland dog',
+    257: 'Great Pyrenees',
+    258: 'Samoyed, Samoyede',
+    259: 'Pomeranian',
+    260: 'chow, chow chow',
+    261: 'keeshond',
+    262: 'Brabancon griffon',
+    263: 'Pembroke, Pembroke Welsh corgi',
+    264: 'Cardigan, Cardigan Welsh corgi',
+    265: 'toy poodle',
+    266: 'miniature poodle',
+    267: 'standard poodle',
+    268: 'Mexican hairless',
+    269: 'timber wolf, grey wolf, gray wolf, Canis lupus',
+    270: 'white wolf, Arctic wolf, Canis lupus tundrarum',
+    271: 'red wolf, maned wolf, Canis rufus, Canis niger',
+    272: 'coyote, prairie wolf, brush wolf, Canis latrans',
+    273: 'dingo, warrigal, warragal, Canis dingo',
+    274: 'dhole, Cuon alpinus',
+    275: 'African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus',
+    276: 'hyena, hyaena',
+    277: 'red fox, Vulpes vulpes',
+    278: 'kit fox, Vulpes macrotis',
+    279: 'Arctic fox, white fox, Alopex lagopus',
+    280: 'grey fox, gray fox, Urocyon cinereoargenteus',
+    281: 'tabby, tabby cat',
+    282: 'tiger cat',
+    283: 'Persian cat',
+    284: 'Siamese cat, Siamese',
+    285: 'Egyptian cat',
+    286: 'cougar, puma, catamount, mountain lion, painter, panther, ' +
+        'Felis concolor',
+    287: 'lynx, catamount',
+    288: 'leopard, Panthera pardus',
+    289: 'snow leopard, ounce, Panthera uncia',
+    290: 'jaguar, panther, Panthera onca, Felis onca',
+    291: 'lion, king of beasts, Panthera leo',
+    292: 'tiger, Panthera tigris',
+    293: 'cheetah, chetah, Acinonyx jubatus',
+    294: 'brown bear, bruin, Ursus arctos',
+    295: 'American black bear, black bear, Ursus americanus, Euarctos ' +
+        'americanus',
+    296: 'ice bear, polar bear, Ursus Maritimus, Thalarctos maritimus',
+    297: 'sloth bear, Melursus ursinus, Ursus ursinus',
+    298: 'mongoose',
+    299: 'meerkat, mierkat',
+    300: 'tiger beetle',
+    301: 'ladybug, ladybeetle, lady beetle, ladybird, ladybird beetle',
+    302: 'ground beetle, carabid beetle',
+    303: 'long-horned beetle, longicorn, longicorn beetle',
+    304: 'leaf beetle, chrysomelid',
+    305: 'dung beetle',
+    306: 'rhinoceros beetle',
+    307: 'weevil',
+    308: 'fly',
+    309: 'bee',
+    310: 'ant, emmet, pismire',
+    311: 'grasshopper, hopper',
+    312: 'cricket',
+    313: 'walking stick, walkingstick, stick insect',
+    314: 'cockroach, roach',
+    315: 'mantis, mantid',
+    316: 'cicada, cicala',
+    317: 'leafhopper',
+    318: 'lacewing, lacewing fly',
+    319: 'dragonfly, darning needle, devil\'s darning needle, sewing needle, ' +
+        'snake feeder, snake doctor, mosquito hawk, skeeter hawk',
+    320: 'damselfly',
+    321: 'admiral',
+    322: 'ringlet, ringlet butterfly',
+    323: 'monarch, monarch butterfly, milkweed butterfly, Danaus plexippus',
+    324: 'cabbage butterfly',
+    325: 'sulphur butterfly, sulfur butterfly',
+    326: 'lycaenid, lycaenid butterfly',
+    327: 'starfish, sea star',
+    328: 'sea urchin',
+    329: 'sea cucumber, holothurian',
+    330: 'wood rabbit, cottontail, cottontail rabbit',
+    331: 'hare',
+    332: 'Angora, Angora rabbit',
+    333: 'hamster',
+    334: 'porcupine, hedgehog',
+    335: 'fox squirrel, eastern fox squirrel, Sciurus niger',
+    336: 'marmot',
+    337: 'beaver',
+    338: 'guinea pig, Cavia cobaya',
+    339: 'sorrel',
+    340: 'zebra',
+    341: 'hog, pig, grunter, squealer, Sus scrofa',
+    342: 'wild boar, boar, Sus scrofa',
+    343: 'warthog',
+    344: 'hippopotamus, hippo, river horse, Hippopotamus amphibius',
+    345: 'ox',
+    346: 'water buffalo, water ox, Asiatic buffalo, Bubalus bubalis',
+    347: 'bison',
+    348: 'ram, tup',
+    349: 'bighorn, bighorn sheep, cimarron, Rocky Mountain bighorn, Rocky ' +
+        'Mountain sheep, Ovis canadensis',
+    350: 'ibex, Capra ibex',
+    351: 'hartebeest',
+    352: 'impala, Aepyceros melampus',
+    353: 'gazelle',
+    354: 'Arabian camel, dromedary, Camelus dromedarius',
+    355: 'llama',
+    356: 'weasel',
+    357: 'mink',
+    358: 'polecat, fitch, foulmart, foumart, Mustela putorius',
+    359: 'black-footed ferret, ferret, Mustela nigripes',
+    360: 'otter',
+    361: 'skunk, polecat, wood pussy',
+    362: 'badger',
+    363: 'armadillo',
+    364: 'three-toed sloth, ai, Bradypus tridactylus',
+    365: 'orangutan, orang, orangutang, Pongo pygmaeus',
+    366: 'gorilla, Gorilla gorilla',
+    367: 'chimpanzee, chimp, Pan troglodytes',
+    368: 'gibbon, Hylobates lar',
+    369: 'siamang, Hylobates syndactylus, Symphalangus syndactylus',
+    370: 'guenon, guenon monkey',
+    371: 'patas, hussar monkey, Erythrocebus patas',
+    372: 'baboon',
+    373: 'macaque',
+    374: 'langur',
+    375: 'colobus, colobus monkey',
+    376: 'proboscis monkey, Nasalis larvatus',
+    377: 'marmoset',
+    378: 'capuchin, ringtail, Cebus capucinus',
+    379: 'howler monkey, howler',
+    380: 'titi, titi monkey',
+    381: 'spider monkey, Ateles geoffroyi',
+    382: 'squirrel monkey, Saimiri sciureus',
+    383: 'Madagascar cat, ring-tailed lemur, Lemur catta',
+    384: 'indri, indris, Indri indri, Indri brevicaudatus',
+    385: 'Indian elephant, Elephas maximus',
+    386: 'African elephant, Loxodonta africana',
+    387: 'lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens',
+    388: 'giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca',
+    389: 'barracouta, snoek',
+    390: 'eel',
+    391: 'coho, cohoe, coho salmon, blue jack, silver salmon, Oncorhynchus ' +
+        'kisutch',
+    392: 'rock beauty, Holocanthus tricolor',
+    393: 'anemone fish',
+    394: 'sturgeon',
+    395: 'gar, garfish, garpike, billfish, Lepisosteus osseus',
+    396: 'lionfish',
+    397: 'puffer, pufferfish, blowfish, globefish',
+    398: 'abacus',
+    399: 'abaya',
+    400: 'academic gown, academic robe, judge\'s robe',
+    401: 'accordion, piano accordion, squeeze box',
+    402: 'acoustic guitar',
+    403: 'aircraft carrier, carrier, flattop, attack aircraft carrier',
+    404: 'airliner',
+    405: 'airship, dirigible',
+    406: 'altar',
+    407: 'ambulance',
+    408: 'amphibian, amphibious vehicle',
+    409: 'analog clock',
+    410: 'apiary, bee house',
+    411: 'apron',
+    412: 'ashcan, trash can, garbage can, wastebin, ash bin, ash-bin, ashbin, ' +
+        'dustbin, trash barrel, trash bin',
+    413: 'assault rifle, assault gun',
+    414: 'backpack, back pack, knapsack, packsack, rucksack, haversack',
+    415: 'bakery, bakeshop, bakehouse',
+    416: 'balance beam, beam',
+    417: 'balloon',
+    418: 'ballpoint, ballpoint pen, ballpen, Biro',
+    419: 'Band Aid',
+    420: 'banjo',
+    421: 'bannister, banister, balustrade, balusters, handrail',
+    422: 'barbell',
+    423: 'barber chair',
+    424: 'barbershop',
+    425: 'barn',
+    426: 'barometer',
+    427: 'barrel, cask',
+    428: 'barrow, garden cart, lawn cart, wheelbarrow',
+    429: 'baseball',
+    430: 'basketball',
+    431: 'bassinet',
+    432: 'bassoon',
+    433: 'bathing cap, swimming cap',
+    434: 'bath towel',
+    435: 'bathtub, bathing tub, bath, tub',
+    436: 'beach wagon, station wagon, wagon, estate car, beach waggon, station ' +
+        'waggon, waggon',
+    437: 'beacon, lighthouse, beacon light, pharos',
+    438: 'beaker',
+    439: 'bearskin, busby, shako',
+    440: 'beer bottle',
+    441: 'beer glass',
+    442: 'bell cote, bell cot',
+    443: 'bib',
+    444: 'bicycle-built-for-two, tandem bicycle, tandem',
+    445: 'bikini, two-piece',
+    446: 'binder, ring-binder',
+    447: 'binoculars, field glasses, opera glasses',
+    448: 'birdhouse',
+    449: 'boathouse',
+    450: 'bobsled, bobsleigh, bob',
+    451: 'bolo tie, bolo, bola tie, bola',
+    452: 'bonnet, poke bonnet',
+    453: 'bookcase',
+    454: 'bookshop, bookstore, bookstall',
+    455: 'bottlecap',
+    456: 'bow',
+    457: 'bow tie, bow-tie, bowtie',
+    458: 'brass, memorial tablet, plaque',
+    459: 'brassiere, bra, bandeau',
+    460: 'breakwater, groin, groyne, mole, bulwark, seawall, jetty',
+    461: 'breastplate, aegis, egis',
+    462: 'broom',
+    463: 'bucket, pail',
+    464: 'buckle',
+    465: 'bulletproof vest',
+    466: 'bullet train, bullet',
+    467: 'butcher shop, meat market',
+    468: 'cab, hack, taxi, taxicab',
+    469: 'caldron, cauldron',
+    470: 'candle, taper, wax light',
+    471: 'cannon',
+    472: 'canoe',
+    473: 'can opener, tin opener',
+    474: 'cardigan',
+    475: 'car mirror',
+    476: 'carousel, carrousel, merry-go-round, roundabout, whirligig',
+    477: 'carpenter\'s kit, tool kit',
+    478: 'carton',
+    479: 'car wheel',
+    480: 'cash machine, cash dispenser, automated teller machine, automatic ' +
+        'teller machine, automated teller, automatic teller, ATM',
+    481: 'cassette',
+    482: 'cassette player',
+    483: 'castle',
+    484: 'catamaran',
+    485: 'CD player',
+    486: 'cello, violoncello',
+    487: 'cellular telephone, cellular phone, cellphone, cell, mobile phone',
+    488: 'chain',
+    489: 'chainlink fence',
+    490: 'chain mail, ring mail, mail, chain armor, chain armour, ring armor, ' +
+        'ring armour',
+    491: 'chain saw, chainsaw',
+    492: 'chest',
+    493: 'chiffonier, commode',
+    494: 'chime, bell, gong',
+    495: 'china cabinet, china closet',
+    496: 'Christmas stocking',
+    497: 'church, church building',
+    498: 'cinema, movie theater, movie theatre, movie house, picture palace',
+    499: 'cleaver, meat cleaver, chopper',
+    500: 'cliff dwelling',
+    501: 'cloak',
+    502: 'clog, geta, patten, sabot',
+    503: 'cocktail shaker',
+    504: 'coffee mug',
+    505: 'coffeepot',
+    506: 'coil, spiral, volute, whorl, helix',
+    507: 'combination lock',
+    508: 'computer keyboard, keypad',
+    509: 'confectionery, confectionary, candy store',
+    510: 'container ship, containership, container vessel',
+    511: 'convertible',
+    512: 'corkscrew, bottle screw',
+    513: 'cornet, horn, trumpet, trump',
+    514: 'cowboy boot',
+    515: 'cowboy hat, ten-gallon hat',
+    516: 'cradle',
+    517: 'crane',
+    518: 'crash helmet',
+    519: 'crate',
+    520: 'crib, cot',
+    521: 'Crock Pot',
+    522: 'croquet ball',
+    523: 'crutch',
+    524: 'cuirass',
+    525: 'dam, dike, dyke',
+    526: 'desk',
+    527: 'desktop computer',
+    528: 'dial telephone, dial phone',
+    529: 'diaper, nappy, napkin',
+    530: 'digital clock',
+    531: 'digital watch',
+    532: 'dining table, board',
+    533: 'dishrag, dishcloth',
+    534: 'dishwasher, dish washer, dishwashing machine',
+    535: 'disk brake, disc brake',
+    536: 'dock, dockage, docking facility',
+    537: 'dogsled, dog sled, dog sleigh',
+    538: 'dome',
+    539: 'doormat, welcome mat',
+    540: 'drilling platform, offshore rig',
+    541: 'drum, membranophone, tympan',
+    542: 'drumstick',
+    543: 'dumbbell',
+    544: 'Dutch oven',
+    545: 'electric fan, blower',
+    546: 'electric guitar',
+    547: 'electric locomotive',
+    548: 'entertainment center',
+    549: 'envelope',
+    550: 'espresso maker',
+    551: 'face powder',
+    552: 'feather boa, boa',
+    553: 'file, file cabinet, filing cabinet',
+    554: 'fireboat',
+    555: 'fire engine, fire truck',
+    556: 'fire screen, fireguard',
+    557: 'flagpole, flagstaff',
+    558: 'flute, transverse flute',
+    559: 'folding chair',
+    560: 'football helmet',
+    561: 'forklift',
+    562: 'fountain',
+    563: 'fountain pen',
+    564: 'four-poster',
+    565: 'freight car',
+    566: 'French horn, horn',
+    567: 'frying pan, frypan, skillet',
+    568: 'fur coat',
+    569: 'garbage truck, dustcart',
+    570: 'gasmask, respirator, gas helmet',
+    571: 'gas pump, gasoline pump, petrol pump, island dispenser',
+    572: 'goblet',
+    573: 'go-kart',
+    574: 'golf ball',
+    575: 'golfcart, golf cart',
+    576: 'gondola',
+    577: 'gong, tam-tam',
+    578: 'gown',
+    579: 'grand piano, grand',
+    580: 'greenhouse, nursery, glasshouse',
+    581: 'grille, radiator grille',
+    582: 'grocery store, grocery, food market, market',
+    583: 'guillotine',
+    584: 'hair slide',
+    585: 'hair spray',
+    586: 'half track',
+    587: 'hammer',
+    588: 'hamper',
+    589: 'hand blower, blow dryer, blow drier, hair dryer, hair drier',
+    590: 'hand-held computer, hand-held microcomputer',
+    591: 'handkerchief, hankie, hanky, hankey',
+    592: 'hard disc, hard disk, fixed disk',
+    593: 'harmonica, mouth organ, harp, mouth harp',
+    594: 'harp',
+    595: 'harvester, reaper',
+    596: 'hatchet',
+    597: 'holster',
+    598: 'home theater, home theatre',
+    599: 'honeycomb',
+    600: 'hook, claw',
+    601: 'hoopskirt, crinoline',
+    602: 'horizontal bar, high bar',
+    603: 'horse cart, horse-cart',
+    604: 'hourglass',
+    605: 'iPod',
+    606: 'iron, smoothing iron',
+    607: 'jack-o\'-lantern',
+    608: 'jean, blue jean, denim',
+    609: 'jeep, landrover',
+    610: 'jersey, T-shirt, tee shirt',
+    611: 'jigsaw puzzle',
+    612: 'jinrikisha, ricksha, rickshaw',
+    613: 'joystick',
+    614: 'kimono',
+    615: 'knee pad',
+    616: 'knot',
+    617: 'lab coat, laboratory coat',
+    618: 'ladle',
+    619: 'lampshade, lamp shade',
+    620: 'laptop, laptop computer',
+    621: 'lawn mower, mower',
+    622: 'lens cap, lens cover',
+    623: 'letter opener, paper knife, paperknife',
+    624: 'library',
+    625: 'lifeboat',
+    626: 'lighter, light, igniter, ignitor',
+    627: 'limousine, limo',
+    628: 'liner, ocean liner',
+    629: 'lipstick, lip rouge',
+    630: 'Loafer',
+    631: 'lotion',
+    632: 'loudspeaker, speaker, speaker unit, loudspeaker system, speaker ' +
+        'system',
+    633: 'loupe, jeweler\'s loupe',
+    634: 'lumbermill, sawmill',
+    635: 'magnetic compass',
+    636: 'mailbag, postbag',
+    637: 'mailbox, letter box',
+    638: 'maillot',
+    639: 'maillot, tank suit',
+    640: 'manhole cover',
+    641: 'maraca',
+    642: 'marimba, xylophone',
+    643: 'mask',
+    644: 'matchstick',
+    645: 'maypole',
+    646: 'maze, labyrinth',
+    647: 'measuring cup',
+    648: 'medicine chest, medicine cabinet',
+    649: 'megalith, megalithic structure',
+    650: 'microphone, mike',
+    651: 'microwave, microwave oven',
+    652: 'military uniform',
+    653: 'milk can',
+    654: 'minibus',
+    655: 'miniskirt, mini',
+    656: 'minivan',
+    657: 'missile',
+    658: 'mitten',
+    659: 'mixing bowl',
+    660: 'mobile home, manufactured home',
+    661: 'Model T',
+    662: 'modem',
+    663: 'monastery',
+    664: 'monitor',
+    665: 'moped',
+    666: 'mortar',
+    667: 'mortarboard',
+    668: 'mosque',
+    669: 'mosquito net',
+    670: 'motor scooter, scooter',
+    671: 'mountain bike, all-terrain bike, off-roader',
+    672: 'mountain tent',
+    673: 'mouse, computer mouse',
+    674: 'mousetrap',
+    675: 'moving van',
+    676: 'muzzle',
+    677: 'nail',
+    678: 'neck brace',
+    679: 'necklace',
+    680: 'nipple',
+    681: 'notebook, notebook computer',
+    682: 'obelisk',
+    683: 'oboe, hautboy, hautbois',
+    684: 'ocarina, sweet potato',
+    685: 'odometer, hodometer, mileometer, milometer',
+    686: 'oil filter',
+    687: 'organ, pipe organ',
+    688: 'oscilloscope, scope, cathode-ray oscilloscope, CRO',
+    689: 'overskirt',
+    690: 'oxcart',
+    691: 'oxygen mask',
+    692: 'packet',
+    693: 'paddle, boat paddle',
+    694: 'paddlewheel, paddle wheel',
+    695: 'padlock',
+    696: 'paintbrush',
+    697: 'pajama, pyjama, pj\'s, jammies',
+    698: 'palace',
+    699: 'panpipe, pandean pipe, syrinx',
+    700: 'paper towel',
+    701: 'parachute, chute',
+    702: 'parallel bars, bars',
+    703: 'park bench',
+    704: 'parking meter',
+    705: 'passenger car, coach, carriage',
+    706: 'patio, terrace',
+    707: 'pay-phone, pay-station',
+    708: 'pedestal, plinth, footstall',
+    709: 'pencil box, pencil case',
+    710: 'pencil sharpener',
+    711: 'perfume, essence',
+    712: 'Petri dish',
+    713: 'photocopier',
+    714: 'pick, plectrum, plectron',
+    715: 'pickelhaube',
+    716: 'picket fence, paling',
+    717: 'pickup, pickup truck',
+    718: 'pier',
+    719: 'piggy bank, penny bank',
+    720: 'pill bottle',
+    721: 'pillow',
+    722: 'ping-pong ball',
+    723: 'pinwheel',
+    724: 'pirate, pirate ship',
+    725: 'pitcher, ewer',
+    726: 'plane, carpenter\'s plane, woodworking plane',
+    727: 'planetarium',
+    728: 'plastic bag',
+    729: 'plate rack',
+    730: 'plow, plough',
+    731: 'plunger, plumber\'s helper',
+    732: 'Polaroid camera, Polaroid Land camera',
+    733: 'pole',
+    734: 'police van, police wagon, paddy wagon, patrol wagon, wagon, black ' +
+        'Maria',
+    735: 'poncho',
+    736: 'pool table, billiard table, snooker table',
+    737: 'pop bottle, soda bottle',
+    738: 'pot, flowerpot',
+    739: 'potter\'s wheel',
+    740: 'power drill',
+    741: 'prayer rug, prayer mat',
+    742: 'printer',
+    743: 'prison, prison house',
+    744: 'projectile, missile',
+    745: 'projector',
+    746: 'puck, hockey puck',
+    747: 'punching bag, punch bag, punching ball, punchball',
+    748: 'purse',
+    749: 'quill, quill pen',
+    750: 'quilt, comforter, comfort, puff',
+    751: 'racer, race car, racing car',
+    752: 'racket, racquet',
+    753: 'radiator',
+    754: 'radio, wireless',
+    755: 'radio telescope, radio reflector',
+    756: 'rain barrel',
+    757: 'recreational vehicle, RV, R.V.',
+    758: 'reel',
+    759: 'reflex camera',
+    760: 'refrigerator, icebox',
+    761: 'remote control, remote',
+    762: 'restaurant, eating house, eating place, eatery',
+    763: 'revolver, six-gun, six-shooter',
+    764: 'rifle',
+    765: 'rocking chair, rocker',
+    766: 'rotisserie',
+    767: 'rubber eraser, rubber, pencil eraser',
+    768: 'rugby ball',
+    769: 'rule, ruler',
+    770: 'running shoe',
+    771: 'safe',
+    772: 'safety pin',
+    773: 'saltshaker, salt shaker',
+    774: 'sandal',
+    775: 'sarong',
+    776: 'sax, saxophone',
+    777: 'scabbard',
+    778: 'scale, weighing machine',
+    779: 'school bus',
+    780: 'schooner',
+    781: 'scoreboard',
+    782: 'screen, CRT screen',
+    783: 'screw',
+    784: 'screwdriver',
+    785: 'seat belt, seatbelt',
+    786: 'sewing machine',
+    787: 'shield, buckler',
+    788: 'shoe shop, shoe-shop, shoe store',
+    789: 'shoji',
+    790: 'shopping basket',
+    791: 'shopping cart',
+    792: 'shovel',
+    793: 'shower cap',
+    794: 'shower curtain',
+    795: 'ski',
+    796: 'ski mask',
+    797: 'sleeping bag',
+    798: 'slide rule, slipstick',
+    799: 'sliding door',
+    800: 'slot, one-armed bandit',
+    801: 'snorkel',
+    802: 'snowmobile',
+    803: 'snowplow, snowplough',
+    804: 'soap dispenser',
+    805: 'soccer ball',
+    806: 'sock',
+    807: 'solar dish, solar collector, solar furnace',
+    808: 'sombrero',
+    809: 'soup bowl',
+    810: 'space bar',
+    811: 'space heater',
+    812: 'space shuttle',
+    813: 'spatula',
+    814: 'speedboat',
+    815: 'spider web, spider\'s web',
+    816: 'spindle',
+    817: 'sports car, sport car',
+    818: 'spotlight, spot',
+    819: 'stage',
+    820: 'steam locomotive',
+    821: 'steel arch bridge',
+    822: 'steel drum',
+    823: 'stethoscope',
+    824: 'stole',
+    825: 'stone wall',
+    826: 'stopwatch, stop watch',
+    827: 'stove',
+    828: 'strainer',
+    829: 'streetcar, tram, tramcar, trolley, trolley car',
+    830: 'stretcher',
+    831: 'studio couch, day bed',
+    832: 'stupa, tope',
+    833: 'submarine, pigboat, sub, U-boat',
+    834: 'suit, suit of clothes',
+    835: 'sundial',
+    836: 'sunglass',
+    837: 'sunglasses, dark glasses, shades',
+    838: 'sunscreen, sunblock, sun blocker',
+    839: 'suspension bridge',
+    840: 'swab, swob, mop',
+    841: 'sweatshirt',
+    842: 'swimming trunks, bathing trunks',
+    843: 'swing',
+    844: 'switch, electric switch, electrical switch',
+    845: 'syringe',
+    846: 'table lamp',
+    847: 'tank, army tank, armored combat vehicle, armoured combat vehicle',
+    848: 'tape player',
+    849: 'teapot',
+    850: 'teddy, teddy bear',
+    851: 'television, television system',
+    852: 'tennis ball',
+    853: 'thatch, thatched roof',
+    854: 'theater curtain, theatre curtain',
+    855: 'thimble',
+    856: 'thresher, thrasher, threshing machine',
+    857: 'throne',
+    858: 'tile roof',
+    859: 'toaster',
+    860: 'tobacco shop, tobacconist shop, tobacconist',
+    861: 'toilet seat',
+    862: 'torch',
+    863: 'totem pole',
+    864: 'tow truck, tow car, wrecker',
+    865: 'toyshop',
+    866: 'tractor',
+    867: 'trailer truck, tractor trailer, trucking rig, rig, articulated ' +
+        'lorry, semi',
+    868: 'tray',
+    869: 'trench coat',
+    870: 'tricycle, trike, velocipede',
+    871: 'trimaran',
+    872: 'tripod',
+    873: 'triumphal arch',
+    874: 'trolleybus, trolley coach, trackless trolley',
+    875: 'trombone',
+    876: 'tub, vat',
+    877: 'turnstile',
+    878: 'typewriter keyboard',
+    879: 'umbrella',
+    880: 'unicycle, monocycle',
+    881: 'upright, upright piano',
+    882: 'vacuum, vacuum cleaner',
+    883: 'vase',
+    884: 'vault',
+    885: 'velvet',
+    886: 'vending machine',
+    887: 'vestment',
+    888: 'viaduct',
+    889: 'violin, fiddle',
+    890: 'volleyball',
+    891: 'waffle iron',
+    892: 'wall clock',
+    893: 'wallet, billfold, notecase, pocketbook',
+    894: 'wardrobe, closet, press',
+    895: 'warplane, military plane',
+    896: 'washbasin, handbasin, washbowl, lavabo, wash-hand basin',
+    897: 'washer, automatic washer, washing machine',
+    898: 'water bottle',
+    899: 'water jug',
+    900: 'water tower',
+    901: 'whiskey jug',
+    902: 'whistle',
+    903: 'wig',
+    904: 'window screen',
+    905: 'window shade',
+    906: 'Windsor tie',
+    907: 'wine bottle',
+    908: 'wing',
+    909: 'wok',
+    910: 'wooden spoon',
+    911: 'wool, woolen, woollen',
+    912: 'worm fence, snake fence, snake-rail fence, Virginia fence',
+    913: 'wreck',
+    914: 'yawl',
+    915: 'yurt',
+    916: 'web site, website, internet site, site',
+    917: 'comic book',
+    918: 'crossword puzzle, crossword',
+    919: 'street sign',
+    920: 'traffic light, traffic signal, stoplight',
+    921: 'book jacket, dust cover, dust jacket, dust wrapper',
+    922: 'menu',
+    923: 'plate',
+    924: 'guacamole',
+    925: 'consomme',
+    926: 'hot pot, hotpot',
+    927: 'trifle',
+    928: 'ice cream, icecream',
+    929: 'ice lolly, lolly, lollipop, popsicle',
+    930: 'French loaf',
+    931: 'bagel, beigel',
+    932: 'pretzel',
+    933: 'cheeseburger',
+    934: 'hotdog, hot dog, red hot',
+    935: 'mashed potato',
+    936: 'head cabbage',
+    937: 'broccoli',
+    938: 'cauliflower',
+    939: 'zucchini, courgette',
+    940: 'spaghetti squash',
+    941: 'acorn squash',
+    942: 'butternut squash',
+    943: 'cucumber, cuke',
+    944: 'artichoke, globe artichoke',
+    945: 'bell pepper',
+    946: 'cardoon',
+    947: 'mushroom',
+    948: 'Granny Smith',
+    949: 'strawberry',
+    950: 'orange',
+    951: 'lemon',
+    952: 'fig',
+    953: 'pineapple, ananas',
+    954: 'banana',
+    955: 'jackfruit, jak, jack',
+    956: 'custard apple',
+    957: 'pomegranate',
+    958: 'hay',
+    959: 'carbonara',
+    960: 'chocolate sauce, chocolate syrup',
+    961: 'dough',
+    962: 'meat loaf, meatloaf',
+    963: 'pizza, pizza pie',
+    964: 'potpie',
+    965: 'burrito',
+    966: 'red wine',
+    967: 'espresso',
+    968: 'cup',
+    969: 'eggnog',
+    970: 'alp',
+    971: 'bubble',
+    972: 'cliff, drop, drop-off',
+    973: 'coral reef',
+    974: 'geyser',
+    975: 'lakeside, lakeshore',
+    976: 'promontory, headland, head, foreland',
+    977: 'sandbar, sand bar',
+    978: 'seashore, coast, seacoast, sea-coast',
+    979: 'valley, vale',
+    980: 'volcano',
+    981: 'ballplayer, baseball player',
+    982: 'groom, bridegroom',
+    983: 'scuba diver',
+    984: 'rapeseed',
+    985: 'daisy',
+    986: 'yellow lady\'s slipper, yellow lady-slipper, Cypripedium calceolus, ' +
+        'Cypripedium parviflorum',
+    987: 'corn',
+    988: 'acorn',
+    989: 'hip, rose hip, rosehip',
+    990: 'buckeye, horse chestnut, conker',
+    991: 'coral fungus',
+    992: 'agaric',
+    993: 'gyromitra',
+    994: 'stinkhorn, carrion fungus',
+    995: 'earthstar',
+    996: 'hen-of-the-woods, hen of the woods, Polyporus frondosus, Grifola ' +
+        'frondosa',
+    997: 'bolete',
+    998: 'ear, spike, capitulum',
+    999: 'toilet tissue, toilet paper, bathroom tissue'
+};
+//# sourceMappingURL=imagenet_classes.js.map
+
+/***/ }),
+/* 373 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var squeezenet_1 = __webpack_require__(374);
+exports.SqueezeNet = squeezenet_1.SqueezeNet;
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+/* 374 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var deeplearn_1 = __webpack_require__(38);
+var imagenet_classes_1 = __webpack_require__(372);
+var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
+var SqueezeNet = (function () {
+    function SqueezeNet(math) {
+        this.math = math;
+        this.preprocessOffset = deeplearn_1.Array1D.new([103.939, 116.779, 123.68]);
+        deeplearn_1.initializeGPU(this.math.getGPGPUContext(), this.math.getTextureManager());
+    }
+    SqueezeNet.prototype.load = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var checkpointLoader, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        checkpointLoader = new deeplearn_1.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'squeezenet1_1/');
+                        _a = this;
+                        return [4, checkpointLoader.getAllVariables()];
+                    case 1:
+                        _a.variables = _b.sent();
+                        return [2];
+                }
+            });
+        });
+    };
+    SqueezeNet.prototype.predict = function (input) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var namedActivations, avgpool10, layerNames;
+            return __generator(this, function (_a) {
+                namedActivations = {};
+                avgpool10 = this.math.scope(function (keep) {
+                    var preprocessedInput = _this.math.subtract(input, _this.preprocessOffset);
+                    var conv1 = _this.math.conv2d(preprocessedInput, _this.variables['conv1_W:0'], _this.variables['conv1_b:0'], 2, 0);
+                    var conv1relu = keep(_this.math.relu(conv1));
+                    namedActivations['conv_1'] = conv1relu;
+                    var pool1 = keep(_this.math.maxPool(conv1relu, 3, 2, 0));
+                    namedActivations['maxpool_1'] = pool1;
+                    var fire2 = keep(_this.fireModule(pool1, 2));
+                    namedActivations['fire2'] = fire2;
+                    var fire3 = keep(_this.fireModule(fire2, 3));
+                    namedActivations['fire3'] = fire3;
+                    var pool2 = keep(_this.math.maxPool(fire3, 3, 2, 'valid'));
+                    namedActivations['maxpool_2'] = pool2;
+                    var fire4 = keep(_this.fireModule(pool2, 4));
+                    namedActivations['fire4'] = fire4;
+                    var fire5 = keep(_this.fireModule(fire4, 5));
+                    namedActivations['fire5'] = fire5;
+                    var pool3 = keep(_this.math.maxPool(fire5, 3, 2, 0));
+                    namedActivations['maxpool_3'] = pool3;
+                    var fire6 = keep(_this.fireModule(pool3, 6));
+                    namedActivations['fire6'] = fire6;
+                    var fire7 = keep(_this.fireModule(fire6, 7));
+                    namedActivations['fire7'] = fire7;
+                    var fire8 = keep(_this.fireModule(fire7, 8));
+                    namedActivations['fire8'] = fire8;
+                    var fire9 = keep(_this.fireModule(fire8, 9));
+                    namedActivations['fire9'] = fire9;
+                    var conv10 = keep(_this.math.conv2d(fire9, _this.variables['conv10_W:0'], _this.variables['conv10_b:0'], 1, 0));
+                    namedActivations['conv10'] = conv10;
+                    return _this.math.avgPool(conv10, conv10.shape[0], 1, 0).as1D();
+                });
+                layerNames = Object.keys(namedActivations);
+                layerNames.forEach(function (layerName) { return _this.math.track(namedActivations[layerName]); });
+                return [2, { namedActivations: namedActivations, logits: avgpool10 }];
+            });
+        });
+    };
+    SqueezeNet.prototype.fireModule = function (input, fireId) {
+        var y1 = this.math.conv2d(input, this.variables["fire" + fireId + "/squeeze1x1_W:0"], this.variables["fire" + fireId + "/squeeze1x1_b:0"], 1, 0);
+        var y2 = this.math.relu(y1);
+        var left1 = this.math.conv2d(y2, this.variables["fire" + fireId + "/expand1x1_W:0"], this.variables["fire" + fireId + "/expand1x1_b:0"], 1, 0);
+        var left2 = this.math.relu(left1);
+        var right1 = this.math.conv2d(y2, this.variables["fire" + fireId + "/expand3x3_W:0"], this.variables["fire" + fireId + "/expand3x3_b:0"], 1, 1);
+        var right2 = this.math.relu(right1);
+        return this.math.concat3D(left2, right2, 2);
+    };
+    SqueezeNet.prototype.getTopKClasses = function (logits, topK) {
+        return __awaiter(this, void 0, void 0, function () {
+            var predictions, topk, topkIndices, topkValues, topClassesToProbability, i;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        predictions = this.math.softmax(logits);
+                        topk = new deeplearn_1.NDArrayMathCPU().topK(predictions, topK);
+                        return [4, topk.indices.data()];
+                    case 1:
+                        topkIndices = _a.sent();
+                        return [4, topk.values.data()];
+                    case 2:
+                        topkValues = _a.sent();
+                        topClassesToProbability = {};
+                        for (i = 0; i < topkIndices.length; i++) {
+                            topClassesToProbability[imagenet_classes_1.IMAGENET_CLASSES[topkIndices[i]]] = topkValues[i];
+                        }
+                        return [2, topClassesToProbability];
+                }
+            });
+        });
+    };
+    SqueezeNet.prototype.dispose = function () {
+        this.preprocessOffset.dispose();
+        for (var varName in this.variables) {
+            this.variables[varName].dispose();
+        }
+    };
+    return SqueezeNet;
+}());
+exports.SqueezeNet = SqueezeNet;
+//# sourceMappingURL=squeezenet.js.map
+
+/***/ }),
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16766,7 +19219,7 @@ exports.CheckpointLoader = CheckpointLoader;
 //# sourceMappingURL=checkpoint_loader.js.map
 
 /***/ }),
-/* 370 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16783,7 +19236,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var InMemoryShuffledInputProviderBuilder = (function () {
     function InMemoryShuffledInputProviderBuilder(inputs) {
         this.inputs = inputs;
@@ -16874,7 +19327,7 @@ exports.InGPUMemoryShuffledInputProviderBuilder = InGPUMemoryShuffledInputProvid
 //# sourceMappingURL=input_provider.js.map
 
 /***/ }),
-/* 371 */
+/* 377 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16891,32 +19344,32 @@ exports.isMobile = isMobile;
 //# sourceMappingURL=device_util.js.map
 
 /***/ }),
-/* 372 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var graph_1 = __webpack_require__(63);
+var graph_1 = __webpack_require__(64);
 var graph_util = __webpack_require__(21);
-var add_1 = __webpack_require__(373);
-var argmax_1 = __webpack_require__(374);
-var argmaxequals_1 = __webpack_require__(375);
-var concat3d_1 = __webpack_require__(376);
-var convolution_1 = __webpack_require__(377);
-var divide_1 = __webpack_require__(378);
-var element_wise_activation_1 = __webpack_require__(379);
-var element_wise_cost_1 = __webpack_require__(380);
-var exp_1 = __webpack_require__(381);
-var linear_combination_1 = __webpack_require__(382);
-var log_1 = __webpack_require__(383);
-var matmul_1 = __webpack_require__(384);
-var max_pool_1 = __webpack_require__(385);
-var multiply_1 = __webpack_require__(386);
-var reduce_sum_1 = __webpack_require__(387);
-var reshape_1 = __webpack_require__(388);
-var softmax_1 = __webpack_require__(389);
-var subtract_1 = __webpack_require__(390);
+var add_1 = __webpack_require__(379);
+var argmax_1 = __webpack_require__(380);
+var argmaxequals_1 = __webpack_require__(381);
+var concat3d_1 = __webpack_require__(382);
+var convolution_1 = __webpack_require__(383);
+var divide_1 = __webpack_require__(384);
+var element_wise_activation_1 = __webpack_require__(385);
+var element_wise_cost_1 = __webpack_require__(386);
+var exp_1 = __webpack_require__(387);
+var linear_combination_1 = __webpack_require__(388);
+var log_1 = __webpack_require__(389);
+var matmul_1 = __webpack_require__(390);
+var max_pool_1 = __webpack_require__(391);
+var multiply_1 = __webpack_require__(392);
+var reduce_sum_1 = __webpack_require__(393);
+var reshape_1 = __webpack_require__(394);
+var softmax_1 = __webpack_require__(395);
+var subtract_1 = __webpack_require__(396);
 function emitFromGraphNodes(nodes) {
     var ops = [];
     nodes.forEach(function (node) { return Array.prototype.push.apply(ops, emitOpFromNode(node)); });
@@ -16950,6 +19403,9 @@ function emitOpFromNode(node) {
     }
     else if (node instanceof graph_1.ReLUNode) {
         return [new element_wise_activation_1.ReLU(node.inputs[graph_1.ReLUNode.X], node.output)];
+    }
+    else if (node instanceof graph_1.LeakyReLUNode) {
+        return [new element_wise_activation_1.LeakyReLU(node.inputs[graph_1.LeakyReLUNode.X], node.output, node.alpha)];
     }
     else if (node instanceof graph_1.TanHNode) {
         return [new element_wise_activation_1.TanH(node.inputs[graph_1.TanHNode.X], node.output)];
@@ -17010,7 +19466,7 @@ function emitOpFromNode(node) {
 //# sourceMappingURL=operation_emitter.js.map
 
 /***/ }),
-/* 373 */
+/* 379 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17027,7 +19483,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var Add = (function (_super) {
@@ -17102,7 +19558,7 @@ exports.Add = Add;
 //# sourceMappingURL=add.js.map
 
 /***/ }),
-/* 374 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17143,7 +19599,7 @@ exports.ArgMax = ArgMax;
 //# sourceMappingURL=argmax.js.map
 
 /***/ }),
-/* 375 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17186,7 +19642,7 @@ exports.ArgMaxEquals = ArgMaxEquals;
 //# sourceMappingURL=argmaxequals.js.map
 
 /***/ }),
-/* 376 */
+/* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17233,7 +19689,7 @@ exports.Concat3D = Concat3D;
 //# sourceMappingURL=concat3d.js.map
 
 /***/ }),
-/* 377 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17249,8 +19705,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var conv_util = __webpack_require__(50);
-var util = __webpack_require__(3);
+var conv_util = __webpack_require__(51);
+var util = __webpack_require__(4);
 var op_1 = __webpack_require__(12);
 var Convolution2D = (function (_super) {
     __extends(Convolution2D, _super);
@@ -17307,7 +19763,7 @@ exports.Convolution2D = Convolution2D;
 //# sourceMappingURL=convolution.js.map
 
 /***/ }),
-/* 378 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17323,7 +19779,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var Divide = (function (_super) {
@@ -17407,7 +19863,7 @@ exports.Divide = Divide;
 //# sourceMappingURL=divide.js.map
 
 /***/ }),
-/* 379 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17423,7 +19879,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var activation_functions_1 = __webpack_require__(398);
+var activation_functions_1 = __webpack_require__(404);
 var op_1 = __webpack_require__(12);
 var ElementWiseActivation = (function (_super) {
     __extends(ElementWiseActivation, _super);
@@ -17452,6 +19908,9 @@ var ElementWiseActivation = (function (_super) {
             dydx.dispose();
         });
     };
+    ElementWiseActivation.prototype.dispose = function () {
+        this.func.dispose();
+    };
     return ElementWiseActivation;
 }(op_1.Operation));
 exports.ElementWiseActivation = ElementWiseActivation;
@@ -17463,6 +19922,14 @@ var ReLU = (function (_super) {
     return ReLU;
 }(ElementWiseActivation));
 exports.ReLU = ReLU;
+var LeakyReLU = (function (_super) {
+    __extends(LeakyReLU, _super);
+    function LeakyReLU(xTensor, yTensor, alpha) {
+        return _super.call(this, xTensor, yTensor, new activation_functions_1.LeakyReluFunc(alpha)) || this;
+    }
+    return LeakyReLU;
+}(ElementWiseActivation));
+exports.LeakyReLU = LeakyReLU;
 var TanH = (function (_super) {
     __extends(TanH, _super);
     function TanH(xTensor, yTensor) {
@@ -17490,7 +19957,7 @@ exports.Square = Square;
 //# sourceMappingURL=element_wise_activation.js.map
 
 /***/ }),
-/* 380 */
+/* 386 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17506,9 +19973,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var cost_functions_1 = __webpack_require__(399);
+var cost_functions_1 = __webpack_require__(405);
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var ElementWiseCost = (function (_super) {
@@ -17564,7 +20031,7 @@ exports.MeanSquaredCost = MeanSquaredCost;
 //# sourceMappingURL=element_wise_cost.js.map
 
 /***/ }),
-/* 381 */
+/* 387 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17613,7 +20080,7 @@ exports.Exp = Exp;
 //# sourceMappingURL=exp.js.map
 
 /***/ }),
-/* 382 */
+/* 388 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17682,7 +20149,7 @@ exports.LinearCombination = LinearCombination;
 //# sourceMappingURL=linear_combination.js.map
 
 /***/ }),
-/* 383 */
+/* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17731,7 +20198,7 @@ exports.Log = Log;
 //# sourceMappingURL=log.js.map
 
 /***/ }),
-/* 384 */
+/* 390 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17747,7 +20214,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var math_1 = __webpack_require__(66);
+var math_1 = __webpack_require__(57);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var MatMul = (function (_super) {
@@ -17805,7 +20272,7 @@ exports.MatMul = MatMul;
 //# sourceMappingURL=matmul.js.map
 
 /***/ }),
-/* 385 */
+/* 391 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17821,8 +20288,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var conv_util = __webpack_require__(50);
-var util = __webpack_require__(3);
+var conv_util = __webpack_require__(51);
+var util = __webpack_require__(4);
 var op_1 = __webpack_require__(12);
 var MaxPool = (function (_super) {
     __extends(MaxPool, _super);
@@ -17864,7 +20331,7 @@ exports.MaxPool = MaxPool;
 //# sourceMappingURL=max_pool.js.map
 
 /***/ }),
-/* 386 */
+/* 392 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17880,7 +20347,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var Multiply = (function (_super) {
@@ -17952,7 +20419,7 @@ exports.Multiply = Multiply;
 //# sourceMappingURL=multiply.js.map
 
 /***/ }),
-/* 387 */
+/* 393 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17969,7 +20436,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var ReduceSum = (function (_super) {
@@ -18009,7 +20476,7 @@ exports.ReduceSum = ReduceSum;
 //# sourceMappingURL=reduce_sum.js.map
 
 /***/ }),
-/* 388 */
+/* 394 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18025,7 +20492,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var op_1 = __webpack_require__(12);
 var Reshape = (function (_super) {
     __extends(Reshape, _super);
@@ -18041,15 +20508,17 @@ var Reshape = (function (_super) {
     Reshape.prototype.feedForward = function (math, inferenceArrays) {
         var _this = this;
         var x = inferenceArrays.get(this.xTensor);
+        var clone = math.clone(x);
         math.scope(function (keep) {
-            inferenceArrays.set(_this.yTensor, keep(x.reshape(_this.yTensor.shape)));
+            inferenceArrays.set(_this.yTensor, keep(clone.reshape(_this.yTensor.shape)));
         });
     };
     Reshape.prototype.backProp = function (math, inferenceArrays, gradientArrays) {
         var _this = this;
         var dy = gradientArrays.get(this.yTensor);
+        var clone = math.clone(dy);
         math.scope(function () {
-            gradientArrays.add(_this.xTensor, dy.reshape(_this.xTensor.shape));
+            gradientArrays.add(_this.xTensor, clone.reshape(_this.xTensor.shape));
         });
     };
     return Reshape;
@@ -18058,7 +20527,7 @@ exports.Reshape = Reshape;
 //# sourceMappingURL=reshape.js.map
 
 /***/ }),
-/* 389 */
+/* 395 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18075,8 +20544,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
-var graph_1 = __webpack_require__(63);
+var util = __webpack_require__(4);
+var graph_1 = __webpack_require__(64);
 var op_1 = __webpack_require__(12);
 var Softmax = (function (_super) {
     __extends(Softmax, _super);
@@ -18151,7 +20620,7 @@ exports.crossEntropyCost = crossEntropyCost;
 //# sourceMappingURL=softmax.js.map
 
 /***/ }),
-/* 390 */
+/* 396 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18168,7 +20637,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
-var util = __webpack_require__(3);
+var util = __webpack_require__(4);
 var graph_util = __webpack_require__(21);
 var op_1 = __webpack_require__(12);
 var Subtract = (function (_super) {
@@ -18244,7 +20713,7 @@ exports.Subtract = Subtract;
 //# sourceMappingURL=subtract.js.map
 
 /***/ }),
-/* 391 */
+/* 397 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18262,7 +20731,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var AdadeltaOptimizer = (function (_super) {
     __extends(AdadeltaOptimizer, _super);
     function AdadeltaOptimizer(learningRate, gamma, specifiedVariableList) {
@@ -18324,7 +20793,7 @@ exports.AdadeltaOptimizer = AdadeltaOptimizer;
 //# sourceMappingURL=adadelta_optimizer.js.map
 
 /***/ }),
-/* 392 */
+/* 398 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18342,7 +20811,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var AdagradOptimizer = (function (_super) {
     __extends(AdagradOptimizer, _super);
     function AdagradOptimizer(learningRate, specifiedVariableList) {
@@ -18392,7 +20861,7 @@ exports.AdagradOptimizer = AdagradOptimizer;
 //# sourceMappingURL=adagrad_optimizer.js.map
 
 /***/ }),
-/* 393 */
+/* 399 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18410,7 +20879,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var AdamOptimizer = (function (_super) {
     __extends(AdamOptimizer, _super);
     function AdamOptimizer(learningRate, beta1, beta2, specifiedVariableList) {
@@ -18464,8 +20933,12 @@ var AdamOptimizer = (function (_super) {
                 oldFirstMoment.dispose();
                 oldSecondMoment.dispose();
             });
+            var oldAccB1 = _this.accB1;
+            var oldAccB2 = _this.accB2;
             _this.accB1 = keep(math.multiply(_this.accB1, _this.b1));
             _this.accB2 = keep(math.multiply(_this.accB2, _this.b2));
+            oldAccB1.dispose();
+            oldAccB2.dispose();
         });
         this.variableGradients.dispose();
         this.variableGradients = new tensor_array_map_1.TensorArrayMap();
@@ -18486,7 +20959,7 @@ exports.AdamOptimizer = AdamOptimizer;
 //# sourceMappingURL=adam_optimizer.js.map
 
 /***/ }),
-/* 394 */
+/* 400 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18504,7 +20977,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var AdamaxOptimizer = (function (_super) {
     __extends(AdamaxOptimizer, _super);
     function AdamaxOptimizer(learningRate, beta1, beta2, specifiedVariableList) {
@@ -18514,8 +20987,10 @@ var AdamaxOptimizer = (function (_super) {
         _this.beta2 = beta2;
         _this.firstMoment = new tensor_array_map_1.TensorArrayMap();
         _this.weightedInfNorm = new tensor_array_map_1.TensorArrayMap();
+        _this.eps = ndarray_1.Scalar.new(1e-8);
         _this.b1 = ndarray_1.Scalar.new(_this.beta1);
         _this.b2 = ndarray_1.Scalar.new(_this.beta2);
+        _this.accB1 = ndarray_1.Scalar.new(_this.beta1);
         return _this;
     }
     AdamaxOptimizer.prototype.beforeBatch = function (math, batchSize, runtime, activationArrayMap, gradientArrayMap) {
@@ -18544,7 +21019,7 @@ var AdamaxOptimizer = (function (_super) {
                 var ut0 = math.multiply(_this.b2, oldWeightedInfNorm);
                 var ut1 = math.abs(gradient);
                 var newWeightedInfNorm = math.add(math.relu(math.subtract(ut0, ut1)), ut1);
-                var variable = math.scaledArrayAdd(_this.one, oldVariable, math.divide(_this.c, math.subtract(_this.one, _this.b1)), math.divide(newFirstMoment, newWeightedInfNorm));
+                var variable = math.scaledArrayAdd(_this.one, oldVariable, math.divide(_this.c, math.subtract(_this.one, _this.accB1)), math.divide(newFirstMoment, math.add(_this.eps, newWeightedInfNorm)));
                 activationArrayMap.set(node.output, keep(variable));
                 node.data = variable;
                 _this.firstMoment.set(node.output, keep(newFirstMoment));
@@ -18554,6 +21029,9 @@ var AdamaxOptimizer = (function (_super) {
                 oldFirstMoment.dispose();
                 oldWeightedInfNorm.dispose();
             });
+            var oldAccB1 = _this.accB1;
+            _this.accB1 = keep(math.multiply(_this.accB1, _this.b1));
+            oldAccB1.dispose();
         });
         this.variableGradients.dispose();
         this.variableGradients = new tensor_array_map_1.TensorArrayMap();
@@ -18563,6 +21041,7 @@ var AdamaxOptimizer = (function (_super) {
         this.firstMoment.dispose();
         this.weightedInfNorm.dispose();
         this.eps.dispose();
+        this.accB1.dispose();
         this.b1.dispose();
         this.b2.dispose();
     };
@@ -18572,7 +21051,7 @@ exports.AdamaxOptimizer = AdamaxOptimizer;
 //# sourceMappingURL=adamax_optimizer.js.map
 
 /***/ }),
-/* 395 */
+/* 401 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18590,7 +21069,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var sgd_optimizer_1 = __webpack_require__(147);
+var sgd_optimizer_1 = __webpack_require__(148);
 var MomentumOptimizer = (function (_super) {
     __extends(MomentumOptimizer, _super);
     function MomentumOptimizer(learningRate, momentum, specifiedVariableList) {
@@ -18643,7 +21122,7 @@ exports.MomentumOptimizer = MomentumOptimizer;
 //# sourceMappingURL=momentum_optimizer.js.map
 
 /***/ }),
-/* 396 */
+/* 402 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18661,7 +21140,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(6);
 var tensor_array_map_1 = __webpack_require__(35);
-var optimizer_1 = __webpack_require__(49);
+var optimizer_1 = __webpack_require__(50);
 var RMSPropOptimizer = (function (_super) {
     __extends(RMSPropOptimizer, _super);
     function RMSPropOptimizer(learningRate, gamma, specifiedVariableList) {
@@ -18714,13 +21193,13 @@ exports.RMSPropOptimizer = RMSPropOptimizer;
 //# sourceMappingURL=rmsprop_optimizer.js.map
 
 /***/ }),
-/* 397 */
+/* 403 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var session_1 = __webpack_require__(149);
+var session_1 = __webpack_require__(150);
 var ndarray_1 = __webpack_require__(6);
 var DEFAULT_EVAL_INTERVAL_MS = 1500;
 var DEFAULT_COST_INTERVAL_MS = 500;
@@ -18873,10 +21352,8 @@ var GraphRunner = (function () {
                 var ndarrayFeedEntries = [];
                 for (var j = 0; j < _this.inferenceFeedEntries.length; j++) {
                     var feedEntry = _this.inferenceFeedEntries[j];
-                    ndarrayFeedEntries.push({
-                        tensor: feedEntry.tensor,
-                        data: track(feedEntry.data.getNextCopy(_this.math))
-                    });
+                    var nextCopy = feedEntry.data.getNextCopy(_this.math);
+                    ndarrayFeedEntries.push({ tensor: feedEntry.tensor, data: track(nextCopy) });
                 }
                 feeds.push(ndarrayFeedEntries);
                 inferenceValues.push(_this.session.eval(_this.inferenceTensor, ndarrayFeedEntries));
@@ -18942,7 +21419,7 @@ exports.GraphRunner = GraphRunner;
 //# sourceMappingURL=graph_runner.js.map
 
 /***/ }),
-/* 398 */
+/* 404 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18963,6 +21440,7 @@ var TanHFunc = (function () {
             return math.scalarMinusArray(ndarray_1.Scalar.ONE, ySquared);
         });
     };
+    TanHFunc.prototype.dispose = function () { };
     return TanHFunc;
 }());
 exports.TanHFunc = TanHFunc;
@@ -18979,9 +21457,24 @@ var ReLUFunc = (function () {
             return math.step(x);
         });
     };
+    ReLUFunc.prototype.dispose = function () { };
     return ReLUFunc;
 }());
 exports.ReLUFunc = ReLUFunc;
+var LeakyReluFunc = (function () {
+    function LeakyReluFunc(alpha) {
+        this.alpha = alpha;
+    }
+    LeakyReluFunc.prototype.output = function (math, x) {
+        return math.leakyRelu(x, this.alpha);
+    };
+    LeakyReluFunc.prototype.der = function (math, x, y) {
+        return math.step(x, this.alpha);
+    };
+    LeakyReluFunc.prototype.dispose = function () { };
+    return LeakyReluFunc;
+}());
+exports.LeakyReluFunc = LeakyReluFunc;
 var SigmoidFunc = (function () {
     function SigmoidFunc() {
     }
@@ -18996,6 +21489,7 @@ var SigmoidFunc = (function () {
             return math.subStrict(y, ySquared);
         });
     };
+    SigmoidFunc.prototype.dispose = function () { };
     return SigmoidFunc;
 }());
 exports.SigmoidFunc = SigmoidFunc;
@@ -19012,13 +21506,14 @@ var SquareFunc = (function () {
             return math.scalarTimesArray(ndarray_1.Scalar.TWO, x);
         });
     };
+    SquareFunc.prototype.dispose = function () { };
     return SquareFunc;
 }());
 exports.SquareFunc = SquareFunc;
 //# sourceMappingURL=activation_functions.js.map
 
 /***/ }),
-/* 399 */
+/* 405 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19049,13 +21544,38 @@ exports.SquareCostFunc = SquareCostFunc;
 //# sourceMappingURL=cost_functions.js.map
 
 /***/ }),
-/* 400 */
+/* 406 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
+exports.PARALLELIZE_THRESHOLD = 30;
+function computeOptimalWindowSize(inSize) {
+    if (inSize <= exports.PARALLELIZE_THRESHOLD) {
+        return inSize;
+    }
+    return nearestDivisor(inSize, Math.floor(Math.sqrt(inSize)));
+}
+exports.computeOptimalWindowSize = computeOptimalWindowSize;
+function nearestDivisor(size, start) {
+    for (var i = start; i < size; ++i) {
+        if (size % i === 0) {
+            return i;
+        }
+    }
+    return size;
+}
+//# sourceMappingURL=reduce_util.js.map
+
+/***/ }),
+/* 407 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var util = __webpack_require__(4);
 function assertParamsValid(input, begin, size) {
     util.assert(input.rank === begin.length, "Error in slice" + input.rank + "D: Length of begin " + begin + " must " +
         ("match the rank of the array (" + input.rank + ")."));
@@ -19070,7 +21590,7 @@ exports.assertParamsValid = assertParamsValid;
 //# sourceMappingURL=slice_util.js.map
 
 /***/ }),
-/* 401 */
+/* 408 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19080,7 +21600,6 @@ var broadcast_util = __webpack_require__(56);
 var AddScaledMatProgram = (function () {
     function AddScaledMatProgram(aShape, bShape) {
         this.variableNames = ['A', 'B', 'c1', 'c2'];
-        this.params = [];
         this.supportsBroadcasting = true;
         this.outputShape =
             broadcast_util.assertAndGetBroadcastShape(aShape, bShape);
@@ -19092,29 +21611,28 @@ exports.AddScaledMatProgram = AddScaledMatProgram;
 //# sourceMappingURL=addscaledmat_gpu.js.map
 
 /***/ }),
-/* 402 */
+/* 409 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
-function getArgMinMaxSnippet(op, texName, size) {
-    var compOp = (op === 'min') ? '<' : '>';
-    return "\n    float getArgMinMax" + texName + "() {\n      int bestIndex = 0;\n      float bestValue = get" + texName + "Flat(0);\n\n      for (int i = 0; i < " + size + "; i++) {\n        float candidate = get" + texName + "Flat(i);\n        if (isNaN(candidate)) {\n          return candidate;\n        }\n        if (candidate " + compOp + " bestValue) {\n          bestValue = candidate;\n          bestIndex = i;\n        }\n      }\n      return float(bestIndex);\n    }\n  ";
-}
-exports.getArgMinMaxSnippet = getArgMinMaxSnippet;
 var ArgMinMaxProgram = (function () {
-    function ArgMinMaxProgram(shape, axes, opType) {
+    function ArgMinMaxProgram(reduceInfo, op, firstPass) {
         this.variableNames = ['A'];
-        this.params = [opType];
-        var _a = axis_util.computeOutAndReduceShapes(shape, axes), outShape = _a[0], reduceShape = _a[1];
-        this.outputShape = outShape;
-        this.numBatchDims = outShape.length;
-        var size = util.sizeFromShape(reduceShape);
-        var aSnippet = getArgMinMaxSnippet(opType, 'A', size);
-        this.userCode = "\n      " + aSnippet + "\n\n      void main() {\n        setOutput(getArgMinMaxA());\n      }\n    ";
+        var windowSize = reduceInfo.windowSize;
+        var batchSize = reduceInfo.batchSize;
+        var inSize = reduceInfo.inSize;
+        var outSize = Math.ceil(inSize / windowSize);
+        if (!firstPass) {
+            this.variableNames.push('bestIndicesA');
+        }
+        this.outputShape = [batchSize, outSize];
+        var compOp = (op === 'max') ? '>' : '<';
+        var indexSnippet = firstPass ?
+            'inOffset + i;' :
+            'round(getBestIndicesA(batch, inOffset + i));';
+        this.userCode = "\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int batch = coords[0];\n        int outIdx = coords[1];\n        int inOffset = outIdx * " + windowSize + ";\n\n        int bestIndex = 0;\n        float bestValue = getA(batch, inOffset);\n\n        for (int i = 0; i < " + windowSize + "; i++) {\n          int inIdx = " + indexSnippet + ";\n          float candidate = getA(batch, inIdx);\n          if (isNaN(candidate)) {\n            setOutput(candidate);\n            return;\n          }\n          if (candidate " + compOp + " bestValue) {\n            bestValue = candidate;\n            bestIndex = inIdx;\n          }\n        }\n        setOutput(float(bestIndex));\n      }\n    ";
     }
     return ArgMinMaxProgram;
 }());
@@ -19122,7 +21640,7 @@ exports.ArgMinMaxProgram = ArgMinMaxProgram;
 //# sourceMappingURL=argminmax_gpu.js.map
 
 /***/ }),
-/* 403 */
+/* 410 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19131,7 +21649,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var broadcast_util = __webpack_require__(56);
 var BatchNormProgram = (function () {
     function BatchNormProgram(xShape, meanShape, varianceShape, offsetShape, scaleShape, varianceEpsilon) {
-        this.params = [];
         this.outputShape = [];
         this.supportsBroadcasting = true;
         this.variableNames = ['x', 'mean', 'variance'];
@@ -19149,7 +21666,6 @@ var BatchNormProgram = (function () {
             this.variableNames.push('scale');
             scaleSnippet = 'getScaleAtOutCoords()';
         }
-        this.params = [varianceEpsilon];
         this.outputShape = xShape;
         this.userCode = "\n      void main() {\n        float x = getXAtOutCoords();\n        float mean = getMeanAtOutCoords();\n        float variance = getVarianceAtOutCoords();\n        float offset = " + offsetSnippet + ";\n        float scale = " + scaleSnippet + ";\n        float inv = scale / sqrt(variance + float(" + varianceEpsilon + "));\n        setOutput((x - mean) * inv + offset);\n      }\n    ";
     }
@@ -19159,7 +21675,7 @@ exports.BatchNormProgram = BatchNormProgram;
 //# sourceMappingURL=batchnorm_gpu.js.map
 
 /***/ }),
-/* 404 */
+/* 411 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19171,7 +21687,6 @@ var ClipProgram = (function () {
         this.outputShape = aShape;
         var minFixed = min.toFixed(20);
         var maxFixed = max.toFixed(20);
-        this.params = [minFixed, maxFixed];
         this.userCode = "\n      void main() {\n        float value = getAAtOutCoords();\n        if (isNaN(value)) {\n          setOutput(value);\n          return;\n        }\n\n        setOutput(clamp(value, " + minFixed + ", " + maxFixed + "));\n      }\n    ";
     }
     return ClipProgram;
@@ -19180,23 +21695,22 @@ exports.ClipProgram = ClipProgram;
 //# sourceMappingURL=clip_gpu.js.map
 
 /***/ }),
-/* 405 */
+/* 412 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var concat_util = __webpack_require__(65);
+var shader_compiler_1 = __webpack_require__(66);
 var ConcatProgram = (function () {
     function ConcatProgram(aShape, bShape, axis) {
         this.variableNames = ['A', 'B'];
-        this.params = [];
         this.outputShape = [];
         var yAxes = ['yR', 'yC', 'yD', 'yW'];
         var concatAxis = yAxes[axis];
-        this.params = [axis];
         this.outputShape = concat_util.computeOutShape(aShape, bShape, axis);
-        var dType = getDataType(aShape.length);
+        var dType = shader_compiler_1.getCoordsDataType(aShape.length);
         var unpackSnippet = getUnpack(aShape.length);
         var sampleCoords = getSampleCoords(aShape.length);
         this.userCode = "\n      void main() {\n        " + dType + " coords = getOutputCoords();\n        " + unpackSnippet + "\n\n        float value = 0.0;\n        if (" + concatAxis + " < " + aShape[axis] + ") {\n          value = getA(" + sampleCoords + ");\n        } else {\n          " + concatAxis + " -= " + aShape[axis] + ";\n          value = getB(" + sampleCoords + ");\n        }\n\n        setOutput(value);\n      }\n    ";
@@ -19237,33 +21751,16 @@ function getUnpack(rank) {
     }
     return res;
 }
-function getDataType(rank) {
-    if (rank === 1) {
-        return 'int';
-    }
-    else if (rank === 2) {
-        return 'ivec2';
-    }
-    else if (rank === 3) {
-        return 'ivec3';
-    }
-    else if (rank === 4) {
-        return 'ivec4';
-    }
-    else {
-        throw Error("Concat for rank " + rank + " is not yet supported");
-    }
-}
 //# sourceMappingURL=concat_gpu.js.map
 
 /***/ }),
-/* 406 */
+/* 413 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var conv_util = __webpack_require__(50);
+var conv_util = __webpack_require__(51);
 var Conv2DDerWeightsProgram = (function () {
     function Conv2DDerWeightsProgram(convInfo) {
         this.variableNames = ['x', 'dy'];
@@ -19274,7 +21771,6 @@ var Conv2DDerWeightsProgram = (function () {
         this.outputShape = conv_util.computeWeightsShape4D(inDepth, outDepth, convInfo.filterHeight, convInfo.filterWidth);
         var padTop = convInfo.padInfo.top;
         var padLeft = convInfo.padInfo.left;
-        this.params = [strideHeight, strideWidth, padLeft, padTop];
         this.userCode = "\n      void main() {\n        ivec4 coords = getOutputCoords();\n        int wR = coords.x;\n        int wC = coords.y;\n        int d1 = coords.z;\n        int d2 = coords.w;\n\n        // Convolve x(?, ?, d1) with dy(:, :, d2) to get dw(wR, wC, d1, d2).\n        // ? = to be determined. : = across all values in that axis.\n        float dotProd = 0.0;\n        for (int yR = 0; yR < " + yNumRows + "; yR++) {\n          int xR = wR + yR * " + strideHeight + " - " + padTop + ";\n\n          if (xR < 0 || xR >= " + xNumRows + ") {\n            continue;\n          }\n\n          for (int yC = 0; yC < " + yNumCols + "; yC++) {\n            int xC = wC + yC * " + strideWidth + " - " + padLeft + ";\n\n            if (xC < 0 || xC >= " + xNumCols + ") {\n              continue;\n            }\n\n            float dyValue = getDy(yR, yC, d2);\n            float xValue = getX(xR, xC, d1);\n            dotProd += (xValue * dyValue);\n          }\n        }\n        setOutput(dotProd);\n      }\n    ";
     }
     return Conv2DDerWeightsProgram;
@@ -19291,7 +21787,6 @@ var Conv2DDerInputProgram = (function () {
         var strideWidth = convInfo.strideWidth;
         var padTop = filterHeight - 1 - convInfo.padInfo.top;
         var padLeft = filterWidth - 1 - convInfo.padInfo.left;
-        this.params = [strideHeight, strideWidth, padLeft, padTop];
         this.userCode = "\n      const ivec2 pads = ivec2(" + padTop + ", " + padLeft + ");\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n        int d1 = coords.z;\n\n        ivec2 dyCorner = coords.xy - pads;\n        int dyRCorner = dyCorner.x;\n        int dyCCorner = dyCorner.y;\n\n        // Convolve dy(?, ?, d2) with w(:, :, d1, d2) to compute dx(xR, xC, d1).\n        // ? = to be determined. : = across all values in that axis.\n        float dotProd = 0.0;\n        for (int wR = 0; wR < " + filterHeight + "; wR++) {\n          float dyR = float(dyRCorner + wR) / " + strideHeight + ".0;\n\n          if (dyR < 0.0 || dyR >= " + yRows + ".0 || fract(dyR) > 0.0) {\n            continue;\n          }\n          int idyR = int(dyR);\n\n          int wRPerm = " + filterHeight + " - 1 - wR;\n\n          for (int wC = 0; wC < " + filterWidth + "; wC++) {\n            float dyC = float(dyCCorner + wC) / " + strideWidth + ".0;\n\n            if (dyC < 0.0 || dyC >= " + yCols + ".0 || fract(dyC) > 0.0) {\n              continue;\n            }\n            int idyC = int(dyC);\n\n            int wCPerm = " + filterWidth + " - 1 - wC;\n\n            for (int d2 = 0; d2 < " + outDepth + "; d2++) {\n              float xValue = getDy(idyR, idyC, d2);\n              float wValue = getW(wRPerm, wCPerm, d1, d2);\n              dotProd += xValue * wValue;\n            }\n          }\n        }\n        setOutput(dotProd);\n      }\n    ";
     }
     return Conv2DDerInputProgram;
@@ -19300,7 +21795,6 @@ exports.Conv2DDerInputProgram = Conv2DDerInputProgram;
 var Conv2DDerBiasProgram = (function () {
     function Conv2DDerBiasProgram(yShape) {
         this.variableNames = ['dy'];
-        this.params = [];
         var yNumRows = yShape[0], yNumCols = yShape[1], outputDepth = yShape[2];
         this.outputShape = [outputDepth];
         this.userCode = "\n      void main() {\n        int d2 = getOutputCoords();\n\n        float derBias = 0.0;\n        for (int yR = 0; yR < " + yNumRows + "; yR++) {\n          for (int yC = 0; yC < " + yNumCols + "; yC++) {\n            derBias += getDy(yR, yC, d2);\n          }\n        }\n        setOutput(derBias);\n      }\n    ";
@@ -19311,7 +21805,7 @@ exports.Conv2DDerBiasProgram = Conv2DDerBiasProgram;
 //# sourceMappingURL=conv_backprop_gpu.js.map
 
 /***/ }),
-/* 407 */
+/* 414 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19332,7 +21826,6 @@ var Conv2DProgram = (function () {
         var strideWidth = convInfo.strideWidth;
         var filterHeight = convInfo.filterHeight;
         var filterWidth = convInfo.filterWidth;
-        this.params = [strideHeight, strideWidth, hasBias, padLeft, padTop];
         var inputDepthNearestVec4 = Math.floor(inputDepth / 4) * 4;
         var inputDepthVec4Remainder = inputDepth % 4;
         this.userCode = "\n      const ivec2 strides = ivec2(" + strideHeight + ", " + strideWidth + ");\n      const ivec2 pads = ivec2(" + padTop + ", " + padLeft + ");\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n        int d2 = coords.z;\n\n        ivec2 xRCCorner = coords.xy * strides - pads;\n        int xRCorner = xRCCorner.x;\n        int xCCorner = xRCCorner.y;\n\n        // Convolve x(?, ?, d1) with w(:, :, d1, d2) to get y(yR, yC, d2).\n        // ? = to be determined. : = across all values in that axis.\n        float dotProd = 0.0;\n        for (int wR = 0; wR < " + filterHeight + "; wR++) {\n          int xR = xRCorner + wR;\n\n          if (xR < 0 || xR >= " + xNumRows + ") {\n            continue;\n          }\n\n          for (int wC = 0; wC < " + filterWidth + "; wC++) {\n            int xC = xCCorner + wC;\n\n            if (xC < 0 || xC >= " + xNumCols + ") {\n              continue;\n            }\n\n            for (int d1 = 0; d1 < " + inputDepthNearestVec4 + "; d1 += 4) {\n              vec4 xValues = vec4(\n                getX(xR, xC, d1),\n                getX(xR, xC, d1 + 1),\n                getX(xR, xC, d1 + 2),\n                getX(xR, xC, d1 + 3)\n              );\n              vec4 wValues = vec4(\n                getW(wR, wC, d1, d2),\n                getW(wR, wC, d1 + 1, d2),\n                getW(wR, wC, d1 + 2, d2),\n                getW(wR, wC, d1 + 3, d2)\n              );\n\n              dotProd += dot(xValues, wValues);\n            }\n\n            if (" + (inputDepthVec4Remainder === 1) + ") {\n              dotProd +=\n                getX(xR, xC, " + inputDepthNearestVec4 + ") *\n                getW(wR, wC, " + inputDepthNearestVec4 + ", d2);\n            } else if (" + (inputDepthVec4Remainder === 2) + ") {\n              vec2 xValues = vec2(\n                getX(xR, xC, " + inputDepthNearestVec4 + "),\n                getX(xR, xC, " + inputDepthNearestVec4 + " + 1)\n              );\n              vec2 wValues = vec2(\n                getW(wR, wC, " + inputDepthNearestVec4 + ", d2),\n                getW(wR, wC, " + inputDepthNearestVec4 + " + 1, d2)\n              );\n              dotProd += dot(xValues, wValues);\n            } else if (" + (inputDepthVec4Remainder === 3) + ") {\n              vec3 xValues = vec3(\n                getX(xR, xC, " + inputDepthNearestVec4 + "),\n                getX(xR, xC, " + inputDepthNearestVec4 + " + 1),\n                getX(xR, xC, " + inputDepthNearestVec4 + " + 2)\n              );\n              vec3 wValues = vec3(\n                getW(wR, wC, " + inputDepthNearestVec4 + ", d2),\n                getW(wR, wC, " + inputDepthNearestVec4 + " + 1, d2),\n                getW(wR, wC, " + inputDepthNearestVec4 + " + 2, d2)\n              );\n              dotProd += dot(xValues, wValues);\n            }\n          }\n        }\n        " + biasSnippet + "\n        setOutput(dotProd);\n      }\n    ";
@@ -19343,7 +21836,34 @@ exports.Conv2DProgram = Conv2DProgram;
 //# sourceMappingURL=conv_gpu.js.map
 
 /***/ }),
-/* 408 */
+/* 415 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var DepthwiseConv2DProgram = (function () {
+    function DepthwiseConv2DProgram(convInfo) {
+        this.variableNames = ['x', 'W'];
+        this.outputShape = convInfo.outShape;
+        var xNumRows = convInfo.inShape[1];
+        var xNumCols = convInfo.inShape[2];
+        var padTop = convInfo.padInfo.top;
+        var padLeft = convInfo.padInfo.left;
+        var strideHeight = convInfo.strideHeight;
+        var strideWidth = convInfo.strideWidth;
+        var filterHeight = convInfo.filterHeight;
+        var filterWidth = convInfo.filterWidth;
+        var channelMul = convInfo.channelMul;
+        this.userCode = "\n      const ivec2 strides = ivec2(" + strideHeight + ", " + strideWidth + ");\n      const ivec2 pads = ivec2(" + padTop + ", " + padLeft + ");\n\n      void main() {\n        ivec4 coords = getOutputCoords();\n        int batch = coords.x;\n        ivec2 xRCCorner = coords.yz * strides - pads;\n        int d2 = coords.w;\n        int d1 = d2 / " + channelMul + ";\n        int q = d2 - d1 * " + channelMul + ";\n\n        int xRCorner = xRCCorner.x;\n        int xCCorner = xRCCorner.y;\n\n        // Convolve x(?, ?, d1) with w(:, :, d1, q) to get y(yR, yC, d2).\n        // ? = to be determined. : = across all values in that axis.\n        float dotProd = 0.0;\n        // TODO(dsmilkov): Flatten the two for loops and vec4 the operations.\n        for (int wR = 0; wR < " + filterHeight + "; wR++) {\n          int xR = xRCorner + wR;\n\n          if (xR < 0 || xR >= " + xNumRows + ") {\n            continue;\n          }\n\n          for (int wC = 0; wC < " + filterWidth + "; wC++) {\n            int xC = xCCorner + wC;\n\n            if (xC < 0 || xC >= " + xNumCols + ") {\n              continue;\n            }\n\n            float xVal = getX(batch, xR, xC, d1);\n            float wVal = getW(wR, wC, d1, q);\n            dotProd += xVal * wVal;\n          }\n        }\n        setOutput(dotProd);\n      }\n    ";
+    }
+    return DepthwiseConv2DProgram;
+}());
+exports.DepthwiseConv2DProgram = DepthwiseConv2DProgram;
+//# sourceMappingURL=conv_gpu_depthwise.js.map
+
+/***/ }),
+/* 416 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19353,7 +21873,6 @@ var Copy2DProgram = (function () {
     function Copy2DProgram(srcNumCols, destNumCols) {
         this.variableNames = ['source'];
         this.outputShape = null;
-        this.params = [srcNumCols, destNumCols];
         this.userCode = "\n      uniform ivec2 sourceStart;\n      uniform ivec2 destStart;\n\n      void main() {\n        ivec2 destCoords = getOutputCoords() - destStart;\n        int index = destCoords.x * " + destNumCols + " + destCoords.y;\n        int r = index / " + srcNumCols + ";\n        ivec2 sourceCoords = sourceStart + ivec2(r, index - r * " + srcNumCols + ");\n        setOutput(getSource(sourceCoords.x, sourceCoords.y));\n      }\n    ";
     }
     Copy2DProgram.prototype.getCustomSetupFunc = function (sourceStart, destStart, destSize) {
@@ -19371,15 +21890,15 @@ exports.Copy2DProgram = Copy2DProgram;
 //# sourceMappingURL=copy_gpu.js.map
 
 /***/ }),
-/* 409 */
+/* 417 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(32);
-var util = __webpack_require__(3);
-var shader_compiler = __webpack_require__(420);
+var util = __webpack_require__(4);
+var shader_compiler = __webpack_require__(66);
 var ATTRIBUTE_NAMES = ['uv', 'clipSpacePos'];
 var NAN_UNIFORM_NAME = 'NaN';
 function shouldUploadNaNUniform() {
@@ -19401,7 +21920,7 @@ function compileProgram(gpgpu, program, inputs, output) {
         texShape: output.getTextureShapeRC(),
         textureType: output.getData().textureType
     };
-    var source = shader_compiler.makeShader(inputInfos, outShapeInfo, userCode, program.supportsBroadcasting === true, program.numBatchDims);
+    var source = shader_compiler.makeShader(inputInfos, outShapeInfo, userCode, program.supportsBroadcasting === true);
     var webGLProgram = gpgpu.createProgram(source);
     var uniformLocations = {};
     for (var i = 0; i < program.variableNames.length; i++) {
@@ -19430,7 +21949,7 @@ function compileProgram(gpgpu, program, inputs, output) {
     };
 }
 exports.compileProgram = compileProgram;
-function validateBinaryAndProgram(shapeInfos, inputs, numBatchDims) {
+function validateBinaryAndProgram(shapeInfos, inputs) {
     if (shapeInfos.length !== inputs.length) {
         throw Error("Binary was compiled with " + shapeInfos.length + " inputs, but " +
             ("was executed with " + inputs.length + " inputs"));
@@ -19440,19 +21959,19 @@ function validateBinaryAndProgram(shapeInfos, inputs, numBatchDims) {
         var texShapeA = s.texShape;
         var shapeB = inputs[i].shape;
         var texShapeB = inputs[i].getTextureShapeRC();
-        if (!numBatchDims && !util.arraysEqual(shapeA, shapeB)) {
+        if (!util.arraysEqual(shapeA, shapeB)) {
             throw Error("Binary was compiled with different shapes than " +
                 ("the current args. Shapes " + shapeA + " and " + shapeB + " must match"));
         }
-        if (!numBatchDims && !util.arraysEqual(texShapeA, texShapeB)) {
+        if (!util.arraysEqual(texShapeA, texShapeB)) {
             throw Error("Binary was compiled with different texture shapes than the" +
                 (" current args. Shape " + texShapeA + " and " + texShapeB + " must match"));
         }
     });
 }
 function runProgram(binary, inputs, output, customSetup) {
-    validateBinaryAndProgram(binary.inShapeInfos, inputs, binary.program.numBatchDims);
-    validateBinaryAndProgram([binary.outShapeInfo], [output], binary.program.numBatchDims);
+    validateBinaryAndProgram(binary.inShapeInfos, inputs);
+    validateBinaryAndProgram([binary.outShapeInfo], [output]);
     var outTex = output.getTexture();
     var outTexShape = output.getTextureShapeRC();
     var gpgpu = binary.gpgpu;
@@ -19474,48 +21993,21 @@ function runProgram(binary, inputs, output, customSetup) {
 }
 exports.runProgram = runProgram;
 function makeShaderKey(program, inputs, output) {
-    var params = program.params;
-    var keyStart = inputs.concat(output).map(function (x) { return x.shape + "_" + x.getTextureShapeRC(); });
-    var keyEnd = params.map(String);
-    var key = [program.constructor.name];
-    key.push((program.supportsBroadcasting === true).toString());
-    key = key.concat(keyStart, keyEnd);
-    return key.join('_');
+    var keyInputs = '';
+    inputs.concat(output).forEach(function (x) {
+        keyInputs += x.shape + "_" + x.getTextureShapeRC();
+    });
+    var keyUserCode = program.userCode;
+    var keyBroadcast = (program.supportsBroadcasting === true).toString();
+    var key = program.constructor.name;
+    key += '_' + keyBroadcast + '_' + keyInputs + '_' + keyUserCode;
+    return key;
 }
 exports.makeShaderKey = makeShaderKey;
 //# sourceMappingURL=gpgpu_math.js.map
 
 /***/ }),
-/* 410 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
-var LogSumExpProgram = (function () {
-    function LogSumExpProgram(shape, axes) {
-        this.variableNames = ['A'];
-        this.params = [];
-        var _a = axis_util.computeOutAndReduceShapes(shape, axes), outShape = _a[0], reduceShape = _a[1];
-        this.outputShape = outShape;
-        this.numBatchDims = outShape.length;
-        var size = util.sizeFromShape(reduceShape);
-        var sizeNearestVec4 = Math.floor(size / 4) * 4;
-        var sizeVec4Remainder = size % 4;
-        var r1 = sizeNearestVec4;
-        var r2 = sizeNearestVec4 + 1;
-        var r3 = sizeNearestVec4 + 2;
-        this.userCode = "\n      const vec2 ones2 = vec2(1, 1);\n      const vec3 ones3 = vec3(1, 1, 1);\n      const vec4 ones4 = vec4(1, 1, 1, 1);\n\n      void main() {\n        vec4 maxVec = vec4(getAFlat(0));\n        for (int i = 0; i < " + sizeNearestVec4 + "; i += 4) {\n          vec4 aVec = vec4(getAFlat(i), getAFlat(i+1),\n                           getAFlat(i+2), getAFlat(i+3));\n          maxVec = max(maxVec, aVec);\n        }\n        if (" + (sizeVec4Remainder === 1) + ") {\n          maxVec = max(maxVec, vec4(maxVec.xyz, getAFlat(" + r1 + ")));\n        } else if (" + (sizeVec4Remainder === 2) + ") {\n          vec2 aVec = vec2(getAFlat(" + r1 + "), getAFlat(" + r2 + "));\n          maxVec = max(maxVec, vec4(maxVec.xy, aVec));\n        } else if (" + (sizeVec4Remainder === 3) + ") {\n          vec3 aVec = vec3(getAFlat(" + r1 + "), getAFlat(" + r2 + "), getAFlat(" + r3 + "));\n          maxVec = max(maxVec, vec4(maxVec.x, aVec));\n        }\n        float finalMax = max(maxVec.x, max(maxVec.y, max(maxVec.z, maxVec.w)));\n\n        float expSum = 0.0;\n        for (int i = 0; i < " + sizeNearestVec4 + "; i += 4) {\n          vec4 aVec = vec4(getAFlat(i), getAFlat(i+1),\n                           getAFlat(i+2), getAFlat(i+3));\n          expSum += dot(ones4, exp(aVec - finalMax));\n        }\n        if (" + (sizeVec4Remainder === 1) + ") {\n          expSum += exp(getAFlat(" + r1 + ") - finalMax);\n        } else if (" + (sizeVec4Remainder === 2) + ") {\n          vec2 aVec = vec2(getAFlat(" + r1 + "), getAFlat(" + r2 + "));\n          expSum += dot(ones2, exp(aVec - finalMax));\n        } else if (" + (sizeVec4Remainder === 3) + ") {\n          vec3 aVec = vec3(getAFlat(" + r1 + "), getAFlat(" + r2 + "), getAFlat(" + r3 + "));\n          expSum += dot(ones3, exp(aVec - finalMax));\n        }\n\n        setOutput(finalMax + log(expSum));\n      }\n    ";
-    }
-    return LogSumExpProgram;
-}());
-exports.LogSumExpProgram = LogSumExpProgram;
-//# sourceMappingURL=logsumexp_gpu.js.map
-
-/***/ }),
-/* 411 */
+/* 418 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19533,8 +22025,6 @@ var MaxPool2DBackpropProgram = (function () {
         var strideWidth = convInfo.strideWidth;
         var padTop = filterHeight - 1 - convInfo.padInfo.top;
         var padLeft = filterWidth - 1 - convInfo.padInfo.left;
-        this.params =
-            [filterHeight, filterWidth, strideHeight, strideWidth, padTop, padLeft];
         var lastIndex = filterHeight * filterWidth - 1;
         this.userCode = "\n      const ivec2 pads = ivec2(" + padTop + ", " + padLeft + ");\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n        int d = coords.z;\n\n        ivec2 dyRCCorner = coords.xy - pads;\n        int dyRCorner = dyRCCorner.x;\n        int dyCCorner = dyRCCorner.y;\n\n        // Convolve dy(?, ?, d) with pos mask(:, :, d) to get dx(xR, xC, d).\n        // ? = to be determined. : = across all values in that axis.\n        float dotProd = 0.0;\n        for (int wR = 0; wR < " + filterHeight + "; wR++) {\n          float dyR = float(dyRCorner + wR) / " + strideHeight + ".0;\n\n          if (dyR < 0.0 || dyR >= " + dyRows + ".0 || fract(dyR) > 0.0) {\n            continue;\n          }\n          int idyR = int(dyR);\n\n          for (int wC = 0; wC < " + filterWidth + "; wC++) {\n            float dyC = float(dyCCorner + wC) / " + strideWidth + ".0;\n\n            if (dyC < 0.0 || dyC >= " + dyCols + ".0 || fract(dyC) > 0.0) {\n              continue;\n            }\n            int idyC = int(dyC);\n\n            float dyValue = getDy(idyR, idyC, d);\n            int maxPosValue = " + lastIndex + " - int(getMaxPos(idyR, idyC, d));\n\n            // Get the current value, check it against the value from the\n            // position matrix.\n            int curPosValue = wR * " + filterWidth + " + wC;\n            float mask = float(maxPosValue == curPosValue ? 1.0 : 0.0);\n\n            dotProd += dyValue * mask;\n          }\n        }\n        setOutput(dotProd);\n      }\n    ";
     }
@@ -19544,48 +22034,18 @@ exports.MaxPool2DBackpropProgram = MaxPool2DBackpropProgram;
 //# sourceMappingURL=max_pool_backprop_gpu.js.map
 
 /***/ }),
-/* 412 */
+/* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
-var MinMaxProgram = (function () {
-    function MinMaxProgram(shape, axes, op) {
-        this.variableNames = ['A'];
-        var _a = axis_util.computeOutAndReduceShapes(shape, axes), outShape = _a[0], reduceShape = _a[1];
-        this.outputShape = outShape;
-        this.numBatchDims = outShape.length;
-        var size = util.sizeFromShape(reduceShape);
-        this.params = [op];
-        var sizeNearestVec4 = Math.floor(size / 4) * 4;
-        var sizeVec4Remainder = size % 4;
-        var r1 = sizeNearestVec4;
-        var r2 = sizeNearestVec4 + 1;
-        var r3 = sizeNearestVec4 + 2;
-        this.userCode = "\n      void main() {\n        vec4 bestVec = vec4(getAFlat(0));\n        for (int i = 0; i < " + sizeNearestVec4 + "; i += 4) {\n          vec4 aVec = vec4(getAFlat(i), getAFlat(i+1),\n                           getAFlat(i+2), getAFlat(i+3));\n          if (hasNaN(aVec)) {\n            setOutput(getNaN(aVec));\n            return;\n          }\n          bestVec = " + op + "(bestVec, aVec);\n        }\n        vec4 aVec;\n        if (" + (sizeVec4Remainder === 1) + ") {\n          aVec = vec4(bestVec.xyz, getAFlat(" + r1 + "));\n        } else if (" + (sizeVec4Remainder === 2) + ") {\n          aVec = vec4(bestVec.xy, vec2(getAFlat(" + r1 + "), getAFlat(" + r2 + ")));\n        } else if (" + (sizeVec4Remainder === 3) + ") {\n          aVec = vec4(bestVec.x,\n                      vec3(getAFlat(" + r1 + "), getAFlat(" + r2 + "), getAFlat(" + r3 + ")));\n        }\n        if (" + (sizeVec4Remainder > 0) + ") {\n          if (hasNaN(aVec)) {\n            setOutput(getNaN(aVec));\n            return;\n          }\n          bestVec = " + op + "(bestVec, aVec);\n        }\n\n        float final = " + op + "(bestVec.x, " + op + "(bestVec.y,\n                      " + op + "(bestVec.z, bestVec.w)));\n        setOutput(final);\n      }\n    ";
-    }
-    return MinMaxProgram;
-}());
-exports.MinMaxProgram = MinMaxProgram;
-//# sourceMappingURL=minmax_gpu.js.map
-
-/***/ }),
-/* 413 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var math_1 = __webpack_require__(66);
+var math_1 = __webpack_require__(57);
 var MatMulProgram = (function () {
     function MatMulProgram(aShape, bShape, aOrient, bOrient) {
         if (aOrient === void 0) { aOrient = math_1.MatrixOrientation.REGULAR; }
         if (bOrient === void 0) { bOrient = math_1.MatrixOrientation.REGULAR; }
         this.variableNames = ['matrixA', 'matrixB'];
-        this.params = [aOrient, bOrient];
         var outerShapeA = (aOrient === math_1.MatrixOrientation.REGULAR) ? aShape[0] : aShape[1];
         var outerShapeB = (bOrient === math_1.MatrixOrientation.REGULAR) ? bShape[1] : bShape[0];
         this.outputShape = [outerShapeA, outerShapeB];
@@ -19610,7 +22070,7 @@ exports.MatMulProgram = MatMulProgram;
 //# sourceMappingURL=mulmat_gpu.js.map
 
 /***/ }),
-/* 414 */
+/* 420 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19620,9 +22080,7 @@ var MultinomialProgram = (function () {
     function MultinomialProgram(batchSize, numOutcomes, numSamples) {
         this.variableNames = ['probs'];
         this.outputShape = [batchSize, numSamples];
-        this.numBatchDims = 1;
-        this.params = [];
-        this.userCode = "\n      uniform float seed;\n\n      void main() {\n        float r = random(seed);\n        float cdf = 0.0;\n\n        for (int i = 0; i < " + (numOutcomes - 1) + "; i++) {\n          cdf += getProbs(i);\n\n          if (r < cdf) {\n            setOutput(float(i));\n            return;\n          }\n        }\n\n        // If no other event happened, last event happened.\n        setOutput(float(" + (numOutcomes - 1) + "));\n      }\n    ";
+        this.userCode = "\n      uniform float seed;\n\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int batch = coords[0];\n\n        float r = random(seed);\n        float cdf = 0.0;\n\n        for (int i = 0; i < " + (numOutcomes - 1) + "; i++) {\n          cdf += getProbs(batch, i);\n\n          if (r < cdf) {\n            setOutput(float(i));\n            return;\n          }\n        }\n\n        // If no other event happened, last event happened.\n        setOutput(float(" + (numOutcomes - 1) + "));\n      }\n    ";
     }
     MultinomialProgram.prototype.getCustomSetupFunc = function (seed) {
         var _this = this;
@@ -19639,7 +22097,7 @@ exports.MultinomialProgram = MultinomialProgram;
 //# sourceMappingURL=multinomial_gpu.js.map
 
 /***/ }),
-/* 415 */
+/* 421 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19649,7 +22107,6 @@ var OneHotProgram = (function () {
     function OneHotProgram(numIndices, depth, onValue, offValue) {
         this.variableNames = ['indices'];
         this.outputShape = [numIndices, depth];
-        this.params = [onValue, offValue];
         this.userCode = "\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int index = round(getIndices(coords.x));\n        setOutput(mix(float(" + offValue + "), float(" + onValue + "),\n                      float(index == coords.y)));\n      }\n    ";
     }
     OneHotProgram.prototype.getCustomSetupFunc = function (seed) {
@@ -19667,7 +22124,7 @@ exports.OneHotProgram = OneHotProgram;
 //# sourceMappingURL=onehot_gpu.js.map
 
 /***/ }),
-/* 416 */
+/* 422 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19687,9 +22144,6 @@ var Pool2DProgram = (function () {
         var xNumCols = convInfo.inShape[1];
         var padTop = convInfo.padInfo.top;
         var padLeft = convInfo.padInfo.left;
-        this.params = [
-            strideHeight, strideWidth, padLeft, padTop, poolType, computePositions
-        ];
         this.outputShape = convInfo.outShape;
         var isAvgPool = poolType === 'avg';
         var initializationValue = '0.0';
@@ -19723,42 +22177,58 @@ exports.Pool2DProgram = Pool2DProgram;
 //# sourceMappingURL=pool_gpu.js.map
 
 /***/ }),
-/* 417 */
+/* 423 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var util = __webpack_require__(3);
-var axis_util = __webpack_require__(55);
-var ReduceSumProgram = (function () {
-    function ReduceSumProgram(shape, axes) {
-        this.variableNames = ['A'];
-        this.params = [];
-        var _a = axis_util.computeOutAndReduceShapes(shape, axes), outShape = _a[0], reduceShape = _a[1];
-        this.outputShape = outShape;
-        this.numBatchDims = outShape.length;
-        var size = util.sizeFromShape(reduceShape);
-        var sizeNearestVec4 = Math.floor(size / 4) * 4;
-        var sizeVec4Remainder = size % 4;
-        var r1 = sizeNearestVec4;
-        var r2 = sizeNearestVec4 + 1;
-        var r3 = sizeNearestVec4 + 2;
-        this.userCode = "\n      void main() {\n        const vec2 ones2 = vec2(1);\n        const vec3 ones3 = vec3(1);\n        const vec4 ones4 = vec4(1);\n\n        float sum = 0.0;\n        for (int i = 0; i < " + sizeNearestVec4 + "; i += 4) {\n          vec4 aVec = vec4(getAFlat(i), getAFlat(i+1),\n                           getAFlat(i+2), getAFlat(i+3));\n          sum += dot(ones4, aVec);\n        }\n\n        if (" + (sizeVec4Remainder === 1) + ") {\n          sum += getAFlat(" + r1 + ");\n        } else if (" + (sizeVec4Remainder === 2) + ") {\n          vec2 aVec = vec2(getAFlat(" + r1 + "), getAFlat(" + r2 + "));\n          sum += dot(ones2, aVec);\n        } else if (" + (sizeVec4Remainder === 3) + ") {\n          vec3 aVec = vec3(getAFlat(" + r1 + "), getAFlat(" + r2 + "), getAFlat(" + r3 + "));\n          sum += dot(ones3, aVec);\n        }\n\n        setOutput(sum);\n      }\n    ";
+var ReduceProgram = (function () {
+    function ReduceProgram(reduceInfo, reduceType) {
+        this.variableNames = ['x'];
+        var windowSize = reduceInfo.windowSize;
+        var batchSize = reduceInfo.batchSize;
+        var inSize = reduceInfo.inSize;
+        var outSize = Math.ceil(inSize / windowSize);
+        this.outputShape = [batchSize, outSize];
+        var isReduceSum = reduceType === 'sum';
+        var initializationValue = '0.0';
+        if (!isReduceSum) {
+            if (reduceType === 'min') {
+                initializationValue = '1.0 / 0.0';
+            }
+            else {
+                initializationValue = '-1.0 / 0.0';
+            }
+        }
+        var compareOp = reduceType === 'min' ? 'min' : 'max';
+        var returnValue = reduceType + "(" + reduceType + "(" + reduceType + "(" +
+            'minMaxValue[0], minMaxValue[1]), minMaxValue[2]), minMaxValue[3])';
+        if (reduceType === 'sum') {
+            returnValue = "sumValue";
+        }
+        var windowSizeNearestVec4 = Math.floor(windowSize / 4) * 4;
+        var windowSizeVec4Remainder = windowSize % 4;
+        var updateSnippet = "\n      if (" + isReduceSum + ") {\n        sumValue += dot(values, ones);\n      } else {\n        if (hasNaN(values)) {\n          setOutput(getNaN(values));\n          return;\n        }\n        minMaxValue = " + compareOp + "(values, minMaxValue);\n      }\n    ";
+        var checkOutOfBounds = '';
+        if (inSize % windowSize > 0) {
+            checkOutOfBounds = "\n        if (inIdx < 0 || inIdx >= " + inSize + ") {\n          return initializationValue;\n        }\n      ";
+        }
+        this.userCode = "\n      const float initializationValue = " + initializationValue + ";\n      const vec4 ones = vec4(1.0, 1.0, 1.0, 1.0);\n\n      float getValue(int batch, int inIdx) {\n        " + checkOutOfBounds + "\n        return getX(batch, inIdx);\n      }\n\n      void main() {\n        ivec2 coords = getOutputCoords();\n        int batch = coords[0];\n        int outIdx = coords[1];\n        int inOffset = outIdx * " + windowSize + ";\n\n        vec4 minMaxValue = vec4(" + initializationValue + ");\n        float sumValue = 0.0;\n\n        for (int i = 0; i < " + windowSizeNearestVec4 + "; i += 4) {\n          int inIdx = inOffset + i;\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1),\n            getValue(batch, inIdx + 2),\n            getValue(batch, inIdx + 3)\n          );\n\n          " + updateSnippet + "\n        }\n\n        int inIdx = inOffset + " + windowSizeNearestVec4 + ";\n        if (" + (windowSizeVec4Remainder === 1) + ") {\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            initializationValue,\n            initializationValue,\n            initializationValue\n          );\n          " + updateSnippet + "\n        } else if (" + (windowSizeVec4Remainder === 2) + ") {\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1),\n            initializationValue,\n            initializationValue\n          );\n          " + updateSnippet + "\n        } else if (" + (windowSizeVec4Remainder === 3) + ") {\n          vec4 values = vec4(\n            getValue(batch, inIdx),\n            getValue(batch, inIdx + 1),\n            getValue(batch, inIdx + 2),\n            initializationValue\n          );\n          " + updateSnippet + "\n        }\n        setOutput(" + returnValue + ");\n      }\n    ";
     }
-    return ReduceSumProgram;
+    return ReduceProgram;
 }());
-exports.ReduceSumProgram = ReduceSumProgram;
-//# sourceMappingURL=reducesum_gpu.js.map
+exports.ReduceProgram = ReduceProgram;
+//# sourceMappingURL=reduce_gpu.js.map
 
 /***/ }),
-/* 418 */
+/* 424 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var webgl_util = __webpack_require__(57);
+var webgl_util = __webpack_require__(58);
 function getRenderRGBShader(gpgpu, destinationWidth) {
     var fragmentShaderSource = "\n    precision highp float;\n    uniform sampler2D source;\n    varying vec2 resultUV;\n\n    const float destinationWidth = " + destinationWidth + ".0;\n    const float a = 1.0;\n\n    void main() {\n      float xr = floor(resultUV.s * destinationWidth) * 3.0;\n      vec3 x = xr + vec3(0, 1, 2);\n\n      float sourceWidth = destinationWidth * 3.0;\n      vec3 u = (x + 0.5) / sourceWidth;\n      float v = 1.0 - resultUV.t;\n\n      float r = texture2D(source, vec2(u[0], v)).r;\n      float g = texture2D(source, vec2(u[1], v)).r;\n      float b = texture2D(source, vec2(u[2], v)).r;\n\n      gl_FragColor = vec4(r, g, b, a);\n    }";
     return gpgpu.createProgram(fragmentShaderSource);
@@ -19779,7 +22249,7 @@ exports.renderToFramebuffer = renderToFramebuffer;
 //# sourceMappingURL=render_ndarray_gpu_util.js.map
 
 /***/ }),
-/* 419 */
+/* 425 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19788,21 +22258,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ResizeBilinear3DProgram = (function () {
     function ResizeBilinear3DProgram(inputShape, outputDimensionsRowCol, alignCorners) {
         this.variableNames = ['A'];
-        this.params = [];
         this.outputShape = [];
         var depth = inputShape[2];
         this.outputShape =
             [outputDimensionsRowCol[0], outputDimensionsRowCol[1], depth];
-        this.params = [alignCorners];
         var effectiveInputShape = alignCorners ?
             [inputShape[0] - 1, inputShape[1] - 1, depth] :
             inputShape;
         var effectiveOutputShape = alignCorners ?
             [this.outputShape[0] - 1, this.outputShape[1] - 1, depth] :
             this.outputShape;
-        this.userCode = "\n      const vec2 effectiveInputOverOutputRatioRC = vec2(\n          " + effectiveInputShape[0] /
-            effectiveOutputShape[0] + ",\n          " + effectiveInputShape[1] /
-            effectiveOutputShape[1] + ");\n      const vec2 inputShapeRC = vec2(" + inputShape[0] + ".0, " + inputShape[1] + ".0);\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n        ivec2 yRC = coords.xy;\n        int d = coords.z;\n\n        // Fractional source index.\n        vec2 sourceFracIndexRC = vec2(yRC) * effectiveInputOverOutputRatioRC;\n\n        // Compute the four integer indices.\n        ivec2 sourceFloorRC = ivec2(sourceFracIndexRC);\n        ivec2 sourceCeilRC = ivec2(\n          min(inputShapeRC - 1.0, ceil(sourceFracIndexRC)));\n\n        float topLeft = getA(sourceFloorRC.x, sourceFloorRC.y, d);\n        float bottomLeft = getA(sourceCeilRC.x, sourceFloorRC.y, d);\n        float topRight = getA(sourceFloorRC.x, sourceCeilRC.y, d);\n        float bottomRight = getA(sourceCeilRC.x, sourceCeilRC.y, d);\n\n        vec2 fracRC = sourceFracIndexRC - vec2(sourceFloorRC);\n\n        float top = topLeft + (topRight - topLeft) * fracRC.y;\n        float bottom = bottomLeft + (bottomRight - bottomLeft) * fracRC.y;\n        float newValue = top + (bottom - top) * fracRC.x;\n\n        setOutput(newValue);\n      }\n    ";
+        this.userCode = "\n      const vec2 effectiveInputOverOutputRatioRC = vec2(\n          " + effectiveInputShape[0] / effectiveOutputShape[0] + ",\n          " + effectiveInputShape[1] / effectiveOutputShape[1] + ");\n      const vec2 inputShapeRC = vec2(" + inputShape[0] + ".0, " + inputShape[1] + ".0);\n\n      void main() {\n        ivec3 coords = getOutputCoords();\n        ivec2 yRC = coords.xy;\n        int d = coords.z;\n\n        // Fractional source index.\n        vec2 sourceFracIndexRC = vec2(yRC) * effectiveInputOverOutputRatioRC;\n\n        // Compute the four integer indices.\n        ivec2 sourceFloorRC = ivec2(sourceFracIndexRC);\n        ivec2 sourceCeilRC = ivec2(\n          min(inputShapeRC - 1.0, ceil(sourceFracIndexRC)));\n\n        float topLeft = getA(sourceFloorRC.x, sourceFloorRC.y, d);\n        float bottomLeft = getA(sourceCeilRC.x, sourceFloorRC.y, d);\n        float topRight = getA(sourceFloorRC.x, sourceCeilRC.y, d);\n        float bottomRight = getA(sourceCeilRC.x, sourceCeilRC.y, d);\n\n        vec2 fracRC = sourceFracIndexRC - vec2(sourceFloorRC);\n\n        float top = topLeft + (topRight - topLeft) * fracRC.y;\n        float bottom = bottomLeft + (bottomRight - bottomLeft) * fracRC.y;\n        float newValue = top + (bottom - top) * fracRC.x;\n\n        setOutput(newValue);\n      }\n    ";
     }
     return ResizeBilinear3DProgram;
 }());
@@ -19810,337 +22276,19 @@ exports.ResizeBilinear3DProgram = ResizeBilinear3DProgram;
 //# sourceMappingURL=resize_bilinear_gpu.js.map
 
 /***/ }),
-/* 420 */
+/* 426 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var environment_1 = __webpack_require__(32);
-var util = __webpack_require__(3);
-var broadcast_util = __webpack_require__(56);
-var tex_util = __webpack_require__(67);
-var tex_util_1 = __webpack_require__(67);
-function updateBatchedShapeInfo(info, numBatchDims) {
-    info.logicalShape = info.logicalShape.slice(numBatchDims);
-}
-function makeShader(inputsInfo, outputShape, userCode, broadcast, numBatchDims) {
-    var batchSnippet = '';
-    if (numBatchDims) {
-        if (inputsInfo.length !== 1) {
-            throw new Error("Batching for 2 or more inputs is not yet supported. " +
-                ("Got " + inputsInfo.length + " inputs."));
-        }
-        updateBatchedShapeInfo(inputsInfo[0].shapeInfo, numBatchDims);
-        updateBatchedShapeInfo(outputShape, numBatchDims);
-        var inputSize = util.sizeFromShape(inputsInfo[0].shapeInfo.logicalShape);
-        var outputSize = util.sizeFromShape(outputShape.logicalShape);
-        batchSnippet = getBatchSnippet(inputSize, outputSize, outputShape.texShape);
-    }
-    var sampleSnippet = getSampleSnippet();
-    var setOutputSnippet = getSetOutputSnippet();
-    var inputPrefixSnippet = inputsInfo.map(function (x) { return "uniform sampler2D " + x.name + ";"; }).join('\n');
-    var inputSamplingSnippet = inputsInfo
-        .map(function (x) { return getInputSamplingSnippet(x, outputShape, broadcast, numBatchDims); })
-        .join('\n');
-    var outTexShape = outputShape.texShape;
-    var outputSamplingSnippet = getOutputSamplingSnippet(outputShape.logicalShape, outTexShape);
-    var source = [
-        SHADER_PREFIX, batchSnippet, sampleSnippet, setOutputSnippet,
-        inputPrefixSnippet, outputSamplingSnippet, inputSamplingSnippet, userCode
-    ].join('\n');
-    return source;
-}
-exports.makeShader = makeShader;
-function getSampleSnippet() {
-    return environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED') ?
-        FLOAT_TEXTURE_SAMPLE_SNIPPET :
-        UNSIGNED_BYTE_TEXTURE_SAMPLE_SNIPPET;
-}
-function getSetOutputSnippet() {
-    return environment_1.ENV.get('WEBGL_FLOAT_TEXTURE_ENABLED') ?
-        FLOAT_TEXTURE_SETOUTPUT_SNIPPET :
-        UNSIGNED_BYTE_TEXTURE_SETOUTPUT_SNIPPET;
-}
-function getInputSamplingSnippet(inInfo, outShapeInfo, broadcast, numBatchDims) {
-    var shape = inInfo.shapeInfo.logicalShape;
-    var res = getSamplerFlat(inInfo, numBatchDims);
-    switch (shape.length) {
-        case 0:
-            res += getSamplerScalar(inInfo);
-            break;
-        case 1:
-            res += getSampler1D(inInfo);
-            break;
-        case 2:
-            res += getSampler2D(inInfo);
-            break;
-        case 3:
-            res += getSampler3D(inInfo);
-            break;
-        case 4:
-            res += getSampler4D(inInfo);
-            break;
-        default:
-            throw new Error(shape.length + "-D input sampling" +
-                " is not yet supported");
-    }
-    if (broadcast ||
-        util.arraysEqual(inInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape)) {
-        res += getSamplerAtOutputCoords(inInfo, outShapeInfo, broadcast);
-    }
-    return res;
-}
-function getBatchSnippet(inputSize, outputSize, texShape) {
-    return "\n    int getBatchOffset() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n          vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n      int b = index / " + outputSize + ";\n      return b * " + inputSize + ";\n    }\n  ";
-}
-function getOutputSamplingSnippet(outShape, outTexShape) {
-    switch (outShape.length) {
-        case 0:
-            return getOutputScalarCoords();
-        case 1:
-            return getOutput1DCoords(outShape, outTexShape);
-        case 2:
-            return getOutput2DCoords(outShape, outTexShape);
-        case 3:
-            return getOutput3DCoords(outShape, outTexShape);
-        case 4:
-            return getOutput4DCoords(outShape, outTexShape);
-        default:
-            throw new Error(outShape.length + "-D output sampling is not yet supported");
-    }
-}
-var SAMPLE_1D_SNIPPET = "\nvec2 UVfrom1D(int texNumR, int texNumC, int index) {\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
-var SAMPLE_2D_SNIPPET = "\nvec2 UVfrom2D(int texNumR, int texNumC, int numC, int row, int col) {\n  int index = row * numC + col;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
-var SAMPLE_3D_SNIPPET = "\nvec2 UVfrom3D(int texNumR, int texNumC, int stride0,\n    int stride1, int row, int col, int depth) {\n  // Explicitly use integer operations as dot() only works on floats.\n  int index = row * stride0 + col * stride1 + depth;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
-var SAMPLE_4D_SNIPPET = "\nvec2 UVfrom4D(int texNumR, int texNumC, int stride0,\n    int stride1, int stride2, int row, int col, int depth,\n    int depth2) {\n  // Explicitly use integer operations as dot() only works on floats.\n  int index = row * stride0 + col * stride1 + depth * stride2 + depth2;\n  int texR = index / texNumC;\n  int texC = index - texR * texNumC;\n  return (vec2(texC, texR) + halfCR) / vec2(texNumC, texNumR);\n}\n";
-var UNSIGNED_BYTE_TEXTURE_SAMPLE_SNIPPET = "\n  uniform float NaN;\n\n  const vec4 floatDeltas = vec4(\n      1.0,\n      1.0 / 255.0,\n      1.0 / (255.0 * 255.0),\n      1.0 / (255.0 * 255.0 * 255.0)\n  );\n  const float minValue = " + tex_util.FLOAT_MIN + ".0;\n  const float maxValue = " + tex_util.FLOAT_MAX + ".0;\n  const float range = (maxValue - minValue) / 255.0;\n  const vec2 dotRange = vec2(1.0, range);\n\n  float sample(sampler2D texture, vec2 uv) {\n    vec4 sampleValue = texture2D(texture, uv);\n    if (all(equal(sampleValue, vec4(" + tex_util.BYTE_NAN_VALUE + ")))) {\n      return NaN;\n    }\n\n    vec4 encValue = floor(sampleValue * 255.0 + 0.5);\n    float decodedValue = dot(encValue, floatDeltas);\n    return dot(vec2(minValue, decodedValue), dotRange);\n  }\n";
-var UNSIGNED_BYTE_TEXTURE_SETOUTPUT_SNIPPET = "\n  const vec4 floatPowers = vec4(\n    1.0,\n    255.0,\n    255.0 * 255.0,\n    255.0 * 255.0 * 255.0\n  );\n  const vec2 recipRange = vec2(1.0/range);\n  const vec2 recipRange255 = vec2(1.0/(maxValue - minValue));\n\n  void setOutput(float decodedValue) {\n    if (isNaN(decodedValue)) {\n      gl_FragColor = vec4(" + tex_util.BYTE_NAN_VALUE + ");\n      return;\n    }\n\n    float a = dot(vec2(decodedValue, -minValue), recipRange);\n    float b = fract(a) * 255.0;\n    float c = fract(b) * 255.0;\n    float d = fract(c) * 255.0;\n    gl_FragColor = floor(vec4(a, b, c, d)) / 255.0;\n\n    // TODO(dsmilkov): Version above gets better accuracy but probably slower\n    // than the version below. Benchmark to determine if the accuracy is worth\n    // the cost.\n\n    // float normValue = dot(vec2(decodedValue, -minValue), recipRange255);\n    // vec4 f = normValue * floatPowers;\n    // gl_FragColor = floor(fract(f) * 255.0) / 255.0;\n  }\n";
-var FLOAT_TEXTURE_SAMPLE_SNIPPET = "\n  float sample(sampler2D texture, vec2 uv) {\n    return texture2D(texture, uv).r;\n  }\n";
-var FLOAT_TEXTURE_SETOUTPUT_SNIPPET = "\n  void setOutput(float val) {\n    gl_FragColor = vec4(val, 0, 0, 0);\n  }\n";
-var SHADER_PREFIX = "\n  precision highp float;\n  precision highp int;\n  varying vec2 resultUV;\n  const vec2 halfCR = vec2(0.5, 0.5);\n\n  bool isNaN(float val) {\n    return val == val ? false : true;\n  }\n\n  bool hasNaN(vec4 values) {\n    return any(notEqual(values, values));\n  }\n\n  float getNaN(vec4 values) {\n    return dot(vec4(1), values);\n  }\n\n  int round(float value) {\n    return int(floor(value + 0.5));\n  }\n\n  int imod(int x, int y) {\n    return x - y * (x / y);\n  }\n\n  const vec2 randomConst = vec2(\n    23.14069263277926, // e^pi (Gelfond's constant)\n     2.665144142690225 // 2^sqrt(2) (Gelfond\u2013Schneider constant)\n  );\n\n  float random(float seed) {\n      return fract(cos(dot(resultUV * seed, randomConst)) * 12345.6789);\n  }\n\n  float sampleUVAndDepth(sampler2D texture, vec2 uv, int depth) {\n    float value;\n    if (depth == 0) {\n      value = texture2D(texture, uv).r;\n    } else if (depth == 1) {\n      value = texture2D(texture, uv).g;\n    } else if (depth == 2) {\n      value = texture2D(texture, uv).b;\n    } else if (depth == 3) {\n      value = texture2D(texture, uv).a;\n    }\n    return floor(value * 255.0 + 0.5);\n  }\n\n  " + SAMPLE_1D_SNIPPET + "\n  " + SAMPLE_2D_SNIPPET + "\n  " + SAMPLE_3D_SNIPPET + "\n  " + SAMPLE_4D_SNIPPET + "\n";
-function getOutputScalarCoords() {
-    return "\n    int getOutputCoords() {\n      return 0;\n    }\n  ";
-}
-function getOutput1DCoords(shape, texShape) {
-    if (texShape[0] === 1) {
-        return "\n      int getOutputCoords() {\n        return int(resultUV.x * " + texShape[1] + ".0);\n      }\n    ";
-    }
-    if (texShape[1] === 1) {
-        return "\n      int getOutputCoords() {\n        return int(resultUV.y * " + texShape[0] + ".0);\n      }\n    ";
-    }
-    return "\n    int getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      return resTexRC.x * " + texShape[1] + " + resTexRC.y;\n    }\n  ";
-}
-function getOutput3DCoords(shape, texShape) {
-    var stride0 = shape[1] * shape[2];
-    var stride1 = shape[2];
-    return "\n    ivec3 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n      int r = index / " + stride0 + ";\n      index -= r * " + stride0 + ";\n      int c = index / " + stride1 + ";\n      int d = index - c * " + stride1 + ";\n      return ivec3(r, c, d);\n    }\n  ";
-}
-function getOutput4DCoords(shape, texShape) {
-    var stride2 = shape[3];
-    var stride1 = shape[2] * stride2;
-    var stride0 = shape[1] * stride1;
-    return "\n    ivec4 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n        vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n\n      int r = index / " + stride0 + ";\n      index -= r * " + stride0 + ";\n\n      int c = index / " + stride1 + ";\n      index -= c * " + stride1 + ";\n\n      int d = index / " + stride2 + ";\n      int d2 = index - d * " + stride2 + ";\n\n      return ivec4(r, c, d, d2);\n    }\n  ";
-}
-function getOutput2DCoords(shape, texShape) {
-    if (util.arraysEqual(shape, texShape)) {
-        return "\n      ivec2 getOutputCoords() {\n        return ivec2(resultUV.yx * vec2(" + texShape[0] + ", " + texShape[1] + "));\n      }\n    ";
-    }
-    if (shape[1] === 1) {
-        return "\n      ivec2 getOutputCoords() {\n        ivec2 resTexRC = ivec2(resultUV.yx *\n                               vec2(" + texShape[0] + ", " + texShape[1] + "));\n        int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n        return ivec2(index, 0);\n      }\n    ";
-    }
-    if (shape[0] === 1) {
-        return "\n      ivec2 getOutputCoords() {\n        ivec2 resTexRC = ivec2(resultUV.yx *\n                               vec2(" + texShape[0] + ", " + texShape[1] + "));\n        int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n        return ivec2(0, index);\n      }\n    ";
-    }
-    return "\n    ivec2 getOutputCoords() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + texShape[0] + ", " + texShape[1] + "));\n      int index = resTexRC.x * " + texShape[1] + " + resTexRC.y;\n      int r = index / " + shape[1] + ";\n      int c = index - r * " + shape[1] + ";\n      return ivec2(r, c);\n    }\n  ";
-}
-function getSamplerScalar(inputInfo) {
-    var texName = inputInfo.name;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
-    return "\n    float " + funcName + "() {\n      return sample(" + texName + ", halfCR);\n    }\n  ";
-}
-function getSampler1D(inputInfo) {
-    var texName = inputInfo.name;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
-    return "\n    float " + funcName + "(int index) {\n      return " + funcName + "Flat(index);\n    }\n  ";
-}
-function getSampler2D(inputInfo) {
-    var shape = inputInfo.shapeInfo.logicalShape;
-    var texShape = inputInfo.shapeInfo.texShape;
-    var texName = inputInfo.name;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
-    var tR = texShape[0];
-    var tC = texShape[1];
-    if (util.arraysEqual(shape, texShape)) {
-        return "\n    float " + funcName + "(int row, int col) {\n      vec2 uv = (vec2(col, row) + halfCR) / vec2(" + tC + ".0, " + tR + ".0);\n      return sample(" + texName + ", uv);\n    }\n  ";
-    }
-    if (tC === 1) {
-        if (shape[0] === 1) {
-            return "\n      float " + funcName + "(int row, int col) {\n        vec2 uv = vec2(0.5, (float(col) + 0.5) / " + tR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
-        }
-        if (shape[1] === 1) {
-            return "\n      float " + funcName + "(int row, int col) {\n        vec2 uv = vec2(0.5, (float(row) + 0.5) / " + tR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
-        }
-        return "\n    float " + funcName + "(int row, int col) {\n      int index = row * " + shape[1] + " + col;\n      vec2 uv = vec2(0.5, (float(index) + 0.5) / " + tR + ".0);\n      return sample(" + texName + ", uv);\n    }\n  ";
-    }
-    if (tR === 1) {
-        return "\n    float " + funcName + "(int row, int col) {\n      int index = row * " + shape[1] + " + col;\n      vec2 uv = vec2((float(index) + 0.5) / " + tC + ".0, 0.5);\n      return sample(" + texName + ", uv);\n    }\n  ";
-    }
-    return "\n  float " + funcName + "(int row, int col) {\n    vec2 uv = UVfrom2D(" + tR + ", " + tC + ", " + shape[1] + ", row, col);\n    return sample(" + texName + ", uv);\n  }\n";
-}
-function getSampler3D(inputInfo) {
-    var texShape = inputInfo.shapeInfo.texShape;
-    var shape = inputInfo.shapeInfo.logicalShape;
-    var texName = inputInfo.name;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
-    var tR = texShape[0];
-    var tC = texShape[1];
-    var stride0 = shape[1] * shape[2];
-    var stride1 = shape[2];
-    if (tC === stride0) {
-        if (inputInfo.shapeInfo.textureType === tex_util_1.TextureType.DEFAULT) {
-            return "\n        float " + funcName + "(int row, int col, int depth) {\n          int texR = row;\n          int texC = col * " + stride1 + " + depth;\n          vec2 uv = (vec2(texC, texR) + halfCR) / vec2(" + tC + ".0, " + tR + ".0);\n          return sample(" + texName + ", uv);\n        }\n      ";
-        }
-        else if (inputInfo.shapeInfo.textureType === tex_util_1.TextureType.RGBA_COLOR) {
-            return "\n        float " + funcName + "(int row, int col, int depth) {\n          vec2 uv = (vec2(col, row) + halfCR) / vec2(" + tC + ".0, " + tR + ".0);\n          return sampleUVAndDepth(" + texName + ", uv, depth);\n        }\n      ";
-        }
-        else {
-            throw new Error("Unknown TextureType " + inputInfo.shapeInfo.textureType + ".");
-        }
-    }
-    if (inputInfo.shapeInfo.textureType === tex_util_1.TextureType.DEFAULT) {
-        return "\n      float " + funcName + "(int row, int col, int depth) {\n        vec2 uv = UVfrom3D(\n            " + tR + ", " + tC + ", " + stride0 + ", " + stride1 + ", row, col, depth);\n        return sample(" + texName + ", uv);\n      }\n  ";
-    }
-    else if (inputInfo.shapeInfo.textureType === tex_util_1.TextureType.RGBA_COLOR) {
-        return "\n      float " + funcName + "(int row, int col, int depth) {\n        vec2 uv = UVfrom2D(" + tR + ", " + tC + ", " + shape[1] + ", row, col);\n        return sampleUVAndDepth(" + texName + ", uv, depth);\n      }\n    ";
-    }
-    else {
-        throw new Error("Unknown TextureType " + inputInfo.shapeInfo.textureType + ".");
-    }
-}
-function getSampler4D(inputInfo) {
-    var shape = inputInfo.shapeInfo.logicalShape;
-    var texShape = inputInfo.shapeInfo.texShape;
-    var texName = inputInfo.name;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1);
-    var tR = texShape[0];
-    var tC = texShape[1];
-    var stride2 = shape[3];
-    var stride1 = shape[2] * stride2;
-    var stride0 = shape[1] * stride1;
-    if (tC === stride0) {
-        return "\n      float " + funcName + "(int row, int col, int depth, int depth2) {\n        int texR = row;\n        int texC = col * " + stride1 + " + depth * " + stride2 + " + depth2;\n        vec2 uv = (vec2(texC, texR) + halfCR) / vec2(" + tC + ".0, " + tR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
-    }
-    return "\n    float " + funcName + "(int row, int col, int depth, int depth2) {\n      vec2 uv = UVfrom4D(" + tR + ", " + tC + ", " + stride0 + ", " + stride1 + ", " + stride2 + ",\n          row, col, depth, depth2);\n      return sample(" + texName + ", uv);\n    }\n  ";
-}
-function getSamplerFlat(inputInfo, numBatchDims) {
-    var texName = inputInfo.name;
-    var texShape = inputInfo.shapeInfo.texShape;
-    var funcName = 'get' + texName.charAt(0).toUpperCase() + texName.slice(1) + 'Flat';
-    var tNumR = texShape[0];
-    var tNumC = texShape[1];
-    var batchSnippet = '';
-    if (numBatchDims) {
-        batchSnippet = 'index += getBatchOffset();';
-    }
-    if (tNumC === 1 && tNumR === 1) {
-        return "\n      float " + funcName + "(int index) {\n        " + batchSnippet + "\n        return sample(" + texName + ", halfCR);\n      }\n    ";
-    }
-    if (tNumC === 1) {
-        return "\n      float " + funcName + "(int index) {\n        " + batchSnippet + "\n        vec2 uv = vec2(0.5, (float(index) + 0.5) / " + tNumR + ".0);\n        return sample(" + texName + ", uv);\n      }\n    ";
-    }
-    if (tNumR === 1) {
-        return "\n      float " + funcName + "(int index) {\n        " + batchSnippet + "\n        vec2 uv = vec2((float(index) + 0.5) / " + tNumC + ".0, 0.5);\n        return sample(" + texName + ", uv);\n      }\n    ";
-    }
-    return "\n    float " + funcName + "(int index) {\n      " + batchSnippet + "\n      vec2 uv = UVfrom1D(" + tNumR + ", " + tNumC + ", index);\n      return sample(" + texName + ", uv);\n    }\n  ";
-}
-function getBroadcastOutputCoordsSampler(inputInfo, outShapeInfo, texFuncSnippet, funcName) {
-    var inRank = inputInfo.shapeInfo.logicalShape.length;
-    var outRank = outShapeInfo.logicalShape.length;
-    var type = 'int';
-    if (outRank === 2) {
-        type = 'ivec2';
-    }
-    else if (outRank === 3) {
-        type = 'ivec3';
-    }
-    else if (outRank === 4) {
-        type = 'ivec4';
-    }
-    var broadcastDims = broadcast_util.getBroadcastDims(inputInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape);
-    var rankDiff = outRank - inRank;
-    var coordsSnippet;
-    if (inRank === 0) {
-        coordsSnippet = '';
-    }
-    else if (outRank < 2 && broadcastDims.length >= 1) {
-        coordsSnippet = 'coords = 0;';
-    }
-    else {
-        coordsSnippet =
-            broadcastDims.map(function (d) { return "coords[" + (d + rankDiff) + "] = 0;"; }).join('\n');
-    }
-    var unpackedCoordsSnippet = '';
-    if (outRank < 2 && inRank > 0) {
-        unpackedCoordsSnippet = 'coords';
-    }
-    else {
-        unpackedCoordsSnippet = inputInfo.shapeInfo.logicalShape
-            .map(function (s, i) { return "coords[" + (i + rankDiff) + "]"; })
-            .join(', ');
-    }
-    return "\n    float " + funcName + "() {\n      " + type + " coords = getOutputCoords();\n      " + coordsSnippet + "\n      return get" + texFuncSnippet + "(" + unpackedCoordsSnippet + ");\n    }\n  ";
-}
-function getSamplerAtOutputCoords(inputInfo, outShapeInfo, supportsBroadcasting) {
-    var inTexShape = inputInfo.shapeInfo.texShape;
-    var texName = inputInfo.name;
-    var isRGBAColorTexture = inputInfo.shapeInfo.textureType === tex_util_1.TextureType.RGBA_COLOR;
-    var texFuncSnippet = texName.charAt(0).toUpperCase() + texName.slice(1);
-    var funcName = 'get' + texFuncSnippet + 'AtOutCoords';
-    var broadcastDims = broadcast_util.getBroadcastDims(inputInfo.shapeInfo.logicalShape, outShapeInfo.logicalShape);
-    var inRank = inputInfo.shapeInfo.logicalShape.length;
-    var outRank = outShapeInfo.logicalShape.length;
-    var doBroadcast = supportsBroadcasting && ((outRank > inRank) || broadcastDims.length > 0);
-    var broadcastOverOuter = broadcast_util.broadcastDimsAreOuter(broadcastDims);
-    if (doBroadcast && !broadcastOverOuter) {
-        return getBroadcastOutputCoordsSampler(inputInfo, outShapeInfo, texFuncSnippet, funcName);
-    }
-    var outTexShape = outShapeInfo.texShape;
-    if (util.arraysEqual(inTexShape, outTexShape) && !isRGBAColorTexture) {
-        return "\n      float " + funcName + "() {\n        return sample(" + texName + ", resultUV);\n      }\n    ";
-    }
-    var inTexExpandedShape = isRGBAColorTexture ?
-        [inTexShape[0], inTexShape[1] * inputInfo.shapeInfo.logicalShape[2]] :
-        inTexShape;
-    var sampleSnippet = "return sample(" + texName + ", uv);";
-    var rgbaColorSnippet = '';
-    if (isRGBAColorTexture) {
-        rgbaColorSnippet = "\n      int col = texC / " + inputInfo.shapeInfo.logicalShape[2] + ";\n      int texD = texC - col * " + inputInfo.shapeInfo.logicalShape[2] + ";\n      texC = col;\n    ";
-        sampleSnippet = "return sampleUVAndDepth(" + texName + ", uv, texD);";
-    }
-    var inSize = util.sizeFromShape(inTexExpandedShape);
-    var broadcastSnippet = '';
-    if (doBroadcast && broadcastOverOuter) {
-        broadcastSnippet = "\n        int mainPart = index / " + inSize + ";\n        index -= mainPart * " + inSize + ";\n      ";
-    }
-    return "\n    float " + funcName + "() {\n      ivec2 resTexRC = ivec2(resultUV.yx *\n                             vec2(" + outTexShape[0] + ", " + outTexShape[1] + "));\n      int index = resTexRC.x * " + outTexShape[1] + " + resTexRC.y;\n      " + broadcastSnippet + "\n      int texR = index / " + inTexExpandedShape[1] + ";\n      int texC = index - texR * " + inTexExpandedShape[1] + ";\n\n      " + rgbaColorSnippet + "\n\n      vec2 uv = (vec2(texC, texR) + halfCR) /\n                 vec2(" + inTexShape[1] + ".0, " + inTexShape[0] + ".0);\n\n      " + sampleSnippet + "\n    }\n  ";
-}
-//# sourceMappingURL=shader_compiler.js.map
-
-/***/ }),
-/* 421 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
+var shader_compiler_1 = __webpack_require__(66);
 var SliceProgram = (function () {
     function SliceProgram(destSize) {
         this.variableNames = ['source'];
         this.outputShape = destSize;
         this.rank = destSize.length;
-        this.params = [];
-        var dtype = getDataType(this.rank);
+        var dtype = shader_compiler_1.getCoordsDataType(this.rank);
         var sourceCoords = getCoords(this.rank);
         this.userCode = "\n      uniform " + dtype + " start;\n\n      void main() {\n        " + dtype + " sourceLoc = start + getOutputCoords();\n        setOutput(getSource(" + sourceCoords + "));\n      }\n    ";
     }
@@ -20194,27 +22342,10 @@ function getCoords(rank) {
         throw Error("Slicing for rank " + rank + " is not yet supported");
     }
 }
-function getDataType(rank) {
-    if (rank === 1) {
-        return 'int';
-    }
-    else if (rank === 2) {
-        return 'ivec2';
-    }
-    else if (rank === 3) {
-        return 'ivec3';
-    }
-    else if (rank === 4) {
-        return 'ivec4';
-    }
-    else {
-        throw Error("Slicing for rank " + rank + " is not yet supported");
-    }
-}
 //# sourceMappingURL=slice_gpu.js.map
 
 /***/ }),
-/* 422 */
+/* 427 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20290,12 +22421,54 @@ function getKeyFromTextureShape(shapeRowsCol) {
 //# sourceMappingURL=texture_manager.js.map
 
 /***/ }),
-/* 423 */
+/* 428 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var shader_compiler_1 = __webpack_require__(66);
+var TileProgram = (function () {
+    function TileProgram(aShape, reps) {
+        this.variableNames = ['A'];
+        var outputShape = new Array(aShape.length);
+        for (var i = 0; i < outputShape.length; i++) {
+            outputShape[i] = aShape[i] * reps[i];
+        }
+        this.outputShape = outputShape;
+        this.rank = outputShape.length;
+        var dtype = shader_compiler_1.getCoordsDataType(this.rank);
+        var sourceCoords = getSourceCoords(aShape);
+        this.userCode = "\n      void main() {\n        " + dtype + " resRC = getOutputCoords();\n        setOutput(getA(" + sourceCoords + "));\n      }\n    ";
+    }
+    return TileProgram;
+}());
+exports.TileProgram = TileProgram;
+function getSourceCoords(aShape) {
+    var rank = aShape.length;
+    if (rank > 4) {
+        throw Error("Tile for rank " + rank + " is not yet supported");
+    }
+    if (rank === 1) {
+        return "imod(resRC, " + aShape[0] + ")";
+    }
+    var currentCoords = ['resRC.x', 'resRC.y', 'resRC.z', 'resRC.w'];
+    var sourceCoords = [];
+    for (var i = 0; i < aShape.length; i++) {
+        sourceCoords.push("imod(" + currentCoords[i] + ", " + aShape[i] + ")");
+    }
+    return sourceCoords.join();
+}
+//# sourceMappingURL=tile_gpu.js.map
+
+/***/ }),
+/* 429 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var shader_compiler_1 = __webpack_require__(66);
 var TransposeProgram = (function () {
     function TransposeProgram(aShape, newDim) {
         this.variableNames = ['A'];
@@ -20305,8 +22478,7 @@ var TransposeProgram = (function () {
         }
         this.outputShape = outputShape;
         this.rank = outputShape.length;
-        this.params = [newDim.toString()];
-        var dtype = getDataType(this.rank);
+        var dtype = shader_compiler_1.getCoordsDataType(this.rank);
         var switched = getSwitchedCoords(newDim);
         this.userCode = "\n    void main() {\n      " + dtype + " resRC = getOutputCoords();\n      setOutput(getA(" + switched + "));\n    }\n    ";
     }
@@ -20316,7 +22488,7 @@ exports.TransposeProgram = TransposeProgram;
 function getSwitchedCoords(newDim) {
     var rank = newDim.length;
     if (rank > 4) {
-        throw Error("SwitchDim for rank " + rank + " is not yet supported");
+        throw Error("Transpose for rank " + rank + " is not yet supported");
     }
     var originalOrder = ['resRC.x', 'resRC.y', 'resRC.z', 'resRC.w'];
     var switchedCoords = new Array(rank);
@@ -20325,27 +22497,10 @@ function getSwitchedCoords(newDim) {
     }
     return switchedCoords.join();
 }
-function getDataType(rank) {
-    if (rank === 1) {
-        return 'int';
-    }
-    else if (rank === 2) {
-        return 'ivec2';
-    }
-    else if (rank === 3) {
-        return 'ivec3';
-    }
-    else if (rank === 4) {
-        return 'ivec4';
-    }
-    else {
-        throw Error("SwitchDim for rank " + rank + " is not yet supported");
-    }
-}
 //# sourceMappingURL=transpose_gpu.js.map
 
 /***/ }),
-/* 424 */
+/* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20353,10 +22508,71 @@ function getDataType(rank) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment = __webpack_require__(32);
 var environment_1 = __webpack_require__(32);
-var math_cpu_1 = __webpack_require__(153);
-var math_gpu_1 = __webpack_require__(154);
-var util = __webpack_require__(3);
+var math_cpu_1 = __webpack_require__(154);
+var math_gpu_1 = __webpack_require__(155);
+var util = __webpack_require__(4);
 exports.TEST_EPSILON = 1e-2;
+function mean(values) {
+    var sum = 0;
+    for (var i = 0; i < values.length; i++) {
+        sum += values[i];
+    }
+    return sum / values.length;
+}
+exports.mean = mean;
+function standardDeviation(values, mean) {
+    var squareDiffSum = 0;
+    for (var i = 0; i < values.length; i++) {
+        var diff = values[i] - mean;
+        squareDiffSum += diff * diff;
+    }
+    return Math.sqrt(squareDiffSum / values.length);
+}
+exports.standardDeviation = standardDeviation;
+function kurtosis(values) {
+    var valuesMean = mean(values);
+    var n = values.length;
+    var sum2 = 0;
+    var sum4 = 0;
+    for (var i = 0; i < n; i++) {
+        var v = values[i] - valuesMean;
+        sum2 += Math.pow(v, 2);
+        sum4 += Math.pow(v, 4);
+    }
+    return (1 / n) * sum4 / Math.pow((1 / n) * sum2, 2) - 3;
+}
+exports.kurtosis = kurtosis;
+function skewness(values) {
+    var valuesMean = mean(values);
+    var n = values.length;
+    var sum2 = 0;
+    var sum3 = 0;
+    var i = -1;
+    while (++i < n) {
+        var v = values[i] - valuesMean;
+        sum2 += Math.pow(v, 2);
+        sum3 += Math.pow(v, 3);
+    }
+    return (1 / n) * sum3 / Math.pow((1 / (n - 1)) * sum2, 3 / 2);
+}
+exports.skewness = skewness;
+function jarqueBeraNormalityTest(values) {
+    var s = skewness(values);
+    var k = kurtosis(values);
+    var jb = values.length * ((Math.pow(s, 2) / 6) + (Math.pow(k, 2) / 24));
+    var CHI_SQUARE_2DEG = 5.991;
+    if (jb > CHI_SQUARE_2DEG) {
+        throw new Error("Invalid p-value for JB: " + jb);
+    }
+}
+exports.jarqueBeraNormalityTest = jarqueBeraNormalityTest;
+function expectArrayInMeanStdRange(actual, expectedMean, expectedStdDev, epsilon) {
+    if (epsilon === void 0) { epsilon = exports.TEST_EPSILON; }
+    var actualMean = mean(actual);
+    expectNumbersClose(actualMean, expectedMean, epsilon);
+    expectNumbersClose(standardDeviation(actual, actualMean), expectedStdDev, epsilon);
+}
+exports.expectArrayInMeanStdRange = expectArrayInMeanStdRange;
 function expectArraysClose(actual, expected, epsilon) {
     if (epsilon === void 0) { epsilon = exports.TEST_EPSILON; }
     var aType = actual.constructor.name;
@@ -20395,6 +22611,14 @@ function areClose(a, e, epsilon) {
     }
     return true;
 }
+function expectValuesInRange(actual, low, high) {
+    for (var i = 0; i < actual.length; i++) {
+        if (actual[i] < low || actual[i] > high) {
+            throw new Error("Value out of range:" + actual[i] + " low: " + low + ", high: " + high);
+        }
+    }
+}
+exports.expectValuesInRange = expectValuesInRange;
 function randomArrayInRange(n, minValue, maxValue) {
     var v = new Float32Array(n);
     var range = maxValue - minValue;
@@ -20526,18 +22750,18 @@ exports.assertIsNan = assertIsNan;
 //# sourceMappingURL=test_util.js.map
 
 /***/ }),
-/* 425 */
+/* 431 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var version = '0.3.3';
+var version = '0.3.11';
 exports.version = version;
 //# sourceMappingURL=version.js.map
 
 /***/ }),
-/* 426 */
+/* 432 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // A library of seedable RNGs implemented in Javascript.
@@ -20552,17 +22776,17 @@ exports.version = version;
 // alea, a 53-bit multiply-with-carry generator by Johannes Baagøe.
 // Period: ~2^116
 // Reported to pass all BigCrush tests.
-var alea = __webpack_require__(427);
+var alea = __webpack_require__(433);
 
 // xor128, a pure xor-shift generator by George Marsaglia.
 // Period: 2^128-1.
 // Reported to fail: MatrixRank and LinearComp.
-var xor128 = __webpack_require__(429);
+var xor128 = __webpack_require__(435);
 
 // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
 // Period: 2^192-2^32
 // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
-var xorwow = __webpack_require__(432);
+var xorwow = __webpack_require__(438);
 
 // xorshift7, by François Panneton and Pierre L'ecuyer, takes
 // a different approach: it adds robustness by allowing more shifts
@@ -20570,7 +22794,7 @@ var xorwow = __webpack_require__(432);
 // with 256 bits, that passes BigCrush with no systmatic failures.
 // Period 2^256-1.
 // No systematic BigCrush failures reported.
-var xorshift7 = __webpack_require__(431);
+var xorshift7 = __webpack_require__(437);
 
 // xor4096, by Richard Brent, is a 4096-bit xor-shift with a
 // very long period that also adds a Weyl generator. It also passes
@@ -20579,18 +22803,18 @@ var xorshift7 = __webpack_require__(431);
 // collisions.
 // Period: 2^4128-2^32.
 // No systematic BigCrush failures reported.
-var xor4096 = __webpack_require__(430);
+var xor4096 = __webpack_require__(436);
 
 // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
 // number generator derived from ChaCha, a modern stream cipher.
 // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
 // Period: ~2^127
 // No systematic BigCrush failures reported.
-var tychei = __webpack_require__(428);
+var tychei = __webpack_require__(434);
 
 // The original ARC4-based prng included in this library.
 // Period: ~2^1600
-var sr = __webpack_require__(433);
+var sr = __webpack_require__(439);
 
 sr.alea = alea;
 sr.xor128 = xor128;
@@ -20603,7 +22827,7 @@ module.exports = sr;
 
 
 /***/ }),
-/* 427 */
+/* 433 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A port of an algorithm by Johannes Baagøe <baagoe@baagoe.com>, 2010
@@ -20707,7 +22931,7 @@ function Mash() {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -20722,10 +22946,10 @@ if (module && module.exports) {
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 428 */
+/* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "Tyche-i" prng algorithm by
@@ -20818,7 +23042,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -20833,10 +23057,10 @@ if (module && module.exports) {
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 429 */
+/* 435 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xor128" prng algorithm by
@@ -20907,7 +23131,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -20922,10 +23146,10 @@ if (module && module.exports) {
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 430 */
+/* 436 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
@@ -21063,7 +23287,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -21076,10 +23300,10 @@ if (module && module.exports) {
   __webpack_require__(22)   // present with an AMD loader
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 431 */
+/* 437 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorshift7" algorithm by
@@ -21167,7 +23391,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -21181,10 +23405,10 @@ if (module && module.exports) {
 );
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 432 */
+/* 438 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_RESULT__;// A Javascript implementaion of the "xorwow" prng algorithm by
@@ -21260,7 +23484,7 @@ function impl(seed, opts) {
 
 if (module && module.exports) {
   module.exports = impl;
-} else if (__webpack_require__(22) && __webpack_require__(58)) {
+} else if (__webpack_require__(22) && __webpack_require__(59)) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return impl; }.call(exports, __webpack_require__, exports, module),
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
 } else {
@@ -21275,10 +23499,10 @@ if (module && module.exports) {
 
 
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(59)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(60)(module)))
 
 /***/ }),
-/* 433 */
+/* 439 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var __WEBPACK_AMD_DEFINE_RESULT__;/*
@@ -21517,7 +23741,7 @@ if ((typeof module) == 'object' && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
   try {
-    nodecrypto = __webpack_require__(434);
+    nodecrypto = __webpack_require__(440);
   } catch (ex) {}
 } else if (true) {
   !(__WEBPACK_AMD_DEFINE_RESULT__ = function() { return seedrandom; }.call(exports, __webpack_require__, exports, module),
@@ -21532,17 +23756,17 @@ if ((typeof module) == 'object' && module.exports) {
 
 
 /***/ }),
-/* 434 */
+/* 440 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
 
 /***/ }),
-/* 435 */
+/* 441 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(160);
-module.exports = __webpack_require__(159);
+__webpack_require__(161);
+module.exports = __webpack_require__(160);
 
 
 /***/ })

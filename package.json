@@ -69,6 +69,7 @@
     ]
   },
   "dependencies": {
-    "deeplearn": "0.3.3"
+    "deeplearn": "0.3.11",
+    "deeplearn-knn-image-classifier": "0.1.2"
   }
 }
