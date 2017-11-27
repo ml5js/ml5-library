@@ -44,8 +44,15 @@ class KNNImageClassifier {
 
   getClassExampleCount() {
     if (this.modelLoaded) {
-      let counts = this.classifier.getClassExampleCount();
-      return counts;
+      return this.classifier.getClassExampleCount();
+    } else {
+      console.log(`The Model has not finished loading. Wait until it loads and try again`)
+    }
+  }
+
+  clearClass(classIndex) {
+    if (this.modelLoaded) {
+      this.classifier.clearClass(classIndex);
     } else {
       console.log(`The Model has not finished loading. Wait until it loads and try again`)
     }
