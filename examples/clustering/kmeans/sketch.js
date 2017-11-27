@@ -116,12 +116,12 @@ function kmeans(vectors, k, maxiterations) {
     for (let i = 0; i < centroids.length; i++) {
       // Create vector of 0s
       let newV = new Array(n);
-      newV.map(x => 0);
+      newV.fill(0);
 
       // Average all members
       let members = centroids[i].members;
       if (members.length === 0) {
-        newV.map(x => floor(random(2)));
+        newV = newV.map(x => random(1));
       } else {
         for (let j = 0; j < members.length; j++) {
           let v = members[j]
@@ -130,13 +130,9 @@ function kmeans(vectors, k, maxiterations) {
           }
         }
         // Average all the elements
-        newV.map(x => x / members.length);
+        newV = newV.map(x => x / members.length);
       }
     }
-
-
-
-
     iterations++;
   }
 
