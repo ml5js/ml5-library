@@ -154,7 +154,8 @@ function distance(v1, v2) {
   let sum = v1.reduce((sum, a, i) => {
     return sum + a * v2[i];
   }, 0);
-  return sum / (magnitude(v1) * magnitude(v2));
+  // Distance is the inverse of cosine similarity!
+  return 1 - (sum / (magnitude(v1) * magnitude(v2)));
 }
 
 
