@@ -11996,6 +11996,16 @@ var KNNImageClassifier = function () {
         console.log('The Model has not finished loading. Wait until it loads and try again');
       }
     }
+  }, {
+    key: 'getClassExampleCount',
+    value: function getClassExampleCount() {
+      if (this.modelLoaded) {
+        var counts = this.classifier.getClassExampleCount();
+        return counts;
+      } else {
+        console.log('The Model has not finished loading. Wait until it loads and try again');
+      }
+    }
   }]);
 
   return KNNImageClassifier;
