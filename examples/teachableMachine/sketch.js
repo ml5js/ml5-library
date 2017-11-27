@@ -24,11 +24,19 @@ function setup() {
   video.size(227, 227);
   video.hide();
 
-  // Buttons
+  // Train buttons
   msgArray.forEach((id, index) => {
     let button = select('#button' + id);
     button.mousePressed(() => {
       train(index);
+    });
+  });
+
+  // Reset buttons
+  msgArray.forEach((id, index) => {
+    let button = select('#reset' + id);
+    button.mousePressed(() => {
+      clearClass(index);
     });
   });
 
@@ -89,6 +97,11 @@ function updateGif(results) {
 function updateExampleCounts() {
   let counts = knn.getClassExampleCount();
   console.log(counts);
+}
+
+// Clears the saved images from the specified class.
+function clearClass(classIndex) {
+  knn.clearClass(classIndex);
 }
 
 // TODO:
