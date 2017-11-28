@@ -9,7 +9,8 @@ Nov 2017
 let knn;
 let video;
 let outputSrc;
-let exampleCounts = [0, 0, 0];
+let exampleCounts = new Array(3).fill(0);
+let timers = new Array(3);
 const msgArray = ['A', 'B', 'C'];
 
 function preload() {
@@ -19,8 +20,8 @@ function preload() {
 
 function setup() {
   createCanvas(320, 240).parent('canvasContainer');
-  video = createCapture(VIDEO);
   background(0);
+  video = createCapture(VIDEO);
   video.size(227, 227);
   video.hide();
 
@@ -28,7 +29,16 @@ function setup() {
   msgArray.forEach((id, index) => {
     let button = select('#button' + id);
     button.mousePressed(() => {
-      train(index);
+      if (timers[index]) clearInterval(timers[index]);
+      timers[index] = setInterval(() => {
+        train(index);
+      }, 100);
+    });
+    button.mouseReleased(() => {
+      if (timers[index]) {
+        clearInterval(timers[index]);
+        updateExampleCounts();
+      }
     });
   });
 
@@ -37,6 +47,7 @@ function setup() {
     let button = select('#reset' + id);
     button.mousePressed(() => {
       clearClass(index);
+      updateExampleCounts();
     });
   });
 
@@ -60,9 +71,6 @@ function train(category) {
   select('#training').html(msg);
 
   knn.addImage(video.elt, category);
-
-  exampleCounts[category]++;
-  select('#example' + msgArray[category]).html('example ' + msgArray[category] + ': ' + exampleCounts[category]);
 }
 
 // Predict the current frame.
@@ -81,7 +89,6 @@ function gotResults(results) {
   select('#confidence').html(comfidence * 100 + '%');
 
   updateGif(results);
-  updateExampleCounts();
 
   setTimeout(() => predict(), 50);
 }
@@ -96,7 +103,10 @@ function updateGif(results) {
 
 function updateExampleCounts() {
   let counts = knn.getClassExampleCount();
-  console.log(counts);
+  exampleCounts = counts.slice(0, 3);
+  exampleCounts.forEach((count, index) => {
+    select('#example' + msgArray[index]).html(msgArray[index] + ' examples: ' + count);
+  });
 }
 
 // Clears the saved images from the specified class.
@@ -105,11 +115,11 @@ function clearClass(classIndex) {
 }
 
 // TODO:
-// output gif
+// output gif DONE
+// mouse is press keep training DONE
+// add example count DONE
+// reset training, reset example count DONE
 
-// mouse is press keep training
-// add example count
-// reset training
-// overall layout, responsive
 // automaticall start training when at least have one training data
 // be able to upload new gif
+// overall layout, responsive
