@@ -9,8 +9,11 @@ Nov 2017
 let knn;
 let video;
 let outputSrc;
+let isPredicting = false;
+let prevIsPredicting = false;
 let exampleCounts = new Array(3).fill(0);
 let timers = new Array(3);
+let predictimer;
 const msgArray = ['A', 'B', 'C'];
 
 function preload() {
@@ -30,10 +33,9 @@ function setup() {
     let button = select('#button' + id);
     button.mousePressed(() => {
       if (timers[index]) clearInterval(timers[index]);
-      timers[index] = setInterval(() => {
-        train(index);
-      }, 100);
+      timers[index] = setInterval(() => { train(index); }, 100);
     });
+
     button.mouseReleased(() => {
       if (timers[index]) {
         clearInterval(timers[index]);
@@ -50,9 +52,6 @@ function setup() {
       updateExampleCounts();
     });
   });
-
-  let buttonPredict = select('#buttonPredict');
-  buttonPredict.mousePressed(predict);
 }
 
 function draw() {
@@ -67,9 +66,6 @@ function modelLoaded() {
 
 // Train the Classifier on a frame from the video.
 function train(category) {
-  let msg = msgArray[category];
-  select('#training').html(msg);
-
   knn.addImage(video.elt, category);
 }
 
@@ -80,6 +76,8 @@ function predict() {
 
 // Show the results
 function gotResults(results) {
+  if (results.classIndex < 0) return;
+
   // Update 'My guess is category: A/B/C'
   let msg = msgArray[results.classIndex];
 
@@ -90,11 +88,17 @@ function gotResults(results) {
 
   updateGif(results);
 
-  setTimeout(() => predict(), 50);
+  if (isPredicting) predictimer = setTimeout(() => predict(), 50);
+}
+
+// Clears the saved images from the specified class.
+function clearClass(classIndex) {
+  knn.clearClass(classIndex);
 }
 
 function updateGif(results) {
   // Display different gifs
+  if (results.classIndex < 0) return;
   if (outputSrc !== 'output' + results.classIndex + '.gif') {
     outputSrc = 'output' + results.classIndex + '.gif';
     select('#output').elt.src = outputSrc;
@@ -107,11 +111,27 @@ function updateExampleCounts() {
   exampleCounts.forEach((count, index) => {
     select('#example' + msgArray[index]).html(msgArray[index] + ' examples: ' + count);
   });
+
+  updateIsPredicting();
 }
 
-// Clears the saved images from the specified class.
-function clearClass(classIndex) {
-  knn.clearClass(classIndex);
+function updateIsPredicting() {
+  prevIsPredicting = isPredicting;
+  isPredicting = exampleCounts.some(e => e > 0);
+  if (prevIsPredicting !== isPredicting) {
+    if (isPredicting) {
+      predict();
+    } else {
+      clearTimeout(predictimer);
+      resetResult();
+    }
+  }
+}
+
+function resetResult() {
+  select('#result').html('...');
+  select('#confidence').html('...');
+  select('#output').elt.src = 'default.png';
 }
 
 // TODO:
@@ -119,7 +139,7 @@ function clearClass(classIndex) {
 // mouse is press keep training DONE
 // add example count DONE
 // reset training, reset example count DONE
+// automaticall start training when at least have one training data DONE
 
-// automaticall start training when at least have one training data
 // be able to upload new gif
 // overall layout, responsive
