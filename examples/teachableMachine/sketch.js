@@ -8,13 +8,14 @@ Nov 2017
 
 let knn;
 let video;
-let outputSrc;
 let isPredicting = false;
 let prevIsPredicting = false;
 let exampleCounts = new Array(3).fill(0);
 let timers = new Array(3);
 let predictimer;
 const msgArray = ['A', 'B', 'C'];
+let outputSrc;
+let gifSrcs = ['output0.gif', 'output1.gif', 'output2.gif'];
 
 function preload() {
   // Initialize the KNN method.
@@ -27,6 +28,8 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(227, 227);
   video.hide();
+
+  let uploadBtn = createFileInput(imageUpload);
 
   // Train buttons
   msgArray.forEach((id, index) => {
@@ -99,8 +102,8 @@ function clearClass(classIndex) {
 function updateGif(results) {
   // Display different gifs
   if (results.classIndex < 0) return;
-  if (outputSrc !== 'output' + results.classIndex + '.gif') {
-    outputSrc = 'output' + results.classIndex + '.gif';
+  if (outputSrc !== gifSrcs[results.classIndex]) {
+    outputSrc = gifSrcs[results.classIndex];
     select('#output').elt.src = outputSrc;
   }
 }
@@ -132,6 +135,12 @@ function resetResult() {
   select('#result').html('...');
   select('#confidence').html('...');
   select('#output').elt.src = 'default.png';
+}
+
+function imageUpload(file) {
+  gifSrcs[0] = file.data;
+  select('#imgA').elt.src = file.data;
+  select('#output').elt.src = file.data;
 }
 
 // TODO:
