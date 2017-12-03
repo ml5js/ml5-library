@@ -2,6 +2,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Teachable Machine Example</title>
   <link rel="stylesheet" type="text/css" href="./style.css"></link>
   <script src="../libraries/p5.min.js"></script>
@@ -10,12 +11,13 @@
 </head>
 
 <body>
-  <div class="body-container">
-  <div id="canvasContainer" class="white-box">
-    <h3 class="title">INPUT</h3>
-  </div>
+  <div class="body-container row">
+    <div class="white-box col-3">
+      <h3 class="title">INPUT</h3>
+      <div id="canvasContainer" class="center-container"></div>
+    </div>
 
-  <div id="learning-container" class="white-box">
+  <div id="learning-container" class="white-box col-3">
     <h3 class="title">LEARNING</h3>
     <div>
       <div class="trainbtns-container">
@@ -84,9 +86,9 @@
     </div> -->
   </div>
 
-  <div class="white-box output-container">
+  <div class="white-box output-container col-3">
     <h3 class="title">OUTPUT</h3>
-    <img id="output" src="default.png" />
+    <div class="center-container"><img id="output" src="default.png" /></div>
 
     <div class="gif-container">
       <div class="container" id="containerA">

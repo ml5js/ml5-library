@@ -3,13 +3,21 @@ body {
 }
 #output {
   height: 300px;
-  width: 354px;
+  max-width: 300px;
   background: lightgray;
   margin-bottom: 15px;
+}
+.output-container {
+  min-width: 330px;
+}
+.center-container {
+  display: flex;
+  justify-content: center;
 }
 .gif-container {
   display: flex;
   justify-content: space-between;
+  min-width: 300px;
 }
 .container {
   position: relative;
@@ -27,8 +35,8 @@ body {
   margin: 5px;
   opacity: 1;
   display: block;
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
   transition: .5s ease;
   backface-visibility: hidden;
 }
@@ -55,12 +63,12 @@ body {
 .text {
   background-color: #333;
   color: white;
-  font-size: 16px;
-  padding: 16px 32px;
+  font-size: 12px;
+  padding: 16px 22px;
 }
 .body-container {
-  display: flex;
-  justify-content: space-around;
+  /* display: flex;
+  justify-content: space-around; */
   font-family: Arial, Helvetica, sans-serif;
   margin: 20px;
 }
@@ -68,6 +76,7 @@ body {
   background: white;
   padding: 15px;
   border-radius: 7px;
+  margin: 20px;
 }
 .trainbtns-container {
   height: 600px;
@@ -215,3 +224,25 @@ body {
   padding: 10px 20px;
 }
 /* End of progress bar */
+
+/* Responsiveness */
+* {
+  box-sizing: border-box;
+}
+.row::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+[class*="col-"] {
+  float: left;
+}
+/* For desktop: */
+.col-3 {width: 30%;}
+
+@media only screen and (max-width: 1024px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+      width: 100%;
+  }
+}
