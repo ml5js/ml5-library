@@ -143,8 +143,6 @@ function resetResult() {
 
 function uploadGif(index) {
   updateGifIndex = index;
-  console.log('uploadBtn: ', uploadBtn);
-  console.log('updateGifIndex: ', updateGifIndex);
   uploadBtn.elt.click();
 }
 
@@ -160,6 +158,6 @@ function imageUpload(file) {
 // add example count DONE
 // reset training, reset example count DONE
 // automaticall start training when at least have one training data DONE
+// be able to upload new gif DONE
 
-// be able to upload new gif
 // overall layout, responsive
