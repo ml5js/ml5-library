@@ -9,6 +9,11 @@ body {
 }
 .output-container {
   min-width: 330px;
+  padding-bottom: 35px !important;
+}
+.input-container {
+  min-width: 350px;
+  padding-bottom: 35px !important;
 }
 .center-container {
   display: flex;
@@ -67,8 +72,6 @@ body {
   padding: 16px 22px;
 }
 .body-container {
-  /* display: flex;
-  justify-content: space-around; */
   font-family: Arial, Helvetica, sans-serif;
   margin: 20px;
 }
@@ -77,9 +80,6 @@ body {
   padding: 15px;
   border-radius: 7px;
   margin: 20px;
-}
-.trainbtns-container {
-  height: 600px;
 }
 .trainbtn-box {
   margin-top: 35px;
@@ -116,7 +116,7 @@ body {
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   vertical-align: middle;
   text-decoration: none;
   font-size: 16px;
@@ -153,13 +153,11 @@ body {
   bottom: -3px;
   height: 3px;
   left: -2px;
-  /* margin-left: 128px; */
 }
 .train-button:active::after {
   left: -3px;
   width: 3px;
   bottom: -2px;
-  /* margin-left: 128px; */
 }
 #buttonA {
   background-color: #4ca64c;

@@ -12,11 +12,13 @@ let isPredicting = false;
 let prevIsPredicting = false;
 let exampleCounts = new Array(3).fill(0);
 let timers = new Array(3);
+
 let predictimer;
-const msgArray = ['A', 'B', 'C'];
 let outputSrc;
 let updateGifIndex;
 let uploadBtn;
+
+const msgArray = ['A', 'B', 'C'];
 let gifSrcs = ['output0.gif', 'output1.gif', 'output2.gif'];
 
 function preload() {
@@ -84,19 +86,8 @@ function predict() {
 // Show the results
 function gotResults(results) {
   if (results.classIndex < 0) return;
-
-  // Update 'My guess is category: A/B/C'
-  let msg = msgArray[results.classIndex];
-
-  // Update 'My confidence is: 0 - 100%.'
-  // let comfidence = Math.max.apply(Math, results.confidences);
-  // select('#result').html(msg);
-  // select('#confidence').html(comfidence * 100 + '%');
-
   updateConfidence(results.confidences);
-
   updateGif(results);
-
   if (isPredicting) predictimer = setTimeout(() => predict(), 50);
 }
 
@@ -145,8 +136,6 @@ function updateIsPredicting() {
 }
 
 function resetResult() {
-  // select('#result').html('...');
-  // select('#confidence').html('...');
   select('#output').elt.src = 'default.png';
   updateConfidence(exampleCounts);
 }
@@ -161,13 +150,3 @@ function imageUpload(file) {
   select('#img' + msgArray[updateGifIndex]).elt.src = file.data;
   select('#output').elt.src = file.data;
 }
-
-// TODO:
-// output gif DONE
-// mouse is press keep training DONE
-// add example count DONE
-// reset training, reset example count DONE
-// automaticall start training when at least have one training data DONE
-// be able to upload new gif DONE
-
-// overall layout, responsive
