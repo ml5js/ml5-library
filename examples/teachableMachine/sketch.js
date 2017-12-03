@@ -89,13 +89,22 @@ function gotResults(results) {
   let msg = msgArray[results.classIndex];
 
   // Update 'My confidence is: 0 - 100%.'
-  let comfidence = Math.max.apply(Math, results.confidences);
-  select('#result').html(msg);
-  select('#confidence').html(comfidence * 100 + '%');
+  // let comfidence = Math.max.apply(Math, results.confidences);
+  // select('#result').html(msg);
+  // select('#confidence').html(comfidence * 100 + '%');
+
+  updateConfidence(results.confidences);
 
   updateGif(results);
 
   if (isPredicting) predictimer = setTimeout(() => predict(), 50);
+}
+
+function updateConfidence(confidences) {
+  for (let j = 0; j < msgArray.length; j++) {
+    select('#progress-text' + msgArray[j]).html( confidences[j] * 100 + ' %');
+    select('#progress-bar' + msgArray[j]).style('width', confidences[j] * 100 + '%');
+  }
 }
 
 // Clears the saved images from the specified class.
@@ -116,7 +125,7 @@ function updateExampleCounts() {
   let counts = knn.getClassExampleCount();
   exampleCounts = counts.slice(0, 3);
   exampleCounts.forEach((count, index) => {
-    select('#example' + msgArray[index]).html(msgArray[index] + ' examples: ' + count);
+    select('#example' + msgArray[index]).html(count + ' EXAMPLES');
   });
 
   updateIsPredicting();
@@ -136,9 +145,10 @@ function updateIsPredicting() {
 }
 
 function resetResult() {
-  select('#result').html('...');
-  select('#confidence').html('...');
+  // select('#result').html('...');
+  // select('#confidence').html('...');
   select('#output').elt.src = 'default.png';
+  updateConfidence(exampleCounts);
 }
 
 function uploadGif(index) {

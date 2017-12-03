@@ -19,23 +19,69 @@
     <h3 class="title">LEARNING</h3>
     <div>
       <div class="trainbtns-container">
-        <div class="trainbtn-box"><button id="buttonA" class="train-button">TRAIN   GREEN</button></div>
-        <div class="trainbtn-box"><button id="buttonB" class="train-button">TRAIN PURPLE</button></div>
-        <div class="trainbtn-box"><button id="buttonC" class="train-button">TRAIN      PINK</button></div>
+
+        <div class="green-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress0">
+                <span class="progress-text" id="progress-textA"></span>
+                <div class="progress-bar" id="progress-barA"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleA">0 EXAMPLES</span>
+            <button id="resetA">RESET</button>
+          </div>
+          
+          <div class="trainbtn-box">
+            <button id="buttonA" class="train-button">TRAIN   GREEN</button>
+          </div>
+        </div>
+
+        <div class="purple-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress1">
+                <span class="progress-text" id="progress-textB"></span>
+                <div class="progress-bar" id="progress-barB"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleB">0 EXAMPLES</span>
+            <button id="resetB">RESET</button>
+          </div>
+
+          <div class="trainbtn-box">
+            <button id="buttonB" class="train-button">TRAIN PURPLE</button>
+          </div>
+        </div>
+
+        <div class="pink-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress2">
+                <span class="progress-text" id="progress-textC"></span>
+                <div class="progress-bar" id="progress-barC"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleC">0 EXAMPLES</span>
+            <button id="resetC">RESET</button>
+          </div>
+
+          <div class="trainbtn-box">
+            <button id="buttonC" class="train-button">TRAIN      PINK</button>
+          </div>
+        </div>
       </div>
-
-      <button id="resetA">Reset A</button>
-      <button id="resetB">Reset B</button>
-      <button id="resetC">Reset C</button>
-
-      <p id="exampleA">A examples: 0</p>
-      <p id="exampleB">B examples: 0</p>
-      <p id="exampleC">C examples: 0</p>
     </div>
-    <div>
+    <!-- <div>
       My guess is category: <span id="result">...</span>.<br>
       My confidence is: <span id="confidence">...</span>.
-    </div>
+    </div> -->
   </div>
 
   <div class="white-box output-container">
