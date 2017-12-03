@@ -18,9 +18,11 @@
   <div id="learning-container" class="white-box">
     <h3 class="title">LEARNING</h3>
     <div>
-      <button id="buttonA">Train A</button>
-      <button id="buttonB">Train B</button>
-      <button id="buttonC">Train C</button><br>
+      <div class="trainbtns-container">
+        <div class="trainbtn-box"><button id="buttonA" class="train-button">TRAIN   GREEN</button></div>
+        <div class="trainbtn-box"><button id="buttonB" class="train-button">TRAIN PURPLE</button></div>
+        <div class="trainbtn-box"><button id="buttonC" class="train-button">TRAIN      PINK</button></div>
+      </div>
 
       <button id="resetA">Reset A</button>
       <button id="resetB">Reset B</button>
@@ -41,21 +43,21 @@
     <img id="output" src="default.png" />
 
     <div class="gif-container">
-      <div class="container">
+      <div class="container" id="containerA">
         <img class="image" id="imgA" src="output0.gif" />
         <div class="middle" onclick="uploadGif(0)">
           <div class="text">EDIT</div>
         </div>
       </div>
       
-      <div class="container">
+      <div class="container" id="containerB">
         <img class="image" id="imgB" src="output1.gif" />
         <div class="middle" onclick="uploadGif(1)">
           <div class="text">EDIT</div>
         </div>
       </div>
 
-      <div class="container">
+      <div class="container" id="containerC">
         <img class="image" id="imgC" src="output2.gif" />
         <div class="middle" onclick="uploadGif(2)">
           <div class="text">EDIT</div>

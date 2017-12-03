@@ -1,10 +1,6 @@
 body {
   background: #eee;
 }
-button {
-  margin: 4px;
-  padding: 8px;
-}
 #output {
   height: 300px;
   width: 354px;
@@ -17,6 +13,14 @@ button {
 }
 .container {
   position: relative;
+}
+#containerA {
+  border: 4px solid lightgreen;
+}
+#containerB {
+  border: 4px solid MediumPurple ;
+}
+#containerC {
   border: 4px solid pink;
 }
 .image {
@@ -56,7 +60,7 @@ button {
 }
 .body-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   font-family: Arial, Helvetica, sans-serif;
   margin: 20px;
 }
@@ -64,4 +68,99 @@ button {
   background: white;
   padding: 15px;
   border-radius: 7px;
+}
+.trainbtns-container {
+  margin-left: 123px;
+  height: 280px;
+}
+.trainbtn-box {
+  margin-top: 45px;
+  height: 60px;
+}
+
+/* All about 3D buttons */
+.train-button::before, .train-button::after {
+  position: absolute;
+  content: "";
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.train-button {
+  display: inline-block;
+  padding: 20px 50px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 16px;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  white-space: pre;
+  border-radius: 0px;
+  border: none;
+  cursor: pointer;
+}
+.train-button::before {
+  bottom: -10px;
+  height: 10px;
+  width: 100%;
+  left: -5px;
+  -webkit-transform: skewX(-45deg);
+          transform: skewX(-45deg);
+  /* background-color: #16527a; */
+}
+.train-button::after {
+  left: -10px;
+  height: 100%;
+  width: 10px;
+  bottom: -5px;
+  -webkit-transform: skewY(-45deg);
+          transform: skewY(-45deg);
+  /* background-color: #1d6fa5; */
+}
+.train-button:active {
+  margin-left: -10px;
+  margin-top: 10px;
+}
+.train-button:active::before {
+  bottom: -5px;
+  height: 5px;
+  left: -3px;
+}
+.train-button:active::after {
+  left: -5px;
+  width: 5px;
+  bottom: -3px;
+}
+/* End of 3D buttons */
+#buttonA {
+  background-color: #4ca64c;
+}
+#buttonA::after {
+  background-color: #329932;  
+}
+#buttonA::before {
+  background-color: #008000;  
+}
+#buttonB {
+  background-color: #b76fdb;
+}
+#buttonB::after {
+  background-color: #a346d1;  
+}
+#buttonB::before {
+  background-color: #9932cc;  
+}
+#buttonC {
+  background-color: #ff5ab3;
+}
+#buttonC::after {
+  background-color: #ff42a8;  
+}
+#buttonC::before {
+  background-color: #ff1493;  
 }
