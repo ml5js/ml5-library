@@ -15,6 +15,8 @@ let timers = new Array(3);
 let predictimer;
 const msgArray = ['A', 'B', 'C'];
 let outputSrc;
+let updateGifIndex;
+let uploadBtn;
 let gifSrcs = ['output0.gif', 'output1.gif', 'output2.gif'];
 
 function preload() {
@@ -29,7 +31,9 @@ function setup() {
   video.size(227, 227);
   video.hide();
 
-  let uploadBtn = createFileInput(imageUpload);
+  uploadBtn = createFileInput(imageUpload);
+  uploadBtn.id('uploadbtn');
+  uploadBtn.hide();
 
   // Train buttons
   msgArray.forEach((id, index) => {
@@ -137,9 +141,16 @@ function resetResult() {
   select('#output').elt.src = 'default.png';
 }
 
+function uploadGif(index) {
+  updateGifIndex = index;
+  console.log('uploadBtn: ', uploadBtn);
+  console.log('updateGifIndex: ', updateGifIndex);
+  uploadBtn.elt.click();
+}
+
 function imageUpload(file) {
-  gifSrcs[0] = file.data;
-  select('#imgA').elt.src = file.data;
+  gifSrcs[updateGifIndex] = file.data;
+  select('#img' + msgArray[updateGifIndex]).elt.src = file.data;
   select('#output').elt.src = file.data;
 }
 
