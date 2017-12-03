@@ -68,7 +68,7 @@ function draw() {
 
 // A function to be called when the model has been loaded
 function modelLoaded() {
-  select('#loading').html('Model loaded!');
+  // select('#loading').html('Model loaded!');
 }
 
 // Train the Classifier on a frame from the video.

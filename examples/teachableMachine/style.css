@@ -4,6 +4,7 @@
   }
   #output {
     height: 300px;
+    background: lightgray;
   }
   .gif-container {
     display: flex;
@@ -14,11 +15,11 @@
     border: 4px solid pink;
   }
   .image {
-    margin: 10px;
+    margin: 5px;
     opacity: 1;
     display: block;
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     transition: .5s ease;
     backface-visibility: hidden;
   }
@@ -47,4 +48,8 @@
     color: white;
     font-size: 16px;
     padding: 16px 32px;
+  }
+  .body-container {
+      display: flex;
+      justify-content: space-between;
   }

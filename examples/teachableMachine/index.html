@@ -10,50 +10,55 @@
 </head>
 
 <body>
+  <div class="body-container">
   <div id="canvasContainer"></div>
-  <div>
-    <span id="loading">Loading the model...</span>
-  </div>
-  <div>
-    <button id="buttonA">Train A</button>
-    <button id="buttonB">Train B</button>
-    <button id="buttonC">Train C</button><br>
 
-    <button id="resetA">Reset A</button>
-    <button id="resetB">Reset B</button>
-    <button id="resetC">Reset C</button>
+  <div id="learning-container">
+    <div>
+      <button id="buttonA">Train A</button>
+      <button id="buttonB">Train B</button>
+      <button id="buttonC">Train C</button><br>
 
-    <p id="exampleA">A examples: 0</p>
-    <p id="exampleB">B examples: 0</p>
-    <p id="exampleC">C examples: 0</p>
+      <button id="resetA">Reset A</button>
+      <button id="resetB">Reset B</button>
+      <button id="resetC">Reset C</button>
+
+      <p id="exampleA">A examples: 0</p>
+      <p id="exampleB">B examples: 0</p>
+      <p id="exampleC">C examples: 0</p>
+    </div>
+    <div>
+      My guess is category: <span id="result">...</span>.<br>
+      My confidence is: <span id="confidence">...</span>.
+    </div>
   </div>
-  <div>
-    My guess is category: <span id="result">...</span>.<br>
-    My confidence is: <span id="confidence">...</span>.
-  </div>
-  <img id="output" src="default.png" />
-  <div class="gif-container">
-    <div class="container">
-      <img class="image" id="imgA" src="output0.gif" />
-      <div class="middle" onclick="uploadGif(0)">
-        <div class="text">EDIT</div>
+
+  <div class="output-container">
+    <img id="output" src="default.png" />
+
+    <div class="gif-container">
+      <div class="container">
+        <img class="image" id="imgA" src="output0.gif" />
+        <div class="middle" onclick="uploadGif(0)">
+          <div class="text">EDIT</div>
+        </div>
+      </div>
+      
+      <div class="container">
+        <img class="image" id="imgB" src="output1.gif" />
+        <div class="middle" onclick="uploadGif(1)">
+          <div class="text">EDIT</div>
+        </div>
+      </div>
+
+      <div class="container">
+        <img class="image" id="imgC" src="output2.gif" />
+        <div class="middle" onclick="uploadGif(2)">
+          <div class="text">EDIT</div>
+        </div>
       </div>
     </div>
-    
-    <div class="container">
-      <img class="image" id="imgB" src="output1.gif" />
-      <div class="middle" onclick="uploadGif(1)">
-        <div class="text">EDIT</div>
-      </div>
-    </div>
-
-    <div class="container">
-      <img class="image" id="imgC" src="output2.gif" />
-      <div class="middle" onclick="uploadGif(2)">
-        <div class="text">EDIT</div>
-      </div>
-    </div>
-
+  </div>
   </div>
   <script src="sketch.js"></script>
 </body>
