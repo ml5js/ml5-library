@@ -100,6 +100,9 @@ body {
   margin: 10px 0;
   width: 246px;
 }
+.center-text {
+  text-align: center;
+}
 
 /* All about 3D buttons */
 .train-button::before, .train-button::after {

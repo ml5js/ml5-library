@@ -98,7 +98,7 @@ function updateConfidence(confidences) {
   }
 }
 
-// Clears the saved images from the specified class.
+// Clear the data in one class
 function clearClass(classIndex) {
   knn.clearClass(classIndex);
 }
