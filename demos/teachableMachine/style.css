@@ -240,6 +240,7 @@ body {
 }
 /* For desktop: */
 .col-3 {width: 30%;}
+/* .col-10 {width: 100%;} */
 
 @media only screen and (max-width: 1024px) {
   /* For mobile phones: */
