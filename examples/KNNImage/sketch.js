@@ -21,7 +21,7 @@ function setup() {
   video.size(227, 227);
   video.hide();
 
-  // Buttons
+  // Train buttons
   buttonA = select('#buttonA');
   buttonA.mousePressed(() => {
     train(1);
@@ -30,6 +30,19 @@ function setup() {
   buttonB = select('#buttonB');
   buttonB.mousePressed(() => {
     train(2);
+  });
+
+  // Reset buttons
+  resetBtnA = select('#resetA');
+  resetBtnA.mousePressed(() => {
+    clearClass(1);
+    updateExampleCounts();
+  });
+
+  resetBtnB = select('#resetB');
+  resetBtnB.mousePressed(() => {
+    clearClass(2);
+    updateExampleCounts();
   });
 
   buttonPredict = select('#buttonPredict');
@@ -56,6 +69,7 @@ function train(category) {
   }
   select('#training').html(msg);
   knn.addImage(video.elt, category);
+  updateExampleCounts();
 }
 
 // Predict the current frame.
@@ -74,5 +88,21 @@ function gotResults(results) {
   }
   select('#result').html(msg);
 
+  // Update confidence
+  select('#confidenceA').html(results.confidences[1]);
+  select('#confidenceB').html(results.confidences[2]);
+
   setTimeout(() => predict(), 50);
+}
+
+// Clear the data in one class
+function clearClass(classIndex) {
+  knn.clearClass(classIndex);
+}
+
+// Update the example count for each class
+function updateExampleCounts() {
+  let counts = knn.getClassExampleCount();
+  select('#exampleA').html(counts[1]);
+  select('#exampleB').html(counts[2]);
 }
