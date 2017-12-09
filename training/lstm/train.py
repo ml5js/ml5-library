@@ -75,7 +75,7 @@ def getModelVocab(model_name):
     return vocab
 
 def train(args):
-    model_name = args.data_dir.split("/")[2]
+    model_name = args.data_dir.split("/")[-1]
     # make a dir to store checkpoints
     args.save_dir = os.path.join('checkpoints', model_name)
     if not os.path.exists(args.save_dir):
