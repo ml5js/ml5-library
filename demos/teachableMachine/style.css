@@ -1,0 +1,250 @@
+body {
+  background: #eee;
+}
+#output {
+  height: 300px;
+  max-width: 300px;
+  background: lightgray;
+  margin-bottom: 15px;
+}
+.output-container {
+  min-width: 330px;
+  padding-bottom: 35px !important;
+}
+.input-container {
+  min-width: 350px;
+  padding-bottom: 35px !important;
+}
+.center-container {
+  display: flex;
+  justify-content: center;
+}
+.gif-container {
+  display: flex;
+  justify-content: space-between;
+  min-width: 300px;
+}
+.container {
+  position: relative;
+}
+#containerA {
+  border: 4px solid #4ca64c;
+}
+#containerB {
+  border: 4px solid #b76fdb ;
+}
+#containerC {
+  border: 4px solid #ff5ab3;
+}
+.image {
+  margin: 5px;
+  opacity: 1;
+  display: block;
+  width: 70px;
+  height: 70px;
+  transition: .5s ease;
+  backface-visibility: hidden;
+}
+
+.middle {
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.container:hover .image {
+  opacity: 0.3;
+}
+
+.container:hover .middle {
+  opacity: 1;
+}
+
+.text {
+  background-color: #333;
+  color: white;
+  font-size: 12px;
+  padding: 16px 22px;
+}
+.body-container {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 20px;
+}
+.white-box {
+  background: white;
+  padding: 15px;
+  border-radius: 7px;
+  margin: 20px;
+}
+.trainbtn-box {
+  margin-top: 35px;
+  height: 65px;
+}
+.purple-color {
+  color: #b76fdb;
+}
+.green-color {
+  color: #4ca64c;
+}
+.pink-color {
+  color: #ff5ab3;
+}
+.exampereset-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  width: 246px;
+}
+.center-text {
+  text-align: center;
+}
+
+/* All about 3D buttons */
+.train-button::before, .train-button::after {
+  position: absolute;
+  content: "";
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.train-button {
+  display: inline-block;
+  padding: 20px 60px;
+  color: white;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: 16px;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+  white-space: pre;
+  border-radius: 0px;
+  border: none;
+  cursor: pointer;
+  margin-left: 128px;
+}
+.train-button::before {
+  bottom: -10px;
+  height: 10px;
+  width: 100%;
+  left: -5px;
+  -webkit-transform: skewX(-45deg);
+  transform: skewX(-45deg);
+}
+.train-button::after {
+  left: -10px;
+  height: 100%;
+  width: 10px;
+  bottom: -5px;
+  -webkit-transform: skewY(-45deg);
+  transform: skewY(-45deg);
+}
+.train-button:active {
+  margin-left: -6px;
+  margin-top: 6px;
+  margin-left: 128px;
+}
+.train-button:active::before {
+  bottom: -3px;
+  height: 3px;
+  left: -2px;
+}
+.train-button:active::after {
+  left: -3px;
+  width: 3px;
+  bottom: -2px;
+}
+#buttonA {
+  background-color: #4ca64c;
+}
+#buttonA::after {
+  background-color: #329932;  
+}
+#buttonA::before {
+  background-color: #008000;  
+}
+#buttonB {
+  background-color: #b76fdb;
+}
+#buttonB::after {
+  background-color: #a346d1;  
+}
+#buttonB::before {
+  background-color: #9932cc;  
+}
+#buttonC {
+  background-color: #ff5ab3;
+}
+#buttonC::after {
+  background-color: #ff2b9d;  
+}
+#buttonC::before {
+  background-color: #ff1493;  
+}
+/* End of 3D buttons */
+
+/* All about progress bar */
+.progress {
+  position:relative;
+  width: 246px;
+  height: 35px;
+  background: lightgray;
+}
+
+.progress .progress-bar {
+  height: 35px;
+  width: 0%;
+  display: inline-block;
+}
+
+#progress-barA {
+  background: #4ca64c;
+}
+
+#progress-barB {
+  background: #b76fdb;
+}
+
+#progress-barC {
+  background: #ff5ab3;
+}
+
+.progress .progress-text {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  color: white;
+  padding: 10px 20px;
+}
+/* End of progress bar */
+
+/* Responsiveness */
+* {
+  box-sizing: border-box;
+}
+.row::after {
+  content: "";
+  clear: both;
+  display: block;
+}
+[class*="col-"] {
+  float: left;
+}
+/* For desktop: */
+.col-3 {width: 30%;}
+/* .col-10 {width: 100%;} */
+
+@media only screen and (max-width: 1024px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+      width: 100%;
+  }
+}

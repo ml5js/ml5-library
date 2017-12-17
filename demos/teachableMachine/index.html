@@ -1,0 +1,118 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Teachable Machine Example</title>
+  <link rel="stylesheet" type="text/css" href="./style.css"></link>
+  <script src="../libraries/p5.min.js"></script>
+  <script src="../libraries/p5.dom.min.js"></script>
+  <script src="../libraries/p5ml.min.js"></script>
+</head>
+
+<body>
+  <div class="body-container row">
+    <h1 class="center-text">Teachable Machine</h1>
+    <p class="center-text">This is a recreation of <a href="https://teachablemachine.withgoogle.com">google creative lab's teachable machines</a> in <a href="https://github.com/ITPNYU/p5-deeplearn-js">p5-deeplearn-js</a></p>
+    <div class="input-container white-box col-3">
+      <h3 class="title">INPUT</h3>
+      <div id="canvasContainer" class="center-container"></div>
+    </div>
+
+  <div id="learning-container" class="white-box col-3">
+    <h3 class="title">LEARNING</h3>
+    <div>
+      <div class="trainbtns-container">
+
+        <div class="green-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress0">
+                <span class="progress-text" id="progress-textA"></span>
+                <div class="progress-bar" id="progress-barA"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleA">0 EXAMPLES</span>
+            <button id="resetA">RESET</button>
+          </div>
+          
+          <div class="trainbtn-box">
+            <button id="buttonA" class="train-button">TRAIN   GREEN</button>
+          </div>
+        </div>
+
+        <div class="purple-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress1">
+                <span class="progress-text" id="progress-textB"></span>
+                <div class="progress-bar" id="progress-barB"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleB">0 EXAMPLES</span>
+            <button id="resetB">RESET</button>
+          </div>
+
+          <div class="trainbtn-box">
+            <button id="buttonB" class="train-button">TRAIN PURPLE</button>
+          </div>
+        </div>
+
+        <div class="pink-color">
+          <div class="confidence-box">
+            <div>CONFIDENCE</div>
+            <div class="progress" id="progress2">
+                <span class="progress-text" id="progress-textC"></span>
+                <div class="progress-bar" id="progress-barC"></div>
+            </div>
+          </div>
+
+          <div class="exampereset-container">
+            <span id="exampleC">0 EXAMPLES</span>
+            <button id="resetC">RESET</button>
+          </div>
+
+          <div class="trainbtn-box">
+            <button id="buttonC" class="train-button">TRAIN      PINK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="white-box output-container col-3">
+    <h3 class="title">OUTPUT</h3>
+    <div class="center-container"><img id="output" src="default.png" /></div>
+
+    <div class="gif-container">
+      <div class="container" id="containerA">
+        <img class="image" id="imgA" src="output0.gif" />
+        <div class="middle" onclick="uploadGif(0)">
+          <div class="text">EDIT</div>
+        </div>
+      </div>
+      
+      <div class="container" id="containerB">
+        <img class="image" id="imgB" src="output1.gif" />
+        <div class="middle" onclick="uploadGif(1)">
+          <div class="text">EDIT</div>
+        </div>
+      </div>
+
+      <div class="container" id="containerC">
+        <img class="image" id="imgC" src="output2.gif" />
+        <div class="middle" onclick="uploadGif(2)">
+          <div class="text">EDIT</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <script src="sketch.js"></script>
+</body>
+
+</html>
