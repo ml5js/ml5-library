@@ -1,13 +1,12 @@
 /*
 Simple Artificial Neural Network
-Based on https://github.com/shiffman/Neural-Network-p5 by Daniel Shiffman 
+Based on https://github.com/shiffman/Neural-Network-p5 by Daniel Shiffman
 Based on "Make Your Own Neural Network" by Tariq Rashid
 https://github.com/makeyourownneuralnetwork/
 */
 
-import { math, randomFloat, randomGaussian } from './../utils/index';
-import { Array1D, Array2D, Scalar } from 'deeplearn';
-import { MatrixOrientation } from 'deeplearn/dist/src/math/math';
+import { Array2D, Scalar } from 'deeplearn';
+import { math } from './../utils/index';
 
 class NeuralNetwork {
   constructor(inputnodes, hiddennodes, outputnodes, learning_rate = 0.1, activation = 'sigmoid') {
@@ -75,4 +74,4 @@ class NeuralNetwork {
   }
 }
 
-export { NeuralNetwork };
+export default NeuralNetwork;

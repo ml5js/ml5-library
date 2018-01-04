@@ -1,0 +1,7 @@
+{
+    "extends": "airbnb-base",
+    "globals": { "fetch": false },
+    "rules":{
+        "no-console":0
+    }
+}

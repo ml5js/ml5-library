@@ -1,50 +1,51 @@
 /*
-Image net Class
+ImageNet Class
+
+TODO: model name in constructor is just a placeholder value.
 */
 
-import { math } from './../utils/index';
-import { Array3D } from 'deeplearn';
-import { SqueezeNet } from './squeezenet';
+import { ENV, Array3D } from 'deeplearn';
+import { SqueezeNet } from 'deeplearn-squeezenet';
 
 class ImageNet {
   constructor(model) {
     this.model = model;
-    async function loadSqueezNet() {
-      let squeezeNet = await new SqueezeNet(math);
-      await squeezeNet.load();
-      return squeezeNet
-    }
-    loadSqueezNet().then(sn => this.squeezeNet = sn);
+    this.ready = false;
+    this.math = ENV.math;
+    this.squeezeNet = new SqueezeNet(this.math);
   }
 
-  predict(img, callback, num) {
-    if (!this.squeezeNet) {
-      setTimeout(() => {
-        this.predict(img, callback)
-      }, 400)
+  async predict(img, num, callback) {
+    if (this.ready) {
+      this.getClasses(img, num, callback);
     } else {
-      const image = Array3D.fromPixels(img);
-      let _squeezeNet = this.squeezeNet;
-      async function predictImage() {
-        const inferenceResult = await _squeezeNet.predict(image);
-        return await _squeezeNet.getTopKClasses(inferenceResult.logits, num || 10);
-      }
-      predictImage().then(data => {
-
-        let results = [];
-        for (let value in data){
-          let result = {
-            label: value,
-            probability: data[value]
-          }
-          results.push(result);
-        }
-        results.sort((a,b) => b.probability - a.probability);
-        callback(results);
+      ImageNet.loadModel(this.squeezeNet).then(() => {
+        this.ready = true;
+        this.getClasses(img, num, callback);
       });
     }
   }
 
+  // Private Method
+  async getClasses(img, num, callback) {
+    const image = Array3D.fromPixels(img);
+    const results = [];
+    const result = this.squeezeNet.predict(image);
+    const topKClasses = await this.squeezeNet.getTopKClasses(result, num || 10);
+    Object.keys(topKClasses).forEach((value) => {
+      results.push({
+        label: value,
+        probability: topKClasses[value],
+      });
+    });
+    results.sort((a, b) => b.probability - a.probability);
+    callback(results);
+  }
+
+  static async loadModel(model) {
+    await model.load();
+    return true;
+  }
 }
 
-export { ImageNet };
+export default ImageNet;
