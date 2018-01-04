@@ -1,11 +1,11 @@
 // Utils for sampling
 
 // Sample from a distrubution
-let sampleFromDistribution = input =>  {
+const sampleFromDistribution = (input) => {
   const randomValue = Math.random();
-  let sum = 0,
-    result;
-  for (let j = 0; j < input.length; j++) {
+  let sum = 0;
+  let result;
+  for (let j = 0; j < input.length; j += 1) {
     sum += input[j];
     if (randomValue < sum) {
       result = j;
@@ -13,7 +13,6 @@ let sampleFromDistribution = input =>  {
     }
   }
   return result;
+};
 
-}
-
-export { sampleFromDistribution }
+export default sampleFromDistribution;

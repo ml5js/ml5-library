@@ -7,14 +7,28 @@ export default {
   output: {
     path: join(__dirname, 'dist'),
     libraryTarget: 'umd',
-    publicPath: "/dist/",
-    filename: "p5ml.js",
-    library: 'p5ml'
+    publicPath: '/dist/',
+    filename: 'p5ml.js',
+    library: 'p5ml',
   },
   module: {
-    loaders: [
-      { test: /\.js$/, loader: 'babel-loader', include },
-      { test: /\.json$/, loader: 'json', include }
+    rules: [
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader',
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include,
+      },
+      {
+        test: /\.json$/,
+        loader: 'json',
+        include,
+      },
     ],
-  }
-}
+  },
+};
