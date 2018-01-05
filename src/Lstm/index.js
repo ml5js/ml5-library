@@ -130,14 +130,12 @@ class LSTMGenerator {
       });
 
       let generated = '';
-
       results.forEach((c) => {
         const mapped = Object.keys(this.vocab).find(key => this.vocab[key] === c);
         if (mapped) {
           generated += mapped;
         }
       });
-
       callback({ generated });
     }
   }
