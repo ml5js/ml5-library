@@ -11,13 +11,14 @@ import * as dl from 'deeplearn';
 import ImageNet from './ImageNet/index';
 import KNNImageClassifier from './KNNImage/index';
 import LSTMGenerator from './Lstm/index';
-// import NeuralNetwork from './NeuralNetwork/index';
-
-// console.log('p5ML loaded');
+import NeuralNetwork from './NeuralNetwork/index';
+import Word2Vec from './Word2vec/index';
 
 module.exports = {
   ImageNet,
   KNNImageClassifier,
   LSTMGenerator,
+  NeuralNetwork,
+  Word2Vec,
   dl,
 };
