@@ -3,69 +3,92 @@ Word2Vec implementation
 Based on https://github.com/shiffman/p5-word2vec
 */
 
-
-import { ENV } from 'deeplearn';
+import { ENV, Array1D, Scalar, util } from 'deeplearn';
 
 class Word2Vec {
-  constructor() {
+  constructor(vectors) {
     this.ready = false;
     this.model = {};
+    this.modelSize = 0;
     this.math = ENV.math;
+    this.loadVectors(vectors);
   }
 
-  static magnitude(a) {
-    return Math.sqrt(a.reduce((sum, val) => sum + (val * val), 0));
+  loadVectors(file) {
+    fetch(file)
+      .then(response => response.json())
+      .then((json) => {
+        Object.keys(json.vectors).forEach((word) => {
+          this.model[word] = Array1D.new(json.vectors[word]);
+        });
+        this.modelSize = Object.keys(json).length;
+      }).catch((error) => {
+        console.log(`There has been a problem loading the vocab: ${error.message}`);
+      });
   }
 
-  // Cosine similarity!
-  static distance(v1, v2) {
-    // Check if v1 or v2 is a string then grab vector?
-    // let v1 = wordVecs[word1];
-    // let v2 = wordVecs[word2];
-
-    let sum = v1.reduce((sum, a, i) => {
-      return sum + a * v2[i];
-    }, 0);
-    return sum / (this.magnitude(v1) * this.magnitude(v2)); //magnitude is 1 for all feature vectors
+  add(inputs, max = 1) {
+    const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
+    return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
   }
 
-  // Add two word vectors
-  static add(v1, v2) {
-    return v1.map((a, i) => a + v2[i]);
+  subtract(inputs, max = 1) {
+    const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
+    return Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
   }
 
-  // Subtract two word vectors
-  static subtract(v1, v2) {
-    return v1.map((a, i) => a - v2[i]);
+  average(inputs, max = 1) {
+    const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
+    const avg = this.math.arrayDividedByScalar(sum, Scalar.new(inputs.length));
+    return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
   }
 
-  // Average of two word vectors
-  static average(v1, v2) {
-    return v1.map((a, i) => (a + v2[i]) * 0.5);
+  nearest(input, max = 10) {
+    const vector = this.model[input];
+    if (!vector) {
+      return null;
+    }
+    return Word2Vec.nearest(this.model, vector, 1, max);
   }
 
-  static nearest(word, n = 10) {
-    let vec;
-    if (word instanceof Array) {
-      vec = word;
-    } else {
-      if (!wordVecs[word]) {
-        return undefined;
+  static addOrSubtract(model, values, operation) {
+    const vectors = [];
+    const notFound = [];
+    values.forEach((value) => {
+      const vector = model[value];
+      if (!vector) {
+        notFound.push(vector);
       } else {
-        vec = wordVecs[word];
+        vectors.push(vector);
       }
-    }
-    let words = [];
-    let keys = Object.keys(wordVecs);
-    for (let i = 0; i < keys.length; i++) {
-      let key = keys[i];
-      let d = this.distance(vec, wordVecs[key]);
-      words.push({ word: key, distance: d });
-    }
-    words.sort((a, b) => {
-      return b.distance - a.distance;
     });
-    return words.slice(0, n);
+
+    if (notFound.length > 0 || values.length < 2) {
+      return { error: 'Invalid inputs', notFound, values };
+    }
+    return ENV.math.scope(() => {
+      let result = vectors[0];
+      if (operation === 'ADD') {
+        for (let i = 1; i < vectors.length; i += 1) {
+          result = ENV.math.add(result, vectors[i]);
+        }
+      } else {
+        for (let i = 1; i < vectors.length; i += 1) {
+          result = ENV.math.subtract(result, vectors[i]);
+        }
+      }
+      return result;
+    });
+  }
+
+  static nearest(model, input, start, max) {
+    const nearestVectors = [];
+    Object.keys(model).forEach((vector) => {
+      const distance = util.distSquared(input.dataSync(), model[vector].dataSync());
+      nearestVectors.push({ vector, distance });
+    });
+    nearestVectors.sort((a, b) => a.distance - b.distance);
+    return nearestVectors.slice(start, max);
   }
 }
 

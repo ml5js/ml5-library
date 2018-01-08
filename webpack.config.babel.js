@@ -24,11 +24,6 @@ export default {
         loader: 'babel-loader',
         include,
       },
-      {
-        test: /\.json$/,
-        loader: 'json',
-        include,
-      },
     ],
   },
 };
