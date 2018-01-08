@@ -54,12 +54,14 @@ class LSTMGenerator {
     });
   }
 
-  loadVocab(path) {
-    fetch(`${path}/vocab.json`)
+  loadVocab(file) {
+    fetch(`${file}/vocab.json`)
       .then(response => response.json())
       .then((json) => {
         this.vocab = json;
         this.vocabSize = Object.keys(json).length;
+      }).catch((error) => {
+        console.log(`There has been a problem loading the vocab: ${error.message}`);
       });
   }
 

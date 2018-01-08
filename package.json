@@ -31,28 +31,28 @@
   },
   "homepage": "https://github.com/ITPNYU/p5-deeplearn-js#readme",
   "devDependencies": {
-    "babel-cli": "6.24.1",
+    "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
-    "babel-loader": "7.0.0",
+    "babel-loader": "7.1.2",
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-polyfill": "6.26.0",
     "babel-preset-es2015": "6.24.1",
     "babel-preset-stage-0": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
-    "babel-register": "6.24.1",
+    "babel-register": "6.26.0",
     "commitizen": "2.9.6",
-    "cz-conventional-changelog": "2.0.0",
-    "eslint": "4.14.0",
+    "cz-conventional-changelog": "2.1.0",
+    "eslint": "4.15.0",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-loader": "1.9.0",
     "eslint-plugin-import": "2.8.0",
-    "ghooks": "2.0.0",
-    "npm-run-all": "4.0.2",
-    "rimraf": "2.6.1",
-    "semantic-release": "6.3.6",
-    "uglify-es": "3.0.28",
-    "webpack": "2.6.1",
-    "webpack-dev-server": "2.4.5"
+    "ghooks": "2.0.2",
+    "npm-run-all": "4.1.2",
+    "rimraf": "2.6.2",
+    "semantic-release": "11.0.2",
+    "uglify-es": "3.3.4",
+    "webpack": "3.10.0",
+    "webpack-dev-server": "2.10.0"
   },
   "config": {
     "commitizen": {
@@ -73,8 +73,8 @@
     ]
   },
   "dependencies": {
-    "deeplearn": "0.3.17",
-    "deeplearn-knn-image-classifier": "0.2.2",
-    "deeplearn-squeezenet": "0.1.8"
+    "deeplearn": "0.4.1",
+    "deeplearn-knn-image-classifier": "0.2.3",
+    "deeplearn-squeezenet": "0.1.9"
   }
 }
