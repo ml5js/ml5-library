@@ -25,8 +25,8 @@ npm install p5ML --save
 ## Examples
 
 - [Mnist](examples/mnist)
-- [LSTM Simple](examples/lstm_1)
-- [LSTM Interactive](examples/lstm_2)
+- [LSTM Simple](examples/lstm_simple)
+- [LSTM Interactive](examples/lstm_interactive)
 - [Imagenet Simple](examples/imagenet)
 - [Imagenet Webcam](examples/imagenetCamera)
 - [KNN Image Classifier](examples/KNNImage)
