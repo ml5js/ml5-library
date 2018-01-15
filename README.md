@@ -19,7 +19,7 @@ Download the library from [here](https://raw.githubusercontent.com/ITPNYU/p5-dee
 To use with ES6
 
 ```bash
-npm install p5ML --save
+npm install p5ml --save
 ```
 
 ## Examples
