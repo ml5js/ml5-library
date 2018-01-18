@@ -17,9 +17,6 @@ function setup() {
 function modelLoaded() {
   console.log('Model loaded!');
 
-  // Set style for the model
-  net.setStyle('udnie');
-
   inputImg = select('#input-img').elt;
 
   /**
