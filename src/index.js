@@ -11,6 +11,7 @@ import KNNImageClassifier from './KNNImage/index';
 import LSTMGenerator from './Lstm/index';
 import NeuralNetwork from './NeuralNetwork/index';
 import Word2Vec from './Word2vec/index';
+import TransformNet from './TransformNet/index';
 
 module.exports = {
   ImageNet,
@@ -19,4 +20,5 @@ module.exports = {
   NeuralNetwork,
   Word2Vec,
   dl,
+  TransformNet,
 };
