@@ -10,7 +10,7 @@ let outputImgData;
 
 function setup() {
   createCanvas(252, 252);
-  net = new p5ml.TransformNet(modelLoaded, 'udnie', 'models/udnie/');
+  net = new p5ml.TransformNet(modelLoaded, 'wave', 'models/wave/');
 }
 
 // A function to be called when the model has been loaded
