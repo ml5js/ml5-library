@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>p5ML.js Blog</title>
+        <link>https://cvalenzuela.github.io/blog</link>
+        <description>The best place to stay up-to-date with the latest p5ML.js news and events.</description>
+        <lastBuildDate>Fri, 11 Mar 2016 06:00:00 GMT</lastBuildDate>
+        <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+        <generator>Feed for Node.js</generator>
+        <image>
+            <title>p5ML.js Blog</title>
+            <url>https://cvalenzuela.github.io</url>
+            <link>https://cvalenzuela.github.io/blog</link>
+        </image>
+        <item>
+            <title><![CDATA[Blog Title]]></title>
+            <link>https://cvalenzuela.github.io/blog/2016/03/11/blog-post.html</link>
+            <guid>https://cvalenzuela.github.io/blog/2016/03/11/blog-post.html</guid>
+            <pubDate>Fri, 11 Mar 2016 06:00:00 GMT</pubDate>
+            <description><![CDATA[
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum massa eget nulla aliquet sagittis. Proin odio tortor, vulputate ut odio in, ultrices ultricies augue. Cras ornare ultrices lorem malesuada iaculis. Etiam sit amet libero tempor, pulvinar mauris sed, sollicitudin sapien.
+
+]]></description>
+        </item>
+    </channel>
+</rss>

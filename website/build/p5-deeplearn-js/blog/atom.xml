@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://cvalenzuela.github.io/blog</id>
+    <title>p5ML.js Blog</title>
+    <updated>2016-03-11T06:00:00Z</updated>
+    <generator>Feed for Node.js</generator>
+    <link rel="alternate" href="https://cvalenzuela.github.io/blog"/>
+    <subtitle>The best place to stay up-to-date with the latest p5ML.js news and events.</subtitle>
+    <logo>https://cvalenzuela.github.io</logo>
+    <entry>
+        <title type="html"><![CDATA[Blog Title]]></title>
+        <id>https://cvalenzuela.github.io/blog/2016/03/11/blog-post.html</id>
+        <link href="https://cvalenzuela.github.io/blog/2016/03/11/blog-post.html">
+        </link>
+        <updated>2016-03-11T06:00:00Z</updated>
+        <summary type="html"><![CDATA[
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque elementum dignissim ultricies. Fusce rhoncus ipsum tempor eros aliquam consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus elementum massa eget nulla aliquet sagittis. Proin odio tortor, vulputate ut odio in, ultrices ultricies augue. Cras ornare ultrices lorem malesuada iaculis. Etiam sit amet libero tempor, pulvinar mauris sed, sollicitudin sapien.
+
+]]></summary>
+        <author>
+            <name>Blog Author</name>
+            <uri>http://twitter.com/</uri>
+        </author>
+    </entry>
+</feed>
