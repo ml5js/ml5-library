@@ -44,7 +44,7 @@ function array3DToP5Image(imgData) {
   const imgWidth = imgData.shape[0];
   const imgHeight = imgData.shape[1];
   const data = imgData.dataSync();
-  let outputImg = createImage(imgWidth, imgHeight);
+  const outputImg = createImage(imgWidth, imgHeight);
   outputImg.loadPixels();
   let k = 0;
   for (let i = 0; i < outputImg.width; i++) {
