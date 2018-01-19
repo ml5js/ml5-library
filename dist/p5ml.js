@@ -25789,7 +25789,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var TransformNet = function () {
-  function TransformNet(callback, style, model) {
+  function TransformNet(model, callback) {
     var _this = this;
 
     _classCallCheck(this, TransformNet);
@@ -25800,7 +25800,6 @@ var TransformNet = function () {
     this.timesScalar = _deeplearn.Scalar.new(150);
     this.plusScalar = _deeplearn.Scalar.new(255.0 / 2);
     this.epsilonScalar = _deeplearn.Scalar.new(1e-3);
-    this.style = style;
     this.loadCheckpoints(model).then(function () {
       _this.ready = true;
       callback();
@@ -25822,21 +25821,14 @@ var TransformNet = function () {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (!(this.variableDictionary[this.style] == null)) {
-                  _context.next = 6;
-                  break;
-                }
-
                 checkpointLoader = new _deeplearn.CheckpointLoader(path);
-                _context.next = 4;
+                _context.next = 3;
                 return checkpointLoader.getAllVariables();
 
+              case 3:
+                this.variables = _context.sent;
+
               case 4:
-                this.variableDictionary[this.style] = _context.sent;
-
-                this.variables = this.variableDictionary[this.style];
-
-              case 6:
               case 'end':
                 return _context.stop();
             }
@@ -25850,11 +25842,6 @@ var TransformNet = function () {
 
       return loadCheckpoints;
     }()
-  }, {
-    key: 'setStyle',
-    value: function setStyle(style) {
-      this.style = style;
-    }
 
     /**
      * Infer through TransformNet, assumes variables have been loaded.
