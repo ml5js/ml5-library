@@ -97,6 +97,20 @@ nn.train(inputs, targets);
 var result = nn.query(inputs)
 ```
 
+### TransformNet
+
+> A Fast Style Transfer
+```javascript
+var net = new p5ml.TransformNet(_path_, callback);
+var outputImgData = net.predict(_inputImg_);
+```
+
+- _path_: The folder where the model is. e.g. 'models/wave'
+- _callback_: A function to execute once the model is loaded.
+- _inputImg_: An HTML image element
+- _outputImgData_: Array3D that contains output image pixels data
+
+See this [example](examples/fast_style_transfer). This example also uses p5.js to convert _outputImgData_ to a p5.Image
 
 ## Contributing
 
