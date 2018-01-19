@@ -7,14 +7,13 @@ and https://github.com/reiinakano/fast-style-transfer-deeplearnjs by reiinakano
 import { Array3D, CheckpointLoader, ENV, Scalar } from 'deeplearn';
 
 class TransformNet {
-  constructor(callback, style, model) {
+  constructor(model, callback) {
     this.ready = false;
     this.math = ENV.math;
     this.variableDictionary = {};
     this.timesScalar = Scalar.new(150);
     this.plusScalar = Scalar.new(255.0 / 2);
     this.epsilonScalar = Scalar.new(1e-3);
-    this.style = style;
     this.loadCheckpoints(model).then(() => {
       this.ready = true;
       callback();
@@ -26,15 +25,8 @@ class TransformNet {
    * variables have all been loaded.
    */
   async loadCheckpoints(path) {
-    if (this.variableDictionary[this.style] == null) {
-      const checkpointLoader = new CheckpointLoader(path);
-      this.variableDictionary[this.style] = await checkpointLoader.getAllVariables();
-      this.variables = this.variableDictionary[this.style];
-    }
-  }
-
-  setStyle(style) {
-    this.style = style;
+    const checkpointLoader = new CheckpointLoader(path);
+    this.variables = await checkpointLoader.getAllVariables();
   }
 
   /**
