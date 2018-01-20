@@ -34,6 +34,7 @@ npm install p5ML --save
 
 ## Demos
 - [Teachable Machine](demos/teachableMachine)
+- [Fast Style Transfer](https://yining1023.github.io/fast_style_transfer_in_p5ML/) [code](https://github.com/yining1023/fast_style_transfer_in_p5ML)
 
 ## API Reference
  
