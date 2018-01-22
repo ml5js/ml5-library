@@ -38,8 +38,7 @@ class TransformNet {
    * @return Array3D containing pixels of output img
    */
   predict(imgElement) {
-    const self = this;
-    function varName(varId) {
+    const varName = (varId) => {
       let variableName;
       if (varId === 0) {
         variableName = 'Variable';
@@ -47,50 +46,50 @@ class TransformNet {
         variableName = `Variable_${varId}`;
       }
       return variableName;
-    }
+    };
 
-    function instanceNorm(input, varId) {
+    const instanceNorm = (input, varId) => {
       const [height, width, inDepth] = input.shape;
-      const moments = self.math.moments(input, [0, 1]);
+      const moments = this.math.moments(input, [0, 1]);
       const mu = moments.mean;
       const sigmaSq = moments.variance;
-      const shift = self.variables[varName(varId)];
-      const scale = self.variables[varName(varId + 1)];
-      const epsilon = self.epsilonScalar;
-      const normalized = self.math.divide(self.math.sub(input.asType('float32'), mu), self.math.sqrt(self.math.add(sigmaSq, epsilon)));
-      const shifted = self.math.add(self.math.multiply(scale, normalized), shift);
+      const shift = this.variables[varName(varId)];
+      const scale = this.variables[varName(varId + 1)];
+      const epsilon = this.epsilonScalar;
+      const normalized = this.math.divide(this.math.sub(input.asType('float32'), mu), this.math.sqrt(this.math.add(sigmaSq, epsilon)));
+      const shifted = this.math.add(this.math.multiply(scale, normalized), shift);
       return shifted.as3D(height, width, inDepth);
-    }
+    };
 
-    function convLayer(input, strides, relu, varId) {
-      const y = self.math.conv2d(input, self.variables[varName(varId)], null, [strides, strides], 'same');
+    const convLayer = (input, strides, relu, varId) => {
+      const y = this.math.conv2d(input, this.variables[varName(varId)], null, [strides, strides], 'same');
       const y2 = instanceNorm(y, varId + 1);
 
       if (relu) {
-        return self.math.relu(y2);
+        return this.math.relu(y2);
       }
 
       return y2;
-    }
+    };
 
-    function convTransposeLayer(input, numFilters, strides, varId) {
+    const convTransposeLayer = (input, numFilters, strides, varId) => {
       const [height, width] = input.shape;
       const newRows = height * strides;
       const newCols = width * strides;
       const newShape = [newRows, newCols, numFilters];
 
-      const y = self.math.conv2dTranspose(input, self.variables[varName(varId)], newShape, [strides, strides], 'same');
+      const y = this.math.conv2dTranspose(input, this.variables[varName(varId)], newShape, [strides, strides], 'same');
       const y2 = instanceNorm(y, varId + 1);
-      const y3 = self.math.relu(y2);
+      const y3 = this.math.relu(y2);
 
       return y3;
-    }
+    };
 
-    function residualBlock(input, varId) {
+    const residualBlock = (input, varId) => {
       const conv1 = convLayer(input, 1, true, varId);
       const conv2 = convLayer(conv1, 1, false, varId + 3);
-      return self.math.addStrict(conv2, input);
-    }
+      return this.math.addStrict(conv2, input);
+    };
 
     const preprocessedInput = Array3D.fromPixels(imgElement);
     const img = this.math.scope(() => {
