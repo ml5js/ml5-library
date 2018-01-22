@@ -12,6 +12,7 @@ import LSTMGenerator from './Lstm/index';
 import NeuralNetwork from './NeuralNetwork/index';
 import Word2Vec from './Word2vec/index';
 import TransformNet from './TransformNet/index';
+import array3DToImage from './utils/imageUtilities';
 
 module.exports = {
   ImageNet,
@@ -21,4 +22,5 @@ module.exports = {
   Word2Vec,
   dl,
   TransformNet,
+  array3DToImage,
 };

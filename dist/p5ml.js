@@ -17880,9 +17880,20 @@ var _index11 = __webpack_require__(446);
 
 var _index12 = _interopRequireDefault(_index11);
 
+var _imageUtilities = __webpack_require__(447);
+
+var _imageUtilities2 = _interopRequireDefault(_imageUtilities);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+/*
+p5ML
+v.0.0.1
+p5ML is a high level javascript library for machine learning.
+Made @NYU ITP
+*/
 
 module.exports = {
   ImageNet: _index2.default,
@@ -17891,13 +17902,9 @@ module.exports = {
   NeuralNetwork: _index8.default,
   Word2Vec: _index10.default,
   dl: dl,
-  TransformNet: _index12.default
-}; /*
-   p5ML
-   v.0.0.1
-   p5ML is a high level javascript library for machine learning.
-   Made @NYU ITP
-   */
+  TransformNet: _index12.default,
+  array3DToImage: _imageUtilities2.default
+};
 
 /***/ }),
 /* 366 */
@@ -25857,8 +25864,7 @@ var TransformNet = function () {
     value: function predict(imgElement) {
       var _this2 = this;
 
-      var self = this;
-      function varName(varId) {
+      var varName = function varName(varId) {
         var variableName = void 0;
         if (varId === 0) {
           variableName = 'Variable';
@@ -25866,37 +25872,37 @@ var TransformNet = function () {
           variableName = 'Variable_' + varId;
         }
         return variableName;
-      }
+      };
 
-      function instanceNorm(input, varId) {
+      var instanceNorm = function instanceNorm(input, varId) {
         var _input$shape = _slicedToArray(input.shape, 3),
             height = _input$shape[0],
             width = _input$shape[1],
             inDepth = _input$shape[2];
 
-        var moments = self.math.moments(input, [0, 1]);
+        var moments = _this2.math.moments(input, [0, 1]);
         var mu = moments.mean;
         var sigmaSq = moments.variance;
-        var shift = self.variables[varName(varId)];
-        var scale = self.variables[varName(varId + 1)];
-        var epsilon = self.epsilonScalar;
-        var normalized = self.math.divide(self.math.sub(input.asType('float32'), mu), self.math.sqrt(self.math.add(sigmaSq, epsilon)));
-        var shifted = self.math.add(self.math.multiply(scale, normalized), shift);
+        var shift = _this2.variables[varName(varId)];
+        var scale = _this2.variables[varName(varId + 1)];
+        var epsilon = _this2.epsilonScalar;
+        var normalized = _this2.math.divide(_this2.math.sub(input.asType('float32'), mu), _this2.math.sqrt(_this2.math.add(sigmaSq, epsilon)));
+        var shifted = _this2.math.add(_this2.math.multiply(scale, normalized), shift);
         return shifted.as3D(height, width, inDepth);
-      }
+      };
 
-      function convLayer(input, strides, relu, varId) {
-        var y = self.math.conv2d(input, self.variables[varName(varId)], null, [strides, strides], 'same');
+      var convLayer = function convLayer(input, strides, relu, varId) {
+        var y = _this2.math.conv2d(input, _this2.variables[varName(varId)], null, [strides, strides], 'same');
         var y2 = instanceNorm(y, varId + 1);
 
         if (relu) {
-          return self.math.relu(y2);
+          return _this2.math.relu(y2);
         }
 
         return y2;
-      }
+      };
 
-      function convTransposeLayer(input, numFilters, strides, varId) {
+      var convTransposeLayer = function convTransposeLayer(input, numFilters, strides, varId) {
         var _input$shape2 = _slicedToArray(input.shape, 2),
             height = _input$shape2[0],
             width = _input$shape2[1];
@@ -25905,18 +25911,18 @@ var TransformNet = function () {
         var newCols = width * strides;
         var newShape = [newRows, newCols, numFilters];
 
-        var y = self.math.conv2dTranspose(input, self.variables[varName(varId)], newShape, [strides, strides], 'same');
+        var y = _this2.math.conv2dTranspose(input, _this2.variables[varName(varId)], newShape, [strides, strides], 'same');
         var y2 = instanceNorm(y, varId + 1);
-        var y3 = self.math.relu(y2);
+        var y3 = _this2.math.relu(y2);
 
         return y3;
-      }
+      };
 
-      function residualBlock(input, varId) {
+      var residualBlock = function residualBlock(input, varId) {
         var conv1 = convLayer(input, 1, true, varId);
         var conv2 = convLayer(conv1, 1, false, varId + 3);
-        return self.math.addStrict(conv2, input);
-      }
+        return _this2.math.addStrict(conv2, input);
+      };
 
       var preprocessedInput = _deeplearn.Array3D.fromPixels(imgElement);
       var img = this.math.scope(function () {
@@ -25947,6 +25953,59 @@ var TransformNet = function () {
 }();
 
 exports.default = TransformNet;
+
+/***/ }),
+/* 447 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+// Utilities for images
+
+/**
+* @param imgData Array3D containing pixels of a img
+* @return HTML image element
+*/
+var array3DToImage = function array3DToImage(imgData) {
+  var _imgData$shape = _slicedToArray(imgData.shape, 2),
+      imgWidth = _imgData$shape[0],
+      imgHeight = _imgData$shape[1];
+
+  var data = imgData.dataSync();
+  var canvas = document.createElement('canvas');
+  canvas.width = imgWidth;
+  canvas.height = imgHeight;
+  var ctx = canvas.getContext('2d');
+  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  for (var i = 0; i < imgWidth * imgHeight; i += 1) {
+    var j = i * 4;
+    var k = i * 3;
+    imageData.data[j + 0] = Math.floor(256 * data[k + 0]);
+    imageData.data[j + 1] = Math.floor(256 * data[k + 1]);
+    imageData.data[j + 2] = Math.floor(256 * data[k + 2]);
+    imageData.data[j + 3] = 255;
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  // Create img HTML element from canvas
+  var dataUrl = canvas.toDataURL();
+  var outputImg = document.createElement('img');
+  outputImg.src = dataUrl;
+  outputImg.style.width = imgWidth;
+  outputImg.style.height = imgHeight;
+
+  return outputImg;
+};
+
+exports.default = array3DToImage;
 
 /***/ })
 /******/ ]);
