@@ -31,7 +31,7 @@ lstm.generate(options, function(output){
   ```javascript
   LSTMGenerator(model)
   ```
-  > `model` - A valid LSTM model that has been ported.
+  `model` - A valid LSTM model that has been ported.
 
 ## Properties
 
@@ -68,9 +68,7 @@ lstm.generate(options, function(output){
   ```javascript
   .defaults
   ```
-  > The default seed, length and temperature if none are passed when generating.
-
-  > Defaults to `{ seed: 'a', length: 20, temperature: 0.5}`.
+  > The default seed, length and temperature if none are passed when generating. Defaults to `{ seed: 'a', length: 20, temperature: 0.5}`.
 
 ## Methods
 
@@ -79,20 +77,24 @@ lstm.generate(options, function(output){
   ```
   > Generates content base on the seed given. Returns ...
 
-  > `options` -  An object specifying the input parameters of seed, length and temperature. Defaults to `{ seed: 'a', length: 20, temperature: 0.5}`.
+  `options` -  An object specifying the input parameters of seed, length and temperature. Defaults to `{ seed: 'a', length: 20, temperature: 0.5}`.
 
-  > `callback` - A function to be called once the model has generated content.
+  `callback` - A function to be called once the model has generated content.
 
   ```javascript
   .loadCheckpoints(path)
   ```
   > Loads the corresponding checkpoints of the model. This method is run when constructing the class.
 
+  `path` - The model to load.
+
   ```javascript
   .loadVocab(path)
   ```
-  >Loads the corresponding vocabulary of the model. This method is run when constructing the class.
+  > Loads the corresponding vocabulary of the model. This method is run when constructing the class.
 
+  `path` - The model to load.
+  
 ## Source
 
 [/src/Lstm/index.js](https://github.com/ITPNYU/p5-deeplearn-js/blob/master/src/Lstm/index.js)

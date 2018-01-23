@@ -20,7 +20,7 @@ let prediction = classifier.predict(img, function(result){
   ```javascript
   Imagenet(model)
   ```
-  > `model` - A String value for a valid deeplearn.js model for image recognition. Only the [SqueezeNet](https://github.com/PAIR-code/deeplearnjs/tree/master/models/squeezenet) model is available.
+  `model` - A String value for a valid deeplearn.js model for image recognition. Only the [SqueezeNet](https://github.com/PAIR-code/deeplearnjs/tree/master/models/squeezenet) model is available.
 
 
 ## Properties
@@ -52,9 +52,9 @@ let prediction = classifier.predict(img, function(result){
   ```
   > Given an image, returns an array of objects containing categories and probabilities.
 
-  > `image` -  An image element containing valid pixels.
+  `image` -  An image element containing valid pixels.
 
-  > `callback` - A function to run once the model has made the prediction.
+  `callback` - A function to run once the model has made the prediction.
 
 ## Static Methods
 
@@ -62,6 +62,8 @@ let prediction = classifier.predict(img, function(result){
   loadModel(model)
   ```
   > Loads a deeplearn.js model.
+
+  `model` - The model to load.
 
 ## Source
 

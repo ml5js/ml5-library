@@ -23,11 +23,11 @@ knn.predict(video, callback);
   ```javascript
   KNNImageClassifier(callback, ?numClasses, ?knnKValue)
   ```
-  > `callback` - A function to run once the model has been loaded.
+  `callback` - A function to run once the model has been loaded.
 
-  > `numClasses` - Max number of classes. Optional, defaults to 15.
+  `numClasses` - Max number of classes. Optional, defaults to 15.
   
-  > `knnKValue` - Starting K value. Optional, defaults to 5.
+  `knnKValue` - Starting K value. Optional, defaults to 5.
 
 ## Properties
 
@@ -73,9 +73,9 @@ knn.predict(video, callback);
   ```
   > Trains the model on a given image and index value.
 
-  > `image` -  An image element containing valid pixels.
+  `image` -  An image element containing valid pixels.
 
-  > `index` - An integer associated with the image.
+  `index` - An integer associated with the image.
 
 
   ```javascript
@@ -83,9 +83,9 @@ knn.predict(video, callback);
   ```
   > Predicts to which of the training classes does the input image corresponds to. Returns ...
 
-  > `image` -  An image element containing valid pixels.
+  `image` -  An image element containing valid pixels.
 
-  > `callback` - A function to be called once the model has made the prediction.
+  `callback` - A function to be called once the model has made the prediction.
 
 
   ```javascript
@@ -98,12 +98,16 @@ knn.predict(video, callback);
   ```
   > Clears a class associated with an index.
 
+  `index` - The class index to clear.
+
 ## Static Methods
 
   ```javascript
   loadModel(model)
   ```
   > Loads a deeplearn.js model.
+
+  `model` - The model to load.
 
 ## Source
 

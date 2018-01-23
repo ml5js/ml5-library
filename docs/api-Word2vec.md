@@ -22,7 +22,7 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
   ```javascript
   Word2Vec(vectors)
   ```
-  > `vectors` - A JSON file containing valid vectors of N-dimension.
+  `vectors` - A JSON file containing valid vectors of N-dimension.
 
 ## Properties
 
@@ -53,9 +53,9 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
   ```
   > Add a series of vectors. Returns the closest vector of that sum.
 
-  > `inputs` - An array of strings containing the inputs to be added
+  `inputs` - An array of strings containing the inputs to be added
 
-  > `max` - The maximum results to return. Optional. Defaults to 1.
+  `max` - The maximum results to return. Optional. Defaults to 1.
 
 
   ```javascript
@@ -63,9 +63,9 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
   ```
   > Subtract a series of vectors. Returns the closest vector of that sum.
 
-  > `inputs` - An array of strings containing the inputs to be subtracted.
+  `inputs` - An array of strings containing the inputs to be subtracted.
 
-  > `max` - The maximum results to return. Optional. Defaults to 1.
+  `max` - The maximum results to return. Optional. Defaults to 1.
 
 
   ```javascript
@@ -73,14 +73,18 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
   ```
   > Average a series of vectors. Returns the closest vector of that average.
 
-  > `inputs` - An array of strings containing the inputs to be averaged.
+  `inputs` - An array of strings containing the inputs to be averaged.
 
-  > `max` - The maximum results to return. Optional. Defaults to 1.
+  `max` - The maximum results to return. Optional. Defaults to 1.
 
   ```javascript
-  .nearest(index)
+  .nearest(input, max)
   ```
-  > Clears a class associated with an index.
+  > Find the nearest vector. Returns `max` array of values.
+
+  `input` - The input vector string.
+
+  `max` - The maximum results to return. Optional. Defaults to 10.
 
 ## Static Methods
 
@@ -89,10 +93,14 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
   ```
   > Utility method to add or subtract vectors.
 
+  `model` - The model used.
+
   ```javascript
   nearest(model)
   ```
   > Finds the n-closest neighbors of a vector.
+
+  `model` - The model used.
 
 ## Source
 
