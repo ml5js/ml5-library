@@ -8,10 +8,6 @@ p5ML is a high level javascript library for machine learning. The main idea of t
 
 [Getting Started](https://itpnyu.github.io/p5-deeplearn-js/docs/getting-started.html)
 
-## [Examples](https://itpnyu.github.io/p5-deeplearn-js/docs/docs/simple-image-classification-example.html)
-
-[Examples](https://itpnyu.github.io/p5-deeplearn-js/docs/docs/simple-image-classification-example.html)
-
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md)
