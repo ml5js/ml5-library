@@ -3,7 +3,7 @@ id: lstm-interactive-example
 title: Interactive LSTM
 ---
 
-An interactive text generation example built with LSTM training on a corpus of [Ernest Hemingway](https://en.wikipedia.org/wiki/Ernest_Hemingway). Built with [p5.js](https://p5js.org/).
+An interactive LSTM text generation example using a model trained on a corpus of [Ernest Hemingway](https://en.wikipedia.org/wiki/Ernest_Hemingway). Built with [p5.js](https://p5js.org/).
 
 ## Demo
 

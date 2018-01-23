@@ -3,7 +3,7 @@ id: neural-network-example
 title: Neural Network
 ---
 
-This is a demonstration of training and evaluating a simple neural network trained to recognize digits using the [MNIST database](http://yann.lecun.com/exdb/mnist/).
+This is a demonstration of training and evaluating a simple neural network to recognize digits using the [MNIST database](http://yann.lecun.com/exdb/mnist/).
 
 ## Demo
 

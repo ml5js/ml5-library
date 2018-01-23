@@ -3,7 +3,7 @@ id: simple-image-classification-example
 title: Simple Image Classification
 ---
 
-Simple image classification using the [KNN Image Classifier](api-Imagenet.md). Built using [p5.js](https://p5js.org/).
+A simple image classification example using the [KNN Image Classifier](api-Imagenet.md). Built using [p5.js](https://p5js.org/).
 
 ## Demo
 

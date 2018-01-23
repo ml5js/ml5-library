@@ -3,7 +3,7 @@ id: lstm-simple-example
 title: Simple LSTM
 ---
 
-An simple text generation example built with LSTM training on a corpus of [Ernest Hemingway](https://en.wikipedia.org/wiki/Ernest_Hemingway). Built with [p5.js](https://p5js.org/).
+A simple LSTM text generation example using a model trained on a corpus of [Ernest Hemingway](https://en.wikipedia.org/wiki/Ernest_Hemingway). Built with [p5.js](https://p5js.org/).
 
 ## Demo
 
