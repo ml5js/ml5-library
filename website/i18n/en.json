@@ -17,7 +17,7 @@
     "lstm-simple-example": "Simple LSTM",
     "neural-network-example": "Neural Network",
     "simple-image-classification-example": "Simple Image Classification",
-    "transform-net-example": "Transform Net",
+    "transform-net-example": "Fast Style Transfer",
     "video-classification-example": "Video Classification",
     "word2vec-example": "Word2Vec",
     "glossary-machine-learning": "Machine Learning",
