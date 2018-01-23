@@ -2618,6 +2618,100 @@ module.exports = {
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var xhr_dataset = __webpack_require__(148);
+exports.xhr_dataset = xhr_dataset;
+var environment = __webpack_require__(11);
+exports.environment = environment;
+var gpgpu_util = __webpack_require__(113);
+exports.gpgpu_util = gpgpu_util;
+var render_ndarray_gpu_util = __webpack_require__(380);
+exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
+var webgl_util = __webpack_require__(66);
+exports.webgl_util = webgl_util;
+var conv_util = __webpack_require__(64);
+exports.conv_util = conv_util;
+var test_util = __webpack_require__(381);
+exports.test_util = test_util;
+var util = __webpack_require__(4);
+exports.util = util;
+var version_1 = __webpack_require__(403);
+exports.version = version_1.version;
+var checkpoint_loader_1 = __webpack_require__(404);
+exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
+var dataset_1 = __webpack_require__(150);
+exports.InMemoryDataset = dataset_1.InMemoryDataset;
+var input_provider_1 = __webpack_require__(405);
+exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
+exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
+var xhr_dataset_1 = __webpack_require__(148);
+exports.XhrDataset = xhr_dataset_1.XhrDataset;
+var environment_1 = __webpack_require__(11);
+exports.ENV = environment_1.ENV;
+exports.Environment = environment_1.Environment;
+var graph_1 = __webpack_require__(68);
+exports.Graph = graph_1.Graph;
+exports.Tensor = graph_1.Tensor;
+var graph_runner_1 = __webpack_require__(406);
+exports.GraphRunner = graph_runner_1.GraphRunner;
+exports.MetricReduction = graph_runner_1.MetricReduction;
+var adadelta_optimizer_1 = __webpack_require__(428);
+exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
+var adagrad_optimizer_1 = __webpack_require__(429);
+exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
+var adam_optimizer_1 = __webpack_require__(430);
+exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
+var adamax_optimizer_1 = __webpack_require__(431);
+exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
+var momentum_optimizer_1 = __webpack_require__(432);
+exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
+var rmsprop_optimizer_1 = __webpack_require__(433);
+exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
+var session_1 = __webpack_require__(157);
+exports.CostReduction = session_1.CostReduction;
+exports.Session = session_1.Session;
+var initializers_1 = __webpack_require__(156);
+exports.ConstantInitializer = initializers_1.ConstantInitializer;
+exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
+exports.OnesInitializer = initializers_1.OnesInitializer;
+exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
+exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
+exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
+exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
+exports.ZerosInitializer = initializers_1.ZerosInitializer;
+var backend_cpu_1 = __webpack_require__(151);
+exports.MathBackendCPU = backend_cpu_1.MathBackendCPU;
+exports.NDArrayMathCPU = backend_cpu_1.NDArrayMathCPU;
+var backend_webgl_1 = __webpack_require__(152);
+exports.MathBackendWebGL = backend_webgl_1.MathBackendWebGL;
+exports.NDArrayMathGPU = backend_webgl_1.NDArrayMathGPU;
+var matmul_1 = __webpack_require__(61);
+exports.MatrixOrientation = matmul_1.MatrixOrientation;
+var gpgpu_context_1 = __webpack_require__(154);
+exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
+var math_1 = __webpack_require__(60);
+exports.NDArrayMath = math_1.NDArrayMath;
+var ndarray_1 = __webpack_require__(3);
+exports.Array1D = ndarray_1.Array1D;
+exports.Array2D = ndarray_1.Array2D;
+exports.Array3D = ndarray_1.Array3D;
+exports.Array4D = ndarray_1.Array4D;
+exports.NDArray = ndarray_1.NDArray;
+exports.Scalar = ndarray_1.Scalar;
+var ndarray_2 = __webpack_require__(3);
+exports.variable = ndarray_2.variable;
+var optimizer_1 = __webpack_require__(50);
+exports.Optimizer = optimizer_1.Optimizer;
+var sgd_optimizer_1 = __webpack_require__(160);
+exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2718,7 +2812,7 @@ exports.SummedTensorArrayMap = SummedTensorArrayMap;
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var META = __webpack_require__(40)('meta');
@@ -2777,7 +2871,7 @@ var meta = module.exports = {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 22.1.3.31 Array.prototype[@@unscopables]
@@ -2787,100 +2881,6 @@ if (ArrayProto[UNSCOPABLES] == undefined) __webpack_require__(16)(ArrayProto, UN
 module.exports = function (key) {
   ArrayProto[UNSCOPABLES][key] = true;
 };
-
-
-/***/ }),
-/* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var xhr_dataset = __webpack_require__(148);
-exports.xhr_dataset = xhr_dataset;
-var environment = __webpack_require__(11);
-exports.environment = environment;
-var gpgpu_util = __webpack_require__(113);
-exports.gpgpu_util = gpgpu_util;
-var render_ndarray_gpu_util = __webpack_require__(380);
-exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
-var webgl_util = __webpack_require__(66);
-exports.webgl_util = webgl_util;
-var conv_util = __webpack_require__(64);
-exports.conv_util = conv_util;
-var test_util = __webpack_require__(381);
-exports.test_util = test_util;
-var util = __webpack_require__(4);
-exports.util = util;
-var version_1 = __webpack_require__(403);
-exports.version = version_1.version;
-var checkpoint_loader_1 = __webpack_require__(404);
-exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
-var dataset_1 = __webpack_require__(150);
-exports.InMemoryDataset = dataset_1.InMemoryDataset;
-var input_provider_1 = __webpack_require__(405);
-exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
-exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
-var xhr_dataset_1 = __webpack_require__(148);
-exports.XhrDataset = xhr_dataset_1.XhrDataset;
-var environment_1 = __webpack_require__(11);
-exports.ENV = environment_1.ENV;
-exports.Environment = environment_1.Environment;
-var graph_1 = __webpack_require__(68);
-exports.Graph = graph_1.Graph;
-exports.Tensor = graph_1.Tensor;
-var graph_runner_1 = __webpack_require__(406);
-exports.GraphRunner = graph_runner_1.GraphRunner;
-exports.MetricReduction = graph_runner_1.MetricReduction;
-var adadelta_optimizer_1 = __webpack_require__(428);
-exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
-var adagrad_optimizer_1 = __webpack_require__(429);
-exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
-var adam_optimizer_1 = __webpack_require__(430);
-exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
-var adamax_optimizer_1 = __webpack_require__(431);
-exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
-var momentum_optimizer_1 = __webpack_require__(432);
-exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
-var rmsprop_optimizer_1 = __webpack_require__(433);
-exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
-var session_1 = __webpack_require__(157);
-exports.CostReduction = session_1.CostReduction;
-exports.Session = session_1.Session;
-var initializers_1 = __webpack_require__(156);
-exports.ConstantInitializer = initializers_1.ConstantInitializer;
-exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
-exports.OnesInitializer = initializers_1.OnesInitializer;
-exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
-exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
-exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
-exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
-exports.ZerosInitializer = initializers_1.ZerosInitializer;
-var backend_cpu_1 = __webpack_require__(151);
-exports.MathBackendCPU = backend_cpu_1.MathBackendCPU;
-exports.NDArrayMathCPU = backend_cpu_1.NDArrayMathCPU;
-var backend_webgl_1 = __webpack_require__(152);
-exports.MathBackendWebGL = backend_webgl_1.MathBackendWebGL;
-exports.NDArrayMathGPU = backend_webgl_1.NDArrayMathGPU;
-var matmul_1 = __webpack_require__(61);
-exports.MatrixOrientation = matmul_1.MatrixOrientation;
-var gpgpu_context_1 = __webpack_require__(154);
-exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
-var math_1 = __webpack_require__(60);
-exports.NDArrayMath = math_1.NDArrayMath;
-var ndarray_1 = __webpack_require__(3);
-exports.Array1D = ndarray_1.Array1D;
-exports.Array2D = ndarray_1.Array2D;
-exports.Array3D = ndarray_1.Array3D;
-exports.Array4D = ndarray_1.Array4D;
-exports.NDArray = ndarray_1.NDArray;
-exports.Scalar = ndarray_1.Scalar;
-var ndarray_2 = __webpack_require__(3);
-exports.variable = ndarray_2.variable;
-var optimizer_1 = __webpack_require__(50);
-exports.Optimizer = optimizer_1.Optimizer;
-var sgd_optimizer_1 = __webpack_require__(160);
-exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
 
 
 /***/ }),
@@ -3083,7 +3083,7 @@ module.exports = function (target, src, safe) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(11);
 var session_util = __webpack_require__(159);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var ndarray_1 = __webpack_require__(3);
 var Optimizer = (function () {
     function Optimizer(learningRate, specifiedVariableList) {
@@ -6472,7 +6472,7 @@ var global = __webpack_require__(2);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(17);
 var redefineAll = __webpack_require__(49);
-var meta = __webpack_require__(36);
+var meta = __webpack_require__(37);
 var forOf = __webpack_require__(48);
 var anInstance = __webpack_require__(47);
 var isObject = __webpack_require__(6);
@@ -7119,7 +7119,7 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
 
 "use strict";
 
-var addToUnscopables = __webpack_require__(37);
+var addToUnscopables = __webpack_require__(38);
 var step = __webpack_require__(131);
 var Iterators = __webpack_require__(53);
 var toIObject = __webpack_require__(20);
@@ -8467,7 +8467,7 @@ var $iterDefine = __webpack_require__(97);
 var step = __webpack_require__(131);
 var setSpecies = __webpack_require__(46);
 var DESCRIPTORS = __webpack_require__(8);
-var fastKey = __webpack_require__(36).fastKey;
+var fastKey = __webpack_require__(37).fastKey;
 var validate = __webpack_require__(54);
 var SIZE = DESCRIPTORS ? '_s' : 'size';
 
@@ -8631,7 +8631,7 @@ module.exports = __webpack_require__(78)(SET, function (get) {
 
 var each = __webpack_require__(32)(0);
 var redefine = __webpack_require__(17);
-var meta = __webpack_require__(36);
+var meta = __webpack_require__(37);
 var assign = __webpack_require__(119);
 var weak = __webpack_require__(139);
 var isObject = __webpack_require__(6);
@@ -8696,7 +8696,7 @@ if (fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp)
 "use strict";
 
 var redefineAll = __webpack_require__(49);
-var getWeak = __webpack_require__(36).getWeak;
+var getWeak = __webpack_require__(37).getWeak;
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(6);
 var anInstance = __webpack_require__(47);
@@ -12043,7 +12043,7 @@ var ndarray_1 = __webpack_require__(3);
 var util = __webpack_require__(4);
 var operation_emitter = __webpack_require__(407);
 var session_util = __webpack_require__(159);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var FeedDictionary = (function () {
     function FeedDictionary(feedEntries) {
         var _this = this;
@@ -12465,7 +12465,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var environment_1 = __webpack_require__(11);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
 var SGDOptimizer = (function (_super) {
@@ -12789,7 +12789,7 @@ var has = __webpack_require__(15);
 var DESCRIPTORS = __webpack_require__(8);
 var $export = __webpack_require__(0);
 var redefine = __webpack_require__(17);
-var META = __webpack_require__(36).KEY;
+var META = __webpack_require__(37).KEY;
 var $fails = __webpack_require__(5);
 var shared = __webpack_require__(69);
 var setToStringTag = __webpack_require__(51);
@@ -13127,7 +13127,7 @@ __webpack_require__(31)('getOwnPropertyNames', function () {
 
 // 19.1.2.5 Object.freeze(O)
 var isObject = __webpack_require__(6);
-var meta = __webpack_require__(36).onFreeze;
+var meta = __webpack_require__(37).onFreeze;
 
 __webpack_require__(31)('freeze', function ($freeze) {
   return function freeze(it) {
@@ -13142,7 +13142,7 @@ __webpack_require__(31)('freeze', function ($freeze) {
 
 // 19.1.2.17 Object.seal(O)
 var isObject = __webpack_require__(6);
-var meta = __webpack_require__(36).onFreeze;
+var meta = __webpack_require__(37).onFreeze;
 
 __webpack_require__(31)('seal', function ($seal) {
   return function seal(it) {
@@ -13157,7 +13157,7 @@ __webpack_require__(31)('seal', function ($seal) {
 
 // 19.1.2.15 Object.preventExtensions(O)
 var isObject = __webpack_require__(6);
-var meta = __webpack_require__(36).onFreeze;
+var meta = __webpack_require__(37).onFreeze;
 
 __webpack_require__(31)('preventExtensions', function ($preventExtensions) {
   return function preventExtensions(it) {
@@ -14802,7 +14802,7 @@ var $export = __webpack_require__(0);
 
 $export($export.P, 'Array', { copyWithin: __webpack_require__(130) });
 
-__webpack_require__(37)('copyWithin');
+__webpack_require__(38)('copyWithin');
 
 
 /***/ }),
@@ -14814,7 +14814,7 @@ var $export = __webpack_require__(0);
 
 $export($export.P, 'Array', { fill: __webpack_require__(105) });
 
-__webpack_require__(37)('fill');
+__webpack_require__(38)('fill');
 
 
 /***/ }),
@@ -14835,7 +14835,7 @@ $export($export.P + $export.F * forced, 'Array', {
     return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
-__webpack_require__(37)(KEY);
+__webpack_require__(38)(KEY);
 
 
 /***/ }),
@@ -14856,7 +14856,7 @@ $export($export.P + $export.F * forced, 'Array', {
     return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
   }
 });
-__webpack_require__(37)(KEY);
+__webpack_require__(38)(KEY);
 
 
 /***/ }),
@@ -15887,7 +15887,7 @@ $export($export.P, 'Array', {
   }
 });
 
-__webpack_require__(37)('includes');
+__webpack_require__(38)('includes');
 
 
 /***/ }),
@@ -15916,7 +15916,7 @@ $export($export.P, 'Array', {
   }
 });
 
-__webpack_require__(37)('flatMap');
+__webpack_require__(38)('flatMap');
 
 
 /***/ }),
@@ -15944,7 +15944,7 @@ $export($export.P, 'Array', {
   }
 });
 
-__webpack_require__(37)('flatten');
+__webpack_require__(38)('flatten');
 
 
 /***/ }),
@@ -17852,7 +17852,7 @@ module.exports = function (regExp, replace) {
 "use strict";
 
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 var dl = _interopRequireWildcard(_deeplearn);
 
@@ -17876,6 +17876,14 @@ var _index9 = __webpack_require__(445);
 
 var _index10 = _interopRequireDefault(_index9);
 
+var _index11 = __webpack_require__(446);
+
+var _index12 = _interopRequireDefault(_index11);
+
+var _imageUtilities = __webpack_require__(447);
+
+var _imageUtilities2 = _interopRequireDefault(_imageUtilities);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
@@ -17893,7 +17901,9 @@ module.exports = {
   LSTMGenerator: _index6.default,
   NeuralNetwork: _index8.default,
   Word2Vec: _index10.default,
-  dl: dl
+  dl: dl,
+  TransformNet: _index12.default,
+  array3DToImage: _imageUtilities2.default
 };
 
 /***/ }),
@@ -22865,7 +22875,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var AdadeltaOptimizer = (function (_super) {
     __extends(AdadeltaOptimizer, _super);
     function AdadeltaOptimizer(learningRate, gamma, specifiedVariableList) {
@@ -22948,7 +22958,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var AdagradOptimizer = (function (_super) {
     __extends(AdagradOptimizer, _super);
     function AdagradOptimizer(learningRate, specifiedVariableList) {
@@ -23019,7 +23029,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var AdamOptimizer = (function (_super) {
     __extends(AdamOptimizer, _super);
     function AdamOptimizer(learningRate, beta1, beta2, specifiedVariableList) {
@@ -23120,7 +23130,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var AdamaxOptimizer = (function (_super) {
     __extends(AdamaxOptimizer, _super);
     function AdamaxOptimizer(learningRate, beta1, beta2, specifiedVariableList) {
@@ -23215,7 +23225,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var sgd_optimizer_1 = __webpack_require__(160);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var MomentumOptimizer = (function (_super) {
     __extends(MomentumOptimizer, _super);
     function MomentumOptimizer(learningRate, momentum, specifiedVariableList) {
@@ -23289,7 +23299,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var ndarray_1 = __webpack_require__(3);
 var optimizer_1 = __webpack_require__(50);
-var tensor_array_map_1 = __webpack_require__(35);
+var tensor_array_map_1 = __webpack_require__(36);
 var RMSPropOptimizer = (function (_super) {
     __extends(RMSPropOptimizer, _super);
     function RMSPropOptimizer(learningRate, gamma, specifiedVariableList) {
@@ -23361,7 +23371,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      TODO: model name in constructor is just a placeholder value.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 var _deeplearnSqueezenet = __webpack_require__(161);
 
@@ -23535,7 +23545,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var deeplearn_1 = __webpack_require__(38);
+var deeplearn_1 = __webpack_require__(35);
 var model_util = __webpack_require__(436);
 var imagenet_classes_1 = __webpack_require__(437);
 var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
@@ -24748,7 +24758,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      TODO: Resolve freeze on first train
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 var _deeplearnKnnImageClassifier = __webpack_require__(439);
 
@@ -24979,7 +24989,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var deeplearn_1 = __webpack_require__(38);
+var deeplearn_1 = __webpack_require__(35);
 var deeplearn_squeezenet_1 = __webpack_require__(161);
 var model_util = __webpack_require__(441);
 var KNNImageClassifier = (function () {
@@ -25217,7 +25227,7 @@ A LSTM Generator: Run inference mode for a LSTM.
 Currently working with models trained using https://github.com/sherjilozair/char-rnn-tensorflow
 */
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 var _sample = __webpack_require__(443);
 
@@ -25507,7 +25517,7 @@ Based on "Make Your Own Neural Network" by Tariq Rashid
 https://github.com/makeyourownneuralnetwork/
 */
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -25640,7 +25650,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Based on https://github.com/shiffman/p5-word2vec
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(38);
+var _deeplearn = __webpack_require__(35);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -25757,6 +25767,245 @@ var Word2Vec = function () {
 }();
 
 exports.default = Word2Vec;
+
+/***/ }),
+/* 446 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* eslint max-len: "off" */
+/*
+fast-style-transfer
+Based on deeplearn.js demo: https://github.com/PAIR-code/deeplearnjs/tree/0608feadbd897bca6ec7abf3340515fe5f2de1c2/demos/fast-style-transfer
+and https://github.com/reiinakano/fast-style-transfer-deeplearnjs by reiinakano
+*/
+
+
+var _deeplearn = __webpack_require__(35);
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TransformNet = function () {
+  function TransformNet(model, callback) {
+    var _this = this;
+
+    _classCallCheck(this, TransformNet);
+
+    this.ready = false;
+    this.math = _deeplearn.ENV.math;
+    this.variableDictionary = {};
+    this.timesScalar = _deeplearn.Scalar.new(150);
+    this.plusScalar = _deeplearn.Scalar.new(255.0 / 2);
+    this.epsilonScalar = _deeplearn.Scalar.new(1e-3);
+    this.loadCheckpoints(model).then(function () {
+      _this.ready = true;
+      callback();
+    });
+  }
+
+  /**
+   * Loads necessary variables for SqueezeNet. Resolves the promise when the
+   * variables have all been loaded.
+   */
+
+
+  _createClass(TransformNet, [{
+    key: 'loadCheckpoints',
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(path) {
+        var checkpointLoader;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                checkpointLoader = new _deeplearn.CheckpointLoader(path);
+                _context.next = 3;
+                return checkpointLoader.getAllVariables();
+
+              case 3:
+                this.variables = _context.sent;
+
+              case 4:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function loadCheckpoints(_x) {
+        return _ref.apply(this, arguments);
+      }
+
+      return loadCheckpoints;
+    }()
+
+    /**
+     * Infer through TransformNet, assumes variables have been loaded.
+     * Original Tensorflow version of model can be found at
+     * https://github.com/lengstrom/fast-style-transfer
+     *
+     * @param imgElement HTMLImageElement of input img
+     * @return Array3D containing pixels of output img
+     */
+
+  }, {
+    key: 'predict',
+    value: function predict(imgElement) {
+      var _this2 = this;
+
+      var varName = function varName(varId) {
+        var variableName = void 0;
+        if (varId === 0) {
+          variableName = 'Variable';
+        } else {
+          variableName = 'Variable_' + varId;
+        }
+        return variableName;
+      };
+
+      var instanceNorm = function instanceNorm(input, varId) {
+        var _input$shape = _slicedToArray(input.shape, 3),
+            height = _input$shape[0],
+            width = _input$shape[1],
+            inDepth = _input$shape[2];
+
+        var moments = _this2.math.moments(input, [0, 1]);
+        var mu = moments.mean;
+        var sigmaSq = moments.variance;
+        var shift = _this2.variables[varName(varId)];
+        var scale = _this2.variables[varName(varId + 1)];
+        var epsilon = _this2.epsilonScalar;
+        var normalized = _this2.math.divide(_this2.math.sub(input.asType('float32'), mu), _this2.math.sqrt(_this2.math.add(sigmaSq, epsilon)));
+        var shifted = _this2.math.add(_this2.math.multiply(scale, normalized), shift);
+        return shifted.as3D(height, width, inDepth);
+      };
+
+      var convLayer = function convLayer(input, strides, relu, varId) {
+        var y = _this2.math.conv2d(input, _this2.variables[varName(varId)], null, [strides, strides], 'same');
+        var y2 = instanceNorm(y, varId + 1);
+
+        if (relu) {
+          return _this2.math.relu(y2);
+        }
+
+        return y2;
+      };
+
+      var convTransposeLayer = function convTransposeLayer(input, numFilters, strides, varId) {
+        var _input$shape2 = _slicedToArray(input.shape, 2),
+            height = _input$shape2[0],
+            width = _input$shape2[1];
+
+        var newRows = height * strides;
+        var newCols = width * strides;
+        var newShape = [newRows, newCols, numFilters];
+
+        var y = _this2.math.conv2dTranspose(input, _this2.variables[varName(varId)], newShape, [strides, strides], 'same');
+        var y2 = instanceNorm(y, varId + 1);
+        var y3 = _this2.math.relu(y2);
+
+        return y3;
+      };
+
+      var residualBlock = function residualBlock(input, varId) {
+        var conv1 = convLayer(input, 1, true, varId);
+        var conv2 = convLayer(conv1, 1, false, varId + 3);
+        return _this2.math.addStrict(conv2, input);
+      };
+
+      var preprocessedInput = _deeplearn.Array3D.fromPixels(imgElement);
+      var img = this.math.scope(function () {
+        var conv1 = convLayer(preprocessedInput, 1, true, 0);
+        var conv2 = convLayer(conv1, 2, true, 3);
+        var conv3 = convLayer(conv2, 2, true, 6);
+        var resid1 = residualBlock(conv3, 9);
+        var resid2 = residualBlock(resid1, 15);
+        var resid3 = residualBlock(resid2, 21);
+        var resid4 = residualBlock(resid3, 27);
+        var resid5 = residualBlock(resid4, 33);
+        var convT1 = convTransposeLayer(resid5, 64, 2, 39);
+        var convT2 = convTransposeLayer(convT1, 32, 2, 42);
+        var convT3 = convLayer(convT2, 1, false, 45);
+        var outTanh = _this2.math.tanh(convT3);
+        var scaled = _this2.math.scalarTimesArray(_this2.timesScalar, outTanh);
+        var shifted = _this2.math.scalarPlusArray(_this2.plusScalar, scaled);
+        var clamped = _this2.math.clip(shifted, 0, 255);
+        var normalized = _this2.math.divide(clamped, _deeplearn.Scalar.new(255.0));
+
+        return normalized;
+      });
+      return img;
+    }
+  }]);
+
+  return TransformNet;
+}();
+
+exports.default = TransformNet;
+
+/***/ }),
+/* 447 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+// Utilities for images
+
+/**
+* @param imgData Array3D containing pixels of a img
+* @return HTML image element
+*/
+var array3DToImage = function array3DToImage(imgData) {
+  var _imgData$shape = _slicedToArray(imgData.shape, 2),
+      imgWidth = _imgData$shape[0],
+      imgHeight = _imgData$shape[1];
+
+  var data = imgData.dataSync();
+  var canvas = document.createElement('canvas');
+  canvas.width = imgWidth;
+  canvas.height = imgHeight;
+  var ctx = canvas.getContext('2d');
+  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+  for (var i = 0; i < imgWidth * imgHeight; i += 1) {
+    var j = i * 4;
+    var k = i * 3;
+    imageData.data[j + 0] = Math.floor(256 * data[k + 0]);
+    imageData.data[j + 1] = Math.floor(256 * data[k + 1]);
+    imageData.data[j + 2] = Math.floor(256 * data[k + 2]);
+    imageData.data[j + 3] = 255;
+  }
+  ctx.putImageData(imageData, 0, 0);
+
+  // Create img HTML element from canvas
+  var dataUrl = canvas.toDataURL();
+  var outputImg = document.createElement('img');
+  outputImg.src = dataUrl;
+  outputImg.style.width = imgWidth;
+  outputImg.style.height = imgHeight;
+
+  return outputImg;
+};
+
+exports.default = array3DToImage;
 
 /***/ })
 /******/ ]);
