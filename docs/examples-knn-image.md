@@ -3,7 +3,7 @@ id: knn-image-example
 title: KNN Image Classification
 ---
 
-Classify a live webcam stream using the [KNN Image Classifier](api-Imagenet.md). Built with [p5.js](https://p5js.org/).
+Train and classify frames from a live webcam stream using the [KNN Image Classifier](api-Imagenet.md). Built with [p5.js](https://p5js.org/).
 
 *Please enable your webcam*
 
