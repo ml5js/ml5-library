@@ -24,13 +24,13 @@ knn.predict(video, callback);
   ```javascript
   NeuralNetwork(inputNodes, hiddenNodes, outputNodes, ?learningRate)
   ```
-  > `inputNodes` - Amount of input nodes.
+  `inputNodes` - Amount of input nodes.
 
-  > `hiddenNodes` - Amount of hidden nodes.
+  `hiddenNodes` - Amount of hidden nodes.
   
-  > `outputNodes` - Amount of output nodes.
+  `outputNodes` - Amount of output nodes.
 
-  > `learningRate` - Learning Rate. Optional. Defaults to 0.1.
+  `learningRate` - Learning Rate. Optional. Defaults to 0.1.
 
 ## Properties
 
@@ -76,9 +76,9 @@ knn.predict(video, callback);
   ```
   > Trains the Neural Network.
 
-  > `input` - The input array.
+  `input` - The input array.
 
-  > `target` - The target value of the input array.
+  `target` - The target value of the input array.
 
 
   ```javascript
@@ -86,8 +86,7 @@ knn.predict(video, callback);
   ```
   > Query the Neural Network based on the input and predicts an output. Returns ...
 
-  > `input` -  The input array.
-
+  `input` -  The input array.
 
 ## Source
 
