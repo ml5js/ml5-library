@@ -1,9 +1,8 @@
 /* eslint max-len: "off" */
 /*
 fast-style-transfer
-Based on deeplearn.js demo: https://github.com/PAIR-code/deeplearnjs/tree/0608feadbd897bca6ec7abf3340515fe5f2de1c2/demos/fast-style-transfer
-and https://github.com/reiinakano/fast-style-transfer-deeplearnjs by reiinakano
 */
+
 import { Array3D, CheckpointLoader, ENV, Scalar } from 'deeplearn';
 
 class TransformNet {
@@ -19,24 +18,11 @@ class TransformNet {
       callback();
     });
   }
-
-  /**
-   * Loads necessary variables for SqueezeNet. Resolves the promise when the
-   * variables have all been loaded.
-   */
   async loadCheckpoints(path) {
     const checkpointLoader = new CheckpointLoader(path);
     this.variables = await checkpointLoader.getAllVariables();
   }
 
-  /**
-   * Infer through TransformNet, assumes variables have been loaded.
-   * Original Tensorflow version of model can be found at
-   * https://github.com/lengstrom/fast-style-transfer
-   *
-   * @param imgElement HTMLImageElement of input img
-   * @return Array3D containing pixels of output img
-   */
   predict(imgElement) {
     const varName = (varId) => {
       let variableName;
