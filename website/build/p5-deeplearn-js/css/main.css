@@ -1893,6 +1893,10 @@ footer .copyright {
   padding: 10px 120px;
 }
 
+#experiments .gridBlock{
+  margin: 20px 0px 0px 0px;
+}
+
 footer .copyright{
   max-width: 300px;
   text-align: center;
