@@ -15,7 +15,7 @@ Fast Style Transfer example. Built with [p5.js](https://p5js.org/).
     }
   </style>
   <p>Input Image:</p>
-  <img id="inputImg" src='assets/img/venice.jpg'/>
+  <img id="inputImg" src='assets/img/patagonia.jpg'/>
 
   <p>Style A: <a href="https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa">The Great Wave off Kanagawa, 1829 - Katsushika Hokusai</a></p>
   <img src='assets/img/wave.jpg'/>
