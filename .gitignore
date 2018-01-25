@@ -6,7 +6,6 @@ node_modules
 .vscode
 *.DS_STORE
 experiments
-scripts
 training/lstm/data/t
 .cache
 /public
