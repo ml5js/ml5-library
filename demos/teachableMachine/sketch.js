@@ -20,10 +20,16 @@ let uploadBtn;
 
 const msgArray = ['A', 'B', 'C'];
 let gifSrcs = ['output0.gif', 'output1.gif', 'output2.gif'];
+let soundSrcs = ['jazz-guitar.mp3', 'crickets.mp3', 'amenbreak.mp3'];
+let soundfiles = [];
+let outputGif = true;
+let outputSound = false;
 
 function preload() {
   // Initialize the KNN method.
   knn = new p5ml.KNNImageClassifier(modelLoaded, 3, 1);
+  // Load sound files
+  soundSrcs.forEach( (src) => soundfiles.push( loadSound('sounds/' + src) ) );
 }
 
 function setup() {
@@ -36,6 +42,18 @@ function setup() {
   uploadBtn = createFileInput(imageUpload);
   uploadBtn.id('uploadbtn');
   uploadBtn.hide();
+
+  // Initialize sound loops
+  soundfiles.forEach( (s) => { 
+                      s.setVolume(0); 
+                      s.loop();
+                      s.play(); 
+                    });
+  // sound filenames
+  msgArray.forEach((id, index) => {
+    let div = select('#sound' + id);
+    div.elt.innerText = soundSrcs[index];
+  });
 
   // Train buttons
   msgArray.forEach((id, index) => {
@@ -69,7 +87,7 @@ function draw() {
     translate(width, 0);
     scale(-1, 1);
     image(video, 0, 0, width, height);
-  pop();  
+  pop();
 }
 
 // A function to be called when the model has been loaded
@@ -92,6 +110,7 @@ function gotResults(results) {
   if (results.classIndex < 0) return;
   updateConfidence(results.confidences);
   updateGif(results);
+  updateSound(results);
   if (isPredicting) predictimer = setTimeout(() => predict(), 50);
 }
 
@@ -141,6 +160,10 @@ function updateIsPredicting() {
 
 function resetResult() {
   select('#output').elt.src = 'default.png';
+  soundfiles.forEach( (s) => s.setVolume(0, 0.2) );
+  msgArray.forEach((id, index) => {
+    select('#sound' + id).removeClass("playing");
+  });
   updateConfidence(exampleCounts);
 }
 
@@ -153,4 +176,20 @@ function imageUpload(file) {
   gifSrcs[updateGifIndex] = file.data;
   select('#img' + msgArray[updateGifIndex]).elt.src = file.data;
   select('#output').elt.src = file.data;
+}
+
+function updateSound(results) {
+  if (results.classIndex < 0) return;
+  if (!outputSound) { soundfiles.forEach( (s) => { s.setVolume(0); } ); return; }
+  if (soundfiles[results.classIndex].getVolume() == 0) {
+    for (let i=0; i<soundfiles.length; i++) {
+      if (i == results.classIndex) {
+        soundfiles[i].setVolume(0.8, 0.5);
+        select('#sound' + msgArray[i]).addClass("playing");
+      } else {
+        soundfiles[i].setVolume(0, 0.5);
+        select('#sound' + msgArray[i]).removeClass("playing");
+      }
+    }
+  }
 }

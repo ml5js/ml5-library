@@ -6,6 +6,7 @@
   <title>Simple Teachable Machine Example</title>
   <link rel="stylesheet" type="text/css" href="./style.css"></link>
   <script src="../libraries/p5.min.js"></script>
+  <script src="../libraries/p5.sound.min.js"></script>
   <script src="../libraries/p5.dom.min.js"></script>
   <script src="../libraries/p5ml.min.js"></script>
 </head>
@@ -86,33 +87,74 @@
 
   <div class="white-box output-container col-3">
     <h3 class="title">OUTPUT</h3>
-    <div class="center-container"><img id="output" src="default.png" /></div>
+    <div class="output-control">
+      <input type="radio" id="option-gif" name="output-radio" checked><label for="option-gif" class="radio-label">GIF</label>
+      <input type="radio" id="option-sound" name="output-radio"><label for="option-sound" class="radio-label">Sound</label>
+    </div>
 
-    <div class="gif-container">
-      <div class="container" id="containerA">
-        <img class="image" id="imgA" src="output0.gif" />
-        <div class="middle" onclick="uploadGif(0)">
-          <div class="text">EDIT</div>
-        </div>
-      </div>
-      
-      <div class="container" id="containerB">
-        <img class="image" id="imgB" src="output1.gif" />
-        <div class="middle" onclick="uploadGif(1)">
-          <div class="text">EDIT</div>
-        </div>
-      </div>
+    <div id="gif-output">
+      <div class="center-container"><img id="output" src="default.png" /></div>
 
-      <div class="container" id="containerC">
-        <img class="image" id="imgC" src="output2.gif" />
-        <div class="middle" onclick="uploadGif(2)">
-          <div class="text">EDIT</div>
+      <div class="gif-container">
+        <div class="container" id="containerA">
+          <img class="image" id="imgA" src="output0.gif" />
+          <div class="middle" onclick="uploadGif(0)">
+            <div class="text">EDIT</div>
+          </div>
+        </div>
+        
+        <div class="container" id="containerB">
+          <img class="image" id="imgB" src="output1.gif" />
+          <div class="middle" onclick="uploadGif(1)">
+            <div class="text">EDIT</div>
+          </div>
+        </div>
+
+        <div class="container" id="containerC">
+          <img class="image" id="imgC" src="output2.gif" />
+          <div class="middle" onclick="uploadGif(2)">
+            <div class="text">EDIT</div>
+          </div>
         </div>
       </div>
     </div>
+
+    <div id="sound-output" style="display:none;">
+      <div class="sound-container">
+        <div class="container" id="soundA"></div>
+        <div class="container" id="soundB"></div>
+        <div class="container" id="soundC"></div>
+      </div>
+    </div>
+
   </div>
   </div>
   <script src="sketch.js"></script>
+  <script>
+    window.onload=function() {
+      var labels = document.getElementsByTagName("label");
+      for (var i = 0; i < labels.length; i++) {
+        labels[i].onclick=toggleOutput;
+        labels[i].control.onclick=toggleOutput;
+      }
+    }
+    function toggleOutput() {
+      let radio;
+      if (this.tagName == "LABEL") radio = this.control; else radio = this;
+      if (radio.id === "option-gif") {
+        var gifDisplay = "block";
+        var soundDisplay = "none";
+        outputGif = true;
+        outputSound = false;
+      } else {
+        var gifDisplay = "none";
+        var soundDisplay = "block";        
+        outputGif = false;
+        outputSound = true;
+      }
+      document.getElementById("gif-output").style["display"] = gifDisplay;
+      document.getElementById("sound-output").style["display"] = soundDisplay;
+    }
+  </script>
 </body>
-
 </html>
