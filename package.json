@@ -15,7 +15,8 @@
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename p5ml.js",
     "build:min": "uglifyjs dist/p5ml.js -o dist/p5ml.min.js",
-    "build:examples": "cp dist/p5ml.min.js examples/libraries/"
+    "build:examples": "cp dist/p5ml.min.js examples/libraries/",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
+    "babel-jest": "22.1.0",
     "babel-loader": "7.1.2",
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-polyfill": "6.26.0",
@@ -47,7 +49,9 @@
     "eslint-loader": "1.9.0",
     "eslint-plugin-import": "2.8.0",
     "ghooks": "2.0.2",
+    "jest": "22.1.4",
     "npm-run-all": "4.1.2",
+    "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
     "semantic-release": "11.0.2",
     "uglify-es": "3.3.4",
@@ -65,6 +69,7 @@
   ],
   "babel": {
     "presets": [
+      "env",
       "es2015",
       "stage-2"
     ],
