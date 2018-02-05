@@ -1,7 +1,7 @@
 /*
-p5ML
+ML5
 v.0.0.1
-p5ML is a high level javascript library for machine learning.
+ML5 is a high level javascript library for machine learning.
 Made @NYU ITP
 */
 

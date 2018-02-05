@@ -19,7 +19,7 @@ const options = {
 }
 
 // Create the LSTM using a pretrained model.
-const lstm = new p5ML.LSTM('./data/hemingway/');
+const lstm = new ml5.LSTM('./data/hemingway/');
 
 // Generete content
 lstm.generate(options, function(output){

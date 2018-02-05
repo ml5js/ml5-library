@@ -12,8 +12,8 @@ let outputImg1, outputImg2;
 function setup() {
   noCanvas();
   inputImg = select('#input-img').elt;
-  net1 = new p5ml.TransformNet('models/wave', modelLoaded1);
-  net2 = new p5ml.TransformNet('models/udnie', modelLoaded2);
+  net1 = new ml5.TransformNet('models/wave', modelLoaded1);
+  net2 = new ml5.TransformNet('models/udnie', modelLoaded2);
 }
 
 // A function to be called when the model has been loaded
@@ -25,7 +25,7 @@ function modelLoaded1() {
   outputImgData1 = net1.predict(inputImg);
 
   // Convert the Array3D with image data to a html image element
-  outputImg1 = p5ml.array3DToImage(outputImgData1);
+  outputImg1 = ml5.array3DToImage(outputImgData1);
   // Append image to the DOM
   console.log('outputImg1', outputImg1);
   document.body.appendChild(outputImg1);
@@ -33,7 +33,7 @@ function modelLoaded1() {
 
 function modelLoaded2() {
   outputImgData2 = net2.predict(inputImg);
-  outputImg2 = p5ml.array3DToImage(outputImgData2);
+  outputImg2 = ml5.array3DToImage(outputImgData2);
   console.log('outputImg2', outputImg2);
   document.body.appendChild(outputImg2);
 }

@@ -10,8 +10,8 @@ export default {
     path: join(__dirname, 'dist'),
     libraryTarget: 'umd',
     publicPath: '/dist/',
-    filename: 'p5ml.js',
-    library: 'p5ml',
+    filename: 'ml5.js',
+    library: 'ml5',
   },
   module: {
     rules: [

@@ -49,7 +49,7 @@ class Help extends React.Component {
             <header className="postHeader">
               <h2>Experiments</h2>
             </header>
-            <p>A collection of experiments and demos built with p5ML.js.</p>
+            <p>A collection of experiments and demos built with ML5.js.</p>
             <GridBlock contents={demos} layout="threeColumn"/>
           </div>
         </Container>

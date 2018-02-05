@@ -9,7 +9,7 @@ You can use neural networks to recognize the content of images. Imagenet is a cl
 
 ```javascript
 // Create the classifier
-const classifier = new p5ml.ImageNet('SqueezeNet');
+const classifier = new ml5.ImageNet('SqueezeNet');
 // Make a prediction
 let prediction = classifier.predict(img, function(result){
   console.log(result) 

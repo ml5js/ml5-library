@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["p5ml"] = factory();
+		exports["ml5"] = factory();
 	else
-		root["p5ml"] = factory();
+		root["ml5"] = factory();
 })(typeof self !== 'undefined' ? self : this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -17903,9 +17903,9 @@ module.exports = {
   dl: dl,
   array3DToImage: _imageUtilities2.default
 }; /*
-   p5ML
+   ML5
    v.0.0.1
-   p5ML is a high level javascript library for machine learning.
+   ML5 is a high level javascript library for machine learning.
    Made @NYU ITP
    */
 
@@ -25893,10 +25893,10 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
                 var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
                 var MobileNet = function () {
                     function MobileNet(math) {
-                        // start custom p5ml
-                        deeplearn_1 = p5ml.dl;
+                        // start custom ml5
+                        deeplearn_1 = ml5.dl;
                         this.clases = imagenet_classes_1;
-                        // end custom p5ml
+                        // end custom ml5
                         this.math = math;
                         this.PREPROCESS_DIVISOR = deeplearn_1.Scalar.new(255.0 / 2);
                         this.ONE = deeplearn_1.Scalar.new(1);

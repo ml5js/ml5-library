@@ -23,7 +23,7 @@ let gifSrcs = ['output0.gif', 'output1.gif', 'output2.gif'];
 
 function preload() {
   // Initialize the KNN method.
-  knn = new p5ml.KNNImageClassifier(modelLoaded, 3, 1);
+  knn = new ml5.KNNImageClassifier(modelLoaded, 3, 1);
 }
 
 function setup() {

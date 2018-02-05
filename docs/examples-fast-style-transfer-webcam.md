@@ -56,7 +56,7 @@ function setup() {
   video.size(200, 200);
   video.hide();
   // Create a TransformNet
-  net = new p5ml.TransformNet('models/udnie', modelLoaded);
+  net = new ml5.TransformNet('models/udnie', modelLoaded);
   // Create output image
   outputImgContainer = createImg('images/udnie.jpg', 'image');
   outputImgContainer.parent('output-container');
@@ -81,7 +81,7 @@ function togglePredicting() {
 // Transfer the video to an image HTML element
 function predict() {
   outputImgData = net.predict(video.elt);
-  outputImg = p5ml.array3DToImage(outputImgData);
+  outputImg = ml5.array3DToImage(outputImgData);
   outputImgContainer.elt.src = outputImg.src;
 }
 
