@@ -67,4 +67,4 @@ let prediction = classifier.predict(img, function(result){
 
 ## Source
 
-[/src/ImageNet/index.js](https://github.com/cvalenzuela/p5-deeplearn-js/blob/master/src/ImageNet/index.js)
+[/src/ImageNet/index.js](https://github.com/cvalenzuela/ml5-js/blob/master/src/ImageNet/index.js)

@@ -8,7 +8,7 @@ p5ML.js is heavily inspired by [Processing](https://processing.org/) and [p5.js]
 
 ## Setup
 
-Download the [latest version](https://github.com/ITPNYU/p5-deeplearn-js) of p5ML.js and save the following HTML file to your computer:
+Download the [latest version](https://github.com/ITPNYU/ml5-js) of p5ML.js and save the following HTML file to your computer:
 
 ```html
 <!DOCTYPE html>
