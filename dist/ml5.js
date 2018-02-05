@@ -78,7 +78,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
-var core = __webpack_require__(27);
+var core = __webpack_require__(28);
 var hide = __webpack_require__(16);
 var redefine = __webpack_require__(17);
 var ctx = __webpack_require__(24);
@@ -1315,7 +1315,7 @@ module.exports = function (it) {
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var store = __webpack_require__(69)('wks');
+var store = __webpack_require__(70)('wks');
 var uid = __webpack_require__(40);
 var Symbol = __webpack_require__(2).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
@@ -1344,7 +1344,7 @@ module.exports = !__webpack_require__(5)(function () {
 
 var anObject = __webpack_require__(1);
 var IE8_DOM_DEFINE = __webpack_require__(114);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var dP = Object.defineProperty;
 
 exports.f = __webpack_require__(8) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
@@ -1365,7 +1365,7 @@ exports.f = __webpack_require__(8) ? Object.defineProperty : function defineProp
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.15 ToLength
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var min = Math.min;
 module.exports = function (it) {
   return it > 0 ? min(toInteger(it), 0x1fffffffffffff) : 0; // pow(2, 53) - 1 == 9007199254740991
@@ -1630,14 +1630,14 @@ function getOrMakeEnvironment() {
 }
 exports.ENV = getOrMakeEnvironment();
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(84)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(69)))
 
 /***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.13 ToObject(argument)
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 module.exports = function (it) {
   return Object(defined(it));
 };
@@ -1706,7 +1706,7 @@ var TO_STRING = 'toString';
 var $toString = Function[TO_STRING];
 var TPL = ('' + $toString).split(TO_STRING);
 
-__webpack_require__(27).inspectSource = function (it) {
+__webpack_require__(28).inspectSource = function (it) {
   return $toString.call(it);
 };
 
@@ -1737,7 +1737,7 @@ __webpack_require__(27).inspectSource = function (it) {
 
 var $export = __webpack_require__(0);
 var fails = __webpack_require__(5);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 var quot = /"/g;
 // B.2.3.2.1 CreateHTML(string, tag, attribute, value)
 var createHTML = function (string, tag, attribute, value) {
@@ -1844,7 +1844,7 @@ exports.isPassthroughNode = isPassthroughNode;
 
 // to indexed object, toObject with fallback for non-array-like ES3 strings
 var IObject = __webpack_require__(57);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 module.exports = function (it) {
   return IObject(defined(it));
 };
@@ -1857,7 +1857,7 @@ module.exports = function (it) {
 var pIE = __webpack_require__(58);
 var createDesc = __webpack_require__(39);
 var toIObject = __webpack_require__(20);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var has = __webpack_require__(15);
 var IE8_DOM_DEFINE = __webpack_require__(114);
 var gOPD = Object.getOwnPropertyDescriptor;
@@ -1955,6 +1955,100 @@ module.exports = function (method, arg) {
 
 /***/ }),
 /* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var xhr_dataset = __webpack_require__(148);
+exports.xhr_dataset = xhr_dataset;
+var environment = __webpack_require__(11);
+exports.environment = environment;
+var gpgpu_util = __webpack_require__(113);
+exports.gpgpu_util = gpgpu_util;
+var render_ndarray_gpu_util = __webpack_require__(380);
+exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
+var webgl_util = __webpack_require__(66);
+exports.webgl_util = webgl_util;
+var conv_util = __webpack_require__(64);
+exports.conv_util = conv_util;
+var test_util = __webpack_require__(381);
+exports.test_util = test_util;
+var util = __webpack_require__(4);
+exports.util = util;
+var version_1 = __webpack_require__(403);
+exports.version = version_1.version;
+var checkpoint_loader_1 = __webpack_require__(404);
+exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
+var dataset_1 = __webpack_require__(150);
+exports.InMemoryDataset = dataset_1.InMemoryDataset;
+var input_provider_1 = __webpack_require__(405);
+exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
+exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
+var xhr_dataset_1 = __webpack_require__(148);
+exports.XhrDataset = xhr_dataset_1.XhrDataset;
+var environment_1 = __webpack_require__(11);
+exports.ENV = environment_1.ENV;
+exports.Environment = environment_1.Environment;
+var graph_1 = __webpack_require__(68);
+exports.Graph = graph_1.Graph;
+exports.Tensor = graph_1.Tensor;
+var graph_runner_1 = __webpack_require__(406);
+exports.GraphRunner = graph_runner_1.GraphRunner;
+exports.MetricReduction = graph_runner_1.MetricReduction;
+var adadelta_optimizer_1 = __webpack_require__(428);
+exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
+var adagrad_optimizer_1 = __webpack_require__(429);
+exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
+var adam_optimizer_1 = __webpack_require__(430);
+exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
+var adamax_optimizer_1 = __webpack_require__(431);
+exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
+var momentum_optimizer_1 = __webpack_require__(432);
+exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
+var rmsprop_optimizer_1 = __webpack_require__(433);
+exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
+var session_1 = __webpack_require__(157);
+exports.CostReduction = session_1.CostReduction;
+exports.Session = session_1.Session;
+var initializers_1 = __webpack_require__(156);
+exports.ConstantInitializer = initializers_1.ConstantInitializer;
+exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
+exports.OnesInitializer = initializers_1.OnesInitializer;
+exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
+exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
+exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
+exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
+exports.ZerosInitializer = initializers_1.ZerosInitializer;
+var backend_cpu_1 = __webpack_require__(151);
+exports.MathBackendCPU = backend_cpu_1.MathBackendCPU;
+exports.NDArrayMathCPU = backend_cpu_1.NDArrayMathCPU;
+var backend_webgl_1 = __webpack_require__(152);
+exports.MathBackendWebGL = backend_webgl_1.MathBackendWebGL;
+exports.NDArrayMathGPU = backend_webgl_1.NDArrayMathGPU;
+var matmul_1 = __webpack_require__(61);
+exports.MatrixOrientation = matmul_1.MatrixOrientation;
+var gpgpu_context_1 = __webpack_require__(154);
+exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
+var math_1 = __webpack_require__(60);
+exports.NDArrayMath = math_1.NDArrayMath;
+var ndarray_1 = __webpack_require__(3);
+exports.Array1D = ndarray_1.Array1D;
+exports.Array2D = ndarray_1.Array2D;
+exports.Array3D = ndarray_1.Array3D;
+exports.Array4D = ndarray_1.Array4D;
+exports.NDArray = ndarray_1.NDArray;
+exports.Scalar = ndarray_1.Scalar;
+var ndarray_2 = __webpack_require__(3);
+exports.variable = ndarray_2.variable;
+var optimizer_1 = __webpack_require__(50);
+exports.Optimizer = optimizer_1.Optimizer;
+var sgd_optimizer_1 = __webpack_require__(160);
+exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
+
+
+/***/ }),
+/* 28 */
 /***/ (function(module, exports) {
 
 var core = module.exports = { version: '2.5.3' };
@@ -1962,7 +2056,7 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.1.1 ToPrimitive(input [, PreferredType])
@@ -1980,7 +2074,7 @@ module.exports = function (it, S) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports) {
 
 // 7.2.1 RequireObjectCoercible(argument)
@@ -1991,7 +2085,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports) {
 
 // 7.1.4 ToInteger
@@ -2003,12 +2097,12 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
 var $export = __webpack_require__(0);
-var core = __webpack_require__(27);
+var core = __webpack_require__(28);
 var fails = __webpack_require__(5);
 module.exports = function (KEY, exec) {
   var fn = (core.Object || {})[KEY] || Object[KEY];
@@ -2019,7 +2113,7 @@ module.exports = function (KEY, exec) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 0 -> Array#forEach
@@ -2069,7 +2163,7 @@ module.exports = function (TYPE, $create) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2079,18 +2173,18 @@ if (__webpack_require__(8)) {
   var global = __webpack_require__(2);
   var fails = __webpack_require__(5);
   var $export = __webpack_require__(0);
-  var $typed = __webpack_require__(79);
+  var $typed = __webpack_require__(80);
   var $buffer = __webpack_require__(110);
   var ctx = __webpack_require__(24);
   var anInstance = __webpack_require__(47);
   var propertyDesc = __webpack_require__(39);
   var hide = __webpack_require__(16);
   var redefineAll = __webpack_require__(49);
-  var toInteger = __webpack_require__(30);
+  var toInteger = __webpack_require__(31);
   var toLength = __webpack_require__(10);
   var toIndex = __webpack_require__(140);
   var toAbsoluteIndex = __webpack_require__(43);
-  var toPrimitive = __webpack_require__(28);
+  var toPrimitive = __webpack_require__(29);
   var has = __webpack_require__(15);
   var classof = __webpack_require__(59);
   var isObject = __webpack_require__(6);
@@ -2102,12 +2196,12 @@ if (__webpack_require__(8)) {
   var getIterFn = __webpack_require__(103);
   var uid = __webpack_require__(40);
   var wks = __webpack_require__(7);
-  var createArrayMethod = __webpack_require__(32);
-  var createArrayIncludes = __webpack_require__(70);
-  var speciesConstructor = __webpack_require__(77);
+  var createArrayMethod = __webpack_require__(33);
+  var createArrayIncludes = __webpack_require__(71);
+  var speciesConstructor = __webpack_require__(78);
   var ArrayIterators = __webpack_require__(106);
   var Iterators = __webpack_require__(53);
-  var $iterDetect = __webpack_require__(74);
+  var $iterDetect = __webpack_require__(75);
   var setSpecies = __webpack_require__(46);
   var arrayFill = __webpack_require__(105);
   var arrayCopyWithin = __webpack_require__(130);
@@ -2556,12 +2650,12 @@ if (__webpack_require__(8)) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Map = __webpack_require__(135);
 var $export = __webpack_require__(0);
-var shared = __webpack_require__(69)('metadata');
+var shared = __webpack_require__(70)('metadata');
 var store = shared.store || (shared.store = new (__webpack_require__(138))());
 
 var getOrCreateMetadataMap = function (target, targetKey, create) {
@@ -2610,100 +2704,6 @@ module.exports = {
   key: toMetaKey,
   exp: exp
 };
-
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var xhr_dataset = __webpack_require__(148);
-exports.xhr_dataset = xhr_dataset;
-var environment = __webpack_require__(11);
-exports.environment = environment;
-var gpgpu_util = __webpack_require__(113);
-exports.gpgpu_util = gpgpu_util;
-var render_ndarray_gpu_util = __webpack_require__(380);
-exports.render_ndarray_gpu_util = render_ndarray_gpu_util;
-var webgl_util = __webpack_require__(66);
-exports.webgl_util = webgl_util;
-var conv_util = __webpack_require__(64);
-exports.conv_util = conv_util;
-var test_util = __webpack_require__(381);
-exports.test_util = test_util;
-var util = __webpack_require__(4);
-exports.util = util;
-var version_1 = __webpack_require__(403);
-exports.version = version_1.version;
-var checkpoint_loader_1 = __webpack_require__(404);
-exports.CheckpointLoader = checkpoint_loader_1.CheckpointLoader;
-var dataset_1 = __webpack_require__(150);
-exports.InMemoryDataset = dataset_1.InMemoryDataset;
-var input_provider_1 = __webpack_require__(405);
-exports.InCPUMemoryShuffledInputProviderBuilder = input_provider_1.InCPUMemoryShuffledInputProviderBuilder;
-exports.InGPUMemoryShuffledInputProviderBuilder = input_provider_1.InGPUMemoryShuffledInputProviderBuilder;
-var xhr_dataset_1 = __webpack_require__(148);
-exports.XhrDataset = xhr_dataset_1.XhrDataset;
-var environment_1 = __webpack_require__(11);
-exports.ENV = environment_1.ENV;
-exports.Environment = environment_1.Environment;
-var graph_1 = __webpack_require__(68);
-exports.Graph = graph_1.Graph;
-exports.Tensor = graph_1.Tensor;
-var graph_runner_1 = __webpack_require__(406);
-exports.GraphRunner = graph_runner_1.GraphRunner;
-exports.MetricReduction = graph_runner_1.MetricReduction;
-var adadelta_optimizer_1 = __webpack_require__(428);
-exports.AdadeltaOptimizer = adadelta_optimizer_1.AdadeltaOptimizer;
-var adagrad_optimizer_1 = __webpack_require__(429);
-exports.AdagradOptimizer = adagrad_optimizer_1.AdagradOptimizer;
-var adam_optimizer_1 = __webpack_require__(430);
-exports.AdamOptimizer = adam_optimizer_1.AdamOptimizer;
-var adamax_optimizer_1 = __webpack_require__(431);
-exports.AdamaxOptimizer = adamax_optimizer_1.AdamaxOptimizer;
-var momentum_optimizer_1 = __webpack_require__(432);
-exports.MomentumOptimizer = momentum_optimizer_1.MomentumOptimizer;
-var rmsprop_optimizer_1 = __webpack_require__(433);
-exports.RMSPropOptimizer = rmsprop_optimizer_1.RMSPropOptimizer;
-var session_1 = __webpack_require__(157);
-exports.CostReduction = session_1.CostReduction;
-exports.Session = session_1.Session;
-var initializers_1 = __webpack_require__(156);
-exports.ConstantInitializer = initializers_1.ConstantInitializer;
-exports.NDArrayInitializer = initializers_1.NDArrayInitializer;
-exports.OnesInitializer = initializers_1.OnesInitializer;
-exports.RandomNormalInitializer = initializers_1.RandomNormalInitializer;
-exports.RandomTruncatedNormalInitializer = initializers_1.RandomTruncatedNormalInitializer;
-exports.RandomUniformInitializer = initializers_1.RandomUniformInitializer;
-exports.VarianceScalingInitializer = initializers_1.VarianceScalingInitializer;
-exports.ZerosInitializer = initializers_1.ZerosInitializer;
-var backend_cpu_1 = __webpack_require__(151);
-exports.MathBackendCPU = backend_cpu_1.MathBackendCPU;
-exports.NDArrayMathCPU = backend_cpu_1.NDArrayMathCPU;
-var backend_webgl_1 = __webpack_require__(152);
-exports.MathBackendWebGL = backend_webgl_1.MathBackendWebGL;
-exports.NDArrayMathGPU = backend_webgl_1.NDArrayMathGPU;
-var matmul_1 = __webpack_require__(61);
-exports.MatrixOrientation = matmul_1.MatrixOrientation;
-var gpgpu_context_1 = __webpack_require__(154);
-exports.GPGPUContext = gpgpu_context_1.GPGPUContext;
-var math_1 = __webpack_require__(60);
-exports.NDArrayMath = math_1.NDArrayMath;
-var ndarray_1 = __webpack_require__(3);
-exports.Array1D = ndarray_1.Array1D;
-exports.Array2D = ndarray_1.Array2D;
-exports.Array3D = ndarray_1.Array3D;
-exports.Array4D = ndarray_1.Array4D;
-exports.NDArray = ndarray_1.NDArray;
-exports.Scalar = ndarray_1.Scalar;
-var ndarray_2 = __webpack_require__(3);
-exports.variable = ndarray_2.variable;
-var optimizer_1 = __webpack_require__(50);
-exports.Optimizer = optimizer_1.Optimizer;
-var sgd_optimizer_1 = __webpack_require__(160);
-exports.SGDOptimizer = sgd_optimizer_1.SGDOptimizer;
 
 
 /***/ }),
@@ -2932,7 +2932,7 @@ module.exports = Object.keys || function keys(O) {
 /* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var max = Math.max;
 var min = Math.min;
 module.exports = function (index, length) {
@@ -3175,7 +3175,7 @@ module.exports = function (it, tag, stat) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 var fails = __webpack_require__(5);
 var spaces = __webpack_require__(91);
 var space = '[' + spaces + ']';
@@ -6293,6 +6293,33 @@ exports.ArgMaxEqualsNode = ArgMaxEqualsNode;
 
 /***/ }),
 /* 69 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
@@ -6304,7 +6331,7 @@ module.exports = function (key) {
 
 
 /***/ }),
-/* 70 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // false -> Array#indexOf
@@ -6333,14 +6360,14 @@ module.exports = function (IS_INCLUDES) {
 
 
 /***/ }),
-/* 71 */
+/* 72 */
 /***/ (function(module, exports) {
 
 exports.f = Object.getOwnPropertySymbols;
 
 
 /***/ }),
-/* 72 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.2 IsArray(argument)
@@ -6351,7 +6378,7 @@ module.exports = Array.isArray || function isArray(arg) {
 
 
 /***/ }),
-/* 73 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.2.8 IsRegExp(argument)
@@ -6365,7 +6392,7 @@ module.exports = function (it) {
 
 
 /***/ }),
-/* 74 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ITERATOR = __webpack_require__(7)('iterator');
@@ -6393,7 +6420,7 @@ module.exports = function (exec, skipClosing) {
 
 
 /***/ }),
-/* 75 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6413,7 +6440,7 @@ module.exports = function () {
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6421,7 +6448,7 @@ module.exports = function () {
 var hide = __webpack_require__(16);
 var redefine = __webpack_require__(17);
 var fails = __webpack_require__(5);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 var wks = __webpack_require__(7);
 
 module.exports = function (KEY, length, exec) {
@@ -6448,7 +6475,7 @@ module.exports = function (KEY, length, exec) {
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // 7.3.20 SpeciesConstructor(O, defaultConstructor)
@@ -6463,7 +6490,7 @@ module.exports = function (O, D) {
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6477,7 +6504,7 @@ var forOf = __webpack_require__(48);
 var anInstance = __webpack_require__(47);
 var isObject = __webpack_require__(6);
 var fails = __webpack_require__(5);
-var $iterDetect = __webpack_require__(74);
+var $iterDetect = __webpack_require__(75);
 var setToStringTag = __webpack_require__(51);
 var inheritIfRequired = __webpack_require__(92);
 
@@ -6555,7 +6582,7 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
@@ -6589,7 +6616,7 @@ module.exports = {
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6605,7 +6632,7 @@ module.exports = __webpack_require__(41) || !__webpack_require__(5)(function () 
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6624,7 +6651,7 @@ module.exports = function (COLLECTION) {
 
 
 /***/ }),
-/* 82 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6659,7 +6686,7 @@ module.exports = function (COLLECTION) {
 
 
 /***/ }),
-/* 83 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6701,33 +6728,6 @@ exports.upcastType = upcastType;
 
 
 /***/ }),
-/* 84 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
 /* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -6745,7 +6745,7 @@ module.exports = function (it) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var global = __webpack_require__(2);
-var core = __webpack_require__(27);
+var core = __webpack_require__(28);
 var LIBRARY = __webpack_require__(41);
 var wksExt = __webpack_require__(115);
 var defineProperty = __webpack_require__(9).f;
@@ -6759,7 +6759,7 @@ module.exports = function (name) {
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var shared = __webpack_require__(69)('keys');
+var shared = __webpack_require__(70)('keys');
 var uid = __webpack_require__(40);
 module.exports = function (key) {
   return shared[key] || (shared[key] = uid(key));
@@ -6844,8 +6844,8 @@ module.exports = function (that, target, C) {
 
 "use strict";
 
-var toInteger = __webpack_require__(30);
-var defined = __webpack_require__(29);
+var toInteger = __webpack_require__(31);
+var defined = __webpack_require__(30);
 
 module.exports = function repeat(count) {
   var str = String(defined(this));
@@ -6888,8 +6888,8 @@ module.exports = (!$expm1
 /* 96 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var toInteger = __webpack_require__(30);
-var defined = __webpack_require__(29);
+var toInteger = __webpack_require__(31);
+var defined = __webpack_require__(30);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function (TO_STRING) {
@@ -7009,8 +7009,8 @@ module.exports = function (Constructor, NAME, next) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // helper for String#{startsWith, endsWith, includes}
-var isRegExp = __webpack_require__(73);
-var defined = __webpack_require__(29);
+var isRegExp = __webpack_require__(74);
+var defined = __webpack_require__(30);
 
 module.exports = function (that, searchString, NAME) {
   if (isRegExp(searchString)) throw TypeError('String#' + NAME + " doesn't accept regex!");
@@ -7072,7 +7072,7 @@ module.exports = function (object, index, value) {
 var classof = __webpack_require__(59);
 var ITERATOR = __webpack_require__(7)('iterator');
 var Iterators = __webpack_require__(53);
-module.exports = __webpack_require__(27).getIteratorMethod = function (it) {
+module.exports = __webpack_require__(28).getIteratorMethod = function (it) {
   if (it != undefined) return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
@@ -7352,12 +7352,12 @@ module.exports.f = function (C) {
 var global = __webpack_require__(2);
 var DESCRIPTORS = __webpack_require__(8);
 var LIBRARY = __webpack_require__(41);
-var $typed = __webpack_require__(79);
+var $typed = __webpack_require__(80);
 var hide = __webpack_require__(16);
 var redefineAll = __webpack_require__(49);
 var fails = __webpack_require__(5);
 var anInstance = __webpack_require__(47);
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var toLength = __webpack_require__(10);
 var toIndex = __webpack_require__(140);
 var gOPN = __webpack_require__(45).f;
@@ -8042,7 +8042,7 @@ exports.f = __webpack_require__(7);
 
 var has = __webpack_require__(15);
 var toIObject = __webpack_require__(20);
-var arrayIndexOf = __webpack_require__(70)(false);
+var arrayIndexOf = __webpack_require__(71)(false);
 var IE_PROTO = __webpack_require__(87)('IE_PROTO');
 
 module.exports = function (object, names) {
@@ -8111,7 +8111,7 @@ module.exports.f = function getOwnPropertyNames(it) {
 
 // 19.1.2.1 Object.assign(target, source, ...)
 var getKeys = __webpack_require__(42);
-var gOPS = __webpack_require__(71);
+var gOPS = __webpack_require__(72);
 var pIE = __webpack_require__(58);
 var toObject = __webpack_require__(12);
 var IObject = __webpack_require__(57);
@@ -8390,7 +8390,7 @@ module.exports = function (done, value) {
 // 21.2.5.3 get RegExp.prototype.flags()
 if (__webpack_require__(8) && /./g.flags != 'g') __webpack_require__(9).f(RegExp.prototype, 'flags', {
   configurable: true,
-  get: __webpack_require__(75)
+  get: __webpack_require__(76)
 });
 
 
@@ -8436,7 +8436,7 @@ var validate = __webpack_require__(54);
 var MAP = 'Map';
 
 // 23.1 Map Objects
-module.exports = __webpack_require__(78)(MAP, function (get) {
+module.exports = __webpack_require__(79)(MAP, function (get) {
   return function Map() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.1.3.6 Map.prototype.get(key)
@@ -8613,7 +8613,7 @@ var validate = __webpack_require__(54);
 var SET = 'Set';
 
 // 23.2 Set Objects
-module.exports = __webpack_require__(78)(SET, function (get) {
+module.exports = __webpack_require__(79)(SET, function (get) {
   return function Set() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.2.3.1 Set.prototype.add(value)
@@ -8629,7 +8629,7 @@ module.exports = __webpack_require__(78)(SET, function (get) {
 
 "use strict";
 
-var each = __webpack_require__(32)(0);
+var each = __webpack_require__(33)(0);
 var redefine = __webpack_require__(17);
 var meta = __webpack_require__(37);
 var assign = __webpack_require__(119);
@@ -8666,7 +8666,7 @@ var methods = {
 };
 
 // 23.3 WeakMap Objects
-var $WeakMap = module.exports = __webpack_require__(78)(WEAK_MAP, wrapper, methods, weak, true, true);
+var $WeakMap = module.exports = __webpack_require__(79)(WEAK_MAP, wrapper, methods, weak, true, true);
 
 // IE11 WeakMap frozen keys fix
 if (fails(function () { return new $WeakMap().set((Object.freeze || Object)(tmp), 7).get(tmp) != 7; })) {
@@ -8701,7 +8701,7 @@ var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(6);
 var anInstance = __webpack_require__(47);
 var forOf = __webpack_require__(48);
-var createArrayMethod = __webpack_require__(32);
+var createArrayMethod = __webpack_require__(33);
 var $has = __webpack_require__(15);
 var validate = __webpack_require__(54);
 var arrayFind = createArrayMethod(5);
@@ -8786,7 +8786,7 @@ module.exports = {
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/ecma262/#sec-toindex
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var toLength = __webpack_require__(10);
 module.exports = function (it) {
   if (it === undefined) return 0;
@@ -8803,7 +8803,7 @@ module.exports = function (it) {
 
 // all object keys, includes non-enumerable and symbols
 var gOPN = __webpack_require__(45);
-var gOPS = __webpack_require__(71);
+var gOPS = __webpack_require__(72);
 var anObject = __webpack_require__(1);
 var Reflect = __webpack_require__(2).Reflect;
 module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
@@ -8820,7 +8820,7 @@ module.exports = Reflect && Reflect.ownKeys || function ownKeys(it) {
 "use strict";
 
 // https://tc39.github.io/proposal-flatMap/#sec-FlattenIntoArray
-var isArray = __webpack_require__(72);
+var isArray = __webpack_require__(73);
 var isObject = __webpack_require__(6);
 var toLength = __webpack_require__(10);
 var ctx = __webpack_require__(24);
@@ -8866,7 +8866,7 @@ module.exports = flattenIntoArray;
 // https://github.com/tc39/proposal-string-pad-start-end
 var toLength = __webpack_require__(10);
 var repeat = __webpack_require__(93);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 
 module.exports = function (that, maxLength, fillString, left) {
   var S = String(defined(that));
@@ -9402,8 +9402,8 @@ var broadcast_util = __webpack_require__(62);
 var concat_util = __webpack_require__(63);
 var math_1 = __webpack_require__(60);
 var ndarray_1 = __webpack_require__(3);
-var types = __webpack_require__(83);
-var types_1 = __webpack_require__(83);
+var types = __webpack_require__(84);
+var types_1 = __webpack_require__(84);
 var axis_util = __webpack_require__(112);
 var matmul_1 = __webpack_require__(61);
 var MathBackendCPU = (function () {
@@ -10707,8 +10707,8 @@ var axis_util = __webpack_require__(112);
 var math_1 = __webpack_require__(60);
 var ndarray_1 = __webpack_require__(3);
 var reduce_util = __webpack_require__(382);
-var types = __webpack_require__(83);
-var types_1 = __webpack_require__(83);
+var types = __webpack_require__(84);
+var types_1 = __webpack_require__(84);
 var argminmax_gpu_1 = __webpack_require__(383);
 var batchnorm_gpu_1 = __webpack_require__(384);
 var binaryop_gpu = __webpack_require__(153);
@@ -12572,7 +12572,7 @@ define(String.prototype, "padRight", "".padEnd);
 "pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
   [][key] && define(Array, key, Function.call.bind([][key]));
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(84)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(69)))
 
 /***/ }),
 /* 164 */
@@ -12774,7 +12774,7 @@ __webpack_require__(357);
 __webpack_require__(358);
 __webpack_require__(359);
 __webpack_require__(360);
-module.exports = __webpack_require__(27);
+module.exports = __webpack_require__(28);
 
 
 /***/ }),
@@ -12791,18 +12791,18 @@ var $export = __webpack_require__(0);
 var redefine = __webpack_require__(17);
 var META = __webpack_require__(37).KEY;
 var $fails = __webpack_require__(5);
-var shared = __webpack_require__(69);
+var shared = __webpack_require__(70);
 var setToStringTag = __webpack_require__(51);
 var uid = __webpack_require__(40);
 var wks = __webpack_require__(7);
 var wksExt = __webpack_require__(115);
 var wksDefine = __webpack_require__(86);
 var enumKeys = __webpack_require__(166);
-var isArray = __webpack_require__(72);
+var isArray = __webpack_require__(73);
 var anObject = __webpack_require__(1);
 var isObject = __webpack_require__(6);
 var toIObject = __webpack_require__(20);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var createDesc = __webpack_require__(39);
 var _create = __webpack_require__(44);
 var gOPNExt = __webpack_require__(118);
@@ -12933,7 +12933,7 @@ if (!USE_NATIVE) {
   $DP.f = $defineProperty;
   __webpack_require__(45).f = gOPNExt.f = $getOwnPropertyNames;
   __webpack_require__(58).f = $propertyIsEnumerable;
-  __webpack_require__(71).f = $getOwnPropertySymbols;
+  __webpack_require__(72).f = $getOwnPropertySymbols;
 
   if (DESCRIPTORS && !__webpack_require__(41)) {
     redefine(ObjectProto, 'propertyIsEnumerable', $propertyIsEnumerable, true);
@@ -13024,7 +13024,7 @@ setToStringTag(global.JSON, 'JSON', true);
 
 // all enumerable object keys, includes symbols
 var getKeys = __webpack_require__(42);
-var gOPS = __webpack_require__(71);
+var gOPS = __webpack_require__(72);
 var pIE = __webpack_require__(58);
 module.exports = function (it) {
   var result = getKeys(it);
@@ -13074,7 +13074,7 @@ $export($export.S + $export.F * !__webpack_require__(8), 'Object', { definePrope
 var toIObject = __webpack_require__(20);
 var $getOwnPropertyDescriptor = __webpack_require__(21).f;
 
-__webpack_require__(31)('getOwnPropertyDescriptor', function () {
+__webpack_require__(32)('getOwnPropertyDescriptor', function () {
   return function getOwnPropertyDescriptor(it, key) {
     return $getOwnPropertyDescriptor(toIObject(it), key);
   };
@@ -13089,7 +13089,7 @@ __webpack_require__(31)('getOwnPropertyDescriptor', function () {
 var toObject = __webpack_require__(12);
 var $getPrototypeOf = __webpack_require__(22);
 
-__webpack_require__(31)('getPrototypeOf', function () {
+__webpack_require__(32)('getPrototypeOf', function () {
   return function getPrototypeOf(it) {
     return $getPrototypeOf(toObject(it));
   };
@@ -13104,7 +13104,7 @@ __webpack_require__(31)('getPrototypeOf', function () {
 var toObject = __webpack_require__(12);
 var $keys = __webpack_require__(42);
 
-__webpack_require__(31)('keys', function () {
+__webpack_require__(32)('keys', function () {
   return function keys(it) {
     return $keys(toObject(it));
   };
@@ -13116,7 +13116,7 @@ __webpack_require__(31)('keys', function () {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.7 Object.getOwnPropertyNames(O)
-__webpack_require__(31)('getOwnPropertyNames', function () {
+__webpack_require__(32)('getOwnPropertyNames', function () {
   return __webpack_require__(118).f;
 });
 
@@ -13129,7 +13129,7 @@ __webpack_require__(31)('getOwnPropertyNames', function () {
 var isObject = __webpack_require__(6);
 var meta = __webpack_require__(37).onFreeze;
 
-__webpack_require__(31)('freeze', function ($freeze) {
+__webpack_require__(32)('freeze', function ($freeze) {
   return function freeze(it) {
     return $freeze && isObject(it) ? $freeze(meta(it)) : it;
   };
@@ -13144,7 +13144,7 @@ __webpack_require__(31)('freeze', function ($freeze) {
 var isObject = __webpack_require__(6);
 var meta = __webpack_require__(37).onFreeze;
 
-__webpack_require__(31)('seal', function ($seal) {
+__webpack_require__(32)('seal', function ($seal) {
   return function seal(it) {
     return $seal && isObject(it) ? $seal(meta(it)) : it;
   };
@@ -13159,7 +13159,7 @@ __webpack_require__(31)('seal', function ($seal) {
 var isObject = __webpack_require__(6);
 var meta = __webpack_require__(37).onFreeze;
 
-__webpack_require__(31)('preventExtensions', function ($preventExtensions) {
+__webpack_require__(32)('preventExtensions', function ($preventExtensions) {
   return function preventExtensions(it) {
     return $preventExtensions && isObject(it) ? $preventExtensions(meta(it)) : it;
   };
@@ -13173,7 +13173,7 @@ __webpack_require__(31)('preventExtensions', function ($preventExtensions) {
 // 19.1.2.12 Object.isFrozen(O)
 var isObject = __webpack_require__(6);
 
-__webpack_require__(31)('isFrozen', function ($isFrozen) {
+__webpack_require__(32)('isFrozen', function ($isFrozen) {
   return function isFrozen(it) {
     return isObject(it) ? $isFrozen ? $isFrozen(it) : false : true;
   };
@@ -13187,7 +13187,7 @@ __webpack_require__(31)('isFrozen', function ($isFrozen) {
 // 19.1.2.13 Object.isSealed(O)
 var isObject = __webpack_require__(6);
 
-__webpack_require__(31)('isSealed', function ($isSealed) {
+__webpack_require__(32)('isSealed', function ($isSealed) {
   return function isSealed(it) {
     return isObject(it) ? $isSealed ? $isSealed(it) : false : true;
   };
@@ -13201,7 +13201,7 @@ __webpack_require__(31)('isSealed', function ($isSealed) {
 // 19.1.2.11 Object.isExtensible(O)
 var isObject = __webpack_require__(6);
 
-__webpack_require__(31)('isExtensible', function ($isExtensible) {
+__webpack_require__(32)('isExtensible', function ($isExtensible) {
   return function isExtensible(it) {
     return isObject(it) ? $isExtensible ? $isExtensible(it) : true : false;
   };
@@ -13346,7 +13346,7 @@ var global = __webpack_require__(2);
 var has = __webpack_require__(15);
 var cof = __webpack_require__(25);
 var inheritIfRequired = __webpack_require__(92);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var fails = __webpack_require__(5);
 var gOPN = __webpack_require__(45).f;
 var gOPD = __webpack_require__(21).f;
@@ -13419,7 +13419,7 @@ if (!$Number(' 0o1') || !$Number('0b1') || $Number('+0x1')) {
 "use strict";
 
 var $export = __webpack_require__(0);
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var aNumberValue = __webpack_require__(124);
 var repeat = __webpack_require__(93);
 var $toFixed = 1.0.toFixed;
@@ -14330,7 +14330,7 @@ $export($export.S, 'Date', { now: function () { return new Date().getTime(); } }
 
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(12);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 
 $export($export.P + $export.F * __webpack_require__(5)(function () {
   return new Date(NaN).toJSON() !== null
@@ -14427,7 +14427,7 @@ if (!(TO_PRIMITIVE in proto)) __webpack_require__(16)(proto, TO_PRIMITIVE, __web
 "use strict";
 
 var anObject = __webpack_require__(1);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var NUMBER = 'number';
 
 module.exports = function (hint) {
@@ -14443,7 +14443,7 @@ module.exports = function (hint) {
 // 22.1.2.2 / 15.4.3.2 Array.isArray(arg)
 var $export = __webpack_require__(0);
 
-$export($export.S, 'Array', { isArray: __webpack_require__(72) });
+$export($export.S, 'Array', { isArray: __webpack_require__(73) });
 
 
 /***/ }),
@@ -14461,7 +14461,7 @@ var toLength = __webpack_require__(10);
 var createProperty = __webpack_require__(102);
 var getIterFn = __webpack_require__(103);
 
-$export($export.S + $export.F * !__webpack_require__(74)(function (iter) { Array.from(iter); }), 'Array', {
+$export($export.S + $export.F * !__webpack_require__(75)(function (iter) { Array.from(iter); }), 'Array', {
   // 22.1.2.1 Array.from(arrayLike, mapfn = undefined, thisArg = undefined)
   from: function from(arrayLike /* , mapfn = undefined, thisArg = undefined */) {
     var O = toObject(arrayLike);
@@ -14607,7 +14607,7 @@ $export($export.P + $export.F * (fails(function () {
 "use strict";
 
 var $export = __webpack_require__(0);
-var $forEach = __webpack_require__(32)(0);
+var $forEach = __webpack_require__(33)(0);
 var STRICT = __webpack_require__(26)([].forEach, true);
 
 $export($export.P + $export.F * !STRICT, 'Array', {
@@ -14623,7 +14623,7 @@ $export($export.P + $export.F * !STRICT, 'Array', {
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(6);
-var isArray = __webpack_require__(72);
+var isArray = __webpack_require__(73);
 var SPECIES = __webpack_require__(7)('species');
 
 module.exports = function (original) {
@@ -14647,7 +14647,7 @@ module.exports = function (original) {
 "use strict";
 
 var $export = __webpack_require__(0);
-var $map = __webpack_require__(32)(1);
+var $map = __webpack_require__(33)(1);
 
 $export($export.P + $export.F * !__webpack_require__(26)([].map, true), 'Array', {
   // 22.1.3.15 / 15.4.4.19 Array.prototype.map(callbackfn [, thisArg])
@@ -14664,7 +14664,7 @@ $export($export.P + $export.F * !__webpack_require__(26)([].map, true), 'Array',
 "use strict";
 
 var $export = __webpack_require__(0);
-var $filter = __webpack_require__(32)(2);
+var $filter = __webpack_require__(33)(2);
 
 $export($export.P + $export.F * !__webpack_require__(26)([].filter, true), 'Array', {
   // 22.1.3.7 / 15.4.4.20 Array.prototype.filter(callbackfn [, thisArg])
@@ -14681,7 +14681,7 @@ $export($export.P + $export.F * !__webpack_require__(26)([].filter, true), 'Arra
 "use strict";
 
 var $export = __webpack_require__(0);
-var $some = __webpack_require__(32)(3);
+var $some = __webpack_require__(33)(3);
 
 $export($export.P + $export.F * !__webpack_require__(26)([].some, true), 'Array', {
   // 22.1.3.23 / 15.4.4.17 Array.prototype.some(callbackfn [, thisArg])
@@ -14698,7 +14698,7 @@ $export($export.P + $export.F * !__webpack_require__(26)([].some, true), 'Array'
 "use strict";
 
 var $export = __webpack_require__(0);
-var $every = __webpack_require__(32)(4);
+var $every = __webpack_require__(33)(4);
 
 $export($export.P + $export.F * !__webpack_require__(26)([].every, true), 'Array', {
   // 22.1.3.5 / 15.4.4.16 Array.prototype.every(callbackfn [, thisArg])
@@ -14749,7 +14749,7 @@ $export($export.P + $export.F * !__webpack_require__(26)([].reduceRight, true), 
 "use strict";
 
 var $export = __webpack_require__(0);
-var $indexOf = __webpack_require__(70)(false);
+var $indexOf = __webpack_require__(71)(false);
 var $native = [].indexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].indexOf(1, -0) < 0;
 
@@ -14772,7 +14772,7 @@ $export($export.P + $export.F * (NEGATIVE_ZERO || !__webpack_require__(26)($nati
 
 var $export = __webpack_require__(0);
 var toIObject = __webpack_require__(20);
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var toLength = __webpack_require__(10);
 var $native = [].lastIndexOf;
 var NEGATIVE_ZERO = !!$native && 1 / [1].lastIndexOf(1, -0) < 0;
@@ -14825,7 +14825,7 @@ __webpack_require__(38)('fill');
 
 // 22.1.3.8 Array.prototype.find(predicate, thisArg = undefined)
 var $export = __webpack_require__(0);
-var $find = __webpack_require__(32)(5);
+var $find = __webpack_require__(33)(5);
 var KEY = 'find';
 var forced = true;
 // Shouldn't skip holes
@@ -14846,7 +14846,7 @@ __webpack_require__(38)(KEY);
 
 // 22.1.3.9 Array.prototype.findIndex(predicate, thisArg = undefined)
 var $export = __webpack_require__(0);
-var $find = __webpack_require__(32)(6);
+var $find = __webpack_require__(33)(6);
 var KEY = 'findIndex';
 var forced = true;
 // Shouldn't skip holes
@@ -14874,8 +14874,8 @@ var global = __webpack_require__(2);
 var inheritIfRequired = __webpack_require__(92);
 var dP = __webpack_require__(9).f;
 var gOPN = __webpack_require__(45).f;
-var isRegExp = __webpack_require__(73);
-var $flags = __webpack_require__(75);
+var isRegExp = __webpack_require__(74);
+var $flags = __webpack_require__(76);
 var $RegExp = global.RegExp;
 var Base = $RegExp;
 var proto = $RegExp.prototype;
@@ -14923,7 +14923,7 @@ __webpack_require__(46)('RegExp');
 
 __webpack_require__(132);
 var anObject = __webpack_require__(1);
-var $flags = __webpack_require__(75);
+var $flags = __webpack_require__(76);
 var DESCRIPTORS = __webpack_require__(8);
 var TO_STRING = 'toString';
 var $toString = /./[TO_STRING];
@@ -14952,7 +14952,7 @@ if (__webpack_require__(5)(function () { return $toString.call({ source: 'a', fl
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@match logic
-__webpack_require__(76)('match', 1, function (defined, MATCH, $match) {
+__webpack_require__(77)('match', 1, function (defined, MATCH, $match) {
   // 21.1.3.11 String.prototype.match(regexp)
   return [function match(regexp) {
     'use strict';
@@ -14968,7 +14968,7 @@ __webpack_require__(76)('match', 1, function (defined, MATCH, $match) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@replace logic
-__webpack_require__(76)('replace', 2, function (defined, REPLACE, $replace) {
+__webpack_require__(77)('replace', 2, function (defined, REPLACE, $replace) {
   // 21.1.3.14 String.prototype.replace(searchValue, replaceValue)
   return [function replace(searchValue, replaceValue) {
     'use strict';
@@ -14986,7 +14986,7 @@ __webpack_require__(76)('replace', 2, function (defined, REPLACE, $replace) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@search logic
-__webpack_require__(76)('search', 1, function (defined, SEARCH, $search) {
+__webpack_require__(77)('search', 1, function (defined, SEARCH, $search) {
   // 21.1.3.15 String.prototype.search(regexp)
   return [function search(regexp) {
     'use strict';
@@ -15002,9 +15002,9 @@ __webpack_require__(76)('search', 1, function (defined, SEARCH, $search) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // @@split logic
-__webpack_require__(76)('split', 2, function (defined, SPLIT, $split) {
+__webpack_require__(77)('split', 2, function (defined, SPLIT, $split) {
   'use strict';
-  var isRegExp = __webpack_require__(73);
+  var isRegExp = __webpack_require__(74);
   var _split = $split;
   var $push = [].push;
   var $SPLIT = 'split';
@@ -15089,7 +15089,7 @@ var isObject = __webpack_require__(6);
 var aFunction = __webpack_require__(14);
 var anInstance = __webpack_require__(47);
 var forOf = __webpack_require__(48);
-var speciesConstructor = __webpack_require__(77);
+var speciesConstructor = __webpack_require__(78);
 var task = __webpack_require__(107).set;
 var microtask = __webpack_require__(108)();
 var newPromiseCapabilityModule = __webpack_require__(109);
@@ -15290,7 +15290,7 @@ if (!USE_NATIVE) {
 $export($export.G + $export.W + $export.F * !USE_NATIVE, { Promise: $Promise });
 __webpack_require__(51)($Promise, PROMISE);
 __webpack_require__(46)(PROMISE);
-Wrapper = __webpack_require__(27)[PROMISE];
+Wrapper = __webpack_require__(28)[PROMISE];
 
 // statics
 $export($export.S + $export.F * !USE_NATIVE, PROMISE, {
@@ -15308,7 +15308,7 @@ $export($export.S + $export.F * (LIBRARY || !USE_NATIVE), PROMISE, {
     return promiseResolve(LIBRARY && this === Wrapper ? $Promise : this, x);
   }
 });
-$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(74)(function (iter) {
+$export($export.S + $export.F * !(USE_NATIVE && __webpack_require__(75)(function (iter) {
   $Promise.all(iter)['catch'](empty);
 })), PROMISE, {
   // 25.4.4.1 Promise.all(iterable)
@@ -15365,7 +15365,7 @@ var validate = __webpack_require__(54);
 var WEAK_SET = 'WeakSet';
 
 // 23.4 WeakSet Objects
-__webpack_require__(78)(WEAK_SET, function (get) {
+__webpack_require__(79)(WEAK_SET, function (get) {
   return function WeakSet() { return get(this, arguments.length > 0 ? arguments[0] : undefined); };
 }, {
   // 23.4.3.1 WeakSet.prototype.add(value)
@@ -15382,14 +15382,14 @@ __webpack_require__(78)(WEAK_SET, function (get) {
 "use strict";
 
 var $export = __webpack_require__(0);
-var $typed = __webpack_require__(79);
+var $typed = __webpack_require__(80);
 var buffer = __webpack_require__(110);
 var anObject = __webpack_require__(1);
 var toAbsoluteIndex = __webpack_require__(43);
 var toLength = __webpack_require__(10);
 var isObject = __webpack_require__(6);
 var ArrayBuffer = __webpack_require__(2).ArrayBuffer;
-var speciesConstructor = __webpack_require__(77);
+var speciesConstructor = __webpack_require__(78);
 var $ArrayBuffer = buffer.ArrayBuffer;
 var $DataView = buffer.DataView;
 var $isView = $typed.ABV && ArrayBuffer.isView;
@@ -15433,7 +15433,7 @@ __webpack_require__(46)(ARRAY_BUFFER);
 /***/ (function(module, exports, __webpack_require__) {
 
 var $export = __webpack_require__(0);
-$export($export.G + $export.W + $export.F * !__webpack_require__(79).ABV, {
+$export($export.G + $export.W + $export.F * !__webpack_require__(80).ABV, {
   DataView: __webpack_require__(110).DataView
 });
 
@@ -15442,7 +15442,7 @@ $export($export.G + $export.W + $export.F * !__webpack_require__(79).ABV, {
 /* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Int8', 1, function (init) {
+__webpack_require__(34)('Int8', 1, function (init) {
   return function Int8Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15453,7 +15453,7 @@ __webpack_require__(33)('Int8', 1, function (init) {
 /* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Uint8', 1, function (init) {
+__webpack_require__(34)('Uint8', 1, function (init) {
   return function Uint8Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15464,7 +15464,7 @@ __webpack_require__(33)('Uint8', 1, function (init) {
 /* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Uint8', 1, function (init) {
+__webpack_require__(34)('Uint8', 1, function (init) {
   return function Uint8ClampedArray(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15475,7 +15475,7 @@ __webpack_require__(33)('Uint8', 1, function (init) {
 /* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Int16', 2, function (init) {
+__webpack_require__(34)('Int16', 2, function (init) {
   return function Int16Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15486,7 +15486,7 @@ __webpack_require__(33)('Int16', 2, function (init) {
 /* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Uint16', 2, function (init) {
+__webpack_require__(34)('Uint16', 2, function (init) {
   return function Uint16Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15497,7 +15497,7 @@ __webpack_require__(33)('Uint16', 2, function (init) {
 /* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Int32', 4, function (init) {
+__webpack_require__(34)('Int32', 4, function (init) {
   return function Int32Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15508,7 +15508,7 @@ __webpack_require__(33)('Int32', 4, function (init) {
 /* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Uint32', 4, function (init) {
+__webpack_require__(34)('Uint32', 4, function (init) {
   return function Uint32Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15519,7 +15519,7 @@ __webpack_require__(33)('Uint32', 4, function (init) {
 /* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Float32', 4, function (init) {
+__webpack_require__(34)('Float32', 4, function (init) {
   return function Float32Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15530,7 +15530,7 @@ __webpack_require__(33)('Float32', 4, function (init) {
 /* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(33)('Float64', 8, function (init) {
+__webpack_require__(34)('Float64', 8, function (init) {
   return function Float64Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
@@ -15620,7 +15620,7 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
 var dP = __webpack_require__(9);
 var $export = __webpack_require__(0);
 var anObject = __webpack_require__(1);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 
 // MS Edge has broken Reflect.defineProperty - throwing instead of returning false
 $export($export.S + $export.F * __webpack_require__(5)(function () {
@@ -15879,7 +15879,7 @@ if (setProto) $export($export.S, 'Reflect', {
 
 // https://github.com/tc39/Array.prototype.includes
 var $export = __webpack_require__(0);
-var $includes = __webpack_require__(70)(true);
+var $includes = __webpack_require__(71)(true);
 
 $export($export.P, 'Array', {
   includes: function includes(el /* , fromIndex = 0 */) {
@@ -15930,7 +15930,7 @@ var $export = __webpack_require__(0);
 var flattenIntoArray = __webpack_require__(142);
 var toObject = __webpack_require__(12);
 var toLength = __webpack_require__(10);
-var toInteger = __webpack_require__(30);
+var toInteger = __webpack_require__(31);
 var arraySpeciesCreate = __webpack_require__(104);
 
 $export($export.P, 'Array', {
@@ -16038,10 +16038,10 @@ __webpack_require__(52)('trimRight', function ($trim) {
 
 // https://tc39.github.io/String.prototype.matchAll/
 var $export = __webpack_require__(0);
-var defined = __webpack_require__(29);
+var defined = __webpack_require__(30);
 var toLength = __webpack_require__(10);
-var isRegExp = __webpack_require__(73);
-var getFlags = __webpack_require__(75);
+var isRegExp = __webpack_require__(74);
+var getFlags = __webpack_require__(76);
 var RegExpProto = RegExp.prototype;
 
 var $RegExpStringIterator = function (regexp, string) {
@@ -16151,7 +16151,7 @@ var aFunction = __webpack_require__(14);
 var $defineProperty = __webpack_require__(9);
 
 // B.2.2.2 Object.prototype.__defineGetter__(P, getter)
-__webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(81), 'Object', {
   __defineGetter__: function __defineGetter__(P, getter) {
     $defineProperty.f(toObject(this), P, { get: aFunction(getter), enumerable: true, configurable: true });
   }
@@ -16170,7 +16170,7 @@ var aFunction = __webpack_require__(14);
 var $defineProperty = __webpack_require__(9);
 
 // B.2.2.3 Object.prototype.__defineSetter__(P, setter)
-__webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(81), 'Object', {
   __defineSetter__: function __defineSetter__(P, setter) {
     $defineProperty.f(toObject(this), P, { set: aFunction(setter), enumerable: true, configurable: true });
   }
@@ -16185,12 +16185,12 @@ __webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object',
 
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(12);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var getPrototypeOf = __webpack_require__(22);
 var getOwnPropertyDescriptor = __webpack_require__(21).f;
 
 // B.2.2.4 Object.prototype.__lookupGetter__(P)
-__webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(81), 'Object', {
   __lookupGetter__: function __lookupGetter__(P) {
     var O = toObject(this);
     var K = toPrimitive(P, true);
@@ -16210,12 +16210,12 @@ __webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object',
 
 var $export = __webpack_require__(0);
 var toObject = __webpack_require__(12);
-var toPrimitive = __webpack_require__(28);
+var toPrimitive = __webpack_require__(29);
 var getPrototypeOf = __webpack_require__(22);
 var getOwnPropertyDescriptor = __webpack_require__(21).f;
 
 // B.2.2.5 Object.prototype.__lookupSetter__(P)
-__webpack_require__(8) && $export($export.P + __webpack_require__(80), 'Object', {
+__webpack_require__(8) && $export($export.P + __webpack_require__(81), 'Object', {
   __lookupSetter__: function __lookupSetter__(P) {
     var O = toObject(this);
     var K = toPrimitive(P, true);
@@ -16252,7 +16252,7 @@ $export($export.P + $export.R, 'Set', { toJSON: __webpack_require__(145)('Set') 
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-map.of
-__webpack_require__(81)('Map');
+__webpack_require__(82)('Map');
 
 
 /***/ }),
@@ -16260,7 +16260,7 @@ __webpack_require__(81)('Map');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-set.of
-__webpack_require__(81)('Set');
+__webpack_require__(82)('Set');
 
 
 /***/ }),
@@ -16268,7 +16268,7 @@ __webpack_require__(81)('Set');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.of
-__webpack_require__(81)('WeakMap');
+__webpack_require__(82)('WeakMap');
 
 
 /***/ }),
@@ -16276,7 +16276,7 @@ __webpack_require__(81)('WeakMap');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.of
-__webpack_require__(81)('WeakSet');
+__webpack_require__(82)('WeakSet');
 
 
 /***/ }),
@@ -16284,7 +16284,7 @@ __webpack_require__(81)('WeakSet');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-map.from
-__webpack_require__(82)('Map');
+__webpack_require__(83)('Map');
 
 
 /***/ }),
@@ -16292,7 +16292,7 @@ __webpack_require__(82)('Map');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-set.from
-__webpack_require__(82)('Set');
+__webpack_require__(83)('Set');
 
 
 /***/ }),
@@ -16300,7 +16300,7 @@ __webpack_require__(82)('Set');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.from
-__webpack_require__(82)('WeakMap');
+__webpack_require__(83)('WeakMap');
 
 
 /***/ }),
@@ -16308,7 +16308,7 @@ __webpack_require__(82)('WeakMap');
 /***/ (function(module, exports, __webpack_require__) {
 
 // https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.from
-__webpack_require__(82)('WeakSet');
+__webpack_require__(83)('WeakSet');
 
 
 /***/ }),
@@ -16535,9 +16535,9 @@ $export($export.S, 'Math', { signbit: function signbit(x) {
 // https://github.com/tc39/proposal-promise-finally
 
 var $export = __webpack_require__(0);
-var core = __webpack_require__(27);
+var core = __webpack_require__(28);
 var global = __webpack_require__(2);
-var speciesConstructor = __webpack_require__(77);
+var speciesConstructor = __webpack_require__(78);
 var promiseResolve = __webpack_require__(134);
 
 $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
@@ -16577,7 +16577,7 @@ $export($export.S, 'Promise', { 'try': function (callbackfn) {
 /* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var toMetaKey = metadata.key;
 var ordinaryDefineOwnMetadata = metadata.set;
@@ -16591,7 +16591,7 @@ metadata.exp({ defineMetadata: function defineMetadata(metadataKey, metadataValu
 /* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var toMetaKey = metadata.key;
 var getOrCreateMetadataMap = metadata.map;
@@ -16612,7 +16612,7 @@ metadata.exp({ deleteMetadata: function deleteMetadata(metadataKey, target /* , 
 /* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var getPrototypeOf = __webpack_require__(22);
 var ordinaryHasOwnMetadata = metadata.has;
@@ -16637,7 +16637,7 @@ metadata.exp({ getMetadata: function getMetadata(metadataKey, target /* , target
 
 var Set = __webpack_require__(137);
 var from = __webpack_require__(146);
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var getPrototypeOf = __webpack_require__(22);
 var ordinaryOwnMetadataKeys = metadata.keys;
@@ -16660,7 +16660,7 @@ metadata.exp({ getMetadataKeys: function getMetadataKeys(target /* , targetKey *
 /* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var ordinaryGetOwnMetadata = metadata.get;
 var toMetaKey = metadata.key;
@@ -16675,7 +16675,7 @@ metadata.exp({ getOwnMetadata: function getOwnMetadata(metadataKey, target /* , 
 /* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var ordinaryOwnMetadataKeys = metadata.keys;
 var toMetaKey = metadata.key;
@@ -16689,7 +16689,7 @@ metadata.exp({ getOwnMetadataKeys: function getOwnMetadataKeys(target /* , targe
 /* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var getPrototypeOf = __webpack_require__(22);
 var ordinaryHasOwnMetadata = metadata.has;
@@ -16711,7 +16711,7 @@ metadata.exp({ hasMetadata: function hasMetadata(metadataKey, target /* , target
 /* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var metadata = __webpack_require__(34);
+var metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var ordinaryHasOwnMetadata = metadata.has;
 var toMetaKey = metadata.key;
@@ -16726,7 +16726,7 @@ metadata.exp({ hasOwnMetadata: function hasOwnMetadata(metadataKey, target /* , 
 /* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $metadata = __webpack_require__(34);
+var $metadata = __webpack_require__(35);
 var anObject = __webpack_require__(1);
 var aFunction = __webpack_require__(14);
 var toMetaKey = $metadata.key;
@@ -16770,7 +16770,7 @@ $export($export.G, {
 // https://github.com/zenparsing/es-observable
 var $export = __webpack_require__(0);
 var global = __webpack_require__(2);
-var core = __webpack_require__(27);
+var core = __webpack_require__(28);
 var microtask = __webpack_require__(108)();
 var OBSERVABLE = __webpack_require__(7)('observable');
 var aFunction = __webpack_require__(14);
@@ -17810,14 +17810,14 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
   typeof self === "object" ? self : this
 );
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(84)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(69)))
 
 /***/ }),
 /* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(363);
-module.exports = __webpack_require__(27).RegExp.escape;
+module.exports = __webpack_require__(28).RegExp.escape;
 
 
 /***/ }),
@@ -17852,7 +17852,7 @@ module.exports = function (regExp, replace) {
 "use strict";
 
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
 var dl = _interopRequireWildcard(_deeplearn);
 
@@ -17860,27 +17860,31 @@ var _index = __webpack_require__(434);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _index3 = __webpack_require__(438);
+var _index3 = __webpack_require__(439);
 
 var _index4 = _interopRequireDefault(_index3);
 
-var _index5 = __webpack_require__(442);
+var _index5 = __webpack_require__(443);
 
 var _index6 = _interopRequireDefault(_index5);
 
-var _index7 = __webpack_require__(444);
+var _index7 = __webpack_require__(445);
 
 var _index8 = _interopRequireDefault(_index7);
 
-var _index9 = __webpack_require__(445);
+var _index9 = __webpack_require__(446);
 
 var _index10 = _interopRequireDefault(_index9);
 
-var _index11 = __webpack_require__(446);
+var _index11 = __webpack_require__(447);
 
 var _index12 = _interopRequireDefault(_index11);
 
-var _imageUtilities = __webpack_require__(447);
+var _index13 = __webpack_require__(448);
+
+var _index14 = _interopRequireDefault(_index13);
+
+var _imageUtilities = __webpack_require__(452);
 
 var _imageUtilities2 = _interopRequireDefault(_imageUtilities);
 
@@ -17888,23 +17892,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
-/*
-p5ML
-v.0.0.1
-p5ML is a high level javascript library for machine learning.
-Made @NYU ITP
-*/
-
 module.exports = {
   ImageNet: _index2.default,
   KNNImageClassifier: _index4.default,
   LSTMGenerator: _index6.default,
   NeuralNetwork: _index8.default,
+  TransformNet: _index12.default,
+  Yolo: _index14.default,
   Word2Vec: _index10.default,
   dl: dl,
-  TransformNet: _index12.default,
   array3DToImage: _imageUtilities2.default
-};
+}; /*
+   p5ML
+   v.0.0.1
+   p5ML is a high level javascript library for machine learning.
+   Made @NYU ITP
+   */
 
 /***/ }),
 /* 366 */
@@ -23367,13 +23370,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      ImageNet Class
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     TODO: model name in constructor is just a placeholder value.
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
 var _deeplearnSqueezenet = __webpack_require__(161);
+
+var _mobileNet = __webpack_require__(438);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -23386,7 +23389,11 @@ var ImageNet = function () {
     this.model = model;
     this.ready = false;
     this.math = _deeplearn.ENV.math;
-    this.squeezeNet = new _deeplearnSqueezenet.SqueezeNet(this.math);
+    if (this.model === 'SqueezeNet') {
+      this.net = new _deeplearnSqueezenet.SqueezeNet(this.math);
+    } else if (this.model === 'MobileNet') {
+      this.net = new _mobileNet.MobileNet(this.math);
+    }
   }
 
   _createClass(ImageNet, [{
@@ -23402,7 +23409,7 @@ var ImageNet = function () {
                 if (this.ready) {
                   this.getClasses(img, num, callback);
                 } else {
-                  ImageNet.loadModel(this.squeezeNet).then(function () {
+                  ImageNet.loadModel(this.net).then(function () {
                     _this.ready = true;
                     _this.getClasses(img, num, callback);
                   });
@@ -23436,9 +23443,9 @@ var ImageNet = function () {
               case 0:
                 image = _deeplearn.Array3D.fromPixels(img);
                 results = [];
-                result = this.squeezeNet.predict(image);
+                result = this.net.predict(image);
                 _context2.next = 5;
-                return this.squeezeNet.getTopKClasses(result, num || 10);
+                return this.net.getTopKClasses(result, num || 10);
 
               case 5:
                 topKClasses = _context2.sent;
@@ -23545,7 +23552,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var deeplearn_1 = __webpack_require__(35);
+var deeplearn_1 = __webpack_require__(27);
 var model_util = __webpack_require__(436);
 var imagenet_classes_1 = __webpack_require__(437);
 var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
@@ -24746,6 +24753,1271 @@ exports.IMAGENET_CLASSES = {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+/* WEBPACK VAR INJECTION */(function(global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;var require;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/* eslint-disable */(function (f) {
+    if (( false ? "undefined" : _typeof(exports)) === "object" && typeof module !== "undefined") {
+        module.exports = f();
+    } else if (true) {
+        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (f),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+    } else {
+        var g;if (typeof window !== "undefined") {
+            g = window;
+        } else if (typeof global !== "undefined") {
+            g = global;
+        } else if (typeof self !== "undefined") {
+            g = self;
+        } else {
+            g = this;
+        }g.mobilenet = f();
+    }
+})(function () {
+    var define, module, exports;return function e(t, n, r) {
+        function s(o, u) {
+            if (!n[o]) {
+                if (!t[o]) {
+                    var a = typeof require == "function" && require;if (!u && a) return require(o, !0);if (i) return i(o, !0);var f = new Error("Cannot find module '" + o + "'");throw f.code = "MODULE_NOT_FOUND", f;
+                }var l = n[o] = { exports: {} };t[o][0].call(l.exports, function (e) {
+                    var n = t[o][1][e];return s(n ? n : e);
+                }, l, l.exports, e, t, n, r);
+            }return n[o].exports;
+        }var i = typeof require == "function" && require;for (var o = 0; o < r.length; o++) {
+            s(r[o]);
+        }return s;
+    }({ 1: [function (require, module, exports) {
+            "use strict";
+
+            Object.defineProperty(exports, "__esModule", { value: true });
+            exports.IMAGENET_CLASSES = {
+                0: 'background',
+                1: 'tench, Tinca tinca',
+                2: 'goldfish, Carassius auratus',
+                3: 'great white shark, white shark, man-eater,' + ' man-eating shark, Carcharodon carcharias',
+                4: 'tiger shark, Galeocerdo cuvieri',
+                5: 'hammerhead, hammerhead shark',
+                6: 'electric ray, crampfish, numbfish, torpedo',
+                7: 'stingray',
+                8: 'cock',
+                9: 'hen',
+                10: 'ostrich, Struthio camelus',
+                11: 'brambling, Fringilla montifringilla',
+                12: 'goldfinch, Carduelis carduelis',
+                13: 'house finch, linnet, Carpodacus mexicanus',
+                14: 'junco, snowbird',
+                15: 'indigo bunting, indigo finch, indigo bird, Passerina cyanea',
+                16: 'robin, American robin, Turdus migratorius',
+                17: 'bulbul',
+                18: 'jay',
+                19: 'magpie',
+                20: 'chickadee',
+                21: 'water ouzel, dipper',
+                22: 'kite',
+                23: 'bald eagle, American eagle, Haliaeetus leucocephalus',
+                24: 'vulture',
+                25: 'great grey owl, great gray owl, Strix nebulosa',
+                26: 'European fire salamander, Salamandra salamandra',
+                27: 'common newt, Triturus vulgaris',
+                28: 'eft',
+                29: 'spotted salamander, Ambystoma maculatum',
+                30: 'axolotl, mud puppy, Ambystoma mexicanum',
+                31: 'bullfrog, Rana catesbeiana',
+                32: 'tree frog, tree-frog',
+                33: 'tailed frog, bell toad, ribbed toad, tailed toad, Ascaphus trui',
+                34: 'loggerhead, loggerhead turtle, Caretta caretta',
+                35: 'leatherback turtle, leatherback, leathery turtle, Dermochelys coriacea',
+                36: 'mud turtle',
+                37: 'terrapin',
+                38: 'box turtle, box tortoise',
+                39: 'banded gecko',
+                40: 'common iguana, iguana, Iguana iguana',
+                41: 'American chameleon, anole, Anolis carolinensis',
+                42: 'whiptail, whiptail lizard',
+                43: 'agama',
+                44: 'frilled lizard, Chlamydosaurus kingi',
+                45: 'alligator lizard',
+                46: 'Gila monster, Heloderma suspectum',
+                47: 'green lizard, Lacerta viridis',
+                48: 'African chameleon, Chamaeleo chamaeleon',
+                49: 'Komodo dragon, Komodo lizard, dragon lizard,' + ' giant lizard, Varanus komodoensis',
+                50: 'African crocodile, Nile crocodile, Crocodylus niloticus',
+                51: 'American alligator, Alligator mississipiensis',
+                52: 'triceratops',
+                53: 'thunder snake, worm snake, Carphophis amoenus',
+                54: 'ringneck snake, ring-necked snake, ring snake',
+                55: 'hognose snake, puff adder, sand viper',
+                56: 'green snake, grass snake',
+                57: 'king snake, kingsnake',
+                58: 'garter snake, grass snake',
+                59: 'water snake',
+                60: 'vine snake',
+                61: 'night snake, Hypsiglena torquata',
+                62: 'boa constrictor, Constrictor constrictor',
+                63: 'rock python, rock snake, Python sebae',
+                64: 'Indian cobra, Naja naja',
+                65: 'green mamba',
+                66: 'sea snake',
+                67: 'horned viper, cerastes, sand viper, horned asp, Cerastes cornutus',
+                68: 'diamondback, diamondback rattlesnake, Crotalus adamanteus',
+                69: 'sidewinder, horned rattlesnake, Crotalus cerastes',
+                70: 'trilobite',
+                71: 'harvestman, daddy longlegs, Phalangium opilio',
+                72: 'scorpion',
+                73: 'black and gold garden spider, Argiope aurantia',
+                74: 'barn spider, Araneus cavaticus',
+                75: 'garden spider, Aranea diademata',
+                76: 'black widow, Latrodectus mactans',
+                77: 'tarantula',
+                78: 'wolf spider, hunting spider',
+                79: 'tick',
+                80: 'centipede',
+                81: 'black grouse',
+                82: 'ptarmigan',
+                83: 'ruffed grouse, partridge, Bonasa umbellus',
+                84: 'prairie chicken, prairie grouse, prairie fowl',
+                85: 'peacock',
+                86: 'quail',
+                87: 'partridge',
+                88: 'African grey, African gray, Psittacus erithacus',
+                89: 'macaw',
+                90: 'sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita',
+                91: 'lorikeet',
+                92: 'coucal',
+                93: 'bee eater',
+                94: 'hornbill',
+                95: 'hummingbird',
+                96: 'jacamar',
+                97: 'toucan',
+                98: 'drake',
+                99: 'red-breasted merganser, Mergus serrator',
+                100: 'goose',
+                101: 'black swan, Cygnus atratus',
+                102: 'tusker',
+                103: 'echidna, spiny anteater, anteater',
+                104: 'platypus, duckbill, duckbilled platypus, duck-billed platypus,' + ' Ornithorhynchus anatinus',
+                105: 'wallaby, brush kangaroo',
+                106: 'koala, koala bear, kangaroo bear, native bear, Phascolarctos cinereus',
+                107: 'wombat',
+                108: 'jelly fish',
+                109: 'sea anemone, anemone',
+                110: 'brain coral',
+                111: 'flatworm, platyhelminth',
+                112: 'nematode, nematode worm, roundworm',
+                113: 'conch',
+                114: 'snail',
+                115: 'slug',
+                116: 'sea slug, nudibranch',
+                117: 'chiton, coat-of-mail shell, sea cradle, polyplacophore',
+                118: 'chambered nautilus, pearly nautilus, nautilus',
+                119: 'Dungeness crab, Cancer magister',
+                120: 'rock crab, Cancer irroratus',
+                121: 'fiddler crab',
+                122: 'king crab, Alaska crab, Alaskan king crab, Alaska king crab,' + ' Paralithodes camtschatica',
+                123: 'American lobster, Northern lobster, Maine lobster, Homarus americanus',
+                124: 'spiny lobster, langouste, rock lobster, crawfish, crayfish,' + ' sea crawfish',
+                125: 'crayfish, crawfish, crawdad, crawdaddy',
+                126: 'hermit crab',
+                127: 'isopod',
+                128: 'white stork, Ciconia ciconia',
+                129: 'black stork, Ciconia nigra',
+                130: 'spoonbill',
+                131: 'flamingo',
+                132: 'little blue heron, Egretta caerulea',
+                133: 'American egret, great white heron, Egretta albus',
+                134: 'bittern',
+                135: 'crane',
+                136: 'limpkin, Aramus pictus',
+                137: 'European gallinule, Porphyrio porphyrio',
+                138: 'American coot, marsh hen, mud hen, water hen, Fulica americana',
+                139: 'bustard',
+                140: 'ruddy turnstone, Arenaria interpres',
+                141: 'red-backed sandpiper, dunlin, Erolia alpina',
+                142: 'redshank, Tringa totanus',
+                143: 'dowitcher',
+                144: 'oystercatcher, oyster catcher',
+                145: 'pelican',
+                146: 'king penguin, Aptenodytes patagonica',
+                147: 'albatross, mollymawk',
+                148: 'grey whale, gray whale, devilfish, Eschrichtius gibbosus,' + ' Eschrichtius robustus',
+                149: 'killer whale, killer, orca, grampus, sea wolf, Orcinus orca',
+                150: 'dugong, Dugong dugon',
+                151: 'sea lion',
+                152: 'Chihuahua',
+                153: 'Japanese spaniel',
+                154: 'Maltese dog, Maltese terrier, Maltese',
+                155: 'Pekinese, Pekingese, Peke',
+                156: 'Shih-Tzu',
+                157: 'Blenheim spaniel',
+                158: 'papillon',
+                159: 'toy terrier',
+                160: 'Rhodesian ridgeback',
+                161: 'Afghan hound, Afghan',
+                162: 'basset, basset hound',
+                163: 'beagle',
+                164: 'bloodhound, sleuthhound',
+                165: 'bluetick',
+                166: 'black-and-tan coonhound',
+                167: 'Walker hound, Walker foxhound',
+                168: 'English foxhound',
+                169: 'redbone',
+                170: 'borzoi, Russian wolfhound',
+                171: 'Irish wolfhound',
+                172: 'Italian greyhound',
+                173: 'whippet',
+                174: 'Ibizan hound, Ibizan Podenco',
+                175: 'Norwegian elkhound, elkhound',
+                176: 'otterhound, otter hound',
+                177: 'Saluki, gazelle hound',
+                178: 'Scottish deerhound, deerhound',
+                179: 'Weimaraner',
+                180: 'Staffordshire bullterrier, Staffordshire bull terrier',
+                181: 'American Staffordshire terrier, Staffordshire terrier,' + ' American pit bull terrier, pit bull terrier',
+                182: 'Bedlington terrier',
+                183: 'Border terrier',
+                184: 'Kerry blue terrier',
+                185: 'Irish terrier',
+                186: 'Norfolk terrier',
+                187: 'Norwich terrier',
+                188: 'Yorkshire terrier',
+                189: 'wire-haired fox terrier',
+                190: 'Lakeland terrier',
+                191: 'Sealyham terrier, Sealyham',
+                192: 'Airedale, Airedale terrier',
+                193: 'cairn, cairn terrier',
+                194: 'Australian terrier',
+                195: 'Dandie Dinmont, Dandie Dinmont terrier',
+                196: 'Boston bull, Boston terrier',
+                197: 'miniature schnauzer',
+                198: 'giant schnauzer',
+                199: 'standard schnauzer',
+                200: 'Scotch terrier, Scottish terrier, Scottie',
+                201: 'Tibetan terrier, chrysanthemum dog',
+                202: 'silky terrier, Sydney silky',
+                203: 'soft-coated wheaten terrier',
+                204: 'West Highland white terrier',
+                205: 'Lhasa, Lhasa apso',
+                206: 'flat-coated retriever',
+                207: 'curly-coated retriever',
+                208: 'golden retriever',
+                209: 'Labrador retriever',
+                210: 'Chesapeake Bay retriever',
+                211: 'German short-haired pointer',
+                212: 'vizsla, Hungarian pointer',
+                213: 'English setter',
+                214: 'Irish setter, red setter',
+                215: 'Gordon setter',
+                216: 'Brittany spaniel',
+                217: 'clumber, clumber spaniel',
+                218: 'English springer, English springer spaniel',
+                219: 'Welsh springer spaniel',
+                220: 'cocker spaniel, English cocker spaniel, cocker',
+                221: 'Sussex spaniel',
+                222: 'Irish water spaniel',
+                223: 'kuvasz',
+                224: 'schipperke',
+                225: 'groenendael',
+                226: 'malinois',
+                227: 'briard',
+                228: 'kelpie',
+                229: 'komondor',
+                230: 'Old English sheepdog, bobtail',
+                231: 'Shetland sheepdog, Shetland sheep dog, Shetland',
+                232: 'collie',
+                233: 'Border collie',
+                234: 'Bouvier des Flandres, Bouviers des Flandres',
+                235: 'Rottweiler',
+                236: 'German shepherd, German shepherd dog, German police dog, alsatian',
+                237: 'Doberman, Doberman pinscher',
+                238: 'miniature pinscher',
+                239: 'Greater Swiss Mountain dog',
+                240: 'Bernese mountain dog',
+                241: 'Appenzeller',
+                242: 'EntleBucher',
+                243: 'boxer',
+                244: 'bull mastiff',
+                245: 'Tibetan mastiff',
+                246: 'French bulldog',
+                247: 'Great Dane',
+                248: 'Saint Bernard, St Bernard',
+                249: 'Eskimo dog, husky',
+                250: 'malamute, malemute, Alaskan malamute',
+                251: 'Siberian husky',
+                252: 'dalmatian, coach dog, carriage dog',
+                253: 'affenpinscher, monkey pinscher, monkey dog',
+                254: 'basenji',
+                255: 'pug, pug-dog',
+                256: 'Leonberg',
+                257: 'Newfoundland, Newfoundland dog',
+                258: 'Great Pyrenees',
+                259: 'Samoyed, Samoyede',
+                260: 'Pomeranian',
+                261: 'chow, chow chow',
+                262: 'keeshond',
+                263: 'Brabancon griffon',
+                264: 'Pembroke, Pembroke Welsh corgi',
+                265: 'Cardigan, Cardigan Welsh corgi',
+                266: 'toy poodle',
+                267: 'miniature poodle',
+                268: 'standard poodle',
+                269: 'Mexican hairless',
+                270: 'timber wolf, grey wolf, gray wolf, Canis lupus',
+                271: 'white wolf, Arctic wolf, Canis lupus tundrarum',
+                272: 'red wolf, maned wolf, Canis rufus, Canis niger',
+                273: 'coyote, prairie wolf, brush wolf, Canis latrans',
+                274: 'dingo, warrigal, warragal, Canis dingo',
+                275: 'dhole, Cuon alpinus',
+                276: 'African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus',
+                277: 'hyena, hyaena',
+                278: 'red fox, Vulpes vulpes',
+                279: 'kit fox, Vulpes macrotis',
+                280: 'Arctic fox, white fox, Alopex lagopus',
+                281: 'grey fox, gray fox, Urocyon cinereoargenteus',
+                282: 'tabby, tabby cat',
+                283: 'tiger cat',
+                284: 'Persian cat',
+                285: 'Siamese cat, Siamese',
+                286: 'Egyptian cat',
+                287: 'cougar, puma, catamount, mountain lion, painter, panther,' + ' Felis concolor',
+                288: 'lynx, catamount',
+                289: 'leopard, Panthera pardus',
+                290: 'snow leopard, ounce, Panthera uncia',
+                291: 'jaguar, panther, Panthera onca, Felis onca',
+                292: 'lion, king of beasts, Panthera leo',
+                293: 'tiger, Panthera tigris',
+                294: 'cheetah, chetah, Acinonyx jubatus',
+                295: 'brown bear, bruin, Ursus arctos',
+                296: 'American black bear, black bear, Ursus americanus,' + ' Euarctos americanus',
+                297: 'ice bear, polar bear, Ursus Maritimus, Thalarctos maritimus',
+                298: 'sloth bear, Melursus ursinus, Ursus ursinus',
+                299: 'mongoose',
+                300: 'meerkat, mierkat',
+                301: 'tiger beetle',
+                302: 'ladybug, ladybeetle, lady beetle, ladybird, ladybird beetle',
+                303: 'ground beetle, carabid beetle',
+                304: 'long-horned beetle, longicorn, longicorn beetle',
+                305: 'leaf beetle, chrysomelid',
+                306: 'dung beetle',
+                307: 'rhinoceros beetle',
+                308: 'weevil',
+                309: 'fly',
+                310: 'bee',
+                311: 'ant, emmet, pismire',
+                312: 'grasshopper, hopper',
+                313: 'cricket',
+                314: 'walking stick, walkingstick, stick insect',
+                315: 'cockroach, roach',
+                316: 'mantis, mantid',
+                317: 'cicada, cicala',
+                318: 'leafhopper',
+                319: 'lacewing, lacewing fly',
+                320: "dragonfly, darning needle, devil's darning needle, sewing" + "needle, snake feeder, snake doctor, mosquito hawk, skeeter hawk",
+                321: 'damselfly',
+                322: 'admiral',
+                323: 'ringlet, ringlet butterfly',
+                324: 'monarch, monarch butterfly, milkweed butterfly, Danaus plexippus',
+                325: 'cabbage butterfly',
+                326: 'sulphur butterfly, sulfur butterfly',
+                327: 'lycaenid, lycaenid butterfly',
+                328: 'starfish, sea star',
+                329: 'sea urchin',
+                330: 'sea cucumber, holothurian',
+                331: 'wood rabbit, cottontail, cottontail rabbit',
+                332: 'hare',
+                333: 'Angora, Angora rabbit',
+                334: 'hamster',
+                335: 'porcupine, hedgehog',
+                336: 'fox squirrel, eastern fox squirrel, Sciurus niger',
+                337: 'marmot',
+                338: 'beaver',
+                339: 'guinea pig, Cavia cobaya',
+                340: 'sorrel',
+                341: 'zebra',
+                342: 'hog, pig, grunter, squealer, Sus scrofa',
+                343: 'wild boar, boar, Sus scrofa',
+                344: 'warthog',
+                345: 'hippopotamus, hippo, river horse, Hippopotamus amphibius',
+                346: 'ox',
+                347: 'water buffalo, water ox, Asiatic buffalo, Bubalus bubalis',
+                348: 'bison',
+                349: 'ram, tup',
+                350: 'bighorn, bighorn sheep, cimarron, Rocky Mountain bighorn, Rocky ' + 'Mountain sheep, Ovis canadensis',
+                351: 'ibex, Capra ibex',
+                352: 'hartebeest',
+                353: 'impala, Aepyceros melampus',
+                354: 'gazelle',
+                355: 'Arabian camel, dromedary, Camelus dromedarius',
+                356: 'llama',
+                357: 'weasel',
+                358: 'mink',
+                359: 'polecat, fitch, foulmart, foumart, Mustela putorius',
+                360: 'black-footed ferret, ferret, Mustela nigripes',
+                361: 'otter',
+                362: 'skunk, polecat, wood pussy',
+                363: 'badger',
+                364: 'armadillo',
+                365: 'three-toed sloth, ai, Bradypus tridactylus',
+                366: 'orangutan, orang, orangutang, Pongo pygmaeus',
+                367: 'gorilla, Gorilla gorilla',
+                368: 'chimpanzee, chimp, Pan troglodytes',
+                369: 'gibbon, Hylobates lar',
+                370: 'siamang, Hylobates syndactylus, Symphalangus syndactylus',
+                371: 'guenon, guenon monkey',
+                372: 'patas, hussar monkey, Erythrocebus patas',
+                373: 'baboon',
+                374: 'macaque',
+                375: 'langur',
+                376: 'colobus, colobus monkey',
+                377: 'proboscis monkey, Nasalis larvatus',
+                378: 'marmoset',
+                379: 'capuchin, ringtail, Cebus capucinus',
+                380: 'howler monkey, howler',
+                381: 'titi, titi monkey',
+                382: 'spider monkey, Ateles geoffroyi',
+                383: 'squirrel monkey, Saimiri sciureus',
+                384: 'Madagascar cat, ring-tailed lemur, Lemur catta',
+                385: 'indri, indris, Indri indri, Indri brevicaudatus',
+                386: 'Indian elephant, Elephas maximus',
+                387: 'African elephant, Loxodonta africana',
+                388: 'lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens',
+                389: 'giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca',
+                390: 'barracouta, snoek',
+                391: 'eel',
+                392: 'coho, cohoe, coho salmon, blue jack, silver salmon, ' + 'Oncorhynchus kisutch',
+                393: 'rock beauty, Holocanthus tricolor',
+                394: 'anemone fish',
+                395: 'sturgeon',
+                396: 'gar, garfish, garpike, billfish, Lepisosteus osseus',
+                397: 'lionfish',
+                398: 'puffer, pufferfish, blowfish, globefish',
+                399: 'abacus',
+                400: 'abaya',
+                401: "academic gown, academic robe, judge's robe",
+                402: 'accordion, piano accordion, squeeze box',
+                403: 'acoustic guitar',
+                404: 'aircraft carrier, carrier, flattop, attack aircraft carrier',
+                405: 'airliner',
+                406: 'airship, dirigible',
+                407: 'altar',
+                408: 'ambulance',
+                409: 'amphibian, amphibious vehicle',
+                410: 'analog clock',
+                411: 'apiary, bee house',
+                412: 'apron',
+                413: 'ashcan, trash can, garbage can, wastebin, ash bin, ash-bin,' + ' ashbin, dustbin, trash barrel, trash bin',
+                414: 'assault rifle, assault gun',
+                415: 'backpack, back pack, knapsack, packsack, rucksack, haversack',
+                416: 'bakery, bakeshop, bakehouse',
+                417: 'balance beam, beam',
+                418: 'balloon',
+                419: 'ballpoint, ballpoint pen, ballpen, Biro',
+                420: 'Band Aid',
+                421: 'banjo',
+                422: 'bannister, banister, balustrade, balusters, handrail',
+                423: 'barbell',
+                424: 'barber chair',
+                425: 'barbershop',
+                426: 'barn',
+                427: 'barometer',
+                428: 'barrel, cask',
+                429: 'barrow, garden cart, lawn cart, wheelbarrow',
+                430: 'baseball',
+                431: 'basketball',
+                432: 'bassinet',
+                433: 'bassoon',
+                434: 'bathing cap, swimming cap',
+                435: 'bath towel',
+                436: 'bathtub, bathing tub, bath, tub',
+                437: 'beach wagon, station wagon, wagon, estate car, beach waggon,' + ' station waggon, waggon',
+                438: 'beacon, lighthouse, beacon light, pharos',
+                439: 'beaker',
+                440: 'bearskin, busby, shako',
+                441: 'beer bottle',
+                442: 'beer glass',
+                443: 'bell cote, bell cot',
+                444: 'bib',
+                445: 'bicycle-built-for-two, tandem bicycle, tandem',
+                446: 'bikini, two-piece',
+                447: 'binder, ring-binder',
+                448: 'binoculars, field glasses, opera glasses',
+                449: 'birdhouse',
+                450: 'boathouse',
+                451: 'bobsled, bobsleigh, bob',
+                452: 'bolo tie, bolo, bola tie, bola',
+                453: 'bonnet, poke bonnet',
+                454: 'bookcase',
+                455: 'bookshop, bookstore, bookstall',
+                456: 'bottlecap',
+                457: 'bow',
+                458: 'bow tie, bow-tie, bowtie',
+                459: 'brass, memorial tablet, plaque',
+                460: 'brassiere, bra, bandeau',
+                461: 'breakwater, groin, groyne, mole, bulwark, seawall, jetty',
+                462: 'breastplate, aegis, egis',
+                463: 'broom',
+                464: 'bucket, pail',
+                465: 'buckle',
+                466: 'bulletproof vest',
+                467: 'bullet train, bullet',
+                468: 'butcher shop, meat market',
+                469: 'cab, hack, taxi, taxicab',
+                470: 'caldron, cauldron',
+                471: 'candle, taper, wax light',
+                472: 'cannon',
+                473: 'canoe',
+                474: 'can opener, tin opener',
+                475: 'cardigan',
+                476: 'car mirror',
+                477: 'carousel, carrousel, merry-go-round, roundabout, whirligig',
+                478: "carpenter's kit, tool kit",
+                479: 'carton',
+                480: 'car wheel',
+                481: 'cash machine, cash dispenser, automated teller machine, automatic' + ' teller machine, automated teller, automatic teller, ATM',
+                482: 'cassette',
+                483: 'cassette player',
+                484: 'castle',
+                485: 'catamaran',
+                486: 'CD player',
+                487: 'cello, violoncello',
+                488: 'cellular telephone, cellular phone, cellphone, cell, mobile phone',
+                489: 'chain',
+                490: 'chainlink fence',
+                491: 'chain mail, ring mail, mail, chain armor, chain armour,' + ' ring armor, ring armour',
+                492: 'chain saw, chainsaw',
+                493: 'chest',
+                494: 'chiffonier, commode',
+                495: 'chime, bell, gong',
+                496: 'china cabinet, china closet',
+                497: 'Christmas stocking',
+                498: 'church, church building',
+                499: 'cinema, movie theater, movie theatre, movie house, picture palace',
+                500: 'cleaver, meat cleaver, chopper',
+                501: 'cliff dwelling',
+                502: 'cloak',
+                503: 'clog, geta, patten, sabot',
+                504: 'cocktail shaker',
+                505: 'coffee mug',
+                506: 'coffeepot',
+                507: 'coil, spiral, volute, whorl, helix',
+                508: 'combination lock',
+                509: 'computer keyboard, keypad',
+                510: 'confectionery, confectionary, candy store',
+                511: 'container ship, containership, container vessel',
+                512: 'convertible',
+                513: 'corkscrew, bottle screw',
+                514: 'cornet, horn, trumpet, trump',
+                515: 'cowboy boot',
+                516: 'cowboy hat, ten-gallon hat',
+                517: 'cradle',
+                518: 'crane',
+                519: 'crash helmet',
+                520: 'crate',
+                521: 'crib, cot',
+                522: 'Crock Pot',
+                523: 'croquet ball',
+                524: 'crutch',
+                525: 'cuirass',
+                526: 'dam, dike, dyke',
+                527: 'desk',
+                528: 'desktop computer',
+                529: 'dial telephone, dial phone',
+                530: 'diaper, nappy, napkin',
+                531: 'digital clock',
+                532: 'digital watch',
+                533: 'dining table, board',
+                534: 'dishrag, dishcloth',
+                535: 'dishwasher, dish washer, dishwashing machine',
+                536: 'disk brake, disc brake',
+                537: 'dock, dockage, docking facility',
+                538: 'dogsled, dog sled, dog sleigh',
+                539: 'dome',
+                540: 'doormat, welcome mat',
+                541: 'drilling platform, offshore rig',
+                542: 'drum, membranophone, tympan',
+                543: 'drumstick',
+                544: 'dumbbell',
+                545: 'Dutch oven',
+                546: 'electric fan, blower',
+                547: 'electric guitar',
+                548: 'electric locomotive',
+                549: 'entertainment center',
+                550: 'envelope',
+                551: 'espresso maker',
+                552: 'face powder',
+                553: 'feather boa, boa',
+                554: 'file, file cabinet, filing cabinet',
+                555: 'fireboat',
+                556: 'fire engine, fire truck',
+                557: 'fire screen, fireguard',
+                558: 'flagpole, flagstaff',
+                559: 'flute, transverse flute',
+                560: 'folding chair',
+                561: 'football helmet',
+                562: 'forklift',
+                563: 'fountain',
+                564: 'fountain pen',
+                565: 'four-poster',
+                566: 'freight car',
+                567: 'French horn, horn',
+                568: 'frying pan, frypan, skillet',
+                569: 'fur coat',
+                570: 'garbage truck, dustcart',
+                571: 'gasmask, respirator, gas helmet',
+                572: 'gas pump, gasoline pump, petrol pump, island dispenser',
+                573: 'goblet',
+                574: 'go-kart',
+                575: 'golf ball',
+                576: 'golfcart, golf cart',
+                577: 'gondola',
+                578: 'gong, tam-tam',
+                579: 'gown',
+                580: 'grand piano, grand',
+                581: 'greenhouse, nursery, glasshouse',
+                582: 'grille, radiator grille',
+                583: 'grocery store, grocery, food market, market',
+                584: 'guillotine',
+                585: 'hair slide',
+                586: 'hair spray',
+                587: 'half track',
+                588: 'hammer',
+                589: 'hamper',
+                590: 'hand blower, blow dryer, blow drier, hair dryer, hair drier',
+                591: 'hand-held computer, hand-held microcomputer',
+                592: 'handkerchief, hankie, hanky, hankey',
+                593: 'hard disc, hard disk, fixed disk',
+                594: 'harmonica, mouth organ, harp, mouth harp',
+                595: 'harp',
+                596: 'harvester, reaper',
+                597: 'hatchet',
+                598: 'holster',
+                599: 'home theater, home theatre',
+                600: 'honeycomb',
+                601: 'hook, claw',
+                602: 'hoopskirt, crinoline',
+                603: 'horizontal bar, high bar',
+                604: 'horse cart, horse-cart',
+                605: 'hourglass',
+                606: 'iPod',
+                607: 'iron, smoothing iron',
+                608: "jack-o'-lantern",
+                609: 'jean, blue jean, denim',
+                610: 'jeep, landrover',
+                611: 'jersey, T-shirt, tee shirt',
+                612: 'jigsaw puzzle',
+                613: 'jinrikisha, ricksha, rickshaw',
+                614: 'joystick',
+                615: 'kimono',
+                616: 'knee pad',
+                617: 'knot',
+                618: 'lab coat, laboratory coat',
+                619: 'ladle',
+                620: 'lampshade, lamp shade',
+                621: 'laptop, laptop computer',
+                622: 'lawn mower, mower',
+                623: 'lens cap, lens cover',
+                624: 'letter opener, paper knife, paperknife',
+                625: 'library',
+                626: 'lifeboat',
+                627: 'lighter, light, igniter, ignitor',
+                628: 'limousine, limo',
+                629: 'liner, ocean liner',
+                630: 'lipstick, lip rouge',
+                631: 'Loafer',
+                632: 'lotion',
+                633: 'loudspeaker, speaker, speaker unit, loudspeaker system, ' + 'speaker system',
+                634: "loupe, jeweler's loupe",
+                635: 'lumbermill, sawmill',
+                636: 'magnetic compass',
+                637: 'mailbag, postbag',
+                638: 'mailbox, letter box',
+                639: 'maillot',
+                640: 'maillot, tank suit',
+                641: 'manhole cover',
+                642: 'maraca',
+                643: 'marimba, xylophone',
+                644: 'mask',
+                645: 'matchstick',
+                646: 'maypole',
+                647: 'maze, labyrinth',
+                648: 'measuring cup',
+                649: 'medicine chest, medicine cabinet',
+                650: 'megalith, megalithic structure',
+                651: 'microphone, mike',
+                652: 'microwave, microwave oven',
+                653: 'military uniform',
+                654: 'milk can',
+                655: 'minibus',
+                656: 'miniskirt, mini',
+                657: 'minivan',
+                658: 'missile',
+                659: 'mitten',
+                660: 'mixing bowl',
+                661: 'mobile home, manufactured home',
+                662: 'Model T',
+                663: 'modem',
+                664: 'monastery',
+                665: 'monitor',
+                666: 'moped',
+                667: 'mortar',
+                668: 'mortarboard',
+                669: 'mosque',
+                670: 'mosquito net',
+                671: 'motor scooter, scooter',
+                672: 'mountain bike, all-terrain bike, off-roader',
+                673: 'mountain tent',
+                674: 'mouse, computer mouse',
+                675: 'mousetrap',
+                676: 'moving van',
+                677: 'muzzle',
+                678: 'nail',
+                679: 'neck brace',
+                680: 'necklace',
+                681: 'nipple',
+                682: 'notebook, notebook computer',
+                683: 'obelisk',
+                684: 'oboe, hautboy, hautbois',
+                685: 'ocarina, sweet potato',
+                686: 'odometer, hodometer, mileometer, milometer',
+                687: 'oil filter',
+                688: 'organ, pipe organ',
+                689: 'oscilloscope, scope, cathode-ray oscilloscope, CRO',
+                690: 'overskirt',
+                691: 'oxcart',
+                692: 'oxygen mask',
+                693: 'packet',
+                694: 'paddle, boat paddle',
+                695: 'paddlewheel, paddle wheel',
+                696: 'padlock',
+                697: 'paintbrush',
+                698: "pajama, pyjama, pj's, jammies",
+                699: 'palace',
+                700: 'panpipe, pandean pipe, syrinx',
+                701: 'paper towel',
+                702: 'parachute, chute',
+                703: 'parallel bars, bars',
+                704: 'park bench',
+                705: 'parking meter',
+                706: 'passenger car, coach, carriage',
+                707: 'patio, terrace',
+                708: 'pay-phone, pay-station',
+                709: 'pedestal, plinth, footstall',
+                710: 'pencil box, pencil case',
+                711: 'pencil sharpener',
+                712: 'perfume, essence',
+                713: 'Petri dish',
+                714: 'photocopier',
+                715: 'pick, plectrum, plectron',
+                716: 'pickelhaube',
+                717: 'picket fence, paling',
+                718: 'pickup, pickup truck',
+                719: 'pier',
+                720: 'piggy bank, penny bank',
+                721: 'pill bottle',
+                722: 'pillow',
+                723: 'ping-pong ball',
+                724: 'pinwheel',
+                725: 'pirate, pirate ship',
+                726: 'pitcher, ewer',
+                727: "plane, carpenter's plane, woodworking plane",
+                728: 'planetarium',
+                729: 'plastic bag',
+                730: 'plate rack',
+                731: 'plow, plough',
+                732: "plunger, plumber's helper",
+                733: 'Polaroid camera, Polaroid Land camera',
+                734: 'pole',
+                735: 'police van, police wagon, paddy wagon, patrol wagon, wagon,' + ' black Maria',
+                736: 'poncho',
+                737: 'pool table, billiard table, snooker table',
+                738: 'pop bottle, soda bottle',
+                739: 'pot, flowerpot',
+                740: "potter's wheel",
+                741: 'power drill',
+                742: 'prayer rug, prayer mat',
+                743: 'printer',
+                744: 'prison, prison house',
+                745: 'projectile, missile',
+                746: 'projector',
+                747: 'puck, hockey puck',
+                748: 'punching bag, punch bag, punching ball, punchball',
+                749: 'purse',
+                750: 'quill, quill pen',
+                751: 'quilt, comforter, comfort, puff',
+                752: 'racer, race car, racing car',
+                753: 'racket, racquet',
+                754: 'radiator',
+                755: 'radio, wireless',
+                756: 'radio telescope, radio reflector',
+                757: 'rain barrel',
+                758: 'recreational vehicle, RV, R.V.',
+                759: 'reel',
+                760: 'reflex camera',
+                761: 'refrigerator, icebox',
+                762: 'remote control, remote',
+                763: 'restaurant, eating house, eating place, eatery',
+                764: 'revolver, six-gun, six-shooter',
+                765: 'rifle',
+                766: 'rocking chair, rocker',
+                767: 'rotisserie',
+                768: 'rubber eraser, rubber, pencil eraser',
+                769: 'rugby ball',
+                770: 'rule, ruler',
+                771: 'running shoe',
+                772: 'safe',
+                773: 'safety pin',
+                774: 'saltshaker, salt shaker',
+                775: 'sandal',
+                776: 'sarong',
+                777: 'sax, saxophone',
+                778: 'scabbard',
+                779: 'scale, weighing machine',
+                780: 'school bus',
+                781: 'schooner',
+                782: 'scoreboard',
+                783: 'screen, CRT screen',
+                784: 'screw',
+                785: 'screwdriver',
+                786: 'seat belt, seatbelt',
+                787: 'sewing machine',
+                788: 'shield, buckler',
+                789: 'shoe shop, shoe-shop, shoe store',
+                790: 'shoji',
+                791: 'shopping basket',
+                792: 'shopping cart',
+                793: 'shovel',
+                794: 'shower cap',
+                795: 'shower curtain',
+                796: 'ski',
+                797: 'ski mask',
+                798: 'sleeping bag',
+                799: 'slide rule, slipstick',
+                800: 'sliding door',
+                801: 'slot, one-armed bandit',
+                802: 'snorkel',
+                803: 'snowmobile',
+                804: 'snowplow, snowplough',
+                805: 'soap dispenser',
+                806: 'soccer ball',
+                807: 'sock',
+                808: 'solar dish, solar collector, solar furnace',
+                809: 'sombrero',
+                810: 'soup bowl',
+                811: 'space bar',
+                812: 'space heater',
+                813: 'space shuttle',
+                814: 'spatula',
+                815: 'speedboat',
+                816: "spider web, spider's web",
+                817: 'spindle',
+                818: 'sports car, sport car',
+                819: 'spotlight, spot',
+                820: 'stage',
+                821: 'steam locomotive',
+                822: 'steel arch bridge',
+                823: 'steel drum',
+                824: 'stethoscope',
+                825: 'stole',
+                826: 'stone wall',
+                827: 'stopwatch, stop watch',
+                828: 'stove',
+                829: 'strainer',
+                830: 'streetcar, tram, tramcar, trolley, trolley car',
+                831: 'stretcher',
+                832: 'studio couch, day bed',
+                833: 'stupa, tope',
+                834: 'submarine, pigboat, sub, U-boat',
+                835: 'suit, suit of clothes',
+                836: 'sundial',
+                837: 'sunglass',
+                838: 'sunglasses, dark glasses, shades',
+                839: 'sunscreen, sunblock, sun blocker',
+                840: 'suspension bridge',
+                841: 'swab, swob, mop',
+                842: 'sweatshirt',
+                843: 'swimming trunks, bathing trunks',
+                844: 'swing',
+                845: 'switch, electric switch, electrical switch',
+                846: 'syringe',
+                847: 'table lamp',
+                848: 'tank, army tank, armored combat vehicle, armoured combat vehicle',
+                849: 'tape player',
+                850: 'teapot',
+                851: 'teddy, teddy bear',
+                852: 'television, television system',
+                853: 'tennis ball',
+                854: 'thatch, thatched roof',
+                855: 'theater curtain, theatre curtain',
+                856: 'thimble',
+                857: 'thresher, thrasher, threshing machine',
+                858: 'throne',
+                859: 'tile roof',
+                860: 'toaster',
+                861: 'tobacco shop, tobacconist shop, tobacconist',
+                862: 'toilet seat',
+                863: 'torch',
+                864: 'totem pole',
+                865: 'tow truck, tow car, wrecker',
+                866: 'toyshop',
+                867: 'tractor',
+                868: 'trailer truck, tractor trailer, trucking rig, rig,' + ' articulated lorry, semi',
+                869: 'tray',
+                870: 'trench coat',
+                871: 'tricycle, trike, velocipede',
+                872: 'trimaran',
+                873: 'tripod',
+                874: 'triumphal arch',
+                875: 'trolleybus, trolley coach, trackless trolley',
+                876: 'trombone',
+                877: 'tub, vat',
+                878: 'turnstile',
+                879: 'typewriter keyboard',
+                880: 'umbrella',
+                881: 'unicycle, monocycle',
+                882: 'upright, upright piano',
+                883: 'vacuum, vacuum cleaner',
+                884: 'vase',
+                885: 'vault',
+                886: 'velvet',
+                887: 'vending machine',
+                888: 'vestment',
+                889: 'viaduct',
+                890: 'violin, fiddle',
+                891: 'volleyball',
+                892: 'waffle iron',
+                893: 'wall clock',
+                894: 'wallet, billfold, notecase, pocketbook',
+                895: 'wardrobe, closet, press',
+                896: 'warplane, military plane',
+                897: 'washbasin, handbasin, washbowl, lavabo, wash-hand basin',
+                898: 'washer, automatic washer, washing machine',
+                899: 'water bottle',
+                900: 'water jug',
+                901: 'water tower',
+                902: 'whiskey jug',
+                903: 'whistle',
+                904: 'wig',
+                905: 'window screen',
+                906: 'window shade',
+                907: 'Windsor tie',
+                908: 'wine bottle',
+                909: 'wing',
+                910: 'wok',
+                911: 'wooden spoon',
+                912: 'wool, woolen, woollen',
+                913: 'worm fence, snake fence, snake-rail fence, Virginia fence',
+                914: 'wreck',
+                915: 'yawl',
+                916: 'yurt',
+                917: 'web site, website, internet site, site',
+                918: 'comic book',
+                919: 'crossword puzzle, crossword',
+                920: 'street sign',
+                921: 'traffic light, traffic signal, stoplight',
+                922: 'book jacket, dust cover, dust jacket, dust wrapper',
+                923: 'menu',
+                924: 'plate',
+                925: 'guacamole',
+                926: 'consomme',
+                927: 'hot pot, hotpot',
+                928: 'trifle',
+                929: 'ice cream, icecream',
+                930: 'ice lolly, lolly, lollipop, popsicle',
+                931: 'French loaf',
+                932: 'bagel, beigel',
+                933: 'pretzel',
+                934: 'cheeseburger',
+                935: 'hotdog, hot dog, red hot',
+                936: 'mashed potato',
+                937: 'head cabbage',
+                938: 'broccoli',
+                939: 'cauliflower',
+                940: 'zucchini, courgette',
+                941: 'spaghetti squash',
+                942: 'acorn squash',
+                943: 'butternut squash',
+                944: 'cucumber, cuke',
+                945: 'artichoke, globe artichoke',
+                946: 'bell pepper',
+                947: 'cardoon',
+                948: 'mushroom',
+                949: 'Granny Smith',
+                950: 'strawberry',
+                951: 'orange',
+                952: 'lemon',
+                953: 'fig',
+                954: 'pineapple, ananas',
+                955: 'banana',
+                956: 'jackfruit, jak, jack',
+                957: 'custard apple',
+                958: 'pomegranate',
+                959: 'hay',
+                960: 'carbonara',
+                961: 'chocolate sauce, chocolate syrup',
+                962: 'dough',
+                963: 'meat loaf, meatloaf',
+                964: 'pizza, pizza pie',
+                965: 'potpie',
+                966: 'burrito',
+                967: 'red wine',
+                968: 'espresso',
+                969: 'cup',
+                970: 'eggnog',
+                971: 'alp',
+                972: 'bubble',
+                973: 'cliff, drop, drop-off',
+                974: 'coral reef',
+                975: 'geyser',
+                976: 'lakeside, lakeshore',
+                977: 'promontory, headland, head, foreland',
+                978: 'sandbar, sand bar',
+                979: 'seashore, coast, seacoast, sea-coast',
+                980: 'valley, vale',
+                981: 'volcano',
+                982: 'ballplayer, baseball player',
+                983: 'groom, bridegroom',
+                984: 'scuba diver',
+                985: 'rapeseed',
+                986: 'daisy',
+                987: "yellow lady's slipper, yellow lady-slipper, Cypripedium" + " calceolus, Cypripedium parviflorum",
+                988: 'corn',
+                989: 'acorn',
+                990: 'hip, rose hip, rosehip',
+                991: 'buckeye, horse chestnut, conker',
+                992: 'coral fungus',
+                993: 'agaric',
+                994: 'gyromitra',
+                995: 'stinkhorn, carrion fungus',
+                996: 'earthstar',
+                997: 'hen-of-the-woods, hen of the woods, Polyporus' + ' frondosus, Grifola frondosa',
+                998: 'bolete',
+                999: 'ear, spike, capitulum',
+                1000: 'toilet tissue, toilet paper, bathroom tissue'
+            };
+        }, {}], 2: [function (require, module, exports) {
+            "use strict";
+
+            Object.defineProperty(exports, "__esModule", { value: true });
+            var mobilenet_1 = require("./mobilenet");
+            exports.MobileNet = mobilenet_1.MobileNet;
+        }, { "./mobilenet": 3 }], 3: [function (require, module, exports) {
+            (function (global) {
+                "use strict";
+
+                var __awaiter = this && this.__awaiter || function (thisArg, _arguments, P, generator) {
+                    return new (P || (P = Promise))(function (resolve, reject) {
+                        function fulfilled(value) {
+                            try {
+                                step(generator.next(value));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                        function rejected(value) {
+                            try {
+                                step(generator["throw"](value));
+                            } catch (e) {
+                                reject(e);
+                            }
+                        }
+                        function step(result) {
+                            result.done ? resolve(result.value) : new P(function (resolve) {
+                                resolve(result.value);
+                            }).then(fulfilled, rejected);
+                        }
+                        step((generator = generator.apply(thisArg, _arguments || [])).next());
+                    });
+                };
+                var __generator = this && this.__generator || function (thisArg, body) {
+                    var _ = { label: 0, sent: function sent() {
+                            if (t[0] & 1) throw t[1];return t[1];
+                        }, trys: [], ops: [] },
+                        f,
+                        y,
+                        t,
+                        g;
+                    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+                        return this;
+                    }), g;
+                    function verb(n) {
+                        return function (v) {
+                            return step([n, v]);
+                        };
+                    }
+                    function step(op) {
+                        if (f) throw new TypeError("Generator is already executing.");
+                        while (_) {
+                            try {
+                                if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+                                if (y = 0, t) op = [0, t.value];
+                                switch (op[0]) {
+                                    case 0:case 1:
+                                        t = op;break;
+                                    case 4:
+                                        _.label++;return { value: op[1], done: false };
+                                    case 5:
+                                        _.label++;y = op[1];op = [0];continue;
+                                    case 7:
+                                        op = _.ops.pop();_.trys.pop();continue;
+                                    default:
+                                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                                            _ = 0;continue;
+                                        }
+                                        if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                                            _.label = op[1];break;
+                                        }
+                                        if (op[0] === 6 && _.label < t[1]) {
+                                            _.label = t[1];t = op;break;
+                                        }
+                                        if (t && _.label < t[2]) {
+                                            _.label = t[2];_.ops.push(op);break;
+                                        }
+                                        if (t[2]) _.ops.pop();
+                                        _.trys.pop();continue;
+                                }
+                                op = body.call(thisArg, _);
+                            } catch (e) {
+                                op = [6, e];y = 0;
+                            } finally {
+                                f = t = 0;
+                            }
+                        }if (op[0] & 5) throw op[1];return { value: op[0] ? op[1] : void 0, done: true };
+                    }
+                };
+                Object.defineProperty(exports, "__esModule", { value: true });
+                var deeplearn_1 = typeof window !== "undefined" ? window['dl'] : typeof global !== "undefined" ? global['dl'] : null;
+                var model_util = require("../util");
+                var imagenet_classes_1 = require("./imagenet_classes");
+                var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
+                var MobileNet = function () {
+                    function MobileNet(math) {
+                        // start custom p5ml
+                        deeplearn_1 = p5ml.dl;
+                        this.clases = imagenet_classes_1;
+                        // end custom p5ml
+                        this.math = math;
+                        this.PREPROCESS_DIVISOR = deeplearn_1.Scalar.new(255.0 / 2);
+                        this.ONE = deeplearn_1.Scalar.new(1);
+                    }
+                    MobileNet.prototype.load = function () {
+                        return __awaiter(this, void 0, void 0, function () {
+                            var checkpointLoader, _a;
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
+                                    case 0:
+                                        checkpointLoader = new deeplearn_1.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'mobilenet_v1_1.0_224/');
+                                        _a = this;
+                                        return [4, checkpointLoader.getAllVariables()];
+                                    case 1:
+                                        _a.variables = _b.sent();
+                                        return [2];
+                                }
+                            });
+                        });
+                    };
+                    MobileNet.prototype.predict = function (input) {
+                        var _this = this;
+                        var netout = this.math.scope(function (keep) {
+                            var preprocessedInput = _this.math.subtract(_this.math.arrayDividedByScalar(input, _this.PREPROCESS_DIVISOR), _this.ONE);
+                            var x1 = _this.convBlock(preprocessedInput, [2, 2]);
+                            var x2 = _this.depthwiseConvBlock(x1, [1, 1], 1);
+                            var x3 = _this.depthwiseConvBlock(x2, [2, 2], 2);
+                            var x4 = _this.depthwiseConvBlock(x3, [1, 1], 3);
+                            var x5 = _this.depthwiseConvBlock(x4, [2, 2], 4);
+                            var x6 = _this.depthwiseConvBlock(x5, [1, 1], 5);
+                            var x7 = _this.depthwiseConvBlock(x6, [2, 2], 6);
+                            var x8 = _this.depthwiseConvBlock(x7, [1, 1], 7);
+                            var x9 = _this.depthwiseConvBlock(x8, [1, 1], 8);
+                            var x10 = _this.depthwiseConvBlock(x9, [1, 1], 9);
+                            var x11 = _this.depthwiseConvBlock(x10, [1, 1], 10);
+                            var x12 = _this.depthwiseConvBlock(x11, [1, 1], 11);
+                            var x13 = _this.depthwiseConvBlock(x12, [2, 2], 12);
+                            var x14 = _this.depthwiseConvBlock(x13, [1, 1], 13);
+                            var x15 = _this.math.avgPool(x14, x14.shape[0], 1, 0);
+                            var x16 = _this.math.conv2d(x15, _this.variables['MobilenetV1/Logits/Conv2d_1c_1x1/weights'], _this.variables['MobilenetV1/Logits/Conv2d_1c_1x1/biases'], 1, 'same');
+                            return x16.as1D();
+                        });
+                        return netout;
+                    };
+                    MobileNet.prototype.convBlock = function (inputs, strides) {
+                        var convPadding = 'MobilenetV1/Conv2d_0';
+                        var x1 = this.math.conv2d(inputs, this.variables[convPadding + '/weights'], null, strides, 'same');
+                        var x2 = this.math.batchNormalization3D(x1, this.variables[convPadding + '/BatchNorm/moving_mean'], this.variables[convPadding + '/BatchNorm/moving_variance'], .001, this.variables[convPadding + '/BatchNorm/gamma'], this.variables[convPadding + '/BatchNorm/beta']);
+                        return this.math.clip(x2, 0, 6);
+                    };
+                    MobileNet.prototype.depthwiseConvBlock = function (inputs, strides, blockID) {
+                        var dwPadding = 'MobilenetV1/Conv2d_' + String(blockID) + '_depthwise';
+                        var pwPadding = 'MobilenetV1/Conv2d_' + String(blockID) + '_pointwise';
+                        var x1 = this.math.depthwiseConv2D(inputs, this.variables[dwPadding + '/depthwise_weights'], strides, 'same');
+                        var x2 = this.math.batchNormalization3D(x1, this.variables[dwPadding + '/BatchNorm/moving_mean'], this.variables[dwPadding + '/BatchNorm/moving_variance'], .001, this.variables[dwPadding + '/BatchNorm/gamma'], this.variables[dwPadding + '/BatchNorm/beta']);
+                        var x3 = this.math.clip(x2, 0, 6);
+                        var x4 = this.math.conv2d(x3, this.variables[pwPadding + '/weights'], null, [1, 1], 'same');
+                        var x5 = this.math.batchNormalization3D(x4, this.variables[pwPadding + '/BatchNorm/moving_mean'], this.variables[pwPadding + '/BatchNorm/moving_variance'], .001, this.variables[pwPadding + '/BatchNorm/gamma'], this.variables[pwPadding + '/BatchNorm/beta']);
+                        return this.math.clip(x5, 0, 6);
+                    };
+                    MobileNet.prototype.getTopKClasses = function (logits, topK) {
+                        return __awaiter(this, void 0, void 0, function () {
+                            var predictions, topk, _a, _b, topkIndices, topkValues, topClassesToProbability, i;
+                            return __generator(this, function (_c) {
+                                switch (_c.label) {
+                                    case 0:
+                                        predictions = this.math.softmax(logits).asType('float32');
+                                        _b = (_a = model_util).topK;
+                                        return [4, predictions.data()];
+                                    case 1:
+                                        topk = _b.apply(_a, [_c.sent(), topK]);
+                                        topkIndices = topk.indices;
+                                        topkValues = topk.values;
+                                        topClassesToProbability = {};
+                                        for (i = 0; i < topkIndices.length; i++) {
+                                            topClassesToProbability[imagenet_classes_1.IMAGENET_CLASSES[topkIndices[i]]] = topkValues[i];
+                                        }
+                                        return [2, topClassesToProbability];
+                                }
+                            });
+                        });
+                    };
+                    MobileNet.prototype.dispose = function () {
+                        for (var varName in this.variables) {
+                            this.variables[varName].dispose();
+                        }
+                    };
+                    return MobileNet;
+                }();
+                exports.MobileNet = MobileNet;
+            }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
+        }, { "../util": 4, "./imagenet_classes": 1 }], 4: [function (require, module, exports) {
+            "use strict";
+
+            Object.defineProperty(exports, "__esModule", { value: true });
+            function topK(values, k) {
+                var valuesAndIndices = [];
+                for (var i = 0; i < values.length; i++) {
+                    valuesAndIndices.push({ value: values[i], index: i });
+                }
+                valuesAndIndices.sort(function (a, b) {
+                    return b.value - a.value;
+                });
+                var topkValues = new Float32Array(k);
+                var topkIndices = new Int32Array(k);
+                for (var i = 0; i < k; i++) {
+                    topkValues[i] = valuesAndIndices[i].value;
+                    topkIndices[i] = valuesAndIndices[i].index;
+                }
+                return { values: topkValues, indices: topkIndices };
+            }
+            exports.topK = topK;
+        }, {}] }, {}, [2])(2);
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(69)))
+
+/***/ }),
+/* 439 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -24758,9 +26030,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      TODO: Resolve freeze on first train
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
-var _deeplearnKnnImageClassifier = __webpack_require__(439);
+var _deeplearnKnnImageClassifier = __webpack_require__(440);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -24937,18 +26209,18 @@ var KNNImageClassifier = function () {
 exports.default = KNNImageClassifier;
 
 /***/ }),
-/* 439 */
+/* 440 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var knn_image_classifier_1 = __webpack_require__(440);
+var knn_image_classifier_1 = __webpack_require__(441);
 exports.KNNImageClassifier = knn_image_classifier_1.KNNImageClassifier;
 
 
 /***/ }),
-/* 440 */
+/* 441 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24989,9 +26261,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var deeplearn_1 = __webpack_require__(35);
+var deeplearn_1 = __webpack_require__(27);
 var deeplearn_squeezenet_1 = __webpack_require__(161);
-var model_util = __webpack_require__(441);
+var model_util = __webpack_require__(442);
 var KNNImageClassifier = (function () {
     function KNNImageClassifier(numClasses, k, math) {
         this.numClasses = numClasses;
@@ -25184,7 +26456,7 @@ exports.KNNImageClassifier = KNNImageClassifier;
 
 
 /***/ }),
-/* 441 */
+/* 442 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25210,7 +26482,7 @@ exports.topK = topK;
 
 
 /***/ }),
-/* 442 */
+/* 443 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25227,9 +26499,9 @@ A LSTM Generator: Run inference mode for a LSTM.
 Currently working with models trained using https://github.com/sherjilozair/char-rnn-tensorflow
 */
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
-var _sample = __webpack_require__(443);
+var _sample = __webpack_require__(444);
 
 var _sample2 = _interopRequireDefault(_sample);
 
@@ -25470,7 +26742,7 @@ var LSTMGenerator = function () {
 exports.default = LSTMGenerator;
 
 /***/ }),
-/* 443 */
+/* 444 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25499,7 +26771,7 @@ var sampleFromDistribution = function sampleFromDistribution(input) {
 exports.default = sampleFromDistribution;
 
 /***/ }),
-/* 444 */
+/* 445 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25517,7 +26789,7 @@ Based on "Make Your Own Neural Network" by Tariq Rashid
 https://github.com/makeyourownneuralnetwork/
 */
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -25635,7 +26907,7 @@ var NeuralNetwork = function () {
 exports.default = NeuralNetwork;
 
 /***/ }),
-/* 445 */
+/* 446 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25650,7 +26922,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      Based on https://github.com/shiffman/p5-word2vec
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      */
 
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -25769,7 +27041,7 @@ var Word2Vec = function () {
 exports.default = Word2Vec;
 
 /***/ }),
-/* 446 */
+/* 447 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25784,12 +27056,9 @@ var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = [
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* eslint max-len: "off" */
 /*
 fast-style-transfer
-Based on deeplearn.js demo: https://github.com/PAIR-code/deeplearnjs/tree/0608feadbd897bca6ec7abf3340515fe5f2de1c2/demos/fast-style-transfer
-and https://github.com/reiinakano/fast-style-transfer-deeplearnjs by reiinakano
 */
 
-
-var _deeplearn = __webpack_require__(35);
+var _deeplearn = __webpack_require__(27);
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
@@ -25812,12 +27081,6 @@ var TransformNet = function () {
       callback();
     });
   }
-
-  /**
-   * Loads necessary variables for SqueezeNet. Resolves the promise when the
-   * variables have all been loaded.
-   */
-
 
   _createClass(TransformNet, [{
     key: 'loadCheckpoints',
@@ -25849,16 +27112,6 @@ var TransformNet = function () {
 
       return loadCheckpoints;
     }()
-
-    /**
-     * Infer through TransformNet, assumes variables have been loaded.
-     * Original Tensorflow version of model can be found at
-     * https://github.com/lengstrom/fast-style-transfer
-     *
-     * @param imgElement HTMLImageElement of input img
-     * @return Array3D containing pixels of output img
-     */
-
   }, {
     key: 'predict',
     value: function predict(imgElement) {
@@ -25955,7 +27208,1600 @@ var TransformNet = function () {
 exports.default = TransformNet;
 
 /***/ }),
-/* 447 */
+/* 448 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* eslint prefer-destructuring: ["error", {VariableDeclarator: {object: false}}] */
+/*
+YOLO
+*/
+
+var _deeplearn = __webpack_require__(27);
+
+var _yolo_mobilenet = __webpack_require__(449);
+
+var _IMAGENET_CLASSES = __webpack_require__(451);
+
+var _IMAGENET_CLASSES2 = _interopRequireDefault(_IMAGENET_CLASSES);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Yolo = function () {
+  function Yolo(callback) {
+    var _this = this;
+
+    var canvas = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+    _classCallCheck(this, Yolo);
+
+    this.ready = false;
+    this.math = _deeplearn.ENV.math;
+    this.canvas = canvas;
+    this.yoloMobileNet = new _yolo_mobilenet.YoloMobileNetDetection(this.math);
+    this.yoloMobileNet.load().then(function () {
+      _this.ready = true;
+      callback();
+    });
+  }
+
+  _createClass(Yolo, [{
+    key: 'predict',
+    value: function () {
+      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(input, callback) {
+        var pixels, result, BoundingBoxes, width, height, boxes;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!this.ready) {
+                  _context.next = 11;
+                  break;
+                }
+
+                pixels = _deeplearn.Array3D.fromPixels(input);
+                _context.next = 4;
+                return this.yoloMobileNet.predict(pixels);
+
+              case 4:
+                result = _context.sent;
+                _context.next = 7;
+                return this.yoloMobileNet.interpretNetout(result);
+
+              case 7:
+                BoundingBoxes = _context.sent;
+
+                if (this.canvas) {
+                  width = this.canvas.width;
+                  height = this.canvas.height;
+                  boxes = [];
+
+                  BoundingBoxes.forEach(function (box) {
+                    var prob = box.getMaxProb().toFixed(2).toString();
+                    var boxColor = box.getColor();
+                    var color = boxColor.substring(4, boxColor.length - 1).replace(/ /g, '').split(',');
+                    var x = (box.x - box.w / 2) * width;
+                    var y = (box.y - box.h / 2) * height;
+                    var w = box.w * width;
+                    var h = box.h * height;
+                    var index = box.index;
+                    var label = _IMAGENET_CLASSES2.default[box.index];
+                    boxes.push({
+                      color: color,
+                      label: label,
+                      prob: prob,
+                      x: x,
+                      y: y,
+                      w: w,
+                      h: h,
+                      index: index
+                    });
+                  });
+                  callback({
+                    BoundingBoxes: BoundingBoxes,
+                    boxes: boxes
+                  });
+                } else {
+                  callback({
+                    BoundingBoxes: BoundingBoxes
+                  });
+                }
+                _context.next = 12;
+                break;
+
+              case 11:
+                callback({
+                  result: [],
+                  boxes: []
+                });
+
+              case 12:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function predict(_x2, _x3) {
+        return _ref.apply(this, arguments);
+      }
+
+      return predict;
+    }()
+  }]);
+
+  return Yolo;
+}();
+
+exports.default = Yolo;
+
+/***/ }),
+/* 449 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.YoloMobileNetDetection = undefined;
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _deeplearn = __webpack_require__(27);
+
+var _mobilenet_utils = __webpack_require__(450);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/* eslint-disable */
+var __awaiter = undefined && undefined.__awaiter || function (thisArg, _arguments, P, generator) {
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : new P(function (resolve) {
+        resolve(result.value);
+      }).then(fulfilled, rejected);
+    }
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+// tslint:disable-next-line:max-line-length
+
+var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
+
+var YoloMobileNetDetection = exports.YoloMobileNetDetection = function () {
+  function YoloMobileNetDetection(math) {
+    _classCallCheck(this, YoloMobileNetDetection);
+
+    this.math = math;
+    // yolo variables
+    this.PREPROCESS_DIVISOR = _deeplearn.Scalar.new(255.0 / 2);
+    this.ONE = _deeplearn.Scalar.new(1);
+    this.THRESHOLD = 0.3;
+    this.THRESHOLD_SCALAR = _deeplearn.Scalar.new(this.THRESHOLD);
+    this.ANCHORS = [0.57273, 0.677385, 1.87446, 2.06253, 3.33843, 5.47434, 7.88282, 3.52778, 9.77052, 9.16828];
+  }
+  /**
+   * Loads necessary variables for MobileNet.
+   */
+
+
+  _createClass(YoloMobileNetDetection, [{
+    key: 'load',
+    value: function load() {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+        var checkpointLoader;
+        return regeneratorRuntime.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                checkpointLoader = new _deeplearn.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'yolo_mobilenet_v1_1.0_416/');
+                _context.next = 3;
+                return checkpointLoader.getAllVariables();
+
+              case 3:
+                this.variables = _context.sent;
+
+              case 4:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+    }
+    /**
+     * Infer through MobileNet, assumes variables have been loaded. This does
+     * standard ImageNet pre-processing before inferring through the model. This
+     * method returns named activations as well as pre-softmax logits.
+     *
+     * @param input un-preprocessed input Array.
+     * @return Named activations and the pre-softmax logits.
+     */
+
+  }, {
+    key: 'predict',
+    value: function predict(input) {
+      var _this = this;
+
+      // Keep a map of named activations for rendering purposes.
+      var netout = this.math.scope(function (keep) {
+        // Preprocess the input.
+        var preprocessedInput = _this.math.subtract(_this.math.arrayDividedByScalar(input, _this.PREPROCESS_DIVISOR), _this.ONE);
+        var x1 = _this.convBlock(preprocessedInput, [2, 2]);
+        var x2 = _this.depthwiseConvBlock(x1, [1, 1], 1);
+        var x3 = _this.depthwiseConvBlock(x2, [2, 2], 2);
+        var x4 = _this.depthwiseConvBlock(x3, [1, 1], 3);
+        var x5 = _this.depthwiseConvBlock(x4, [2, 2], 4);
+        var x6 = _this.depthwiseConvBlock(x5, [1, 1], 5);
+        var x7 = _this.depthwiseConvBlock(x6, [2, 2], 6);
+        var x8 = _this.depthwiseConvBlock(x7, [1, 1], 7);
+        var x9 = _this.depthwiseConvBlock(x8, [1, 1], 8);
+        var x10 = _this.depthwiseConvBlock(x9, [1, 1], 9);
+        var x11 = _this.depthwiseConvBlock(x10, [1, 1], 10);
+        var x12 = _this.depthwiseConvBlock(x11, [1, 1], 11);
+        var x13 = _this.depthwiseConvBlock(x12, [2, 2], 12);
+        var x14 = _this.depthwiseConvBlock(x13, [1, 1], 13);
+        var x15 = _this.math.conv2d(x14, _this.variables['conv_23/kernel'], _this.variables['conv_23/bias'], [1, 1], 'same');
+        return x15.as4D(13, 13, 5, 6);
+      });
+      return netout;
+    }
+  }, {
+    key: 'convBlock',
+    value: function convBlock(inputs, strides) {
+      var x1 = this.math.conv2d(inputs, this.variables['conv1/kernel'], null, // this convolutional layer does not use bias
+      strides, 'same');
+      var x2 = this.math.batchNormalization3D(x1, this.variables['conv1_bn/moving_mean'], this.variables['conv1_bn/moving_variance'], .001, this.variables['conv1_bn/gamma'], this.variables['conv1_bn/beta']);
+      return this.math.clip(x2, 0, 6); // simple implementation of Relu6
+    }
+  }, {
+    key: 'depthwiseConvBlock',
+    value: function depthwiseConvBlock(inputs, strides, blockID) {
+      var dwPadding = 'conv_dw_' + String(blockID) + '';
+      var pwPadding = 'conv_pw_' + String(blockID) + '';
+      var x1 = this.math.depthwiseConv2D(inputs, this.variables[dwPadding + '/depthwise_kernel'], strides, 'same');
+      var x2 = this.math.batchNormalization3D(x1, this.variables[dwPadding + '_bn/moving_mean'], this.variables[dwPadding + '_bn/moving_variance'], .001, this.variables[dwPadding + '_bn/gamma'], this.variables[dwPadding + '_bn/beta']);
+      var x3 = this.math.clip(x2, 0, 6);
+      var x4 = this.math.conv2d(x3, this.variables[pwPadding + '/kernel'], null, // this convolutional layer does not use bias
+      [1, 1], 'same');
+      var x5 = this.math.batchNormalization3D(x4, this.variables[pwPadding + '_bn/moving_mean'], this.variables[pwPadding + '_bn/moving_variance'], .001, this.variables[pwPadding + '_bn/gamma'], this.variables[pwPadding + '_bn/beta']);
+      return this.math.clip(x5, 0, 6);
+    }
+  }, {
+    key: 'interpretNetout',
+    value: function interpretNetout(netout) {
+      return __awaiter(this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+        var GRID_H, GRID_W, BOX, CLASS, boxes, confidence, classes, mask, objectLikelihood, objectLikelihoodValues, i, _objectLikelihood$ind, _objectLikelihood$ind2, row, col, box, conf, probs, xywh, x, y, w, h, _loop, cls, likelyBoxes, _iteratorNormalCompletion, _didIteratorError, _iteratorError, _iterator, _step, _box;
+
+        return regeneratorRuntime.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                // interpret the output by the network
+                GRID_H = netout.shape[0];
+                GRID_W = netout.shape[1];
+                BOX = netout.shape[2];
+                CLASS = netout.shape[3] - 5;
+                boxes = [];
+                // adjust confidence predictions
+
+                confidence = this.math.sigmoid(this.math.slice4D(netout, [0, 0, 0, 4], [GRID_H, GRID_W, BOX, 1]));
+                // adjust class prediction
+
+                classes = this.math.softmax(this.math.slice4D(netout, [0, 0, 0, 5], [GRID_H, GRID_W, BOX, CLASS]));
+
+                classes = this.math.multiply(classes, confidence);
+                mask = this.math.step(this.math.relu(this.math.subtract(classes, this.THRESHOLD_SCALAR)));
+
+                classes = this.math.multiply(classes, mask);
+                objectLikelihood = this.math.sum(classes, 3);
+                _context2.next = 13;
+                return objectLikelihood.data();
+
+              case 13:
+                objectLikelihoodValues = _context2.sent;
+                i = 0;
+
+              case 15:
+                if (!(i < objectLikelihoodValues.length)) {
+                  _context2.next = 37;
+                  break;
+                }
+
+                if (!(objectLikelihoodValues[i] > 0)) {
+                  _context2.next = 34;
+                  break;
+                }
+
+                _objectLikelihood$ind = objectLikelihood.indexToLoc(i), _objectLikelihood$ind2 = _slicedToArray(_objectLikelihood$ind, 3), row = _objectLikelihood$ind2[0], col = _objectLikelihood$ind2[1], box = _objectLikelihood$ind2[2];
+                conf = confidence.get(row, col, box, 0);
+                _context2.next = 21;
+                return this.math.slice4D(classes, [row, col, box, 0], [1, 1, 1, CLASS]).data();
+
+              case 21:
+                probs = _context2.sent;
+                _context2.next = 24;
+                return this.math.slice4D(netout, [row, col, box, 0], [1, 1, 1, 4]).data();
+
+              case 24:
+                xywh = _context2.sent;
+                x = xywh[0];
+                y = xywh[1];
+                w = xywh[2];
+                h = xywh[3];
+
+                x = (col + this.sigmoid(x)) / GRID_W;
+                y = (row + this.sigmoid(y)) / GRID_H;
+                w = this.ANCHORS[2 * box + 0] * Math.exp(w) / GRID_W;
+                h = this.ANCHORS[2 * box + 1] * Math.exp(h) / GRID_H;
+                // console.log(i, objectLikelihoodValues[i], probs, conf);
+                boxes.push(new _mobilenet_utils.BoundingBox(x, y, w, h, conf, probs, i));
+
+              case 34:
+                i++;
+                _context2.next = 15;
+                break;
+
+              case 37:
+                _loop = function _loop(cls) {
+                  var allProbs = boxes.map(function (box) {
+                    return box.probs[cls];
+                  });
+                  var indices = new Array(allProbs.length);
+                  for (var _i = 0; _i < allProbs.length; ++_i) {
+                    indices[_i] = _i;
+                  }
+                  indices.sort(function (a, b) {
+                    return allProbs[a] > allProbs[b] ? 1 : 0;
+                  });
+                  for (var _i2 = 0; _i2 < allProbs.length; _i2++) {
+                    var indexI = indices[_i2];
+                    if (boxes[indexI].probs[cls] === 0) {
+                      continue;
+                    } else {
+                      for (var j = _i2 + 1; j < allProbs.length; j++) {
+                        var indexJ = indices[j];
+                        if (boxes[indexI].iou(boxes[indexJ]) > 0.4) {
+                          boxes[indexJ].probs[cls] = 0;
+                        }
+                      }
+                    }
+                  }
+                };
+
+                // suppress nonmaximal boxes
+                for (cls = 0; cls < CLASS; cls++) {
+                  _loop(cls);
+                }
+                // obtain the most likely boxes
+                likelyBoxes = [];
+                _iteratorNormalCompletion = true;
+                _didIteratorError = false;
+                _iteratorError = undefined;
+                _context2.prev = 43;
+
+                for (_iterator = boxes[Symbol.iterator](); !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                  _box = _step.value;
+
+                  if (_box.getMaxProb() > this.THRESHOLD) {
+                    likelyBoxes.push(_box);
+                  }
+                }
+                _context2.next = 51;
+                break;
+
+              case 47:
+                _context2.prev = 47;
+                _context2.t0 = _context2['catch'](43);
+                _didIteratorError = true;
+                _iteratorError = _context2.t0;
+
+              case 51:
+                _context2.prev = 51;
+                _context2.prev = 52;
+
+                if (!_iteratorNormalCompletion && _iterator.return) {
+                  _iterator.return();
+                }
+
+              case 54:
+                _context2.prev = 54;
+
+                if (!_didIteratorError) {
+                  _context2.next = 57;
+                  break;
+                }
+
+                throw _iteratorError;
+
+              case 57:
+                return _context2.finish(54);
+
+              case 58:
+                return _context2.finish(51);
+
+              case 59:
+                return _context2.abrupt('return', likelyBoxes);
+
+              case 60:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, this, [[43, 47, 51, 59], [52,, 54, 58]]);
+      }));
+    }
+  }, {
+    key: 'sigmoid',
+    value: function sigmoid(x) {
+      return 1. / (1. + Math.exp(-x));
+    }
+  }, {
+    key: 'dispose',
+    value: function dispose() {
+      for (var varName in this.variables) {
+        this.variables[varName].dispose();
+      }
+    }
+  }]);
+
+  return YoloMobileNetDetection;
+}();
+
+/***/ }),
+/* 450 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+/* eslint-disable */
+var BoundingBox = exports.BoundingBox = function () {
+  function BoundingBox(x, y, w, h, conf, probs, index) {
+    _classCallCheck(this, BoundingBox);
+
+    this.maxProb = -1;
+    this.maxIndx = -1;
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.c = conf;
+    this.probs = probs;
+    this.index = index;
+  }
+
+  _createClass(BoundingBox, [{
+    key: 'getMaxProb',
+    value: function getMaxProb() {
+      if (this.maxProb === -1) {
+        this.maxProb = this.probs.reduce(function (a, b) {
+          return Math.max(a, b);
+        });
+      }
+      return this.maxProb;
+    }
+  }, {
+    key: 'getLabel',
+    value: function getLabel() {
+      if (this.maxIndx === -1) {
+        this.maxIndx = this.probs.indexOf(this.getMaxProb());
+      }
+      return BoundingBox.LABELS[this.maxIndx];
+    }
+  }, {
+    key: 'getColor',
+    value: function getColor() {
+      if (this.maxIndx === -1) {
+        this.maxIndx = this.probs.indexOf(this.getMaxProb());
+      }
+      return BoundingBox.COLORS[this.maxIndx];
+    }
+  }, {
+    key: 'iou',
+    value: function iou(box) {
+      var intersection = this.intersect(box);
+      var union = this.w * this.h + box.w * box.h - intersection;
+      return intersection / union;
+    }
+  }, {
+    key: 'intersect',
+    value: function intersect(box) {
+      var width = this.overlap([this.x - this.w / 2, this.x + this.w / 2], [box.x - box.w / 2, box.x + box.w / 2]);
+      var height = this.overlap([this.y - this.h / 2, this.y + this.h / 2], [box.y - box.h / 2, box.y + box.h / 2]);
+      return width * height;
+    }
+  }, {
+    key: 'overlap',
+    value: function overlap(intervalA, intervalB) {
+      var _intervalA = _slicedToArray(intervalA, 2),
+          x1 = _intervalA[0],
+          x2 = _intervalA[1];
+
+      var _intervalB = _slicedToArray(intervalB, 2),
+          x3 = _intervalB[0],
+          x4 = _intervalB[1];
+
+      if (x3 < x1) {
+        if (x4 < x1) {
+          return 0;
+        } else {
+          return Math.min(x2, x4) - x1;
+        }
+      } else {
+        if (x2 < x3) {
+          return 0;
+        } else {
+          return Math.min(x2, x4) - x3;
+        }
+      }
+    }
+  }]);
+
+  return BoundingBox;
+}();
+
+BoundingBox.LABELS = ['raccoon'];
+BoundingBox.COLORS = ['rgb(43,206,72)'];
+
+/***/ }),
+/* 451 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/* eslint-disable */
+exports.default = {
+    0: 'background',
+    1: 'tench, Tinca tinca',
+    2: 'goldfish, Carassius auratus',
+    3: 'great white shark, white shark, man-eater,' + ' man-eating shark, Carcharodon carcharias',
+    4: 'tiger shark, Galeocerdo cuvieri',
+    5: 'hammerhead, hammerhead shark',
+    6: 'electric ray, crampfish, numbfish, torpedo',
+    7: 'stingray',
+    8: 'cock',
+    9: 'hen',
+    10: 'ostrich, Struthio camelus',
+    11: 'brambling, Fringilla montifringilla',
+    12: 'goldfinch, Carduelis carduelis',
+    13: 'house finch, linnet, Carpodacus mexicanus',
+    14: 'junco, snowbird',
+    15: 'indigo bunting, indigo finch, indigo bird, Passerina cyanea',
+    16: 'robin, American robin, Turdus migratorius',
+    17: 'bulbul',
+    18: 'jay',
+    19: 'magpie',
+    20: 'chickadee',
+    21: 'water ouzel, dipper',
+    22: 'kite',
+    23: 'bald eagle, American eagle, Haliaeetus leucocephalus',
+    24: 'vulture',
+    25: 'great grey owl, great gray owl, Strix nebulosa',
+    26: 'European fire salamander, Salamandra salamandra',
+    27: 'common newt, Triturus vulgaris',
+    28: 'eft',
+    29: 'spotted salamander, Ambystoma maculatum',
+    30: 'axolotl, mud puppy, Ambystoma mexicanum',
+    31: 'bullfrog, Rana catesbeiana',
+    32: 'tree frog, tree-frog',
+    33: 'tailed frog, bell toad, ribbed toad, tailed toad, Ascaphus trui',
+    34: 'loggerhead, loggerhead turtle, Caretta caretta',
+    35: 'leatherback turtle, leatherback, leathery turtle, Dermochelys coriacea',
+    36: 'mud turtle',
+    37: 'terrapin',
+    38: 'box turtle, box tortoise',
+    39: 'banded gecko',
+    40: 'common iguana, iguana, Iguana iguana',
+    41: 'American chameleon, anole, Anolis carolinensis',
+    42: 'whiptail, whiptail lizard',
+    43: 'agama',
+    44: 'frilled lizard, Chlamydosaurus kingi',
+    45: 'alligator lizard',
+    46: 'Gila monster, Heloderma suspectum',
+    47: 'green lizard, Lacerta viridis',
+    48: 'African chameleon, Chamaeleo chamaeleon',
+    49: 'Komodo dragon, Komodo lizard, dragon lizard,' + ' giant lizard, Varanus komodoensis',
+    50: 'African crocodile, Nile crocodile, Crocodylus niloticus',
+    51: 'American alligator, Alligator mississipiensis',
+    52: 'triceratops',
+    53: 'thunder snake, worm snake, Carphophis amoenus',
+    54: 'ringneck snake, ring-necked snake, ring snake',
+    55: 'hognose snake, puff adder, sand viper',
+    56: 'green snake, grass snake',
+    57: 'king snake, kingsnake',
+    58: 'garter snake, grass snake',
+    59: 'water snake',
+    60: 'vine snake',
+    61: 'night snake, Hypsiglena torquata',
+    62: 'boa constrictor, Constrictor constrictor',
+    63: 'rock python, rock snake, Python sebae',
+    64: 'Indian cobra, Naja naja',
+    65: 'green mamba',
+    66: 'sea snake',
+    67: 'horned viper, cerastes, sand viper, horned asp, Cerastes cornutus',
+    68: 'diamondback, diamondback rattlesnake, Crotalus adamanteus',
+    69: 'sidewinder, horned rattlesnake, Crotalus cerastes',
+    70: 'trilobite',
+    71: 'harvestman, daddy longlegs, Phalangium opilio',
+    72: 'scorpion',
+    73: 'black and gold garden spider, Argiope aurantia',
+    74: 'barn spider, Araneus cavaticus',
+    75: 'garden spider, Aranea diademata',
+    76: 'black widow, Latrodectus mactans',
+    77: 'tarantula',
+    78: 'wolf spider, hunting spider',
+    79: 'tick',
+    80: 'centipede',
+    81: 'black grouse',
+    82: 'ptarmigan',
+    83: 'ruffed grouse, partridge, Bonasa umbellus',
+    84: 'prairie chicken, prairie grouse, prairie fowl',
+    85: 'peacock',
+    86: 'quail',
+    87: 'partridge',
+    88: 'African grey, African gray, Psittacus erithacus',
+    89: 'macaw',
+    90: 'sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita',
+    91: 'lorikeet',
+    92: 'coucal',
+    93: 'bee eater',
+    94: 'hornbill',
+    95: 'hummingbird',
+    96: 'jacamar',
+    97: 'toucan',
+    98: 'drake',
+    99: 'red-breasted merganser, Mergus serrator',
+    100: 'goose',
+    101: 'black swan, Cygnus atratus',
+    102: 'tusker',
+    103: 'echidna, spiny anteater, anteater',
+    104: 'platypus, duckbill, duckbilled platypus, duck-billed platypus,' + ' Ornithorhynchus anatinus',
+    105: 'wallaby, brush kangaroo',
+    106: 'koala, koala bear, kangaroo bear, native bear, Phascolarctos cinereus',
+    107: 'wombat',
+    108: 'jelly fish',
+    109: 'sea anemone, anemone',
+    110: 'brain coral',
+    111: 'flatworm, platyhelminth',
+    112: 'nematode, nematode worm, roundworm',
+    113: 'conch',
+    114: 'snail',
+    115: 'slug',
+    116: 'sea slug, nudibranch',
+    117: 'chiton, coat-of-mail shell, sea cradle, polyplacophore',
+    118: 'chambered nautilus, pearly nautilus, nautilus',
+    119: 'Dungeness crab, Cancer magister',
+    120: 'rock crab, Cancer irroratus',
+    121: 'fiddler crab',
+    122: 'king crab, Alaska crab, Alaskan king crab, Alaska king crab,' + ' Paralithodes camtschatica',
+    123: 'American lobster, Northern lobster, Maine lobster, Homarus americanus',
+    124: 'spiny lobster, langouste, rock lobster, crawfish, crayfish,' + ' sea crawfish',
+    125: 'crayfish, crawfish, crawdad, crawdaddy',
+    126: 'hermit crab',
+    127: 'isopod',
+    128: 'white stork, Ciconia ciconia',
+    129: 'black stork, Ciconia nigra',
+    130: 'spoonbill',
+    131: 'flamingo',
+    132: 'little blue heron, Egretta caerulea',
+    133: 'American egret, great white heron, Egretta albus',
+    134: 'bittern',
+    135: 'crane',
+    136: 'limpkin, Aramus pictus',
+    137: 'European gallinule, Porphyrio porphyrio',
+    138: 'American coot, marsh hen, mud hen, water hen, Fulica americana',
+    139: 'bustard',
+    140: 'ruddy turnstone, Arenaria interpres',
+    141: 'red-backed sandpiper, dunlin, Erolia alpina',
+    142: 'redshank, Tringa totanus',
+    143: 'dowitcher',
+    144: 'oystercatcher, oyster catcher',
+    145: 'pelican',
+    146: 'king penguin, Aptenodytes patagonica',
+    147: 'albatross, mollymawk',
+    148: 'grey whale, gray whale, devilfish, Eschrichtius gibbosus,' + ' Eschrichtius robustus',
+    149: 'killer whale, killer, orca, grampus, sea wolf, Orcinus orca',
+    150: 'dugong, Dugong dugon',
+    151: 'sea lion',
+    152: 'Chihuahua',
+    153: 'Japanese spaniel',
+    154: 'Maltese dog, Maltese terrier, Maltese',
+    155: 'Pekinese, Pekingese, Peke',
+    156: 'Shih-Tzu',
+    157: 'Blenheim spaniel',
+    158: 'papillon',
+    159: 'toy terrier',
+    160: 'Rhodesian ridgeback',
+    161: 'Afghan hound, Afghan',
+    162: 'basset, basset hound',
+    163: 'beagle',
+    164: 'bloodhound, sleuthhound',
+    165: 'bluetick',
+    166: 'black-and-tan coonhound',
+    167: 'Walker hound, Walker foxhound',
+    168: 'English foxhound',
+    169: 'redbone',
+    170: 'borzoi, Russian wolfhound',
+    171: 'Irish wolfhound',
+    172: 'Italian greyhound',
+    173: 'whippet',
+    174: 'Ibizan hound, Ibizan Podenco',
+    175: 'Norwegian elkhound, elkhound',
+    176: 'otterhound, otter hound',
+    177: 'Saluki, gazelle hound',
+    178: 'Scottish deerhound, deerhound',
+    179: 'Weimaraner',
+    180: 'Staffordshire bullterrier, Staffordshire bull terrier',
+    181: 'American Staffordshire terrier, Staffordshire terrier,' + ' American pit bull terrier, pit bull terrier',
+    182: 'Bedlington terrier',
+    183: 'Border terrier',
+    184: 'Kerry blue terrier',
+    185: 'Irish terrier',
+    186: 'Norfolk terrier',
+    187: 'Norwich terrier',
+    188: 'Yorkshire terrier',
+    189: 'wire-haired fox terrier',
+    190: 'Lakeland terrier',
+    191: 'Sealyham terrier, Sealyham',
+    192: 'Airedale, Airedale terrier',
+    193: 'cairn, cairn terrier',
+    194: 'Australian terrier',
+    195: 'Dandie Dinmont, Dandie Dinmont terrier',
+    196: 'Boston bull, Boston terrier',
+    197: 'miniature schnauzer',
+    198: 'giant schnauzer',
+    199: 'standard schnauzer',
+    200: 'Scotch terrier, Scottish terrier, Scottie',
+    201: 'Tibetan terrier, chrysanthemum dog',
+    202: 'silky terrier, Sydney silky',
+    203: 'soft-coated wheaten terrier',
+    204: 'West Highland white terrier',
+    205: 'Lhasa, Lhasa apso',
+    206: 'flat-coated retriever',
+    207: 'curly-coated retriever',
+    208: 'golden retriever',
+    209: 'Labrador retriever',
+    210: 'Chesapeake Bay retriever',
+    211: 'German short-haired pointer',
+    212: 'vizsla, Hungarian pointer',
+    213: 'English setter',
+    214: 'Irish setter, red setter',
+    215: 'Gordon setter',
+    216: 'Brittany spaniel',
+    217: 'clumber, clumber spaniel',
+    218: 'English springer, English springer spaniel',
+    219: 'Welsh springer spaniel',
+    220: 'cocker spaniel, English cocker spaniel, cocker',
+    221: 'Sussex spaniel',
+    222: 'Irish water spaniel',
+    223: 'kuvasz',
+    224: 'schipperke',
+    225: 'groenendael',
+    226: 'malinois',
+    227: 'briard',
+    228: 'kelpie',
+    229: 'komondor',
+    230: 'Old English sheepdog, bobtail',
+    231: 'Shetland sheepdog, Shetland sheep dog, Shetland',
+    232: 'collie',
+    233: 'Border collie',
+    234: 'Bouvier des Flandres, Bouviers des Flandres',
+    235: 'Rottweiler',
+    236: 'German shepherd, German shepherd dog, German police dog, alsatian',
+    237: 'Doberman, Doberman pinscher',
+    238: 'miniature pinscher',
+    239: 'Greater Swiss Mountain dog',
+    240: 'Bernese mountain dog',
+    241: 'Appenzeller',
+    242: 'EntleBucher',
+    243: 'boxer',
+    244: 'bull mastiff',
+    245: 'Tibetan mastiff',
+    246: 'French bulldog',
+    247: 'Great Dane',
+    248: 'Saint Bernard, St Bernard',
+    249: 'Eskimo dog, husky',
+    250: 'malamute, malemute, Alaskan malamute',
+    251: 'Siberian husky',
+    252: 'dalmatian, coach dog, carriage dog',
+    253: 'affenpinscher, monkey pinscher, monkey dog',
+    254: 'basenji',
+    255: 'pug, pug-dog',
+    256: 'Leonberg',
+    257: 'Newfoundland, Newfoundland dog',
+    258: 'Great Pyrenees',
+    259: 'Samoyed, Samoyede',
+    260: 'Pomeranian',
+    261: 'chow, chow chow',
+    262: 'keeshond',
+    263: 'Brabancon griffon',
+    264: 'Pembroke, Pembroke Welsh corgi',
+    265: 'Cardigan, Cardigan Welsh corgi',
+    266: 'toy poodle',
+    267: 'miniature poodle',
+    268: 'standard poodle',
+    269: 'Mexican hairless',
+    270: 'timber wolf, grey wolf, gray wolf, Canis lupus',
+    271: 'white wolf, Arctic wolf, Canis lupus tundrarum',
+    272: 'red wolf, maned wolf, Canis rufus, Canis niger',
+    273: 'coyote, prairie wolf, brush wolf, Canis latrans',
+    274: 'dingo, warrigal, warragal, Canis dingo',
+    275: 'dhole, Cuon alpinus',
+    276: 'African hunting dog, hyena dog, Cape hunting dog, Lycaon pictus',
+    277: 'hyena, hyaena',
+    278: 'red fox, Vulpes vulpes',
+    279: 'kit fox, Vulpes macrotis',
+    280: 'Arctic fox, white fox, Alopex lagopus',
+    281: 'grey fox, gray fox, Urocyon cinereoargenteus',
+    282: 'tabby, tabby cat',
+    283: 'tiger cat',
+    284: 'Persian cat',
+    285: 'Siamese cat, Siamese',
+    286: 'Egyptian cat',
+    287: 'cougar, puma, catamount, mountain lion, painter, panther,' + ' Felis concolor',
+    288: 'lynx, catamount',
+    289: 'leopard, Panthera pardus',
+    290: 'snow leopard, ounce, Panthera uncia',
+    291: 'jaguar, panther, Panthera onca, Felis onca',
+    292: 'lion, king of beasts, Panthera leo',
+    293: 'tiger, Panthera tigris',
+    294: 'cheetah, chetah, Acinonyx jubatus',
+    295: 'brown bear, bruin, Ursus arctos',
+    296: 'American black bear, black bear, Ursus americanus,' + ' Euarctos americanus',
+    297: 'ice bear, polar bear, Ursus Maritimus, Thalarctos maritimus',
+    298: 'sloth bear, Melursus ursinus, Ursus ursinus',
+    299: 'mongoose',
+    300: 'meerkat, mierkat',
+    301: 'tiger beetle',
+    302: 'ladybug, ladybeetle, lady beetle, ladybird, ladybird beetle',
+    303: 'ground beetle, carabid beetle',
+    304: 'long-horned beetle, longicorn, longicorn beetle',
+    305: 'leaf beetle, chrysomelid',
+    306: 'dung beetle',
+    307: 'rhinoceros beetle',
+    308: 'weevil',
+    309: 'fly',
+    310: 'bee',
+    311: 'ant, emmet, pismire',
+    312: 'grasshopper, hopper',
+    313: 'cricket',
+    314: 'walking stick, walkingstick, stick insect',
+    315: 'cockroach, roach',
+    316: 'mantis, mantid',
+    317: 'cicada, cicala',
+    318: 'leafhopper',
+    319: 'lacewing, lacewing fly',
+    320: "dragonfly, darning needle, devil's darning needle, sewing" + "needle, snake feeder, snake doctor, mosquito hawk, skeeter hawk",
+    321: 'damselfly',
+    322: 'admiral',
+    323: 'ringlet, ringlet butterfly',
+    324: 'monarch, monarch butterfly, milkweed butterfly, Danaus plexippus',
+    325: 'cabbage butterfly',
+    326: 'sulphur butterfly, sulfur butterfly',
+    327: 'lycaenid, lycaenid butterfly',
+    328: 'starfish, sea star',
+    329: 'sea urchin',
+    330: 'sea cucumber, holothurian',
+    331: 'wood rabbit, cottontail, cottontail rabbit',
+    332: 'hare',
+    333: 'Angora, Angora rabbit',
+    334: 'hamster',
+    335: 'porcupine, hedgehog',
+    336: 'fox squirrel, eastern fox squirrel, Sciurus niger',
+    337: 'marmot',
+    338: 'beaver',
+    339: 'guinea pig, Cavia cobaya',
+    340: 'sorrel',
+    341: 'zebra',
+    342: 'hog, pig, grunter, squealer, Sus scrofa',
+    343: 'wild boar, boar, Sus scrofa',
+    344: 'warthog',
+    345: 'hippopotamus, hippo, river horse, Hippopotamus amphibius',
+    346: 'ox',
+    347: 'water buffalo, water ox, Asiatic buffalo, Bubalus bubalis',
+    348: 'bison',
+    349: 'ram, tup',
+    350: 'bighorn, bighorn sheep, cimarron, Rocky Mountain bighorn, Rocky ' + 'Mountain sheep, Ovis canadensis',
+    351: 'ibex, Capra ibex',
+    352: 'hartebeest',
+    353: 'impala, Aepyceros melampus',
+    354: 'gazelle',
+    355: 'Arabian camel, dromedary, Camelus dromedarius',
+    356: 'llama',
+    357: 'weasel',
+    358: 'mink',
+    359: 'polecat, fitch, foulmart, foumart, Mustela putorius',
+    360: 'black-footed ferret, ferret, Mustela nigripes',
+    361: 'otter',
+    362: 'skunk, polecat, wood pussy',
+    363: 'badger',
+    364: 'armadillo',
+    365: 'three-toed sloth, ai, Bradypus tridactylus',
+    366: 'orangutan, orang, orangutang, Pongo pygmaeus',
+    367: 'gorilla, Gorilla gorilla',
+    368: 'chimpanzee, chimp, Pan troglodytes',
+    369: 'gibbon, Hylobates lar',
+    370: 'siamang, Hylobates syndactylus, Symphalangus syndactylus',
+    371: 'guenon, guenon monkey',
+    372: 'patas, hussar monkey, Erythrocebus patas',
+    373: 'baboon',
+    374: 'macaque',
+    375: 'langur',
+    376: 'colobus, colobus monkey',
+    377: 'proboscis monkey, Nasalis larvatus',
+    378: 'marmoset',
+    379: 'capuchin, ringtail, Cebus capucinus',
+    380: 'howler monkey, howler',
+    381: 'titi, titi monkey',
+    382: 'spider monkey, Ateles geoffroyi',
+    383: 'squirrel monkey, Saimiri sciureus',
+    384: 'Madagascar cat, ring-tailed lemur, Lemur catta',
+    385: 'indri, indris, Indri indri, Indri brevicaudatus',
+    386: 'Indian elephant, Elephas maximus',
+    387: 'African elephant, Loxodonta africana',
+    388: 'lesser panda, red panda, panda, bear cat, cat bear, Ailurus fulgens',
+    389: 'giant panda, panda, panda bear, coon bear, Ailuropoda melanoleuca',
+    390: 'barracouta, snoek',
+    391: 'eel',
+    392: 'coho, cohoe, coho salmon, blue jack, silver salmon, ' + 'Oncorhynchus kisutch',
+    393: 'rock beauty, Holocanthus tricolor',
+    394: 'anemone fish',
+    395: 'sturgeon',
+    396: 'gar, garfish, garpike, billfish, Lepisosteus osseus',
+    397: 'lionfish',
+    398: 'puffer, pufferfish, blowfish, globefish',
+    399: 'abacus',
+    400: 'abaya',
+    401: "academic gown, academic robe, judge's robe",
+    402: 'accordion, piano accordion, squeeze box',
+    403: 'acoustic guitar',
+    404: 'aircraft carrier, carrier, flattop, attack aircraft carrier',
+    405: 'airliner',
+    406: 'airship, dirigible',
+    407: 'altar',
+    408: 'ambulance',
+    409: 'amphibian, amphibious vehicle',
+    410: 'analog clock',
+    411: 'apiary, bee house',
+    412: 'apron',
+    413: 'ashcan, trash can, garbage can, wastebin, ash bin, ash-bin,' + ' ashbin, dustbin, trash barrel, trash bin',
+    414: 'assault rifle, assault gun',
+    415: 'backpack, back pack, knapsack, packsack, rucksack, haversack',
+    416: 'bakery, bakeshop, bakehouse',
+    417: 'balance beam, beam',
+    418: 'balloon',
+    419: 'ballpoint, ballpoint pen, ballpen, Biro',
+    420: 'Band Aid',
+    421: 'banjo',
+    422: 'bannister, banister, balustrade, balusters, handrail',
+    423: 'barbell',
+    424: 'barber chair',
+    425: 'barbershop',
+    426: 'barn',
+    427: 'barometer',
+    428: 'barrel, cask',
+    429: 'barrow, garden cart, lawn cart, wheelbarrow',
+    430: 'baseball',
+    431: 'basketball',
+    432: 'bassinet',
+    433: 'bassoon',
+    434: 'bathing cap, swimming cap',
+    435: 'bath towel',
+    436: 'bathtub, bathing tub, bath, tub',
+    437: 'beach wagon, station wagon, wagon, estate car, beach waggon,' + ' station waggon, waggon',
+    438: 'beacon, lighthouse, beacon light, pharos',
+    439: 'beaker',
+    440: 'bearskin, busby, shako',
+    441: 'beer bottle',
+    442: 'beer glass',
+    443: 'bell cote, bell cot',
+    444: 'bib',
+    445: 'bicycle-built-for-two, tandem bicycle, tandem',
+    446: 'bikini, two-piece',
+    447: 'binder, ring-binder',
+    448: 'binoculars, field glasses, opera glasses',
+    449: 'birdhouse',
+    450: 'boathouse',
+    451: 'bobsled, bobsleigh, bob',
+    452: 'bolo tie, bolo, bola tie, bola',
+    453: 'bonnet, poke bonnet',
+    454: 'bookcase',
+    455: 'bookshop, bookstore, bookstall',
+    456: 'bottlecap',
+    457: 'bow',
+    458: 'bow tie, bow-tie, bowtie',
+    459: 'brass, memorial tablet, plaque',
+    460: 'brassiere, bra, bandeau',
+    461: 'breakwater, groin, groyne, mole, bulwark, seawall, jetty',
+    462: 'breastplate, aegis, egis',
+    463: 'broom',
+    464: 'bucket, pail',
+    465: 'buckle',
+    466: 'bulletproof vest',
+    467: 'bullet train, bullet',
+    468: 'butcher shop, meat market',
+    469: 'cab, hack, taxi, taxicab',
+    470: 'caldron, cauldron',
+    471: 'candle, taper, wax light',
+    472: 'cannon',
+    473: 'canoe',
+    474: 'can opener, tin opener',
+    475: 'cardigan',
+    476: 'car mirror',
+    477: 'carousel, carrousel, merry-go-round, roundabout, whirligig',
+    478: "carpenter's kit, tool kit",
+    479: 'carton',
+    480: 'car wheel',
+    481: 'cash machine, cash dispenser, automated teller machine, automatic' + ' teller machine, automated teller, automatic teller, ATM',
+    482: 'cassette',
+    483: 'cassette player',
+    484: 'castle',
+    485: 'catamaran',
+    486: 'CD player',
+    487: 'cello, violoncello',
+    488: 'cellular telephone, cellular phone, cellphone, cell, mobile phone',
+    489: 'chain',
+    490: 'chainlink fence',
+    491: 'chain mail, ring mail, mail, chain armor, chain armour,' + ' ring armor, ring armour',
+    492: 'chain saw, chainsaw',
+    493: 'chest',
+    494: 'chiffonier, commode',
+    495: 'chime, bell, gong',
+    496: 'china cabinet, china closet',
+    497: 'Christmas stocking',
+    498: 'church, church building',
+    499: 'cinema, movie theater, movie theatre, movie house, picture palace',
+    500: 'cleaver, meat cleaver, chopper',
+    501: 'cliff dwelling',
+    502: 'cloak',
+    503: 'clog, geta, patten, sabot',
+    504: 'cocktail shaker',
+    505: 'coffee mug',
+    506: 'coffeepot',
+    507: 'coil, spiral, volute, whorl, helix',
+    508: 'combination lock',
+    509: 'computer keyboard, keypad',
+    510: 'confectionery, confectionary, candy store',
+    511: 'container ship, containership, container vessel',
+    512: 'convertible',
+    513: 'corkscrew, bottle screw',
+    514: 'cornet, horn, trumpet, trump',
+    515: 'cowboy boot',
+    516: 'cowboy hat, ten-gallon hat',
+    517: 'cradle',
+    518: 'crane',
+    519: 'crash helmet',
+    520: 'crate',
+    521: 'crib, cot',
+    522: 'Crock Pot',
+    523: 'croquet ball',
+    524: 'crutch',
+    525: 'cuirass',
+    526: 'dam, dike, dyke',
+    527: 'desk',
+    528: 'desktop computer',
+    529: 'dial telephone, dial phone',
+    530: 'diaper, nappy, napkin',
+    531: 'digital clock',
+    532: 'digital watch',
+    533: 'dining table, board',
+    534: 'dishrag, dishcloth',
+    535: 'dishwasher, dish washer, dishwashing machine',
+    536: 'disk brake, disc brake',
+    537: 'dock, dockage, docking facility',
+    538: 'dogsled, dog sled, dog sleigh',
+    539: 'dome',
+    540: 'doormat, welcome mat',
+    541: 'drilling platform, offshore rig',
+    542: 'drum, membranophone, tympan',
+    543: 'drumstick',
+    544: 'dumbbell',
+    545: 'Dutch oven',
+    546: 'electric fan, blower',
+    547: 'electric guitar',
+    548: 'electric locomotive',
+    549: 'entertainment center',
+    550: 'envelope',
+    551: 'espresso maker',
+    552: 'face powder',
+    553: 'feather boa, boa',
+    554: 'file, file cabinet, filing cabinet',
+    555: 'fireboat',
+    556: 'fire engine, fire truck',
+    557: 'fire screen, fireguard',
+    558: 'flagpole, flagstaff',
+    559: 'flute, transverse flute',
+    560: 'folding chair',
+    561: 'football helmet',
+    562: 'forklift',
+    563: 'fountain',
+    564: 'fountain pen',
+    565: 'four-poster',
+    566: 'freight car',
+    567: 'French horn, horn',
+    568: 'frying pan, frypan, skillet',
+    569: 'fur coat',
+    570: 'garbage truck, dustcart',
+    571: 'gasmask, respirator, gas helmet',
+    572: 'gas pump, gasoline pump, petrol pump, island dispenser',
+    573: 'goblet',
+    574: 'go-kart',
+    575: 'golf ball',
+    576: 'golfcart, golf cart',
+    577: 'gondola',
+    578: 'gong, tam-tam',
+    579: 'gown',
+    580: 'grand piano, grand',
+    581: 'greenhouse, nursery, glasshouse',
+    582: 'grille, radiator grille',
+    583: 'grocery store, grocery, food market, market',
+    584: 'guillotine',
+    585: 'hair slide',
+    586: 'hair spray',
+    587: 'half track',
+    588: 'hammer',
+    589: 'hamper',
+    590: 'hand blower, blow dryer, blow drier, hair dryer, hair drier',
+    591: 'hand-held computer, hand-held microcomputer',
+    592: 'handkerchief, hankie, hanky, hankey',
+    593: 'hard disc, hard disk, fixed disk',
+    594: 'harmonica, mouth organ, harp, mouth harp',
+    595: 'harp',
+    596: 'harvester, reaper',
+    597: 'hatchet',
+    598: 'holster',
+    599: 'home theater, home theatre',
+    600: 'honeycomb',
+    601: 'hook, claw',
+    602: 'hoopskirt, crinoline',
+    603: 'horizontal bar, high bar',
+    604: 'horse cart, horse-cart',
+    605: 'hourglass',
+    606: 'iPod',
+    607: 'iron, smoothing iron',
+    608: "jack-o'-lantern",
+    609: 'jean, blue jean, denim',
+    610: 'jeep, landrover',
+    611: 'jersey, T-shirt, tee shirt',
+    612: 'jigsaw puzzle',
+    613: 'jinrikisha, ricksha, rickshaw',
+    614: 'joystick',
+    615: 'kimono',
+    616: 'knee pad',
+    617: 'knot',
+    618: 'lab coat, laboratory coat',
+    619: 'ladle',
+    620: 'lampshade, lamp shade',
+    621: 'laptop, laptop computer',
+    622: 'lawn mower, mower',
+    623: 'lens cap, lens cover',
+    624: 'letter opener, paper knife, paperknife',
+    625: 'library',
+    626: 'lifeboat',
+    627: 'lighter, light, igniter, ignitor',
+    628: 'limousine, limo',
+    629: 'liner, ocean liner',
+    630: 'lipstick, lip rouge',
+    631: 'Loafer',
+    632: 'lotion',
+    633: 'loudspeaker, speaker, speaker unit, loudspeaker system, ' + 'speaker system',
+    634: "loupe, jeweler's loupe",
+    635: 'lumbermill, sawmill',
+    636: 'magnetic compass',
+    637: 'mailbag, postbag',
+    638: 'mailbox, letter box',
+    639: 'maillot',
+    640: 'maillot, tank suit',
+    641: 'manhole cover',
+    642: 'maraca',
+    643: 'marimba, xylophone',
+    644: 'mask',
+    645: 'matchstick',
+    646: 'maypole',
+    647: 'maze, labyrinth',
+    648: 'measuring cup',
+    649: 'medicine chest, medicine cabinet',
+    650: 'megalith, megalithic structure',
+    651: 'microphone, mike',
+    652: 'microwave, microwave oven',
+    653: 'military uniform',
+    654: 'milk can',
+    655: 'minibus',
+    656: 'miniskirt, mini',
+    657: 'minivan',
+    658: 'missile',
+    659: 'mitten',
+    660: 'mixing bowl',
+    661: 'mobile home, manufactured home',
+    662: 'Model T',
+    663: 'modem',
+    664: 'monastery',
+    665: 'monitor',
+    666: 'moped',
+    667: 'mortar',
+    668: 'mortarboard',
+    669: 'mosque',
+    670: 'mosquito net',
+    671: 'motor scooter, scooter',
+    672: 'mountain bike, all-terrain bike, off-roader',
+    673: 'mountain tent',
+    674: 'mouse, computer mouse',
+    675: 'mousetrap',
+    676: 'moving van',
+    677: 'muzzle',
+    678: 'nail',
+    679: 'neck brace',
+    680: 'necklace',
+    681: 'nipple',
+    682: 'notebook, notebook computer',
+    683: 'obelisk',
+    684: 'oboe, hautboy, hautbois',
+    685: 'ocarina, sweet potato',
+    686: 'odometer, hodometer, mileometer, milometer',
+    687: 'oil filter',
+    688: 'organ, pipe organ',
+    689: 'oscilloscope, scope, cathode-ray oscilloscope, CRO',
+    690: 'overskirt',
+    691: 'oxcart',
+    692: 'oxygen mask',
+    693: 'packet',
+    694: 'paddle, boat paddle',
+    695: 'paddlewheel, paddle wheel',
+    696: 'padlock',
+    697: 'paintbrush',
+    698: "pajama, pyjama, pj's, jammies",
+    699: 'palace',
+    700: 'panpipe, pandean pipe, syrinx',
+    701: 'paper towel',
+    702: 'parachute, chute',
+    703: 'parallel bars, bars',
+    704: 'park bench',
+    705: 'parking meter',
+    706: 'passenger car, coach, carriage',
+    707: 'patio, terrace',
+    708: 'pay-phone, pay-station',
+    709: 'pedestal, plinth, footstall',
+    710: 'pencil box, pencil case',
+    711: 'pencil sharpener',
+    712: 'perfume, essence',
+    713: 'Petri dish',
+    714: 'photocopier',
+    715: 'pick, plectrum, plectron',
+    716: 'pickelhaube',
+    717: 'picket fence, paling',
+    718: 'pickup, pickup truck',
+    719: 'pier',
+    720: 'piggy bank, penny bank',
+    721: 'pill bottle',
+    722: 'pillow',
+    723: 'ping-pong ball',
+    724: 'pinwheel',
+    725: 'pirate, pirate ship',
+    726: 'pitcher, ewer',
+    727: "plane, carpenter's plane, woodworking plane",
+    728: 'planetarium',
+    729: 'plastic bag',
+    730: 'plate rack',
+    731: 'plow, plough',
+    732: "plunger, plumber's helper",
+    733: 'Polaroid camera, Polaroid Land camera',
+    734: 'pole',
+    735: 'police van, police wagon, paddy wagon, patrol wagon, wagon,' + ' black Maria',
+    736: 'poncho',
+    737: 'pool table, billiard table, snooker table',
+    738: 'pop bottle, soda bottle',
+    739: 'pot, flowerpot',
+    740: "potter's wheel",
+    741: 'power drill',
+    742: 'prayer rug, prayer mat',
+    743: 'printer',
+    744: 'prison, prison house',
+    745: 'projectile, missile',
+    746: 'projector',
+    747: 'puck, hockey puck',
+    748: 'punching bag, punch bag, punching ball, punchball',
+    749: 'purse',
+    750: 'quill, quill pen',
+    751: 'quilt, comforter, comfort, puff',
+    752: 'racer, race car, racing car',
+    753: 'racket, racquet',
+    754: 'radiator',
+    755: 'radio, wireless',
+    756: 'radio telescope, radio reflector',
+    757: 'rain barrel',
+    758: 'recreational vehicle, RV, R.V.',
+    759: 'reel',
+    760: 'reflex camera',
+    761: 'refrigerator, icebox',
+    762: 'remote control, remote',
+    763: 'restaurant, eating house, eating place, eatery',
+    764: 'revolver, six-gun, six-shooter',
+    765: 'rifle',
+    766: 'rocking chair, rocker',
+    767: 'rotisserie',
+    768: 'rubber eraser, rubber, pencil eraser',
+    769: 'rugby ball',
+    770: 'rule, ruler',
+    771: 'running shoe',
+    772: 'safe',
+    773: 'safety pin',
+    774: 'saltshaker, salt shaker',
+    775: 'sandal',
+    776: 'sarong',
+    777: 'sax, saxophone',
+    778: 'scabbard',
+    779: 'scale, weighing machine',
+    780: 'school bus',
+    781: 'schooner',
+    782: 'scoreboard',
+    783: 'screen, CRT screen',
+    784: 'screw',
+    785: 'screwdriver',
+    786: 'seat belt, seatbelt',
+    787: 'sewing machine',
+    788: 'shield, buckler',
+    789: 'shoe shop, shoe-shop, shoe store',
+    790: 'shoji',
+    791: 'shopping basket',
+    792: 'shopping cart',
+    793: 'shovel',
+    794: 'shower cap',
+    795: 'shower curtain',
+    796: 'ski',
+    797: 'ski mask',
+    798: 'sleeping bag',
+    799: 'slide rule, slipstick',
+    800: 'sliding door',
+    801: 'slot, one-armed bandit',
+    802: 'snorkel',
+    803: 'snowmobile',
+    804: 'snowplow, snowplough',
+    805: 'soap dispenser',
+    806: 'soccer ball',
+    807: 'sock',
+    808: 'solar dish, solar collector, solar furnace',
+    809: 'sombrero',
+    810: 'soup bowl',
+    811: 'space bar',
+    812: 'space heater',
+    813: 'space shuttle',
+    814: 'spatula',
+    815: 'speedboat',
+    816: "spider web, spider's web",
+    817: 'spindle',
+    818: 'sports car, sport car',
+    819: 'spotlight, spot',
+    820: 'stage',
+    821: 'steam locomotive',
+    822: 'steel arch bridge',
+    823: 'steel drum',
+    824: 'stethoscope',
+    825: 'stole',
+    826: 'stone wall',
+    827: 'stopwatch, stop watch',
+    828: 'stove',
+    829: 'strainer',
+    830: 'streetcar, tram, tramcar, trolley, trolley car',
+    831: 'stretcher',
+    832: 'studio couch, day bed',
+    833: 'stupa, tope',
+    834: 'submarine, pigboat, sub, U-boat',
+    835: 'suit, suit of clothes',
+    836: 'sundial',
+    837: 'sunglass',
+    838: 'sunglasses, dark glasses, shades',
+    839: 'sunscreen, sunblock, sun blocker',
+    840: 'suspension bridge',
+    841: 'swab, swob, mop',
+    842: 'sweatshirt',
+    843: 'swimming trunks, bathing trunks',
+    844: 'swing',
+    845: 'switch, electric switch, electrical switch',
+    846: 'syringe',
+    847: 'table lamp',
+    848: 'tank, army tank, armored combat vehicle, armoured combat vehicle',
+    849: 'tape player',
+    850: 'teapot',
+    851: 'teddy, teddy bear',
+    852: 'television, television system',
+    853: 'tennis ball',
+    854: 'thatch, thatched roof',
+    855: 'theater curtain, theatre curtain',
+    856: 'thimble',
+    857: 'thresher, thrasher, threshing machine',
+    858: 'throne',
+    859: 'tile roof',
+    860: 'toaster',
+    861: 'tobacco shop, tobacconist shop, tobacconist',
+    862: 'toilet seat',
+    863: 'torch',
+    864: 'totem pole',
+    865: 'tow truck, tow car, wrecker',
+    866: 'toyshop',
+    867: 'tractor',
+    868: 'trailer truck, tractor trailer, trucking rig, rig,' + ' articulated lorry, semi',
+    869: 'tray',
+    870: 'trench coat',
+    871: 'tricycle, trike, velocipede',
+    872: 'trimaran',
+    873: 'tripod',
+    874: 'triumphal arch',
+    875: 'trolleybus, trolley coach, trackless trolley',
+    876: 'trombone',
+    877: 'tub, vat',
+    878: 'turnstile',
+    879: 'typewriter keyboard',
+    880: 'umbrella',
+    881: 'unicycle, monocycle',
+    882: 'upright, upright piano',
+    883: 'vacuum, vacuum cleaner',
+    884: 'vase',
+    885: 'vault',
+    886: 'velvet',
+    887: 'vending machine',
+    888: 'vestment',
+    889: 'viaduct',
+    890: 'violin, fiddle',
+    891: 'volleyball',
+    892: 'waffle iron',
+    893: 'wall clock',
+    894: 'wallet, billfold, notecase, pocketbook',
+    895: 'wardrobe, closet, press',
+    896: 'warplane, military plane',
+    897: 'washbasin, handbasin, washbowl, lavabo, wash-hand basin',
+    898: 'washer, automatic washer, washing machine',
+    899: 'water bottle',
+    900: 'water jug',
+    901: 'water tower',
+    902: 'whiskey jug',
+    903: 'whistle',
+    904: 'wig',
+    905: 'window screen',
+    906: 'window shade',
+    907: 'Windsor tie',
+    908: 'wine bottle',
+    909: 'wing',
+    910: 'wok',
+    911: 'wooden spoon',
+    912: 'wool, woolen, woollen',
+    913: 'worm fence, snake fence, snake-rail fence, Virginia fence',
+    914: 'wreck',
+    915: 'yawl',
+    916: 'yurt',
+    917: 'web site, website, internet site, site',
+    918: 'comic book',
+    919: 'crossword puzzle, crossword',
+    920: 'street sign',
+    921: 'traffic light, traffic signal, stoplight',
+    922: 'book jacket, dust cover, dust jacket, dust wrapper',
+    923: 'menu',
+    924: 'plate',
+    925: 'guacamole',
+    926: 'consomme',
+    927: 'hot pot, hotpot',
+    928: 'trifle',
+    929: 'ice cream, icecream',
+    930: 'ice lolly, lolly, lollipop, popsicle',
+    931: 'French loaf',
+    932: 'bagel, beigel',
+    933: 'pretzel',
+    934: 'cheeseburger',
+    935: 'hotdog, hot dog, red hot',
+    936: 'mashed potato',
+    937: 'head cabbage',
+    938: 'broccoli',
+    939: 'cauliflower',
+    940: 'zucchini, courgette',
+    941: 'spaghetti squash',
+    942: 'acorn squash',
+    943: 'butternut squash',
+    944: 'cucumber, cuke',
+    945: 'artichoke, globe artichoke',
+    946: 'bell pepper',
+    947: 'cardoon',
+    948: 'mushroom',
+    949: 'Granny Smith',
+    950: 'strawberry',
+    951: 'orange',
+    952: 'lemon',
+    953: 'fig',
+    954: 'pineapple, ananas',
+    955: 'banana',
+    956: 'jackfruit, jak, jack',
+    957: 'custard apple',
+    958: 'pomegranate',
+    959: 'hay',
+    960: 'carbonara',
+    961: 'chocolate sauce, chocolate syrup',
+    962: 'dough',
+    963: 'meat loaf, meatloaf',
+    964: 'pizza, pizza pie',
+    965: 'potpie',
+    966: 'burrito',
+    967: 'red wine',
+    968: 'espresso',
+    969: 'cup',
+    970: 'eggnog',
+    971: 'alp',
+    972: 'bubble',
+    973: 'cliff, drop, drop-off',
+    974: 'coral reef',
+    975: 'geyser',
+    976: 'lakeside, lakeshore',
+    977: 'promontory, headland, head, foreland',
+    978: 'sandbar, sand bar',
+    979: 'seashore, coast, seacoast, sea-coast',
+    980: 'valley, vale',
+    981: 'volcano',
+    982: 'ballplayer, baseball player',
+    983: 'groom, bridegroom',
+    984: 'scuba diver',
+    985: 'rapeseed',
+    986: 'daisy',
+    987: "yellow lady's slipper, yellow lady-slipper, Cypripedium" + " calceolus, Cypripedium parviflorum",
+    988: 'corn',
+    989: 'acorn',
+    990: 'hip, rose hip, rosehip',
+    991: 'buckeye, horse chestnut, conker',
+    992: 'coral fungus',
+    993: 'agaric',
+    994: 'gyromitra',
+    995: 'stinkhorn, carrion fungus',
+    996: 'earthstar',
+    997: 'hen-of-the-woods, hen of the woods, Polyporus' + ' frondosus, Grifola frondosa',
+    998: 'bolete',
+    999: 'ear, spike, capitulum',
+    1000: 'toilet tissue, toilet paper, bathroom tissue'
+};
+
+/***/ }),
+/* 452 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
