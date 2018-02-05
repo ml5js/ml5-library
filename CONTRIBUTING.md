@@ -161,7 +161,7 @@ If you just want to check if all tests are passing:
 npm run test
 ```
 
-## ML5 Website
+## ML5 Website
 
 The [ML5 website](https://itpnyu.github.io/p5-deeplearn-js/) is built with [Docusaurus](https://docusaurus.io/).
 
