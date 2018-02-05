@@ -8,21 +8,23 @@ If you want to help develop this library, here are the steps to get started with
 
 1. Fork the repository to your account, and then clone it your computer:
 ```bash
-git clone https://github.com/YOURGITHUBHANDLE/p5-deeplearn-js.git
+git clone https://github.com/YOURGITHUBHANDLE/ML5.git
 ```
 
 2. Install dependencies:
 
 ```bash
-cd p5-deeplearn-js
+cd ML5
 npm install
 ```
 
 3. This project is developed using [webpack](https://webpack.js.org/). Webpack is a module bundler that allows to "bundle" different files into one file. This allows you to write files for specific things and then mix them all together into one single file that you can import in your page. 
 
-  Under the `/src` folder you will see that there are sub-folders for all p5ML methods. You can edit each file individually and then `build` everything into one single library.
+  Under the `/src` folder you will see that there are sub-folders for all ML5 methods. You can edit each file individually and then `build` everything into one single library.
 
-  Before `building` the library you can test it. Running this command from the root of the project: 
+  Before `building` the library you can see if everything is working.
+  
+  Run this command from the root of the project: 
   ```bash
   npm run start:dev
   ```
@@ -58,9 +60,11 @@ npm install
   webpack: Compiled successfully.
   ```
 
-  This means the project is actively being 'build' when you change any of the files in the `/src` folder. Any change you make to any file in the `/src` folder will rebuild the `p5ml.js` and the `p5ml.min.js` libraries. 
+  This means the project is actively being 'build' when you change any of the files in the `/src` folder. Any change you make to any file in the `/src` folder will rebuild the `ml5.js` and the `ml5.min.js` libraries. 
 
-4. Test it! Create a new folder called `/experiments` in the project's root folder. Create an `index.html` file and add the following:
+4. Develop! 
+
+Create a new folder called `/experiments` in the project's root folder. Create an `index.html` file and add the following:
 
   ```html
   <!DOCTYPE html>
@@ -79,13 +83,13 @@ npm install
   </html>
   ```
 
-  This is just a simple `html` file that has a reference to the `p5ML` library. 
+  This is just a simple `html` file that has a reference to the `ml5` library. 
 
   Now open the file `/src/index.js` and modify the first lines:
 
   ```javascript
   'use strict';
-  console.log('p5ML loaded');
+  console.log('ML5 loaded');
   ```
   
   To something like this:
@@ -95,7 +99,7 @@ npm install
   console.log('Hello Test Development!');
   ```
 
-  If you now go to `http://localhost:8080/experiments/index.html` and open the console, you should see `Hello Test Development!`. Now try changing any other file. Webpack will rebuild the library for you so if you reload the `index.html` page you should see your changes.
+  If you now go to `http://localhost:8080/experiments/index.html` and open the console, you should see `Hello Test Development!`. Now try changing any other file. Webpack will rebuild the library for you. So if you reload the `index.html` page you should see your changes.
 
   5. Once you have test it, you can build the library. Just close the `webpack-dev-server` and run 
   ```bash
@@ -105,8 +109,8 @@ npm install
   That should output something very similar to the `webpack-dev-server` but you'll notice that at the end is this line:
 
   ```bash
-  > p5ml@0.0.1 build:min /Users/cristobalvalenzuela/Desktop/sandbox/p5-deeplearn-js
-  > uglifyjs dist/p5ml.js -o dist/p5ml.min.js
+  > p5ml@0.0.1 build:min /Users/cristobalvalenzuela/Desktop/sandbox/ml5
+  > uglifyjs dist/ml5.js -o dist/ml5.min.js
   ```
 
   Which means the library was successfully build and minified.
@@ -131,7 +135,70 @@ npm install
 
   Just be sure to add files before running commitizen!
 
-  7. Push your code and make a pull request!
+  7. Push your code and make a Pull Request!
+
+## Running Unit Tests
+
+This project uses [Jest](https://facebook.github.io/jest/) to run unit tests.
+
+Jest is an open-source framework to run javascript tests.
+
+If you are unfamiliar with running unit tests on Javascript, consider watching [this tutorial](https://egghead.io/lessons/javascript-unit-testing-with-mocha-and-chai).
+
+We recommend having two open tabs in your terminal window: one monitoring your source code (as shown above) and another watching for unit tests. 
+
+To start the test environment, run:
+
+```bash
+npm run test:dev
+```
+
+This will watch for files changes and run tests when necessary.
+
+If you just want to check if all tests are passing:
+
+```bash
+npm run test
+```
+
+## ML5 Website
+
+The [ML5 website](https://itpnyu.github.io/p5-deeplearn-js/) is built with [Docusaurus](https://docusaurus.io/).
+
+Docusaurus is an open-source library, built with React, to create and maintain documentation websites.
+
+All the website content and documentation lives in the master branch but website is served from `gh-pages`. 
+
+### Contributing
+
+Almost all the content for the website can be found in markdown under the `docs/` folder at the root level of the repository.
+The naming convention we are using is the following:
+
+* Examples are named: `examples-[name of example].md`
+* API Reference files are named: `api-[Class].md`
+* Glossary: `glossary-[type].md`
+
+If you wish to help develop the website, first you'll need to install the necessary dependencies for Docusaurus.
+
+From the root of the project run:
+```
+cd website
+npm install
+```
+
+And then start the development server:
+
+```
+npm run start
+```
+
+This wil create a server that will reload whenever there are changes in the website source code.
+
+To build the website run:
+
+```bash
+npm run build
+```
 
 ## Additional Resources
 
