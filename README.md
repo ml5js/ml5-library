@@ -1,4 +1,4 @@
-# [p5ML](https://itpnyu.github.io/p5-deeplearn-js/)
+# [p5ML](https://itpnyu.github.io/ml5-js/)
 
 **_This project is currently in development._**
 
@@ -6,11 +6,11 @@ p5ML.js is a high level Javascript library for machine learning. The main idea o
 
 ## Resources
 
-- [Getting Started](https://itpnyu.github.io/p5-deeplearn-js/docs/getting-started.html)
-- [API Reference](https://itpnyu.github.io/p5-deeplearn-js/docs/imagenet.html)
-- [Examples](https://itpnyu.github.io/p5-deeplearn-js/docs/simple-image-classification-example.html)
-- [Learn](https://itpnyu.github.io/p5-deeplearn-js/docs/glossary-statistics.html)
-- [Experiments](https://itpnyu.github.io/p5-deeplearn-js/en/experiments.html)
+- [Getting Started](https://itpnyu.github.io/ml5-js/docs/getting-started.html)
+- [API Reference](https://itpnyu.github.io/ml5-js/docs/imagenet.html)
+- [Examples](https://itpnyu.github.io/ml5-js/docs/simple-image-classification-example.html)
+- [Learn](https://itpnyu.github.io/ml5-js/docs/glossary-statistics.html)
+- [Experiments](https://itpnyu.github.io/ml5-js/en/experiments.html)
 
 ## Contributing
 
