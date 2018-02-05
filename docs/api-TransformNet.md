@@ -14,7 +14,7 @@ The original Tensorflow version of model can be found [here](https://github.com/
 
 ```javascript
 // Create a new Fast Style Transfer (fst) instance
-const fst = new p5ml.TransformNet('data/myModel/');
+const fst = new ml5.TransformNet('data/myModel/');
 
 // Grab a <img> element and generate a new image.
 const img = document.getElementById('input');

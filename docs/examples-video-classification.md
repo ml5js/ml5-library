@@ -26,7 +26,7 @@ let video;
 
 function preload() {
   // Initialize the imageNet method with the Squeeznet model.
-  imagenet = new p5ml.ImageNet('Squeezenet');
+  imagenet = new ml5.ImageNet('Squeezenet');
 }
 
 function setup() {

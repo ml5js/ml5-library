@@ -17,7 +17,7 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(200, 200);
   video.hide();
-  net = new p5ml.TransformNet('models/udnie', modelLoaded);
+  net = new ml5.TransformNet('models/udnie', modelLoaded);
   outputImgContainer = createImg('images/udnie.jpg', 'image');
   outputImgContainer.parent('output-container');
 }
@@ -39,6 +39,6 @@ function togglePredicting() {
 
 function predict() {
   outputImgData = net.predict(video.elt);
-  outputImg = p5ml.array3DToImage(outputImgData);
+  outputImg = ml5.array3DToImage(outputImgData);
   outputImgContainer.elt.src = outputImg.src;
 }

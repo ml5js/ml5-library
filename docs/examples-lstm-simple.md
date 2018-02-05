@@ -34,7 +34,7 @@ function setup() {
 
   // Create the LSTM Generator
   // Pass in a model directory
-  lstm = new p5ml.LSTMGenerator('models/hemingway/');
+  lstm = new ml5.LSTMGenerator('models/hemingway/');
 
   // Grab the DOM elements
   let textInput = select('#textInput');

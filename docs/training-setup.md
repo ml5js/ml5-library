@@ -3,7 +3,7 @@ id: training-setup
 title: Python Setup
 ---
 
-You can port models trained in python into [deeplearn.js]() and [p5ML.js]()
+You can port models trained in python into [deeplearn.js]() and [ml5.js]()
 
 This is a recommended setup to use when training models.
 

@@ -39,8 +39,8 @@ npm install
   Version: webpack 2.6.1
   Time: 4905ms
     Asset     Size  Chunks                    Chunk Names
-  p5ml.js  1.55 MB       0  [emitted]  [big]  main
-  chunk    {0} p5ml.js (main) 1.5 MB [entry] [rendered]
+  ml5.js  1.55 MB       0  [emitted]  [big]  main
+  chunk    {0} ml5.js (main) 1.5 MB [entry] [rendered]
       [9] (webpack)/buildin/global.js 509 bytes {0} [built]
     [191] ./src/index.js 403 bytes {0} [built]
     [192] ./~/babel-polyfill/lib/index.js 833 bytes {0} [built]
@@ -71,7 +71,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
   <html>
   <head>
     <title>Test</title>
-    <script src="../../dist/p5ml.js"></script>
+    <script src="../../dist/ml5.js"></script>
   </head>
   <body>
 
@@ -109,7 +109,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
   That should output something very similar to the `webpack-dev-server` but you'll notice that at the end is this line:
 
   ```bash
-  > p5ml@0.0.1 build:min /Users/cristobalvalenzuela/Desktop/sandbox/ml5
+  > ml5@0.0.1 build:min /Users/cristobalvalenzuela/Desktop/sandbox/ml5
   > uglifyjs dist/ml5.js -o dist/ml5.min.js
   ```
 

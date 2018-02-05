@@ -1077,10 +1077,10 @@ var imagenet_classes_1 = require("./imagenet_classes");
 var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
 var MobileNet = (function () {
     function MobileNet(math) {
-        // start custom p5ml
-        deeplearn_1 = p5ml.dl;
+        // start custom ml5
+        deeplearn_1 = ml5.dl;
         this.clases = imagenet_classes_1;
-        // end custom p5ml
+        // end custom ml5
         this.math = math;
         this.PREPROCESS_DIVISOR = deeplearn_1.Scalar.new(255.0 / 2);
         this.ONE = deeplearn_1.Scalar.new(1);

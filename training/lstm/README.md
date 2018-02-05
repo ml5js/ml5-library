@@ -1,6 +1,6 @@
 # Training a LSTM network
 
-Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language models in Python using Tensorflow and modified to work with [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) and p5ML.js
+Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language models in Python using Tensorflow and modified to work with [deeplearn.js](https://github.com/PAIR-code/deeplearnjs) and ML5.js
 
 Based on [char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorflow).
 
@@ -30,10 +30,10 @@ This will train your model and save the model, **in the globals `./models` folde
 
 ### 2) Run!
 
-To work with the model in p5ML, you'll just need to point to the new folder in your sketch:
+To work with the model in ML5, you'll just need to point to the new folder in your sketch:
 
 ```javascript
-var lstm = new p5ml.LSTMGenerator('./models/your_new_model');
+var lstm = new ml5.LSTMGenerator('./models/your_new_model');
 ```
 
 That's it!
