@@ -2,4 +2,4 @@
 
 ![Demo gif](demo.gif)
 
-[Demo](https://itpnyu.github.io/p5-deeplearn-js/demos/teachableMachine/index.html)
+[Demo](https://itpnyu.github.io/ml5-js/demos/teachableMachine/index.html)

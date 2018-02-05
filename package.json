@@ -21,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ITPNYU/p5-deeplearn-js.git"
+    "url": "git+https://github.com/ITPNYU/ml5-js.git"
   },
   "keywords": [
     "machine learning"
@@ -29,9 +29,9 @@
   "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ITPNYU)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ITPNYU/p5-deeplearn-js/issues"
+    "url": "https://github.com/ITPNYU/ml5-js/issues"
   },
-  "homepage": "https://github.com/ITPNYU/p5-deeplearn-js#readme",
+  "homepage": "https://github.com/ITPNYU/ml5-js#readme",
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
