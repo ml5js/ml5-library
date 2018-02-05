@@ -90,4 +90,4 @@ knn.predict(video, callback);
 
 ## Source
 
-[/src/NeuralNetwork/index.js](https://github.com/cvalenzuela/p5-deeplearn-js/blob/master/src/NeuralNetwork/index.js)
+[/src/NeuralNetwork/index.js](https://github.com/cvalenzuela/ml5-js/blob/master/src/NeuralNetwork/index.js)
