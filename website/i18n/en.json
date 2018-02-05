@@ -12,6 +12,7 @@
     "neural-network": "Neural Network",
     "transform-net": "Transform Net",
     "word2vec": "Word2Vec",
+    "fast-style-transfer-webcam-example": "Fast Style Transfer with Webcam",
     "knn-image-example": "KNN Image Classification",
     "lstm-interactive-example": "Interactive LSTM",
     "lstm-simple-example": "Simple LSTM",

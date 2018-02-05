@@ -1,8 +1,8 @@
-# [p5ML](https://itpnyu.github.io/ml5-js/)
+# [ML5](https://itpnyu.github.io/ml5-js/)
 
 **_This project is currently in development._**
 
-p5ML.js is a high level Javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using Javascript.
+ML5.js is a high level Javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using Javascript.
 
 ## Resources
 

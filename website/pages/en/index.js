@@ -98,7 +98,7 @@ const Features = props => (
   <Block layout="fourColumn">
     {[
       {
-        content: 'Providing a simplier interface, that makes it easier to work with GPU accelerated machine learning in javascript.',
+        content: 'Providing a simpler interface, that makes it easier to work with GPU accelerated machine learning in javascript.',
         imageAlign: 'top',
         title: 'A wrapper around [deeplearn.js](https://deeplearnjs.org/)',
       },
@@ -116,7 +116,7 @@ const Why = props => (
     className="productShowcaseSection paddingBottom"
     style={{textAlign: 'center'}}>
     <h2>Why</h2>
-    <MarkdownBlock>The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using javascript. p5ML provides two main functionalities:</MarkdownBlock>
+    <MarkdownBlock>The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using javascript. ML5 provides two main functionalities:</MarkdownBlock>
   </div>
 );
 
