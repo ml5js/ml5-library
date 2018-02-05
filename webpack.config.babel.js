@@ -1,7 +1,5 @@
 import { join } from 'path';
 
-const DashboardPlugin = require('webpack-dashboard/plugin');
-
 const include = join(__dirname, 'src');
 
 export default {
