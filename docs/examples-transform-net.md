@@ -69,3 +69,5 @@ function loadedModelTwo() {
   outputTwo.append(resultImg);
 }
 ```
+
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/fast_style_transfer)

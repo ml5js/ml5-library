@@ -58,5 +58,5 @@ function gotResult(results) {
 
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/imagenetCamera)
 
