@@ -3,7 +3,7 @@ id: fast-style-transfer-webcam-example
 title: Fast Style Transfer with Webcam
 ---
 
-Fast Style Transfer from a live webcam stream using the [TransformNet](api-TransformNet.md). Built with [p5.js](https://p5js.org/).
+Fast Style Transfer from a live webcam stream using [TransformNet](api-TransformNet.md). Built with [p5.js](https://p5js.org/).
 
 *Please enable your webcam*
 
@@ -11,13 +11,13 @@ Fast Style Transfer from a live webcam stream using the [TransformNet](api-Trans
 
 <div class="example">
   <style>
-    img {
+    .example img {
       width: 400px;
       height: 400px;
       -webkit-transform: scaleX(-1);
       transform: scaleX(-1);
     }
-    button {
+    .example button {
       width: 100px;
       height: 30px;
       font-size: 14px;
@@ -25,12 +25,12 @@ Fast Style Transfer from a live webcam stream using the [TransformNet](api-Trans
       margin: 10px 0;
       cursor: pointer;
     }
-    button:hover {
+    .example button:hover {
       color: white;
       background: #333;
     }
   </style>
-  <h1>Style Transfer Mirror</h1>
+  <p>Style to transfer: <a href="https://en.wikipedia.org/wiki/File:Francis_Picabia,_1913,_Udnie_(Young_American_Girl,_The_Dance),_oil_on_canvas,_290_x_300_cm,_Mus%C3%A9e_National_d%E2%80%99Art_Moderne,_Centre_Georges_Pompidou,_Paris..jpg">Udnie (Young American Girl, The Dance), 1913 - Francis Picabia</a></p>
   <div id="input-container"></div>
   <div id="output-container"></div>
   <button onClick="togglePredicting()">Start</button>
@@ -87,5 +87,5 @@ function predict() {
 
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/fast_style_transfer_mirror)
 

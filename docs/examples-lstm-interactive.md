@@ -83,5 +83,5 @@ function generate() {
 
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/lstm_interactive)
 
