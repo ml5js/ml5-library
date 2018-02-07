@@ -79,6 +79,12 @@ function setup() {
       updateExampleCounts();
     });
   });
+
+  // Initiate the behavior of GIF/Sound output toggle controls
+  let labels = selectAll("label");
+  labels.forEach( (e) => { e.mouseClicked(toggleOutput); 
+                           // Same behavior also for each radio input tied with the label; otherwise behavior tends to break after first toggle
+                           e.elt.control.onclick=toggleOutput; } );
 }
 
 function draw() {
@@ -192,4 +198,22 @@ function updateSound(results) {
       }
     }
   }
+}
+
+function toggleOutput() {
+  let radio, gifDisplay, soundDisplay;
+  if (this.tagName == "LABEL") radio = this.control; else radio = this;
+  if (radio.id === "option-gif") {
+    gifDisplay = "block";
+    soundDisplay = "none";
+    outputGif = true;
+    outputSound = false;
+  } else {
+    gifDisplay = "none";
+    soundDisplay = "block";        
+    outputGif = false;
+    outputSound = true;
+  }
+  select("#gif-output").style("display", gifDisplay);
+  select("#sound-output").style("display", soundDisplay);
 }

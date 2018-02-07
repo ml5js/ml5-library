@@ -130,31 +130,6 @@
   </div>
   </div>
   <script src="sketch.js"></script>
-  <script>
-    window.onload=function() {
-      var labels = document.getElementsByTagName("label");
-      for (var i = 0; i < labels.length; i++) {
-        labels[i].onclick=toggleOutput;
-        labels[i].control.onclick=toggleOutput;
-      }
-    }
-    function toggleOutput() {
-      let radio;
-      if (this.tagName == "LABEL") radio = this.control; else radio = this;
-      if (radio.id === "option-gif") {
-        var gifDisplay = "block";
-        var soundDisplay = "none";
-        outputGif = true;
-        outputSound = false;
-      } else {
-        var gifDisplay = "none";
-        var soundDisplay = "block";        
-        outputGif = false;
-        outputSound = true;
-      }
-      document.getElementById("gif-output").style["display"] = gifDisplay;
-      document.getElementById("sound-output").style["display"] = soundDisplay;
-    }
-  </script>
+
 </body>
 </html>
