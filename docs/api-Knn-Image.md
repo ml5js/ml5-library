@@ -9,7 +9,7 @@ This class allows you train the last layer of the [SqueezeNet](https://github.co
 
 ```javascript
 // Create the classifier
-const knn = new p5ml.KNNImageClassifier(callback);
+const knn = new ml5.KNNImageClassifier(callback);
 
 // Add two image and Index associate with that image
 knn.addImage(imageOne, '1');
@@ -111,4 +111,4 @@ knn.predict(video, callback);
 
 ## Source
 
-[/src/KNNImage/index.js](https://github.com/ITPNYU/p5-deeplearn-js/blob/master/src/KNNImage/index.js)
+[/src/KNNImage/index.js](https://github.com/ITPNYU/ml5-js/blob/master/src/KNNImage/index.js)

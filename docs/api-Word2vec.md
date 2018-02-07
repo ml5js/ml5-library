@@ -9,7 +9,7 @@ Word2vec is a group of related models that are used to produce word embeddings<s
 
 ```javascript
 // Create the classifier
-const wordVectors = new p5ml.Word2Vec('data/wordvecs10000.json');
+const wordVectors = new ml5.Word2Vec('data/wordvecs10000.json');
 
 // Find the closest word to 'rainbow'
 const nearest = wordVectors.nearest('rainbow', 1);
@@ -104,4 +104,4 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
 
 ## Source
 
-[/src/Word2vec/index.js](https://github.com/ITPNYU/p5-deeplearn-js/blob/master/src/Word2vec/index.js)
+[/src/Word2vec/index.js](https://github.com/ITPNYU/ml5-js/blob/master/src/Word2vec/index.js)

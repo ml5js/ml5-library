@@ -9,7 +9,7 @@ let video;
 
 function preload() {
   // Initialize the KNN method.
-  knn = new p5ml.KNNImageClassifier(modelLoaded, 2, 1);
+  knn = new ml5.KNNImageClassifier(modelLoaded, 2, 1);
 }
 
 function setup() {

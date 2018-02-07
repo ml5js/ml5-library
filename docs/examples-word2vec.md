@@ -58,7 +58,7 @@ let wordVectors;
 
 function setup() {
   createCanvas(100, 100);
-  wordVectors = new p5ml.Word2Vec('data/wordvecs10000.json');
+  wordVectors = new ml5.Word2Vec('data/wordvecs10000.json');
 
   let loadHide = select("#loadHide");
   loadHide.hide();
@@ -128,4 +128,4 @@ function findNearest(word, n=10) {
 
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/word2vec)

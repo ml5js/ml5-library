@@ -1,7 +1,7 @@
 """
 Multi-layer Recurrent Neural Networks (LSTM, RNN) for 
 character-level language models in Python using Tensorflow 
-and modified to work with deeplearn.js and p5ML.js
+and modified to work with deeplearn.js and ML5.js
  
 Based on https://github.com/sherjilozair/char-rnn-tensorflow.
  

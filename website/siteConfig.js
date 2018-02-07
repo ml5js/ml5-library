@@ -1,15 +1,15 @@
 const siteConfig = {
-  title: 'p5ML.js',
+  title: 'ML5.js',
   tagline: 'A high level javascript library for machine learning.',
   url: 'https://itpnyu.github.io',
-  baseUrl: '/p5-deeplearn-js/',
-  projectName: 'p5-deeplearn-js',
+  baseUrl: '/ml5-js/',
+  projectName: 'ml5-js',
   headerLinks: [
     { doc: 'getting-started', label: 'API' },
     { doc: 'simple-image-classification-example', label: 'Examples' },
     { page: 'experiments', label: 'Experiments' },
     { doc: 'glossary-statistics', label: 'Learn' },
-    { href: 'https://github.com/ITPNYU/p5-deeplearn-js', label: 'Code' }
+    { href: 'https://github.com/ITPNYU/ml5-js', label: 'Code' },
   ],
   /* path to images for header/footer */
   headerIcon: '',
@@ -28,12 +28,12 @@ const siteConfig = {
     theme: 'solarized-dark',
   },
   scripts: [
-    'https://rawgit.com/ITPNYU/p5-deeplearn-js/master/dist/p5ml.min.js',
+    'https://rawgit.com/ITPNYU/ml5-js/master/dist/ml5.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/addons/p5.dom.min.js',
   ],
   // You may provide arbitrary config keys to be used as needed by your template.
-  repoUrl: 'https://github.com/ITPNYU/p5-deeplearn-js',
+  repoUrl: 'https://github.com/ITPNYU/ml5-js',
 };
 
 module.exports = siteConfig;

@@ -10,7 +10,7 @@ Based on [Make Your Own Neural Network](https://github.com/makeyourownneuralnetw
 
 ```javascript
 // Create the Neural Network
-var knn = new p5ml.NeuralNetwork(callback);
+var knn = new ml5.NeuralNetwork(callback);
 
 // Add two image and Index associate with that image
 knn.addImage(imageOne, '1');
@@ -90,4 +90,4 @@ knn.predict(video, callback);
 
 ## Source
 
-[/src/NeuralNetwork/index.js](https://github.com/cvalenzuela/p5-deeplearn-js/blob/master/src/NeuralNetwork/index.js)
+[/src/NeuralNetwork/index.js](https://github.com/cvalenzuela/ml5-js/blob/master/src/NeuralNetwork/index.js)

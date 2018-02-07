@@ -6,7 +6,7 @@ title: LSTM
 [LSTMs](https://colah.github.io/posts/2015-08-Understanding-LSTMs/) (Long Short Term Memory networks) are a kind of Neural Network architecture useful for working with series of data where the order of the series matters. This class allows you run a pre-trained model 
 through inference mode and generate new content. 
 
-You can train your own models [using this tutorial](training-LSTM.md) or used [this set of pretrained models](https://github.com/ITPNYU/p5-deeplearn-js/tree/master/training/lstm)
+You can train your own models [using this tutorial](training-LSTM.md) or used [this set of pretrained models](https://github.com/ITPNYU/ml5-js/tree/master/training/lstm)
 
 ### Example
 
@@ -19,7 +19,7 @@ const options = {
 }
 
 // Create the LSTM using a pretrained model.
-const lstm = new p5ML.LSTM('./data/hemingway/');
+const lstm = new ml5.LSTM('./data/hemingway/');
 
 // Generete content
 lstm.generate(options, function(output){
@@ -97,4 +97,4 @@ lstm.generate(options, function(output){
   
 ## Source
 
-[/src/Lstm/index.js](https://github.com/ITPNYU/p5-deeplearn-js/blob/master/src/Lstm/index.js)
+[/src/Lstm/index.js](https://github.com/ITPNYU/ml5-js/blob/master/src/Lstm/index.js)

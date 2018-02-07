@@ -47,15 +47,15 @@ function setup() {
   outputTwo = select('#resultImgTwo').elt;
 
   // Load the models
-  fst1 = new p5ml.TransformNet('assets/models/wave', loadedModelOne);
-  fst2 = new p5ml.TransformNet('assets/models/udnie', loadedModelTwo);
+  fst1 = new ml5.TransformNet('assets/models/wave', loadedModelOne);
+  fst2 = new ml5.TransformNet('assets/models/udnie', loadedModelTwo);
 }
 
 // A function to be called when the first model has been loaded
 function loadedModelOne() {
   const result = fst1.predict(inputImg);
   // Convert the Array3D with image data to a html image element
-  const resultImg = p5ml.array3DToImage(result);
+  const resultImg = ml5.array3DToImage(result);
   // Show img
   outputOne.append(resultImg);
 }
@@ -64,8 +64,10 @@ function loadedModelOne() {
 function loadedModelTwo() {
   const result = fst2.predict(inputImg);
   // Convert the Array3D with image data to a html image element
-  const resultImg = p5ml.array3DToImage(result);
+  const resultImg = ml5.array3DToImage(result);
   // Show img
   outputTwo.append(resultImg);
 }
 ```
+
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/fast_style_transfer)

@@ -23,7 +23,7 @@ class Help extends React.Component {
         content: "Simple example base on Google's Teachable Machines Project",
         image: siteConfig.baseUrl + "img/teachable.gif",
         title: 'Teachable Machines',
-        imageLink: "https://github.com/ITPNYU/p5-deeplearn-js/tree/master/demos/teachableMachine",
+        imageLink: "https://itpnyu.github.io/ml5-js/demos/teachableMachine",
         imageAlign: "left"
       },
       {
@@ -49,7 +49,7 @@ class Help extends React.Component {
             <header className="postHeader">
               <h2>Experiments</h2>
             </header>
-            <p>A collection of experiments and demos built with p5ML.js.</p>
+            <p>A collection of experiments and demos built with ML5.js.</p>
             <GridBlock contents={demos} layout="threeColumn"/>
           </div>
         </Container>
