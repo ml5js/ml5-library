@@ -27,7 +27,7 @@ let outputSound = false;
 
 function preload() {
   // Initialize the KNN method.
-  knn = new p5ml.KNNImageClassifier(modelLoaded, 3, 1);
+  knn = new ml5.KNNImageClassifier(modelLoaded, 3, 1);
   // Load sound files
   soundSrcs.forEach( (src) => soundfiles.push( loadSound('sounds/' + src) ) );
 }

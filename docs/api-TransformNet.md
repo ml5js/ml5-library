@@ -14,7 +14,7 @@ The original Tensorflow version of model can be found [here](https://github.com/
 
 ```javascript
 // Create a new Fast Style Transfer (fst) instance
-const fst = new p5ml.TransformNet('data/myModel/');
+const fst = new ml5.TransformNet('data/myModel/');
 
 // Grab a <img> element and generate a new image.
 const img = document.getElementById('input');
@@ -78,4 +78,4 @@ let outputImgData = fst.predict(img);
 
 ## Source
 
-[/src/Lstm/index.js](https://github.com/ITPNYU/p5-deeplearn-js/tree/master/src/TransformNet)
+[/src/Lstm/index.js](https://github.com/ITPNYU/ml5-js/tree/master/src/TransformNet)

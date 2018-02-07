@@ -9,7 +9,7 @@ You can use neural networks to recognize the content of images. Imagenet is a cl
 
 ```javascript
 // Create the classifier
-const classifier = new p5ml.ImageNet('SqueezeNet');
+const classifier = new ml5.ImageNet('SqueezeNet');
 // Make a prediction
 let prediction = classifier.predict(img, function(result){
   console.log(result) 
@@ -67,4 +67,4 @@ let prediction = classifier.predict(img, function(result){
 
 ## Source
 
-[/src/ImageNet/index.js](https://github.com/cvalenzuela/p5-deeplearn-js/blob/master/src/ImageNet/index.js)
+[/src/ImageNet/index.js](https://github.com/cvalenzuela/ml5-js/blob/master/src/ImageNet/index.js)

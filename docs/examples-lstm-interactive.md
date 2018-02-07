@@ -43,7 +43,7 @@ function setup() {
 
   // Create the LSTM Generator
   // Point it to a directory of model files
-  lstm = new p5ml.LSTMGenerator('models/hemingway/');
+  lstm = new ml5.LSTMGenerator('models/hemingway/');
 }
 
 function generate() {
@@ -83,5 +83,5 @@ function generate() {
 
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/lstm_interactive)
 

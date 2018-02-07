@@ -73,7 +73,7 @@ function setup() {
   pixelDensity(1);
 
   // Create the neural network
-  nn = new p5ml.NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate);
+  nn = new ml5.NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate);
 
   // Grab the DOM elements
   performanceResult = select('#performance');
@@ -319,4 +319,4 @@ function drawImage(values, xoff, yoff, w, txt) {
 }
 ```
 
-## [Source]()
+## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/NeuralNetwork)

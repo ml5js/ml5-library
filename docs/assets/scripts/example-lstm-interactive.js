@@ -24,7 +24,7 @@ function setup() {
 
   // Create the LSTM Generator
   // Point it to a directory of model files
-  lstm = new p5ml.LSTMGenerator('assets/models/hemingway/');
+  lstm = new ml5.LSTMGenerator('assets/models/hemingway/');
 }
 
 function generate() {

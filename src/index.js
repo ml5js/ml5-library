@@ -1,7 +1,7 @@
 /*
-p5ML
+ML5
 v.0.0.1
-p5ML is a high level javascript library for machine learning.
+ML5 is a high level javascript library for machine learning.
 Made @NYU ITP
 */
 
@@ -12,6 +12,7 @@ import LSTMGenerator from './Lstm/index';
 import NeuralNetwork from './NeuralNetwork/index';
 import Word2Vec from './Word2vec/index';
 import TransformNet from './TransformNet/index';
+import Yolo from './Yolo/index';
 import array3DToImage from './utils/imageUtilities';
 
 module.exports = {
@@ -19,8 +20,9 @@ module.exports = {
   KNNImageClassifier,
   LSTMGenerator,
   NeuralNetwork,
+  TransformNet,
+  Yolo,
   Word2Vec,
   dl,
-  TransformNet,
   array3DToImage,
 };
