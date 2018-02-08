@@ -145,5 +145,5 @@ function updateExampleCounts() {
 
 ```
 
-## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/KNNImage)
+## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/KNNImage)
 
