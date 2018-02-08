@@ -9,22 +9,21 @@ https://github.com/makeyourownneuralnetwork/
 import { ENV, Array2D, Scalar } from 'deeplearn';
 
 class NeuralNetwork {
-  constructor(input_nodes, hidden_nodes, output_nodes, learning_rate = 0.1) {
+  constructor(inputNodes, hiddenNodes, outputNodes, learningRate = 0.1) {
     this.math = ENV.math;
-    this.input_nodes = input_nodes;
-    this.hidden_nodes = hidden_nodes;
-    this.output_nodes = output_nodes;
+    this.inputNodes = inputNodes;
+    this.hiddenNodes = hiddenNodes;
+    this.outputNodes = outputNodes;
 
-    this.weights_ih = Array2D.randNormal([this.hidden_nodes, this.input_nodes]);
-    this.weights_ho = Array2D.randNormal([this.output_nodes, this.hidden_nodes]);
+    this.weightsIH = Array2D.randNormal([this.hiddenNodes, this.inputNodes]);
+    this.weightsHO = Array2D.randNormal([this.outputNodes, this.hiddenNodes]);
 
-    this.bias_h = Array2D.randNormal([this.hidden_nodes, 1]);
-    this.bias_o = Array2D.randNormal([this.output_nodes, 1]);
+    this.biasH = Array2D.randNormal([this.hiddenNodes, 1]);
+    this.biasO = Array2D.randNormal([this.outputNodes, 1]);
 
-    this.learning_rate = Scalar.new(learning_rate);
+    this.learningRate = Scalar.new(learningRate);
   }
-  
-  
+
   train(inputsArray, targetsArray) {
     this.math.scope(async (keep) => {
       // convert inputs list to 2d array
@@ -32,63 +31,61 @@ class NeuralNetwork {
       const targets = this.math.transpose(Array2D.new([1, targetsArray.length], targetsArray));
 
       // calculate signals into hidden layer
-      const hidden = this.math.matMul(this.weights_ih, inputs);
+      const hidden = this.math.matMul(this.weightsIH, inputs);
       // Add bias
-      const hidden_b = this.math.add(hidden, this.bias_h);
+      const hiddenB = this.math.add(hidden, this.biasH);
       // calculate the signals emerging from hidden layer
-      const hidden_outputs = this.math.sigmoid(hidden_b);
+      const hiddenOutputs = this.math.sigmoid(hiddenB);
 
       // calculate signals into final output layer
-      const outputs = this.math.matMul(this.weights_ho, hidden_outputs);
+      const outputs = this.math.matMul(this.weightsHO, hiddenOutputs);
       // add bias
-      const outputs_b = this.math.add(outputs, this.bias_o);      
+      const outputsB = this.math.add(outputs, this.biasO);
       // calculate signals emerging from final output layer
-      const outputs_final = this.math.sigmoid(outputs_b);
+      const outputsFinal = this.math.sigmoid(outputsB);
 
       // output layer error is the (target - actual)
-      const output_errors = this.math.subtract(targets, outputs_final);
-      
+      const outputErrors = this.math.subtract(targets, outputsFinal);
+
       // hidden layer error is the outputErrors, split by weights, recombined at hidden node
-      const who_t = this.math.transpose(this.weights_ho);
-      const hidden_errors = this.math.matMul(who_t, output_errors);
-            
+      const whoT = this.math.transpose(this.weightsHO);
+      const hiddenErrors = this.math.matMul(whoT, outputErrors);
+
       // Start Backpropagation
       // Update the weights for the links between the hidden and output layers
-      
-      // Sigmoid derivate
-      let gradients = this.math.multiply(outputs_final, this.math.subtract(Scalar.new(1), outputs_final));
+
+      // Sigmoid derivative
+      let gradients = this.math.multiply(outputsFinal, this.math.subtract(Scalar.new(1), outputsFinal));
       // Hadamard errors
-      gradients = this.math.multiply(gradients, output_errors);
+      gradients = this.math.multiply(gradients, outputErrors);
       // Learning rate
-      gradients = this.math.multiply(this.learning_rate, gradients);
-      
-      // Calculate deltas
-      const hidden_T = this.math.transpose(hidden_outputs);
-      const weight_ho_deltas = this.math.matMul(gradients, hidden_T);
-      
+      gradients = this.math.multiply(gradients, this.learningRate);
+
+      // Calculate hidden -> output deltas
+      const hiddenT = this.math.transpose(hiddenOutputs);
+      const deltaHOs = this.math.matMul(gradients, hiddenT);
+
       // Change weights and bias
-      this.weights_ho = await keep(this.math.add(this.weights_ho, weight_ho_deltas));
-      this.bias_o = await keep(this.math.add(this.bias_o, gradients));
+      this.weightsHO = await keep(this.math.add(this.weightsHO, deltaHOs));
+      this.biasO = await keep(this.math.add(this.biasO, gradients));
 
       // Update the weights for the links between the input and hidden layers
-      
+
       // Sigmoid derivative
-      let hidden_gradient = this.math.multiply(hidden_outputs, this.math.subtract(Scalar.new(1), hidden_outputs));
-      hidden_gradient = this.math.multiply(hidden_gradient, hidden_errors);
-      hidden_gradient = this.math.multiply(this.learning_rate, hidden_gradient);
+      let hiddenGradient = this.math.multiply(hiddenOutputs, this.math.subtract(Scalar.new(1), hiddenOutputs));
+      hiddenGradient = this.math.multiply(hiddenGradient, hiddenErrors);
+      hiddenGradient = this.math.multiply(this.learningRate, hiddenGradient);
 
       // Calcuate input -> hidden deltas
-      //const hidden_T = this.math.transpose(hidden_outputs);
-      const weight_ho_deltas = this.math.matMul(gradients, hidden_T);
+      const inputsT = this.math.transpose(inputs);
+      const deltaIHs = this.math.matMul(hiddenGradient, inputsT);
 
-      const inputs_T = Matrix.transpose(inputs);
-      const weight_ih_deltas = this.math.matMul(hidden_gradient, inputs_T);
-
-      this.weights_ih = await keep(this.math.add(this.weights_ih, weight_ih_deltas));
+      this.weightsIH = await keep(this.math.add(this.weightsIH, deltaIHs));
       // Adjust the bias by its deltas (which is just the gradients)
-      this.bias_h = await keep(this.math.add(this.bias_h, hidden_gradient));
+      this.biasH = await keep(this.math.add(this.biasH, hiddenGradient));
     });
   }
+
 
   predict(inputsArray) {
     return this.math.scope(() => {
@@ -96,13 +93,16 @@ class NeuralNetwork {
       const inputs = this.math.transpose(Array2D.new([1, inputsArray.length], inputsArray));
 
       // Calculate signals into hidden layer
-      const hiddenInputs = this.math.matMul(this.wih, inputs);
+      const hidden = this.math.matMul(this.weightsIH, inputs);
+      // Add bias
+      const hiddenB = this.math.add(hidden, this.biasH);
       // // Calculate the signals emerging from the hidden layer
-      const hiddenOutputs = this.math.sigmoid(hiddenInputs);
+      const hiddenOutputs = this.math.sigmoid(hiddenB);
 
       // // Calculate signals into final output layer
-      const finalInputs = this.math.matMul(this.who, hiddenOutputs);
-      const finalOutputs = this.math.sigmoid(finalInputs);
+      const finalInputs = this.math.matMul(this.weightsHO, hiddenOutputs);
+      const finalInputsB = this.math.add(finalInputs, this.biasO);
+      const finalOutputs = this.math.sigmoid(finalInputsB);
       const argMax = this.math.argMax(finalOutputs).getValues()[0];
       const results = finalOutputs.getValues();
       return {
