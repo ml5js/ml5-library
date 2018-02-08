@@ -41,9 +41,9 @@ class Help extends React.Component {
         imageAlign: "left"
       },
       {
-        content: 'Fast Style Transfer',
+        content: 'Recomposing images in the style of other images',
         image: siteConfig.baseUrl + "img/style_transfer.gif",
-        title: 'Recomposing images in the style of other images',
+        title: 'Fast Style Transfer',
         imageLink: "https://yiniasdng1023.github.io/fast_style_transfer_in_ML5",
         imageAlign: "left"
       },
