@@ -128,4 +128,4 @@ function findNearest(word, n=10) {
 
 ```
 
-## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/word2vec)
+## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/word2vec)

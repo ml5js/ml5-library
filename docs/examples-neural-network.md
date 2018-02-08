@@ -319,4 +319,4 @@ function drawImage(values, xoff, yoff, w, txt) {
 }
 ```
 
-## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/NeuralNetwork)
+## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/NeuralNetwork)

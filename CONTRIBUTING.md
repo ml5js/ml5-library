@@ -163,7 +163,7 @@ npm run test
 
 ## ML5 Website
 
-The [ML5 website](https://itpnyu.github.io/ml5-js/) is built with [Docusaurus](https://docusaurus.io/).
+The [ML5 website](https://itpnyu.github.io/ml5/) is built with [Docusaurus](https://docusaurus.io/).
 
 Docusaurus is an open-source library, built with React, to create and maintain documentation websites.
 
