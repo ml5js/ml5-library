@@ -104,4 +104,4 @@ const average = wordVectors.average(['red', 'green'], 1); // Should output yello
 
 ## Source
 
-[/src/Word2vec/index.js](https://github.com/ITPNYU/ml5-js/blob/master/src/Word2vec/index.js)
+[/src/Word2vec/index.js](https://github.com/ITPNYU/ml5/blob/master/src/Word2vec/index.js)

@@ -23,7 +23,7 @@ class Help extends React.Component {
         content: "Simple example base on Google's Teachable Machines Project",
         image: siteConfig.baseUrl + "img/teachable.gif",
         title: 'Teachable Machines',
-        imageLink: "https://itpnyu.github.io/ml5-js/demos/teachableMachine",
+        imageLink: "https://itpnyu.github.io/ml5/demos/teachableMachine",
         imageAlign: "left"
       },
       {
@@ -38,6 +38,13 @@ class Help extends React.Component {
         image: siteConfig.baseUrl + "img/pongml.jpg",
         title: 'Pong ML',
         imageLink: "https://github.com/matamalaortiz/Pong-ML",
+        imageAlign: "left"
+      },
+      {
+        content: 'Fast Style Transfer',
+        image: siteConfig.baseUrl + "img/style_transfer.gif",
+        title: 'Recomposing images in the style of other images',
+        imageLink: "https://yining1023.github.io/fast_style_transfer_in_ML5",
         imageAlign: "left"
       }
     ];
