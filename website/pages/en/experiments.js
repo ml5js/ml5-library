@@ -39,6 +39,13 @@ class Help extends React.Component {
         title: 'Pong ML',
         imageLink: "https://github.com/matamalaortiz/Pong-ML",
         imageAlign: "left"
+      },
+      {
+        content: 'Fast Style Transfer',
+        image: siteConfig.baseUrl + "img/style_transfer.gif",
+        title: 'Recomposing images in the style of other images',
+        imageLink: "https://yining1023.github.io/fast_style_transfer_in_ML5",
+        imageAlign: "left"
       }
     ];
 
