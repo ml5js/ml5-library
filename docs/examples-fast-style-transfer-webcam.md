@@ -87,5 +87,5 @@ function predict() {
 
 ```
 
-## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/fast_style_transfer_mirror)
+## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/fast_style_transfer_mirror)
 

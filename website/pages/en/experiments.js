@@ -23,7 +23,7 @@ class Help extends React.Component {
         content: "Simple example base on Google's Teachable Machines Project",
         image: siteConfig.baseUrl + "img/teachable.gif",
         title: 'Teachable Machines',
-        imageLink: "https://itpnyu.github.io/ml5-js/demos/teachableMachine",
+        imageLink: "https://itpnyu.github.io/ml5/demos/teachableMachine",
         imageAlign: "left"
       },
       {
