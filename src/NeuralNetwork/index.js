@@ -1,7 +1,7 @@
 /* eslint max-len: "off" */
 /*
 Simple Artificial Neural Network, limited to 3 layers
-Based on https://github.com/shiffman/Neural-Network-p5 by Daniel Shiffman
+Based on https://github.com/CodingTrain/Toy-Neural-Network-JS/ by Daniel Shiffman
 Based on "Make Your Own Neural Network" by Tariq Rashid
 https://github.com/makeyourownneuralnetwork/
 */
