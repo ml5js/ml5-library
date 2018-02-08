@@ -46,4 +46,4 @@ function gotResult(results) {
 }
 ```
 
-## [Source](https://github.com/ITPNYU/ml5-js/tree/master/examples/imagenet)
+## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/imagenet)

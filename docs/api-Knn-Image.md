@@ -111,4 +111,4 @@ knn.predict(video, callback);
 
 ## Source
 
-[/src/KNNImage/index.js](https://github.com/ITPNYU/ml5-js/blob/master/src/KNNImage/index.js)
+[/src/KNNImage/index.js](https://github.com/ITPNYU/ml5/blob/master/src/KNNImage/index.js)

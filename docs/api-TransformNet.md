@@ -78,4 +78,4 @@ let outputImgData = fst.predict(img);
 
 ## Source
 
-[/src/Lstm/index.js](https://github.com/ITPNYU/ml5-js/tree/master/src/TransformNet)
+[/src/Lstm/index.js](https://github.com/ITPNYU/ml5/tree/master/src/TransformNet)
