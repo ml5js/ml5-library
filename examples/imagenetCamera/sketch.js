@@ -8,8 +8,8 @@ let imagenet;
 let video;
 
 function preload() {
-  // Initialize the imageNet method with the Squeeznet model.
-  imagenet = new ml5.ImageNet('Squeezenet');
+  // Initialize the imageNet method with the Squeezenet model.
+  imagenet = new ml5.ImageNet('SqueezeNet');
 }
 
 function setup() {
