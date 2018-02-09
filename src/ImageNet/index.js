@@ -15,6 +15,9 @@ class ImageNet {
       this.net = new SqueezeNet(this.math);
     } else if (this.model === 'MobileNet') {
       this.net = new MobileNet(this.math);
+    } else {
+      console.log(`${model} is not a valid model. Using MobileNet as default.`);
+      this.net = new MobileNet(this.math);
     }
   }
 
