@@ -1,9 +1,9 @@
 ---
 id: imagenet
-title: Imagenet
+title: ImageNet
 ---
 
-You can use neural networks to recognize the content of images. Imagenet is a class to classify an image using a given model. For now, only the [SqueezeNet](https://github.com/PAIR-code/deeplearnjs/tree/master/models/squeezenet) model is available.
+You can use neural networks to recognize the content of images. ImageNet is a class to classify an image using a given model.
 
 ### Example
 
@@ -18,9 +18,9 @@ let prediction = classifier.predict(img, function(result){
 
 ## Constructor
   ```javascript
-  Imagenet(model)
+  ImageNet(model)
   ```
-  `model` - A String value for a valid deeplearn.js model for image recognition. Only the [SqueezeNet](https://github.com/PAIR-code/deeplearnjs/tree/master/models/squeezenet) model is available.
+  `model` - A String value for a valid deeplearn.js model for image recognition. [`SqueezeNet`](https://github.com/PAIR-code/deeplearnjs/tree/master/models/squeezenet) and [`MobileNet`](https://github.com/PAIR-code/deeplearnjs/tree/master/models/mobilenet) models are available.
 
 
 ## Properties
