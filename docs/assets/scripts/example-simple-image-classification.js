@@ -9,7 +9,7 @@ let img;
 
 function preload() {
   // Initialize the imageNet method with the Squeeznet model.
-  imagenet = new ml5.ImageNet('SqueezeNet');
+  imagenet = new ml5.ImageNet('MobileNet');
 }
 
 function setup() {
