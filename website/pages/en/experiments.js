@@ -41,12 +41,12 @@ class Help extends React.Component {
         imageAlign: "left"
       },
       {
-        content: 'Fast Style Transfer',
+        content: 'Recomposing images in the style of other images',
         image: siteConfig.baseUrl + "img/style_transfer.gif",
-        title: 'Recomposing images in the style of other images',
-        imageLink: "https://yining1023.github.io/fast_style_transfer_in_ML5",
+        title: 'Fast Style Transfer',
+        imageLink: "https://yining1023.github.io/fast_style_transfer_in_ML5/",
         imageAlign: "left"
-      }
+      },
     ];
 
     return (
@@ -57,7 +57,7 @@ class Help extends React.Component {
               <h2>Experiments</h2>
             </header>
             <p>A collection of experiments and demos built with ML5.js.</p>
-            <GridBlock contents={demos} layout="threeColumn"/>
+            <GridBlock contents={demos} layout="twoColumn"/>
           </div>
         </Container>
       </div>
