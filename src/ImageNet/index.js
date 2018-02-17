@@ -1,5 +1,5 @@
 /*
-ImageNet Class
+ImageNet class
 */
 
 import { ENV, Array3D } from 'deeplearn';
