@@ -1,7 +1,7 @@
 /*
-===
+====
 Fast Style Transfer Mirror Example
-===
+====
 */
 
 let net;
