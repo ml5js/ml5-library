@@ -2,7 +2,7 @@
 
 **_This project is currently in development._**
 
-ML5.js is a high level Javascript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using Javascript.
+ML5.js is a high level JavaScript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using Javascript.
 
 ## Resources
 
