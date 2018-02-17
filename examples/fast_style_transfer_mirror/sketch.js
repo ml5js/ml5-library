@@ -17,8 +17,8 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(200, 200);
   video.hide();
-  net = new ml5.TransformNet('assets/models/udnie', modelLoaded);
-  outputImgContainer = createImg('assets/img/udnie.jpg', 'image');
+  net = new ml5.TransformNet('models/udnie', modelLoaded);
+  outputImgContainer = createImg('images/udnie.jpg', 'image');
   outputImgContainer.parent('output-container');
 }
 
