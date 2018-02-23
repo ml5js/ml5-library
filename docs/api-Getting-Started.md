@@ -30,12 +30,18 @@ That's all!
 
 ## Creating a simple image recognition example
 
+Make a new `index.html` and paste in the below code. Make sure the first `<script>` tag is pointing to a copy of [ml5.min.js](https://github.com/ITPNYU/ml5/tree/master/dist). Open it in a web browser and after a couple seconds of computation you should see something like this:
+
+<img src="assets/img/getting-started.png">
+
+This demo needs only ML5 to run. When the HTML is parsed by the browser, it loads the `<img>` tag, at which point it gets an image from Imgur using a cross-origin request. When the image is loaded, `onImageReady()` is called, and it resizes the image to something small enough that it runs quickly, then asks ImageNet for its best prediction as to what the image is, along with its confidence level. Then it prints the result to the specified DOM elements.
+
 ```html
 <!DOCTYPE html>
 <html>
   <head>
     <meta charset=utf-8>
-    <title>Intro to ML5.js</title>
+    <title>Simple ML5.js Example</title>
     <script src="libraries/ml5.min.js"></script>
     <script>
       // Initialize the imageNet method with the SqueezeNet model.
