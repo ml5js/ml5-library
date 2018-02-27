@@ -67,8 +67,8 @@ class LSTMGenerator {
 
   async generate(options, callback) {
     const seed = options.seed || this.defaults.seed;
-    const length = options.length || this.defaults.length;
-    const temperature = options.temperature || this.defaults.temperature;
+    const length = +options.length || this.defaults.length;
+    const temperature = +options.temperature || this.defaults.temperature;
     const results = [];
 
     if (this.ready) {
