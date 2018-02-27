@@ -48,7 +48,7 @@ class Word2Vec {
     if (!vector) {
       return null;
     }
-    return Word2Vec.nearest(this.model, vector, 1, max);
+    return Word2Vec.nearest(this.model, vector, 1, max + 1);
   }
 
   static addOrSubtract(model, values, operation) {
