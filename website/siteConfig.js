@@ -28,7 +28,7 @@ const siteConfig = {
     theme: 'solarized-dark',
   },
   scripts: [
-    'https://rawgit.com/ITPNYU/ml5/master/dist/ml5.min.js',
+    '/ml5/js/ml5.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/p5.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.16/addons/p5.dom.min.js',
   ],

@@ -3,7 +3,7 @@ id: simple-image-classification-example
 title: Simple Image Classification
 ---
 
-A simple image classification example using the [KNN Image Classifier](api-Imagenet.md). Built using [p5.js](https://p5js.org/).
+A simple image classification example using the [Imagenet Method](api-Imagenet.md).
 
 ## Demo
 
@@ -16,33 +16,21 @@ A simple image classification example using the [KNN Image Classifier](api-Image
 
 ## Code
 ```javascript
-let imagenet;
-let img;
+// Initialize ImageNet with the MobileNet model.
+const imagenet = new ml5.ImageNet('MobileNet');
 
-function preload() {
-  // Initialize the ImageNet method with the MobileNet model.
-  imagenet = new ml5.ImageNet('MobileNet');
-}
+// Get the image
+const img = document.getElementById('targetImage');
 
-function setup() {
-  img = createImg('/docs/assets/img/kitten.jpg', imageReady);
-}
-
-function imageReady() {
-  // The image should be 227x227
-  img.attribute('width', 227);
-  img.attribute('height', 227);
-  img.hide();
-
-  // Get a prediction for that image
-  imagenet.predict(img.elt, 10, gotResult);
-}
+// Make a prediction
+imagenet.predict(img, 10, gotResult);
 
 // When we get the results
 function gotResult(results) {
-  // The results are in an array ordered by probability.
-  select('#result').html(results[0].label);
-  select('#probability').html(nf(results[0].probability, 0, 2));
+  const result = document.getElementById('result');
+  const probability = document.getElementById('probability');
+  result.innerText = results[0].label;
+  probability.innerText = results[0].probability.toFixed(2);
 }
 ```
 

@@ -1,9 +1,26 @@
-// Utilities for images
+// Pre process images
+const processImage = (input, size) => {
+  const element = input.cloneNode(true);
+  element.width = size;
+  element.height = size;
+  return element;
+};
 
-/**
-* @param imgData Array3D containing pixels of a img
-* @return HTML image element
-*/
+// Pre process videos
+const processVideo = (input, size) => {
+  const videoInput = input;
+  const element = document.createElement('video');
+  videoInput.onplay = () => {
+    const stream = videoInput.captureStream();
+    element.srcObject = stream;
+    element.width = size;
+    element.height = size;
+    element.autoplay = true;
+  };
+  return element;
+};
+
+// Converts a dl Array.3D to DOM img
 const array3DToImage = (imgData) => {
   const [imgWidth, imgHeight] = imgData.shape;
   const data = imgData.dataSync();
@@ -33,4 +50,8 @@ const array3DToImage = (imgData) => {
   return outputImg;
 };
 
-export default array3DToImage;
+export {
+  array3DToImage,
+  processImage,
+  processVideo,
+};
