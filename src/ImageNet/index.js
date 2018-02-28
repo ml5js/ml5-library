@@ -1,3 +1,4 @@
+/* eslint-env browser */
 /*
 ImageNet Class
 */
@@ -5,6 +6,7 @@ ImageNet Class
 import { ENV, Array3D } from 'deeplearn';
 import { SqueezeNet } from 'deeplearn-squeezenet';
 import { MobileNet } from './../utils/mobileNet';
+import { processImage, processVideo } from '../utils/imageUtilities';
 
 class ImageNet {
   constructor(model) {
@@ -16,18 +18,38 @@ class ImageNet {
     } else if (this.model === 'MobileNet') {
       this.net = new MobileNet(this.math);
     } else {
-      console.log(`${model} is not a valid model. Using MobileNet as default.`);
+      console.warn(`${model} is not a valid model. Using MobileNet as default.`);
       this.net = new MobileNet(this.math);
     }
+    this.videoElt = null;
   }
 
-  async predict(img, num, callback) {
+  async predict(input, num, callback) {
+    let img;
+
+    if (input instanceof HTMLImageElement) {
+      img = processImage(input, '227');
+    } else if (input instanceof HTMLVideoElement && !this.videoElt) {
+      this.videoElt = processVideo(input, '127');
+    }
+
     if (this.ready) {
-      this.getClasses(img, num, callback);
+      if (this.videoElt) {
+        this.getClasses(this.videoElt, num, callback);
+      } else {
+        this.getClasses(img, num, callback);
+        img = null;
+      }
+    } else if (this.videoElt) {
+      ImageNet.loadModel(this.net).then(() => {
+        this.ready = true;
+        this.getClasses(this.videoElt, num, callback);
+      });
     } else {
       ImageNet.loadModel(this.net).then(() => {
         this.ready = true;
         this.getClasses(img, num, callback);
+        img = null;
       });
     }
   }
