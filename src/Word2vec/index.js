@@ -54,6 +54,9 @@ class Word2Vec {
   static addOrSubtract(model, values, operation) {
     const vectors = [];
     const notFound = [];
+    if (values.length < 2) {
+      throw new Error('Invalid input, must be passed more than 1 value');
+    }
     values.forEach((value) => {
       const vector = model[value];
       if (!vector) {
@@ -63,7 +66,7 @@ class Word2Vec {
       }
     });
 
-    if (notFound.length > 0 || values.length < 2) {
+    if (notFound.length > 0) {
       throw new Error(`Invalid input, vector not found for: ${notFound.toString()}`);
     }
     return ENV.math.scope(() => {
