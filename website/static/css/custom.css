@@ -119,3 +119,34 @@ footer .sitemap h5 {
 footer iframe{
   margin: 20px 0px 0px 0px;
 }
+
+#experiments img {
+  max-width: 400px;
+  margin-top: 10px;
+}
+
+.experiment {
+  max-width: 500px;
+}
+
+/* Begin simple grid layout  */
+
+.flex-grid {
+  display: flex;
+  justify-content: left;
+  flex-wrap: wrap;
+}
+
+.flex-col {
+  flex: 1;
+  min-width: 400px;
+  padding: 14px;
+}
+
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .flex-grid {
+    display: block;
+  }
+}
+
+/* End simple grid layout  */

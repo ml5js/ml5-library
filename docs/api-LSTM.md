@@ -75,7 +75,7 @@ lstm.generate(options, function(output){
   ```javascript
   .generate(options, callback)
   ```
-  > Generates content base on the seed given. Returns ...
+  > Generates content based on the seed given. Returns ...
 
   `options` -  An object specifying the input parameters of seed, length and temperature. Defaults to `{ seed: 'a', length: 20, temperature: 0.5}`.
 
