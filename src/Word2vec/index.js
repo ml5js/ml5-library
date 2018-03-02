@@ -57,14 +57,14 @@ class Word2Vec {
     values.forEach((value) => {
       const vector = model[value];
       if (!vector) {
-        notFound.push(vector);
+        notFound.push(value);
       } else {
         vectors.push(vector);
       }
     });
 
     if (notFound.length > 0 || values.length < 2) {
-      return { error: 'Invalid inputs', notFound, values };
+      throw new Error(`Invalid input, vector not found for: ${notFound.toString()}`);
     }
     return ENV.math.scope(() => {
       let result = vectors[0];
