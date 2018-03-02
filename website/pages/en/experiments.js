@@ -20,44 +20,54 @@ class Help extends React.Component {
     // image is not working.
     const demos = [
       {
-        content: "Simple example base on Google's Teachable Machines Project",
+        content: "Simple example based on Google's Teachable Machines Project",
         image: siteConfig.baseUrl + "img/teachable.gif",
         title: 'Teachable Machines',
-        imageLink: "https://itpnyu.github.io/ml5/demos/teachableMachine",
-        imageAlign: "left"
+        link: "https://itpnyu.github.io/ml5/demos/teachableMachine",
       },
       {
         content: 'An experimental web text editor that runs a LSTM model while you write to suggest new lines',
         image: siteConfig.baseUrl + "img/selected_stories.gif",
         title: 'Selected Stories',
-        imageLink: "https://cvalenzuela.github.io/Selected_Stories/",
-        imageAlign: "left"
+        link: "https://cvalenzuela.github.io/Selected_Stories/",
       },
       {
         content: 'Machine Learning Pong Game in The Browser',
         image: siteConfig.baseUrl + "img/pongml.jpg",
         title: 'Pong ML',
-        imageLink: "https://github.com/matamalaortiz/Pong-ML",
-        imageAlign: "left"
+        link: "https://github.com/matamalaortiz/Pong-ML",
       },
       {
         content: 'Recomposing images in the style of other images',
         image: siteConfig.baseUrl + "img/style_transfer.gif",
         title: 'Fast Style Transfer',
-        imageLink: "https://yining1023.github.io/fast_style_transfer_in_ML5/",
-        imageAlign: "left"
+        link: "https://yining1023.github.io/fast_style_transfer_in_ML5/",
       },
     ];
+
+    let demoList = [];
+
+    for (let demo of demos) {
+      demoList.push(
+      <Container className="experiment flex-col">
+        <a href={demo.link}><h2>{demo.title}</h2></a>
+        <p>{demo.content}</p>
+        <a href={demo.link}><img src={demo.image} alt={demo.title}/></a>
+      </Container>
+      );
+    }
 
     return (
       <div className="docMainWrapper wrapper">
         <Container className="mainContainer documentContainer postContainer">
           <div className="post" id="experiments">
             <header className="postHeader">
-              <h2>Experiments</h2>
+              <h1>Experiments</h1>
             </header>
             <p>A collection of experiments and demos built with ML5.js.</p>
-            <GridBlock contents={demos} layout="twoColumn"/>
+            <div className="flex-grid">
+              {demoList}
+            </div>
           </div>
         </Container>
       </div>
