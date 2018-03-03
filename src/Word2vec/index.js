@@ -48,23 +48,26 @@ class Word2Vec {
     if (!vector) {
       return null;
     }
-    return Word2Vec.nearest(this.model, vector, 1, max);
+    return Word2Vec.nearest(this.model, vector, 1, max + 1);
   }
 
   static addOrSubtract(model, values, operation) {
     const vectors = [];
     const notFound = [];
+    if (values.length < 2) {
+      throw new Error('Invalid input, must be passed more than 1 value');
+    }
     values.forEach((value) => {
       const vector = model[value];
       if (!vector) {
-        notFound.push(vector);
+        notFound.push(value);
       } else {
         vectors.push(vector);
       }
     });
 
-    if (notFound.length > 0 || values.length < 2) {
-      return { error: 'Invalid inputs', notFound, values };
+    if (notFound.length > 0) {
+      throw new Error(`Invalid input, vector not found for: ${notFound.toString()}`);
     }
     return ENV.math.scope(() => {
       let result = vectors[0];
