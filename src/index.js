@@ -13,7 +13,7 @@ import NeuralNetwork from './NeuralNetwork/index';
 import Word2Vec from './Word2vec/index';
 import TransformNet from './TransformNet/index';
 import Yolo from './Yolo/index';
-import array3DToImage from './utils/imageUtilities';
+import * as imageUtils from './utils/imageUtilities';
 
 module.exports = {
   ImageNet,
@@ -24,5 +24,5 @@ module.exports = {
   Yolo,
   Word2Vec,
   dl,
-  array3DToImage,
+  ...imageUtils,
 };

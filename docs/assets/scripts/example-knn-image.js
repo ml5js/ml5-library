@@ -4,93 +4,67 @@ KNN Image Classifier Demo
 ===
 */
 
-let knn;
-let video;
+// Set up the video stream
+const video = document.getElementById('video');
+navigator.getUserMedia({ video: true }, handleVideo, videoError);
 
-function preload() {
-  // Initialize the KNN method.
-  knn = new ml5.KNNImageClassifier(modelLoaded, 2, 1);
+function handleVideo(stream) {
+  video.src = window.URL.createObjectURL(stream);
 }
 
-function setup() {
-  createCanvas(320, 240).parent('canvasContainer');
-  video = createCapture(VIDEO);
-  background(0);
-  video.size(227, 227);
-  video.hide();
-
-  // Train buttons
-  buttonA = select('#buttonA');
-  buttonA.mousePressed(() => {
-    train(1);
-  });
-
-  buttonB = select('#buttonB');
-  buttonB.mousePressed(() => {
-    train(2);
-  });
-
-  // Reset buttons
-  resetBtnA = select('#resetA');
-  resetBtnA.mousePressed(() => {
-    clearClass(1);
-    updateExampleCounts();
-  });
-
-  resetBtnB = select('#resetB');
-  resetBtnB.mousePressed(() => {
-    clearClass(2);
-    updateExampleCounts();
-  });
-
-  buttonPredict = select('#buttonPredict');
-  buttonPredict.mousePressed(predict);
-}
-
-function draw() {
-  background(0);
-  image(video, 0, 0, width, height);
+function videoError() {
+  console.error('Video not available');
 }
 
 // A function to be called when the model has been loaded
 function modelLoaded() {
-  select('#loading').html('Model loaded!');
+  document.getElementById('loader').innerText = 'Model loaded!';
 }
 
-// Train the Classifier on a frame from the video.
+// Start the KNN Classifier
+const knn = new ml5.KNNImageClassifier(modelLoaded, video, 2, 1);
+
+// Train Buttons
+document.getElementById('buttonA').onclick = () => train(1);
+document.getElementById('buttonB').onclick = () => train(2);
+
+// Reset buttons
+document.getElementById('resetA').onclick = () => {
+  clearClass(1);
+  updateExampleCounts();
+};
+document.getElementById('resetB').onclick = () => {
+  clearClass(2);
+  updateExampleCounts();
+};
+
+// Predict Button
+document.getElementById('predict').onclick = () => predict();
+
+// A function to train the Classifier on a frame from the video.
 function train(category) {
-  let msg;
-  if (category == 1) {
-    msg = 'A';
-  } else if (category == 2) {
-    msg = 'B';
-  }
-  select('#training').html(msg);
-  knn.addImage(video.elt, category);
+  knn.addImage(category);
   updateExampleCounts();
 }
 
 // Predict the current frame.
 function predict() {
-  knn.predict(video.elt, gotResults);
-}
+  knn.predict((results) => {
+    let msg;
 
-// Show the results
-function gotResults(results) {
-  let msg;
+    if (results.classIndex === 1) {
+      msg = 'A';
+    } else if (results.classIndex === 2) {
+      msg = 'B';
+    }
+    document.getElementById('result').innerText = msg;
 
-  if (results.classIndex == 1) {
-    msg = 'A';
-  } else if (results.classIndex == 2) {
-    msg = 'B';
-  }
-  select('#result').html(msg);
+    // Update confidence
+    document.getElementById('confidenceA').innerText = results.confidences[1];
+    document.getElementById('confidenceB').innerText = results.confidences[2];
 
-  // Update confidence
-  select('#confidenceA').html(results.confidences[1]);
-  select('#confidenceB').html(results.confidences[2]);
-
-  setTimeout(() => predict(), 50);
+    setTimeout(() => predict(), 150);
+  });
 }
 
 // Clear the data in one class
@@ -100,7 +74,7 @@ function clearClass(classIndex) {
 
 // Update the example count for each class
 function updateExampleCounts() {
-  let counts = knn.getClassExampleCount();
-  select('#exampleA').html(counts[1]);
-  select('#exampleB').html(counts[2]);
+  const counts = knn.getClassExampleCount();
+  document.getElementById('exampleA').innerText = counts[1];
+  document.getElementById('exampleB').innerText = counts[2];
 }

@@ -10,7 +10,7 @@ Classify a live webcam stream using the [KNN Image Classifier](api-Imagenet.md).
 ## Demo
 
 <div class="example">
-  <div id="canvasContainer"></div>
+  <video id="video" autoplay width="320" height="240"></video>
   <p>My guess is a <span id="result">...</span>.
   <br/>My confidence is <span id="probability">...</span>.
   </p>
@@ -21,41 +21,35 @@ Classify a live webcam stream using the [KNN Image Classifier](api-Imagenet.md).
 ## Code
 
 ```javascript
-let imagenet;
-let video;
+// Initialize the imageNet method with the MobileNet model.
+const imagenet = new ml5.ImageNet('MobileNet');
 
-function preload() {
-  // Initialize the ImageNet method with the MobileNet model.
-  imagenet = new ml5.ImageNet('MobileNet');
+// Set up the video stream
+const video = document.getElementById('video');
+navigator.getUserMedia({ video: true }, handleVideo, videoError);
+
+function handleVideo(stream) {
+  video.src = window.URL.createObjectURL(stream);
+  guess(); // Once the video is set up, start predicting
 }
 
-function setup() {
-  createCanvas(320, 240).parent('canvasContainer');
-  video = createCapture(VIDEO);
-  background(0);
-  video.attribute('width', 127);
-  video.attribute('height', 127);
-  video.hide();
-  guess();
+function videoError(err) {
+  console.error('Video not available');
 }
 
+// Get a prediction for that image
 function guess() {
-  // Get a prediction for that image
-  imagenet.predict(video.elt, 10, gotResult);
+  imagenet.predict(video, 10, gotResult);
 }
 
-function draw() {
-  background(0);
-  image(video, 0, 0, width, height);
-}
-
+// When we get the results
 function gotResult(results) {
-  // The results are in an array ordered by probability.
-  select('#result').html(results[0].label);
-  select('#probability').html(nf(results[0].probability, 0, 2));
-  setTimeout(guess, 250);
+  const result = document.getElementById('result');
+  const probability = document.getElementById('probability');
+  result.innerText = results[0].label;
+  probability.innerText = results[0].probability.toFixed(2);
+  setTimeout(guess, 350);
 }
-
 ```
 
 ## [Source](https://github.com/ITPNYU/ml5/tree/master/examples/imagenetCamera)
