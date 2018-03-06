@@ -16,6 +16,7 @@
     "build:main": "webpack --output-filename ml5.js",
     "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js",
     "build:examples": "cp dist/ml5.min.js examples/libraries/",
+    "build:docs": "cp dist/ml5.min.js website/static/js/",
     "test:dev": "jest --watch",
     "test": "jest"
   },
