@@ -23387,11 +23387,14 @@ var ImageNet = function () {
     _classCallCheck(this, ImageNet);
 
     this.model = model;
-    this.ready = false;
+    this.readyPromise = null;
     this.math = _deeplearn.ENV.math;
     if (this.model === 'SqueezeNet') {
       this.net = new _deeplearnSqueezenet.SqueezeNet(this.math);
     } else if (this.model === 'MobileNet') {
+      this.net = new _mobileNet.MobileNet(this.math);
+    } else {
+      console.log(model + ' is not a valid model. Using MobileNet as default.');
       this.net = new _mobileNet.MobileNet(this.math);
     }
   }
@@ -23400,22 +23403,20 @@ var ImageNet = function () {
     key: 'predict',
     value: function () {
       var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(img, num, callback) {
-        var _this = this;
-
         return regeneratorRuntime.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                if (this.ready) {
-                  this.getClasses(img, num, callback);
-                } else {
-                  ImageNet.loadModel(this.net).then(function () {
-                    _this.ready = true;
-                    _this.getClasses(img, num, callback);
-                  });
+                if (!this.readyPromise) {
+                  this.readyPromise = ImageNet.loadModel(this.net);
                 }
+                _context.next = 3;
+                return this.readyPromise;
 
-              case 1:
+              case 3:
+                return _context.abrupt('return', this.getClasses(img, num, callback));
+
+              case 4:
               case 'end':
                 return _context.stop();
             }
@@ -23459,9 +23460,12 @@ var ImageNet = function () {
                 results.sort(function (a, b) {
                   return b.probability - a.probability;
                 });
-                callback(results);
+                if (callback) {
+                  callback(results);
+                }
+                return _context2.abrupt('return', results);
 
-              case 9:
+              case 10:
               case 'end':
                 return _context2.stop();
             }
@@ -26605,8 +26609,8 @@ var LSTMGenerator = function () {
             switch (_context3.prev = _context3.next) {
               case 0:
                 seed = options.seed || this.defaults.seed;
-                length = options.length || this.defaults.length;
-                temperature = options.temperature || this.defaults.temperature;
+                length = +options.length || this.defaults.length;
+                temperature = +options.temperature || this.defaults.temperature;
                 results = [];
 
                 if (!this.ready) {
@@ -26987,24 +26991,27 @@ var Word2Vec = function () {
       if (!vector) {
         return null;
       }
-      return Word2Vec.nearest(this.model, vector, 1, max);
+      return Word2Vec.nearest(this.model, vector, 1, max + 1);
     }
   }], [{
     key: 'addOrSubtract',
     value: function addOrSubtract(model, values, operation) {
       var vectors = [];
       var notFound = [];
+      if (values.length < 2) {
+        throw new Error('Invalid input, must be passed more than 1 value');
+      }
       values.forEach(function (value) {
         var vector = model[value];
         if (!vector) {
-          notFound.push(vector);
+          notFound.push(value);
         } else {
           vectors.push(vector);
         }
       });
 
-      if (notFound.length > 0 || values.length < 2) {
-        return { error: 'Invalid inputs', notFound: notFound, values: values };
+      if (notFound.length > 0) {
+        throw new Error('Invalid input, vector not found for: ' + notFound.toString());
       }
       return _deeplearn.ENV.math.scope(function () {
         var result = vectors[0];
