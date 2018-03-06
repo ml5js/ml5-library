@@ -19,6 +19,9 @@
       "fast-style-transfer-webcam-example",
       "word2vec-example"
     ],
+    "Datasets": [
+      "datasets"
+    ],
     "Training Models": [
       "training-setup",
       "training-lstm"
