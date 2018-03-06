@@ -3,7 +3,7 @@ id: video-classification-example
 title: Video Classification
 ---
 
-Classify a live webcam stream using the [KNN Image Classifier](api-Imagenet.md). Built using [p5.js](https://p5js.org/).
+Classify a live webcam stream using the [KNN Image Classifier](api-Imagenet.md). Built using [p5.js](https://p5js.org/). (testing CircleCI)
 
 *Please enable your webcam*
 
