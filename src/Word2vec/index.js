@@ -51,6 +51,11 @@ class Word2Vec {
     return Word2Vec.nearest(this.model, vector, 1, max + 1);
   }
 
+  getRandomWord() {
+    const words = Object.keys(this.model);
+    return words[Math.floor(Math.random() * words.length)];
+  }
+
   static addOrSubtract(model, values, operation) {
     const vectors = [];
     const notFound = [];
