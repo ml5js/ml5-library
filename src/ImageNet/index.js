@@ -11,7 +11,7 @@ import { processImage, processVideo } from '../utils/imageUtilities';
 class ImageNet {
   constructor(model) {
     this.model = model;
-    this.ready = false;
+    this.readyPromise = null;
     this.math = ENV.math;
     if (this.model === 'SqueezeNet') {
       this.net = new SqueezeNet(this.math);
@@ -52,6 +52,8 @@ class ImageNet {
         img = null;
       });
     }
+    await this.readyPromise;
+    return this.getClasses(img, num, callback);
   }
 
   // Private Method
@@ -67,7 +69,10 @@ class ImageNet {
       });
     });
     results.sort((a, b) => b.probability - a.probability);
-    callback(results);
+    if (callback) {
+      callback(results);
+    }
+    return results;
   }
 
   static async loadModel(model) {

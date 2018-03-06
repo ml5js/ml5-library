@@ -37,6 +37,18 @@
     min-width: 300px;
   }
 
+  .sound-container {
+    display: block;
+    text-align: center;
+  }
+
+  .sound-container .container {
+    height: 100px;
+    margin: 26px 10px;
+    padding: 38px;
+    border: 4px solid lightgray;
+  }
+
   .container {
     position: relative;
   }
@@ -51,6 +63,22 @@
 
   #containerC {
     border: 4px solid #ff5ab3;
+  }
+
+  #soundA.playing {
+    border: 4px solid #4ca64c;
+    color: #4ca64c;
+    font-weight: bold;
+  }
+  #soundB.playing {
+    border: 4px solid #b76fdb;
+    color: #b76fdb;
+    font-weight: bold;
+  }
+  #soundC.playing {
+    border: 4px solid #ff5ab3;
+    color: #ff5ab3;
+    font-weight: bold;
   }
 
   .image {
@@ -294,6 +322,35 @@
 
   /* .col-10 {width: 100%;} */
 
+  /* Radio selecting output type */
+  .output-control {
+    text-align: center;
+  }
+  .radio-label {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 18px;
+    color: gray;
+    margin-bottom: 10px;
+    padding: 0 20px;
+    /*transition: all linear 0.1s;*/
+  }
+  .radio-label:hover {
+    text-decoration: underline;
+  }
+  input[type=radio]:checked + label{
+    color: #ed225d;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+  /* Hide the browser's default radio button */
+  .output-control input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  /* End radio */
+
   @media only screen and (max-width: 1024px) {
     /* For mobile phones: */
     [class*="col-"] {
@@ -303,6 +360,7 @@
 
   </style>
   <script src="../libraries/p5.min.js"></script>
+  <script src="../libraries/p5.sound.min.js"></script>
   <script src="../libraries/p5.dom.min.js"></script>
   <script src="../libraries/ml5.min.js"></script>
 </head>
@@ -310,7 +368,7 @@
 <body>
   <div class="body-container row">
     <h1 class="center-text">Teachable Machine</h1>
-    <p class="center-text">This is a recreation of Google's <a href="https://teachablemachine.withgoogle.com">Teachable Machines</a> in <a href="https://github.com/ITPNYU/ml5">ML5.js </a>. Get the Code <a href="https://itpnyu.github.io/ml5/demos/teachableMachine/">here</a> </p>
+    <p class="center-text">This is a recreation of Google's <a href="https://teachablemachine.withgoogle.com">Teachable Machines</a> in <a href="https://github.com/ITPNYU/ml5">ML5.js</a>. Get the Code <a href="https://itpnyu.github.io/ml5/demos/teachableMachine/">here</a> </p>
     <div class="input-container white-box col-3">
       <h3 class="title">INPUT</h3>
       <div id="canvasContainer" class="center-container"></div>
@@ -383,30 +441,46 @@
 
     <div class="white-box output-container col-3">
       <h3 class="title">OUTPUT</h3>
-      <div class="center-container"><img id="output" src="default.png" /></div>
+      <div class="output-control">
+        <input type="radio" id="option-gif" name="output-radio" checked><label for="option-gif" class="radio-label">GIF</label>
+        <input type="radio" id="option-sound" name="output-radio"><label for="option-sound" class="radio-label">Sound</label>
+      </div>
 
-      <div class="gif-container">
-        <div class="container" id="containerA">
-          <img class="image" id="imgA" src="output0.gif" />
-          <div class="middle" onclick="uploadGif(0)">
-            <div class="text">EDIT</div>
+      <div id="gif-output">
+        <div class="center-container"><img id="output" src="default.png" /></div>
+
+        <div class="gif-container">
+          <div class="container" id="containerA">
+            <img class="image" id="imgA" src="output0.gif" />
+            <div class="middle" onclick="uploadGif(0)">
+              <div class="text">EDIT</div>
+            </div>
           </div>
-        </div>
-
-        <div class="container" id="containerB">
-          <img class="image" id="imgB" src="output1.gif" />
-          <div class="middle" onclick="uploadGif(1)">
-            <div class="text">EDIT</div>
+          
+          <div class="container" id="containerB">
+            <img class="image" id="imgB" src="output1.gif" />
+            <div class="middle" onclick="uploadGif(1)">
+              <div class="text">EDIT</div>
+            </div>
           </div>
-        </div>
 
-        <div class="container" id="containerC">
-          <img class="image" id="imgC" src="output2.gif" />
-          <div class="middle" onclick="uploadGif(2)">
-            <div class="text">EDIT</div>
+          <div class="container" id="containerC">
+            <img class="image" id="imgC" src="output2.gif" />
+            <div class="middle" onclick="uploadGif(2)">
+              <div class="text">EDIT</div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div id="sound-output" style="display:none;">
+        <div class="sound-container">
+          <div class="container" id="soundA"></div>
+          <div class="container" id="soundB"></div>
+          <div class="container" id="soundC"></div>
+        </div>
+      </div>
+
     </div>
   </div>
   <script src="sketch.js"></script>

@@ -23463,7 +23463,7 @@ var ImageNet = function () {
     _classCallCheck(this, ImageNet);
 
     this.model = model;
-    this.ready = false;
+    this.readyPromise = null;
     this.math = _deeplearn.ENV.math;
     if (this.model === 'SqueezeNet') {
       this.net = new _deeplearnSqueezenet.SqueezeNet(this.math);
@@ -23515,8 +23515,13 @@ var ImageNet = function () {
                     img = null;
                   });
                 }
+                _context.next = 5;
+                return this.readyPromise;
 
-              case 3:
+              case 5:
+                return _context.abrupt('return', this.getClasses(img, num, callback));
+
+              case 6:
               case 'end':
                 return _context.stop();
             }
@@ -23560,9 +23565,12 @@ var ImageNet = function () {
                 results.sort(function (a, b) {
                   return b.probability - a.probability;
                 });
-                callback(results);
+                if (callback) {
+                  callback(results);
+                }
+                return _context2.abrupt('return', results);
 
-              case 9:
+              case 10:
               case 'end':
                 return _context2.stop();
             }
@@ -27098,17 +27106,20 @@ var Word2Vec = function () {
     value: function addOrSubtract(model, values, operation) {
       var vectors = [];
       var notFound = [];
+      if (values.length < 2) {
+        throw new Error('Invalid input, must be passed more than 1 value');
+      }
       values.forEach(function (value) {
         var vector = model[value];
         if (!vector) {
-          notFound.push(vector);
+          notFound.push(value);
         } else {
           vectors.push(vector);
         }
       });
 
-      if (notFound.length > 0 || values.length < 2) {
-        return { error: 'Invalid inputs', notFound: notFound, values: values };
+      if (notFound.length > 0) {
+        throw new Error('Invalid input, vector not found for: ' + notFound.toString());
       }
       return _deeplearn.ENV.math.scope(function () {
         var result = vectors[0];
