@@ -6,15 +6,15 @@ Based on https://github.com/shiffman/p5-word2vec
 import { ENV, Array1D, Scalar, util } from 'deeplearn';
 
 class Word2Vec {
-  constructor(vectors) {
+  constructor(vectors, callback) {
     this.ready = false;
     this.model = {};
     this.modelSize = 0;
     this.math = ENV.math;
-    this.loadVectors(vectors);
+    this.loadVectors(vectors, callback);
   }
 
-  loadVectors(file) {
+  loadVectors(file, callback) {
     fetch(file)
       .then(response => response.json())
       .then((json) => {
@@ -22,6 +22,7 @@ class Word2Vec {
           this.model[word] = Array1D.new(json.vectors[word]);
         });
         this.modelSize = Object.keys(json).length;
+        callback();
       }).catch((error) => {
         console.log(`There has been a problem loading the vocab: ${error.message}`);
       });
@@ -49,6 +50,11 @@ class Word2Vec {
       return null;
     }
     return Word2Vec.nearest(this.model, vector, 1, max + 1);
+  }
+
+  getRandomWord() {
+    const words = Object.keys(this.model);
+    return words[Math.floor(Math.random() * words.length)];
   }
 
   static addOrSubtract(model, values, operation) {
