@@ -81,8 +81,5 @@
     ]
   },
   "dependencies": {
-    "deeplearn": "0.4.1",
-    "deeplearn-knn-image-classifier": "0.2.3",
-    "deeplearn-squeezenet": "0.1.9"
   }
 }
