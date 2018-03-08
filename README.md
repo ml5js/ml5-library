@@ -13,11 +13,11 @@ ML5.js is a high level JavaScript library for machine learning. The main idea of
 
 ## Resources
 
-- [Getting Started](https://itpnyu.github.io/ml5/docs/getting-started.html)
-- [API Reference](https://itpnyu.github.io/ml5/docs/imagenet.html)
-- [Examples](https://itpnyu.github.io/ml5/docs/simple-image-classification-example.html)
-- [Learn](https://itpnyu.github.io/ml5/docs/glossary-statistics.html)
-- [Experiments](https://itpnyu.github.io/ml5/en/experiments.html)
+- [Getting Started](https://ml5js.github.io/docs/getting-started.html)
+- [API Reference](https://ml5js.github.io/docs/imagenet.html)
+- [Examples](https://ml5js.github.io/docs/simple-image-classification-example.html)
+- [Learn](https://ml5js.github.io/docs/glossary-statistics.html)
+- [Experiments](https://ml5js.github.io/en/experiments.html)
 
 ## Contributing
 
