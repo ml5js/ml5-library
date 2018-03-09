@@ -1,66 +1,52 @@
-/* eslint-env browser */
 /*
-ImageNet Class
+Image classifier class based on ImageNet trained models.
+SqueezeNet and MobileNet supported.
 */
 
-import { ENV, Array3D } from 'deeplearn';
+import { fromPixels, image } from 'deeplearn';
 import { SqueezeNet } from 'deeplearn-squeezenet';
-import { MobileNet } from './../utils/mobileNet';
-import { processImage, processVideo } from '../utils/imageUtilities';
+import { MobileNet } from './MobileNet';
+import { processVideo } from '../utils/imageUtilities';
 
 class ImageNet {
   constructor(model) {
     this.model = model;
     this.readyPromise = null;
-    this.math = ENV.math;
     if (this.model === 'SqueezeNet') {
-      this.net = new SqueezeNet(this.math);
+      this.net = new SqueezeNet();
     } else if (this.model === 'MobileNet') {
-      this.net = new MobileNet(this.math);
+      this.net = new MobileNet();
     } else {
       console.warn(`${model} is not a valid model. Using MobileNet as default.`);
-      this.net = new MobileNet(this.math);
+      this.net = new MobileNet();
     }
     this.videoElt = null;
   }
 
   async predict(input, num, callback) {
-    let img;
-
-    if (input instanceof HTMLImageElement) {
-      img = processImage(input, '227');
-    } else if (input instanceof HTMLVideoElement && !this.videoElt) {
+    if (input instanceof HTMLVideoElement && !this.videoElt) {
       this.videoElt = processVideo(input, '127');
     }
 
-    if (this.ready) {
-      if (this.videoElt) {
-        this.getClasses(this.videoElt, num, callback);
-      } else {
-        this.getClasses(img, num, callback);
-        img = null;
-      }
-    } else if (this.videoElt) {
-      ImageNet.loadModel(this.net).then(() => {
-        this.ready = true;
-        this.getClasses(this.videoElt, num, callback);
-      });
-    } else {
-      ImageNet.loadModel(this.net).then(() => {
-        this.ready = true;
-        this.getClasses(img, num, callback);
-        img = null;
-      });
+    if (!this.readyPromise) {
+      this.readyPromise = ImageNet.loadModel(this.net);
     }
+
     await this.readyPromise;
-    return this.getClasses(img, num, callback);
+    if (this.videoElt) {
+      if (this.videoElt.src) {
+        return this.getClasses(this.videoElt, num, callback);
+      }
+    }
+    return this.getClasses(input, num, callback);
   }
 
   // Private Method
   async getClasses(img, num, callback) {
-    const image = Array3D.fromPixels(img);
+    const pixels = fromPixels(img);
+    const resized = image.resizeBilinear(pixels, [227, 227]);
     const results = [];
-    const result = this.net.predict(image);
+    const result = this.net.predict(resized);
     const topKClasses = await this.net.getTopKClasses(result, num || 10);
     Object.keys(topKClasses).forEach((value) => {
       results.push({
