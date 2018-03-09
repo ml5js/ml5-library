@@ -1,10 +1,3 @@
-/*
-ML5
-v.0.0.1
-ML5 is a high level javascript library for machine learning.
-Made @NYU ITP
-*/
-
 import * as dl from 'deeplearn';
 import ImageNet from './ImageNet/index';
 import KNNImageClassifier from './KNNImage/index';
@@ -15,6 +8,7 @@ import TransformNet from './TransformNet/index';
 import Yolo from './Yolo/index';
 import * as imageUtils from './utils/imageUtilities';
 
+window.dl = dl;
 module.exports = {
   ImageNet,
   KNNImageClassifier,
@@ -23,6 +17,5 @@ module.exports = {
   TransformNet,
   Yolo,
   Word2Vec,
-  dl,
   ...imageUtils,
 };
