@@ -20,12 +20,12 @@ class ImageNet {
       console.warn(`${model} is not a valid model. Using MobileNet as default.`);
       this.net = new MobileNet();
     }
-    this.videoElt = null;
+    this.video = null;
   }
 
   async predict(input, num, callback) {
-    if (input instanceof HTMLVideoElement && !this.videoElt) {
-      this.videoElt = processVideo(input, '127');
+    if (input instanceof HTMLVideoElement && !this.video) {
+      this.video = processVideo(input, '127');
     }
 
     if (!this.readyPromise) {
@@ -33,9 +33,9 @@ class ImageNet {
     }
 
     await this.readyPromise;
-    if (this.videoElt) {
-      if (this.videoElt.src) {
-        return this.getClasses(this.videoElt, num, callback);
+    if (this.video) {
+      if (this.video.src) {
+        return this.getClasses(this.video, num, callback);
       }
     }
     return this.getClasses(input, num, callback);
