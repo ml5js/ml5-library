@@ -11,7 +11,7 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
-    "start:dev": "webpack-dev-server",
+    "start:dev": "webpack-dev-server --mode development --watch-content-base --open",
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename ml5.js",
     "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js",
@@ -48,6 +48,7 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-loader": "2.0.0",
     "eslint-plugin-import": "2.9.0",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
     "jest": "22.4.2",
     "npm-run-all": "4.1.2",
