@@ -1,10 +1,6 @@
-# [ML5](https://itpnyu.github.io/ml5/)
+# ![ML5](https://avatars1.githubusercontent.com/u/36965392?s=200&v=4)
 
-
-[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg?style=flat-square)](https://circleci.com/gh/ITPNYU/ml5)
-
-
-[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
+[![CircleCI](https://img.shields.io/circleci/project/github/RedSparr0w/node-csgo-parser.svg?style=flat-square)](https://circleci.com/gh/ITPNYU/ml5) [![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
 
 
 **_This project is currently in development._**
