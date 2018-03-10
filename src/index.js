@@ -4,7 +4,7 @@ import KNNImageClassifier from './KNNImage/index';
 import LSTMGenerator from './Lstm/index';
 import NeuralNetwork from './NeuralNetwork/index';
 import Word2Vec from './Word2vec/index';
-import TransformNet from './TransformNet/index';
+import FastStyle from './FastStyle/index';
 import Yolo from './Yolo/index';
 import * as imageUtils from './utils/imageUtilities';
 
@@ -14,7 +14,7 @@ module.exports = {
   KNNImageClassifier,
   LSTMGenerator,
   NeuralNetwork,
-  TransformNet,
+  FastStyle,
   Yolo,
   Word2Vec,
   ...imageUtils,

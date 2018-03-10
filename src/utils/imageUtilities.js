@@ -38,7 +38,6 @@ const array3DToImage = (imgData) => {
   outputImg.src = dataUrl;
   outputImg.style.width = imgWidth;
   outputImg.style.height = imgHeight;
-
   return outputImg;
 };
 
