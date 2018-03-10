@@ -12,7 +12,7 @@ const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
 class LSTMGenerator {
-  constructor(model) {
+  constructor(model, callback) {
     this.ready = false;
     this.model = {};
     this.cellsAmount = 0;
@@ -23,11 +23,10 @@ class LSTMGenerator {
       length: 20,
       temperature: 0.5,
     };
-    this.loadVocab(model);
-    this.loadCheckpoints(model);
+    this.loadCheckpoints(model, callback);
   }
 
-  loadCheckpoints(path) {
+  loadCheckpoints(path, callback) {
     const reader = new dl.CheckpointLoader(path);
     reader.getAllVariables().then(async (vars) => {
       Object.keys(vars).forEach((key) => {
@@ -48,16 +47,18 @@ class LSTMGenerator {
           this.model[key] = vars[key];
         }
       });
-      this.ready = true;
+      this.loadVocab(path, callback);
     });
   }
 
-  loadVocab(file) {
+  loadVocab(file, callback) {
     fetch(`${file}/vocab.json`)
       .then(response => response.json())
       .then((json) => {
         this.vocab = json;
         this.vocabSize = Object.keys(json).length;
+        this.ready = true;
+        callback();
       }).catch((error) => {
         console.error(`There has been a problem loading the vocab: ${error.message}`);
       });
