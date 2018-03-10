@@ -6,7 +6,6 @@ import Word2Vec from './Word2vec/index';
 import FastStyle from './FastStyle/index';
 import * as imageUtils from './utils/imageUtilities';
 
-window.dl = dl;
 module.exports = {
   ImageNet,
   KNNImageClassifier,
@@ -14,4 +13,5 @@ module.exports = {
   FastStyle,
   Word2Vec,
   ...imageUtils,
+  dl,
 };
