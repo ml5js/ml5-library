@@ -1077,8 +1077,8 @@ var imagenet_classes_1 = require("./imagenet_classes");
 var GOOGLE_CLOUD_STORAGE_DIR = 'https://storage.googleapis.com/learnjs-data/checkpoint_zoo/';
 var MobileNet = (function () {
     function MobileNet() {
-        this.PREPROCESS_DIVISOR = window.dl.scalar(255.0 / 2);
-        this.ONE = window.dl.scalar(1);
+        this.PREPROCESS_DIVISOR = ml5.dl.scalar(255.0 / 2);
+        this.ONE = ml5.dl.scalar(1);
     }
     MobileNet.prototype.load = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -1086,7 +1086,7 @@ var MobileNet = (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        checkpointLoader = new window.dl.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'mobilenet_v1_1.0_224/');
+                        checkpointLoader = new ml5.dl.CheckpointLoader(GOOGLE_CLOUD_STORAGE_DIR + 'mobilenet_v1_1.0_224/');
                         _a = this;
                         return [4, checkpointLoader.getAllVariables()];
                     case 1:
@@ -1098,7 +1098,7 @@ var MobileNet = (function () {
     };
     MobileNet.prototype.predict = function (input) {
         var _this = this;
-        return window.dl.tidy(function () {
+        return ml5.dl.tidy(function () {
             var preprocessedInput = input.div(_this.PREPROCESS_DIVISOR).sub(_this.ONE);
             var x1 = _this.convBlock(preprocessedInput, 2);
             var x2 = _this.depthwiseConvBlock(x1, 1, 1);
