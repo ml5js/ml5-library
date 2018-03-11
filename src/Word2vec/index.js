@@ -2,7 +2,7 @@
 Word2Vec
 */
 
-import { div, tensor, add, sub, util } from 'deeplearn';
+import { div, tensor, add, sub, util, scalar } from 'deeplearn';
 
 class Word2Vec {
   constructor(vectors, callback) {
@@ -38,7 +38,7 @@ class Word2Vec {
 
   average(inputs, max = 1) {
     const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-    const avg = div(sum, tensor(inputs.length));
+    const avg = div(sum, scalar(inputs.length));
     return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
   }
 

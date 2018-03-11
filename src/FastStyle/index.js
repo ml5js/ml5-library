@@ -10,9 +10,9 @@ class FastStyle {
   constructor(model, callback) {
     this.ready = false;
     this.variableDictionary = {};
-    this.timesScalar = dl.tensor(150);
-    this.plusScalar = dl.tensor(255.0 / 2);
-    this.epsilonScalar = dl.tensor(1e-3);
+    this.timesScalar = dl.scalar(150);
+    this.plusScalar = dl.scalar(255.0 / 2);
+    this.epsilonScalar = dl.scalar(1e-3);
     this.loadCheckpoints(model).then(() => {
       this.ready = true;
       callback();
@@ -80,7 +80,7 @@ class FastStyle {
       const scaled = dl.mul(this.timesScalar, outTanh);
       const shifted = dl.add(this.plusScalar, scaled);
       const clamped = dl.clipByValue(shifted, 0, 255);
-      const normalized = dl.div(clamped, dl.tensor(255.0));
+      const normalized = dl.div(clamped, dl.scalar(255.0));
       return normalized;
     });
     return array3DToImage(result);
