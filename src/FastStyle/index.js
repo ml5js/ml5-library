@@ -15,7 +15,9 @@ class FastStyle {
     this.epsilonScalar = dl.scalar(1e-3);
     this.loadCheckpoints(model).then(() => {
       this.ready = true;
-      callback();
+      if (callback) {
+        callback();
+      }
     });
   }
   async loadCheckpoints(path) {
