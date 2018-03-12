@@ -71,7 +71,7 @@ class LSTMGenerator {
     const results = [];
 
     if (this.ready) {
-      const forgetBias = dl.scalar(1.0);
+      const forgetBias = dl.tensor(1.0);
       const LSTMCells = [];
       let c = [];
       let h = [];
@@ -117,7 +117,7 @@ class LSTMGenerator {
         const outputH = h[1];
         const weightedResult = dl.matMul(outputH, this.model.fullyConnectedWeights);
         const logits = dl.add(weightedResult, this.model.fullyConnectedBiases);
-        const divided = dl.div(logits, dl.scalar(temperature));
+        const divided = dl.div(logits, dl.tensor(temperature));
         const probabilities = dl.exp(divided);
         const normalized = await dl.div(
           probabilities,

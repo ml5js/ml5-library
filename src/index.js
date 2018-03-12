@@ -3,14 +3,14 @@ import ImageNet from './ImageNet/index';
 import KNNImageClassifier from './KNNImage/index';
 import LSTMGenerator from './LSTM/index';
 import Word2Vec from './Word2vec/index';
-import FastStyle from './FastStyle/index';
+import StyleTransfer from './StyleTransfer/index';
 import * as imageUtils from './utils/imageUtilities';
 
 module.exports = {
   ImageNet,
   KNNImageClassifier,
   LSTMGenerator,
-  FastStyle,
+  StyleTransfer,
   Word2Vec,
   ...imageUtils,
   dl,

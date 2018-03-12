@@ -6,7 +6,7 @@ Fast Style Transfer
 import * as dl from 'deeplearn';
 import { array3DToImage } from '../utils/imageUtilities';
 
-class FastStyle {
+class StyleTransfer {
   constructor(model, callback) {
     this.ready = false;
     this.variableDictionary = {};
@@ -30,8 +30,8 @@ class FastStyle {
     const moments = dl.moments(input, [0, 1]);
     const mu = moments.mean;
     const sigmaSq = moments.variance;
-    const shift = this.variables[FastStyle.getVariableName(id)];
-    const scale = this.variables[FastStyle.getVariableName(id + 1)];
+    const shift = this.variables[StyleTransfer.getVariableName(id)];
+    const scale = this.variables[StyleTransfer.getVariableName(id + 1)];
     const epsilon = this.epsilonScalar;
     const normalized = dl.div(dl.sub(input.asType('float32'), mu), dl.sqrt(dl.add(sigmaSq, epsilon)));
     const shifted = dl.add(dl.mul(scale, normalized), shift);
@@ -39,7 +39,7 @@ class FastStyle {
   }
 
   convLayer(input, strides, relu, id) {
-    const y = dl.conv2d(input, this.variables[FastStyle.getVariableName(id)], [strides, strides], 'same');
+    const y = dl.conv2d(input, this.variables[StyleTransfer.getVariableName(id)], [strides, strides], 'same');
     const y2 = this.instanceNorm(y, id + 1);
     if (relu) {
       return dl.relu(y2);
@@ -58,7 +58,7 @@ class FastStyle {
     const newRows = height * strides;
     const newCols = width * strides;
     const newShape = [newRows, newCols, numFilters];
-    const y = dl.conv2dTranspose(input, this.variables[FastStyle.getVariableName(id)], newShape, [strides, strides], 'same');
+    const y = dl.conv2dTranspose(input, this.variables[StyleTransfer.getVariableName(id)], newShape, [strides, strides], 'same');
     const y2 = this.instanceNorm(y, id + 1);
     const y3 = dl.relu(y2);
     return y3;
@@ -97,4 +97,4 @@ class FastStyle {
   }
 }
 
-export default FastStyle;
+export default StyleTransfer;
