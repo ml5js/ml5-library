@@ -1,7 +1,7 @@
 {
   "name": "ml5",
   "version": "0.0.3",
-  "description": "A high level javascript library for machine learning.",
+  "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.js",
   "directories": {
     "examples": "examples",
