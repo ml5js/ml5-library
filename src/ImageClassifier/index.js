@@ -8,7 +8,7 @@ import { SqueezeNet } from 'deeplearn-squeezenet';
 import { MobileNet } from './MobileNet';
 import { processVideo } from '../utils/imageUtilities';
 
-class ImageNet {
+class ImageClassifier {
   constructor(model) {
     this.model = model;
     this.readyPromise = null;
@@ -29,7 +29,7 @@ class ImageNet {
     }
 
     if (!this.readyPromise) {
-      this.readyPromise = ImageNet.loadModel(this.net);
+      this.readyPromise = ImageClassifier.loadModel(this.net);
     }
 
     await this.readyPromise;
@@ -67,4 +67,4 @@ class ImageNet {
   }
 }
 
-export default ImageNet;
+export default ImageClassifier;

@@ -2,9 +2,10 @@
 KNN Image Classifier model
 */
 
-import { fromPixels } from 'deeplearn';
+import * as dl from 'deeplearn';
 import { KNNImageClassifier as KNN } from 'deeplearn-knn-image-classifier';
 import { processVideo } from '../utils/imageUtilities';
+import * as io from '../utils/io';
 
 class KNNImageClassifier {
   constructor(numClasses, knnKValue, callback, video) {
@@ -24,7 +25,7 @@ class KNNImageClassifier {
 
   async addImage(input, index, callback) {
     if (this.ready) {
-      const image = fromPixels(input);
+      const image = dl.fromPixels(input);
       this.knn.addImage(image, index);
       this.hasAnyTrainedClass = true;
       if (callback) {
@@ -35,7 +36,7 @@ class KNNImageClassifier {
 
   async addImageFromVideo(index, callback) {
     if (this.ready && this.video) {
-      const image = fromPixels(this.video);
+      const image = dl.fromPixels(this.video);
       this.knn.addImage(image, index);
       this.hasAnyTrainedClass = true;
       if (callback) {
@@ -46,7 +47,7 @@ class KNNImageClassifier {
 
   async predictFromImage(input, callback) {
     if (this.ready && this.hasAnyTrainedClass) {
-      const image = fromPixels(input);
+      const image = dl.fromPixels(input);
       const results = await this.knn.predictClass(image);
       callback(results);
     }
@@ -54,7 +55,7 @@ class KNNImageClassifier {
 
   async predictFromVideo(callback) {
     if (this.ready && this.hasAnyTrainedClass && this.video) {
-      const image = fromPixels(this.video);
+      const image = dl.fromPixels(this.video);
       const results = await this.knn.predictClass(image);
       callback(results);
     }
@@ -74,6 +75,35 @@ class KNNImageClassifier {
         callback();
       }
     }
+  }
+
+  save(name) {
+    const logits = this.knn.classLogitsMatrices;
+    const tensors = logits.map((t) => {
+      if (t) {
+        return t.dataSync();
+      }
+      return null;
+    });
+    const fileName = name || Date.now();
+    io.saveFile(`${fileName}.json`, JSON.stringify({ logits, tensors }));
+  }
+
+  load(path, callback) {
+    io.loadFile(path, (data) => {
+      const tensors = data.tensors.map((tensor, i) => {
+        if (tensor) {
+          const values = Object.keys(tensor).map(v => tensor[v]);
+          return dl.tensor(values, data.logits[i].shape, data.logits[i].dtype);
+        }
+        return null;
+      });
+      this.hasAnyTrainedClass = true;
+      this.knn.setClassLogitsMatrices(tensors);
+      if (callback) {
+        callback();
+      }
+    });
   }
 
   static async loadModel(model) {
