@@ -11,7 +11,7 @@ ml5.js is a high level JavaScript library for machine learning. The main idea of
 
 It works by wrapping [deeplearn.js](https://deeplearnjs.org/), providing a simple and friendly interface to work with GPU accelerated machine learning in JavaScript.
 
-## Usage
+## Usage
 
 Download the [full](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.js), [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) or use the online version and add it to the head section of your HTML document:
 
