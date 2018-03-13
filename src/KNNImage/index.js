@@ -1,61 +1,78 @@
 /*
 KNN Image Classifier model
-
-TODO: Resolve freeze on first train
 */
 
-import { ENV, Array3D } from 'deeplearn';
+import { fromPixels } from 'deeplearn';
 import { KNNImageClassifier as KNN } from 'deeplearn-knn-image-classifier';
 import { processVideo } from '../utils/imageUtilities';
 
 class KNNImageClassifier {
-  constructor(callback, videoElt, numClasses, knnKValue) {
+  constructor(numClasses, knnKValue, callback, video) {
     this.ready = false;
     this.hasAnyTrainedClass = false;
-    this.predicting = false;
     this.knnKValue = 0 || knnKValue;
     this.numClasses = 15 || numClasses;
-    this.math = ENV.math;
-    this.classifier = new KNN(this.numClasses, this.knnKValue, this.math);
-    KNNImageClassifier.loadModel(this.classifier).then(() => {
+    this.knn = new KNN(this.numClasses, this.knnKValue);
+    KNNImageClassifier.loadModel(this.knn).then(() => {
       this.ready = true;
       callback();
     });
-    this.videoElt = processVideo(videoElt, '127');
-  }
-
-  async addImage(index) {
-    if (this.ready && this.videoElt) {
-      this.predicting = false;
-      await this.math.scope(async () => {
-        const image = Array3D.fromPixels(this.videoElt);
-        this.classifier.addImage(image, index);
-        this.hasAnyTrainedClass = true;
-      });
+    if (video instanceof HTMLVideoElement) {
+      this.video = processVideo(video, '127');
     }
   }
 
-  async predict(callback) {
-    if (this.ready && this.hasAnyTrainedClass && this.videoElt) {
-      await this.math.scope(async () => {
-        this.predicting = true;
-        const image = Array3D.fromPixels(this.videoElt);
-        const results = await this.classifier.predictClass(image);
-        callback(results);
-      });
+  async addImage(input, index, callback) {
+    if (this.ready) {
+      const image = fromPixels(input);
+      this.knn.addImage(image, index);
+      this.hasAnyTrainedClass = true;
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  async addImageFromVideo(index, callback) {
+    if (this.ready && this.video) {
+      const image = fromPixels(this.video);
+      this.knn.addImage(image, index);
+      this.hasAnyTrainedClass = true;
+      if (callback) {
+        callback();
+      }
+    }
+  }
+
+  async predictFromImage(input, callback) {
+    if (this.ready && this.hasAnyTrainedClass) {
+      const image = fromPixels(input);
+      const results = await this.knn.predictClass(image);
+      callback(results);
+    }
+  }
+
+  async predictFromVideo(callback) {
+    if (this.ready && this.hasAnyTrainedClass && this.video) {
+      const image = fromPixels(this.video);
+      const results = await this.knn.predictClass(image);
+      callback(results);
     }
   }
 
   getClassExampleCount() {
     if (this.ready) {
-      return this.classifier.getClassExampleCount();
+      return this.knn.getClassExampleCount();
     }
     return null;
   }
 
-  clearClass(classIndex) {
+  clearClass(classIndex, callback) {
     if (this.ready && this.hasAnyTrainedClass) {
-      this.classifier.clearClass(classIndex);
+      this.knn.clearClass(classIndex);
+      if (callback) {
+        callback();
+      }
     }
   }
 
