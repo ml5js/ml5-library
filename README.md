@@ -5,7 +5,23 @@
 
 **_This project is currently in development._**
 
-ML5.js is a high level JavaScript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using JavaScript.
+### Friendly machine learning for the web!
+
+ml5.js is a high level JavaScript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using JavaScript.
+
+It works by wrapping [deeplearn.js](https://deeplearnjs.org/), providing a simple and friendly interface to work with GPU accelerated machine learning in JavaScript.
+
+## Usage
+
+Download the [full](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.js), [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) or use the online version and add it to the head section of your HTML document:
+
+```javascript
+<script src="ml5.min.js" type="text/javascript"></script>
+```
+or 
+```javascript
+<script src="https://unpkg.com/ml5" type="text/javascript"></script>
+```
 
 ## Resources
 
@@ -14,6 +30,14 @@ ML5.js is a high level JavaScript library for machine learning. The main idea of
 - [Examples](https://ml5js.github.io/docs/simple-image-classification-example.html)
 - [Learn](https://ml5js.github.io/docs/glossary-statistics.html)
 - [Experiments](https://ml5js.github.io/en/experiments.html)
+
+## Standalone Examples
+
+You can find a collection of examples using [ml5.js](https://github.com/ml5js/ml5-library) in the following repository:
+
+[github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples). 
+
+The examples are meant to serve as an introduction to the library and machine learning concepts.
 
 ## Contributing
 
