@@ -20,6 +20,7 @@ class Word2Vec {
           this.model[word] = tensor(json.vectors[word]);
         });
         this.modelSize = Object.keys(json).length;
+        this.ready = true;
         callback();
       }).catch((error) => {
         console.log(`There has been a problem loading the vocab: ${error.message}`);
