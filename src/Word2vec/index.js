@@ -21,7 +21,9 @@ class Word2Vec {
         });
         this.modelSize = Object.keys(json).length;
         this.ready = true;
-        callback();
+        if (callback) {
+          callback();
+        }
       }).catch((error) => {
         console.log(`There has been a problem loading the vocab: ${error.message}`);
       });
