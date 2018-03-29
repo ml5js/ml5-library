@@ -5,8 +5,7 @@
   "main": "dist/ml5.js",
   "directories": {
     "examples": "examples",
-    "dist": "dist",
-    "test": "test"
+    "dist": "dist"
   },
   "scripts": {
     "commit": "git-cz",
@@ -15,8 +14,8 @@
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename ml5.js",
     "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js",
-    "test:dev": "jest --watch",
-    "test": "jest"
+    "test:dev": "./node_modules/karma/bin/karma start karma.conf.js",
+    "test": "./node_modules/karma/bin/karma start karma.conf.js --no-auto-watch --single-run"
   },
   "repository": {
     "type": "git",
@@ -50,7 +49,13 @@
     "eslint-plugin-import": "2.9.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
-    "jest": "22.4.2",
+    "jasmine-core": "3.1.0",
+    "karma": "2.0.0",
+    "karma-chrome-launcher": "2.2.0",
+    "karma-firefox-launcher": "1.1.0",
+    "karma-jasmine": "1.1.1",
+    "karma-safari-launcher": "1.0.0",
+    "karma-webpack": "3.0.0",
     "npm-run-all": "4.1.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",

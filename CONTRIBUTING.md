@@ -139,27 +139,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
 
 ## Running Unit Tests
 
-This project uses [Jest](https://facebook.github.io/jest/) to run unit tests.
 
-Jest is an open-source framework to run javascript tests.
-
-If you are unfamiliar with running unit tests on Javascript, consider watching [this tutorial](https://egghead.io/lessons/javascript-unit-testing-with-mocha-and-chai).
-
-We recommend having two open tabs in your terminal window: one monitoring your source code (as shown above) and another watching for unit tests. 
-
-To start the test environment, run:
-
-```bash
-npm run test:dev
-```
-
-This will watch for files changes and run tests when necessary.
-
-If you just want to check if all tests are passing:
-
-```bash
-npm run test
-```
 
 ## ML5 Website
 
