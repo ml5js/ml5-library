@@ -9,15 +9,12 @@ import { MobileNet } from './MobileNet';
 import { processVideo } from '../utils/imageUtilities';
 
 class ImageClassifier {
-  constructor(model) {
+  constructor(model = 'MobileNet') {
     this.model = model;
     this.readyPromise = null;
     if (this.model === 'SqueezeNet') {
       this.net = new SqueezeNet();
     } else if (this.model === 'MobileNet') {
-      this.net = new MobileNet();
-    } else {
-      console.warn(`${model} is not a valid model. Using MobileNet as default.`);
       this.net = new MobileNet();
     }
     this.video = null;
@@ -38,6 +35,7 @@ class ImageClassifier {
         return this.getClasses(this.video, num, callback);
       }
     }
+
     return this.getClasses(input, num, callback);
   }
 
