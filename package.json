@@ -1,7 +1,7 @@
 {
   "name": "ml5",
-  "version": "0.0.1",
-  "description": "A high level javascript library for machine learning.",
+  "version": "0.0.3",
+  "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.js",
   "directories": {
     "examples": "examples",
@@ -11,54 +11,54 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
-    "start:dev": "webpack-dev-server",
+    "start:dev": "webpack-dev-server --mode development --watch-content-base --open",
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename ml5.js",
     "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js",
-    "build:examples": "cp dist/ml5.min.js examples/libraries/",
-    "build:docs": "cp dist/ml5.min.js website/static/js/",
     "test:dev": "jest --watch",
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ITPNYU/ml5.git"
+    "url": "git+https://github.com/ml5js/ml5-library.git"
   },
   "keywords": [
     "machine learning"
   ],
-  "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ITPNYU)",
+  "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ml5js)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ITPNYU/ml5/issues"
+    "url": "https://github.com/ml5js/ml5-library/issues"
   },
-  "homepage": "https://github.com/ITPNYU/ml5#readme",
+  "homepage": "https://github.com/ml5js/ml5-library#readme",
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
-    "babel-jest": "22.1.0",
-    "babel-loader": "7.1.2",
+    "babel-jest": "22.4.1",
+    "babel-loader": "7.1.4",
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-polyfill": "6.26.0",
+    "babel-preset-env": "1.6.1",
     "babel-preset-es2015": "6.24.1",
-    "babel-preset-stage-0": "6.24.1",
     "babel-preset-stage-2": "6.24.1",
     "babel-register": "6.26.0",
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.1.0",
-    "eslint": "4.15.0",
+    "eslint": "4.18.2",
     "eslint-config-airbnb-base": "12.1.0",
-    "eslint-loader": "1.9.0",
-    "eslint-plugin-import": "2.8.0",
+    "eslint-loader": "2.0.0",
+    "eslint-plugin-import": "2.9.0",
+    "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
-    "jest": "22.1.4",
+    "jest": "22.4.2",
     "npm-run-all": "4.1.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
-    "semantic-release": "11.0.2",
-    "uglify-es": "3.3.4",
-    "webpack": "3.10.0",
-    "webpack-dev-server": "2.10.0"
+    "semantic-release": "15.0.2",
+    "uglify-es": "3.3.9",
+    "webpack": "4.1.1",
+    "webpack-cli": "2.0.10",
+    "webpack-dev-server": "3.1.0"
   },
   "config": {
     "commitizen": {
@@ -83,8 +83,8 @@
     ]
   },
   "dependencies": {
-    "deeplearn": "0.4.1",
-    "deeplearn-knn-image-classifier": "0.2.3",
-    "deeplearn-squeezenet": "0.1.9"
+    "deeplearn": "0.5.1",
+    "deeplearn-knn-image-classifier": "0.4.2",
+    "deeplearn-squeezenet": "0.2.0"
   }
 }
