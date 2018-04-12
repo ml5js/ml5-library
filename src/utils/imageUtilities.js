@@ -1,11 +1,3 @@
-// Pre process images
-const processImage = (input, size) => {
-  const element = input.cloneNode(true);
-  element.width = size;
-  element.height = size;
-  return element;
-};
-
 // Pre process videos
 const processVideo = (input, size) => {
   const videoInput = input;
@@ -46,12 +38,10 @@ const array3DToImage = (imgData) => {
   outputImg.src = dataUrl;
   outputImg.style.width = imgWidth;
   outputImg.style.height = imgHeight;
-
   return outputImg;
 };
 
 export {
   array3DToImage,
-  processImage,
   processVideo,
 };
