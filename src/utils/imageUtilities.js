@@ -1,3 +1,8 @@
+// Copyright (c) 2018 ml5
+// 
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 // Pre process videos
 const processVideo = (input, size) => {
   const videoInput = input;

@@ -1,3 +1,8 @@
+// Copyright (c) 2018 ml5
+// 
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
 /* eslint no-await-in-loop: "off" */
 /*
