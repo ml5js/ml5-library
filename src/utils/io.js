@@ -1,3 +1,8 @@
+// Copyright (c) 2018 ml5
+// 
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 // Save a File
 const saveFile = (name, data) => {
   const downloadElt = document.createElement('a');
