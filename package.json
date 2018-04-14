@@ -14,9 +14,7 @@
     "start:dev": "webpack-dev-server --mode development --watch-content-base --open",
     "build": "npm-run-all build:*",
     "build:main": "webpack --output-filename ml5.js",
-    "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js",
-    "test:dev": "jest --watch",
-    "test": "jest"
+    "build:min": "uglifyjs dist/ml5.js -o dist/ml5.min.js"
   },
   "repository": {
     "type": "git",
@@ -34,7 +32,6 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
-    "babel-jest": "22.4.1",
     "babel-loader": "7.1.4",
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-polyfill": "6.26.0",
@@ -50,7 +47,6 @@
     "eslint-plugin-import": "2.9.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
-    "jest": "22.4.2",
     "npm-run-all": "4.1.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
@@ -63,9 +59,6 @@
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
-    },
-    "ghooks": {
-      "pre-commit": "npm run test"
     }
   },
   "files": [
