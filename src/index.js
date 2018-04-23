@@ -1,9 +1,9 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import * as dl from 'deeplearn';
+import * as tf from '@tensorflow/tfjs';
 import ImageClassifier from './ImageClassifier/index';
 import KNNImageClassifier from './KNNImageClassifier/index';
 import LSTMGenerator from './LSTM/index';
@@ -18,5 +18,5 @@ module.exports = {
   StyleTransfer,
   Word2Vec,
   ...imageUtils,
-  dl,
+  tf,
 };

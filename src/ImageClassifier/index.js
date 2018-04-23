@@ -4,10 +4,8 @@
 // https://opensource.org/licenses/MIT
 
 /*
-Image classifier class based on ImageNet trained models.
-SqueezeNet and MobileNet supported.
+Image classifier class
 */
-
 
 import * as tf from '@tensorflow/tfjs';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
@@ -25,13 +23,13 @@ class ImageClassifier {
 
   async predict(input, num, callback) {
     if (input instanceof HTMLVideoElement && !this.video) {
-      this.video = processVideo(input, '127');
+      this.video = processVideo(input, this.imageSize);
     }
 
     if (!this.modelLoaded) {
       this.net = await tf.loadModel(this.modelPath);
       // Warm up the model
-      this.net.predict(tf.zeros([1, this.imageSize, this.topKPredictions, 3])).dispose(); 
+      this.net.predict(tf.zeros([1, this.imageSize, this.imageSize, 3])).dispose();
       this.modelLoaded = true;
     }
     // Wait until the net has been loaded
@@ -39,30 +37,33 @@ class ImageClassifier {
 
     if (this.video) {
       if (this.video.src) {
-        return this.getClasses(this.video, num, callback);
+        return this.getTopKClasses(this.video, num, callback);
       }
     }
 
     const logits = tf.tidy(() => {
-      const img = tf.fromPixels(input).toFloat();
+      const pixels = tf.fromPixels(input).toFloat();
+      const resized = tf.image.resizeBilinear(pixels, [this.imageSize, this.imageSize]);
       const offset = tf.scalar(127.5);
-      const normalized = img.sub(offset).div(offset);
+      const normalized = resized.sub(offset).div(offset);
       const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
-      return mobilenet.predict(batched);
+      return this.net.predict(batched);
     });
 
-    await this.getTopKClasses(logits, this.topKPredictions, callback);
+    const results = await ImageClassifier.getTopKClasses(logits, this.topKPredictions, callback);
+    return results;
   }
 
-  // Private Method
-  async getTopKClasses(logits, topK, callback) {
+  // Static Method
+  static async getTopKClasses(logits, topK, callback) {
     const values = await logits.data();
     const valuesAndIndices = [];
     for (let i = 0; i < values.length; i += 1) {
       valuesAndIndices.push({ value: values[i], index: i });
     }
     valuesAndIndices.sort((a, b) => b.value - a.value);
-    const topkValues = new Float32Array(this.topK);
+    const topkValues = new Float32Array(topK);
+
     const topkIndices = new Int32Array(topK);
     for (let i = 0; i < topK; i += 1) {
       topkValues[i] = valuesAndIndices[i].value;
