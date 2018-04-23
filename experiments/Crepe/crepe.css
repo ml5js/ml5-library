@@ -1,0 +1,30 @@
+body {
+  background: #121632;
+  color: #eee;
+  margin: 0;
+  font-family: monospace;
+}
+
+a {
+  color: #999;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+#activation {
+  background: black;
+}
+
+#container {
+  margin: auto;
+  max-width: 960px;
+}
+
+#title {
+  font-size: 18pt;
+  text-align: center;
+  padding: 20px 0 20px 0;
+}
