@@ -1,5 +1,5 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -8,9 +8,9 @@ Image classifier class based on ImageNet trained models.
 SqueezeNet and MobileNet supported.
 */
 
-import { fromPixels, image } from 'deeplearn';
-import { SqueezeNet } from 'deeplearn-squeezenet';
-import { MobileNet } from './MobileNet';
+
+import * as tf from '@tensorflow/tfjs';
+
 import { processVideo } from '../utils/imageUtilities';
 
 class ImageClassifier {
