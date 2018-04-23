@@ -10,21 +10,16 @@ SqueezeNet and MobileNet supported.
 
 
 import * as tf from '@tensorflow/tfjs';
-
+import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { processVideo } from '../utils/imageUtilities';
 
 class ImageClassifier {
-  constructor(model) {
-    this.model = model;
-    this.readyPromise = null;
-    if (this.model === 'SqueezeNet') {
-      this.net = new SqueezeNet();
-    } else if (this.model === 'MobileNet') {
-      this.net = new MobileNet();
-    } else {
-      console.warn(`${model} is not a valid model. Using MobileNet as default.`);
-      this.net = new MobileNet();
-    }
+  constructor() {
+    this.net = null;
+    this.imageSize = 224;
+    this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
+    this.topKPredictions = 10;
+    this.modelLoaded = false;
     this.video = null;
   }
 
@@ -33,42 +28,57 @@ class ImageClassifier {
       this.video = processVideo(input, '127');
     }
 
-    if (!this.readyPromise) {
-      this.readyPromise = ImageClassifier.loadModel(this.net);
+    if (!this.modelLoaded) {
+      this.net = await tf.loadModel(this.modelPath);
+      // Warm up the model
+      this.net.predict(tf.zeros([1, this.imageSize, this.topKPredictions, 3])).dispose(); 
+      this.modelLoaded = true;
     }
+    // Wait until the net has been loaded
+    await this.net;
 
-    await this.readyPromise;
     if (this.video) {
       if (this.video.src) {
         return this.getClasses(this.video, num, callback);
       }
     }
-    return this.getClasses(input, num, callback);
+
+    const logits = tf.tidy(() => {
+      const img = tf.fromPixels(input).toFloat();
+      const offset = tf.scalar(127.5);
+      const normalized = img.sub(offset).div(offset);
+      const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
+      return mobilenet.predict(batched);
+    });
+
+    await this.getTopKClasses(logits, this.topKPredictions, callback);
   }
 
   // Private Method
-  async getClasses(img, num, callback) {
-    const pixels = fromPixels(img);
-    const resized = image.resizeBilinear(pixels, [227, 227]);
-    const results = [];
-    const result = this.net.predict(resized);
-    const topKClasses = await this.net.getTopKClasses(result, num || 10);
-    Object.keys(topKClasses).forEach((value) => {
-      results.push({
-        label: value,
-        probability: topKClasses[value],
-      });
-    });
-    results.sort((a, b) => b.probability - a.probability);
-    if (callback) {
-      callback(results);
+  async getTopKClasses(logits, topK, callback) {
+    const values = await logits.data();
+    const valuesAndIndices = [];
+    for (let i = 0; i < values.length; i += 1) {
+      valuesAndIndices.push({ value: values[i], index: i });
     }
-    return results;
-  }
-
-  static async loadModel(model) {
-    await model.load();
-    return true;
+    valuesAndIndices.sort((a, b) => b.value - a.value);
+    const topkValues = new Float32Array(this.topK);
+    const topkIndices = new Int32Array(topK);
+    for (let i = 0; i < topK; i += 1) {
+      topkValues[i] = valuesAndIndices[i].value;
+      topkIndices[i] = valuesAndIndices[i].index;
+    }
+    const topClassesAndProbs = [];
+    for (let i = 0; i < topkIndices.length; i += 1) {
+      topClassesAndProbs.push({
+        className: IMAGENET_CLASSES[topkIndices[i]],
+        probability: topkValues[i],
+      });
+    }
+    if (callback) {
+      callback(topClassesAndProbs);
+    }
+    return topClassesAndProbs;
   }
 }
 
