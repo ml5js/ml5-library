@@ -4,16 +4,16 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import ImageClassifier from './ImageClassifier/index';
-import KNNImageClassifier from './KNNImageClassifier/index';
-import LSTMGenerator from './LSTM/index';
-import Word2Vec from './Word2vec/index';
-import StyleTransfer from './StyleTransfer/index';
+import ImageClassifier from './ImageClassifier/';
+import TransferLearning from './TransferLearning/';
+import LSTMGenerator from './LSTM/';
+import Word2Vec from './Word2vec/';
+import StyleTransfer from './StyleTransfer/';
 import * as imageUtils from './utils/imageUtilities';
 
 module.exports = {
   ImageClassifier,
-  KNNImageClassifier,
+  TransferLearning,
   LSTMGenerator,
   StyleTransfer,
   Word2Vec,

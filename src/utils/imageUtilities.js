@@ -13,6 +13,8 @@ const processVideo = (input, size) => {
     element.width = size;
     element.height = size;
     element.autoplay = true;
+    element.playsinline = true;
+    element.muted = true;
   };
   return element;
 };
