@@ -16,7 +16,7 @@ const DEFAULTS = {
   learningRate: 0.0001,
   hiddenUnits: 100,
   epochs: 20,
-  numClasses: 4,
+  numClasses: 2,
   batchSize: 0.4,
 };
 
@@ -32,18 +32,23 @@ class TransferLearning {
     this.learningRate = options.learningRate || DEFAULTS.learningRate;
     this.batchSize = options.batchSize || DEFAULTS.batchSize;
     this.isPredicting = false;
-    this.mobilenet = async () => {
-      this.mobilenet = await tf.loadModel(this.modelPath);
-      const layer = this.mobilenet.getLayer('conv_pw_13_relu');
+    this.loadModel().then((net) => {
       this.ready = true;
-      // tf.tidy(() => this.mobilenet.predict(webcam.capture())); // Warm up
-      callback(this.ready);
-      return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-    };
-    this.mobilenet();
+      callback();
+      this.mobilenet = net;
+    });
+
     if (video instanceof HTMLVideoElement) {
       this.video = processVideo(video, '224');
     }
+  }
+
+  async loadModel() {
+    const mobilenet = await tf.loadModel(this.modelPath);
+    const layer = mobilenet.getLayer('conv_pw_13_relu');
+
+    // tf.tidy(() => mobilenet.predict(webcam.capture())); // Warm up
+    return tf.model({ inputs: mobilenet.inputs, outputs: layer.output });
   }
 
   addImage(input, label, callback = () => {}) {
@@ -51,6 +56,7 @@ class TransferLearning {
       tf.tidy(() => {
         const processedImg = TransferLearning.imgToTensor(input);
         const prediction = this.mobilenet.predict(processedImg);
+
         const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label]), this.numClasses));
 
         if (this.xs == null) {
@@ -60,10 +66,8 @@ class TransferLearning {
         } else {
           const oldX = this.xs;
           this.xs = tf.keep(oldX.concat(prediction, 0));
-
           const oldY = this.ys;
           this.ys = tf.keep(oldY.concat(y, 0));
-
           oldX.dispose();
           oldY.dispose();
           y.dispose();
@@ -215,10 +219,12 @@ class TransferLearning {
   }
 
   static imgToTensor(input) {
-    const img = tf.fromPixels(input);
-    const croppedImage = TransferLearning.cropImage(img);
-    const batchedImage = croppedImage.expandDims(0);
-    return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+    return tf.tidy(() => {
+      const img = tf.fromPixels(input);
+      const croppedImage = TransferLearning.cropImage(img);
+      const batchedImage = croppedImage.expandDims(0);
+      return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+    });
   }
 }
 
