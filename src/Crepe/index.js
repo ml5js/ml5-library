@@ -24,7 +24,7 @@ class Crepe {
     } catch (e) {
       console.error(e);
     }
-    this.initAudio(this.audioContext);
+    this.initAudio();
   }
 
 
@@ -86,58 +86,55 @@ class Crepe {
         // update the UI and the activation plot
         let result = (confidence > 0.5) ? predictedHz.toFixed(3) + ' Hz' : 'no voice';
         const strlen = result.length;
-        this.results.results = []
         for (let i = 0; i < 11 - strlen; i++) result = result;
-          append(this.results.results, result);
+        this.results.result = result;
         // this.updateActivation(activation.dataSync());
       });
     });
   }
 
   getResults() {
-    console.log('getting results');
-    console.log(this.results);
     return this.results;
   }
 
-  initAudio(audioContext) {
-    if (!navigator.getUserMedia) {
-      console.log('no navigator get user media');
-      if (navigator.mediaDevices) {
-        navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
-      } else {
-        navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-      }
-    }
-    if (navigator.getUserMedia) {
+  initAudio() {
+    // if (!navigator.getUserMedia) {
+    //   console.log('no navigator get user media');
+    //   if (navigator.mediaDevices) {
+    //     navigator.getUserMedia = navigator.mediaDevices.getUserMedia;
+    //   } else {
+    //     navigator.getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+    //   }
+    // }
+    if (this.audioContext) {
       console.log('Initializing audio');
       navigator.getUserMedia({ audio: true }, (stream) => {
         console.log('Setting up AudioContext ...');
         console.log(this.audioContext);
-        console.log('Audio context sample rate = ' + audioContext.sampleRate);
-        const mic = audioContext.createMediaStreamSource(stream);
+        console.log('Audio context sample rate = ' + this.audioContext.sampleRate);
+        const mic = this.audioContext.createMediaStreamSource(stream);
 
         // We need the buffer size that is a power of two
         // and is longer than 1024 samples when resampled to 16000 Hz.
         // In most platforms where the sample rate is 44.1 kHz or 48 kHz,
         // this will be 4096, giving 10-12 updates/sec.
-        const minBufferSize = audioContext.sampleRate / 16000 * 1024;
-        for (let bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
+        const minBufferSize = this.audioContext.sampleRate / 16000 * 1024;
+        for (var bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
         console.log('Buffer size = ' + bufferSize);
-        const scriptNode = audioContext.createScriptProcessor(bufferSize, 1, 1);
+        const scriptNode = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
         scriptNode.onaudioprocess = this.processMicrophoneBuffer.bind(this);
         // It seems necessary to connect the stream to a sink
         // for the pipeline to work, contrary to documentataions.
         // As a workaround, here we create a gain node with zero gain,
         // and connect temp to the system audio output.
-        const gain = audioContext.createGain();
-        gain.gain.setValueAtTime(0, audioContext.currentTime);
+        const gain = this.audioContext.createGain();
+        gain.gain.setValueAtTime(0, this.audioContext.currentTime);
 
         mic.connect(scriptNode);
         scriptNode.connect(gain);
-        gain.connect(audioContext.destination);
+        gain.connect(this.audioContext.destination);
 
-        if (audioContext.state === 'running') {
+        if (this.audioContext.state === 'running') {
           console.log('Running ...');
         } else {
           console.error('User gesture needed to start AudioContext, please click');
