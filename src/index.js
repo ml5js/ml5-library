@@ -13,7 +13,7 @@ module.exports = {
   // ImageClassifier,
   // KNNImageClassifier,
   // LSTMGenerator,
-  Crepe
+  Crepe,
   // StyleTransfer,
   // Word2Vec,
   // ...imageUtils,
