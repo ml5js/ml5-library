@@ -1,15 +1,13 @@
-var crepe;
-var ellipseSize;
-let voiceLow = 100;
-let voiceHigh = 500;
+let crepe;
+let ellipseSize;
+const voiceLow = 100;
+const voiceHigh = 500;
 
 function setup() {
-  createCanvas(400, 300);
+  createCanvas(500, 400);
   noLoop();
   const videoElement = createCapture(AUDIO, stream => {
-    console.log(AUDIO);
     videoElement.volume(0);
-    console.log(videoElement);
     console.log('stream created');
     crepe = new ml5.Crepe(getAudioContext(), stream); 
     loop(); 
@@ -18,7 +16,7 @@ function setup() {
 }
 
 function parse(result){
-    var splitResult = result.split(" Hz");
+    let splitResult = result.split(" Hz");
     return float(splitResult[0])
 }
 
@@ -27,7 +25,7 @@ function draw() {
     console.log("Crepe not yet initialized");
     return;
   }
-  var results = crepe.getResults();
+  let results = crepe.getResults();
   if (results){
     if (results['result'] == "no voice"){
       newEllipseSize = 1;

@@ -131,9 +131,9 @@ class Crepe {
   initAudio() {
     if (this.audioContext) {
       console.log('Initializing audio');
-      try { 
+      try {
         this.processStream(this.stream);
-      } catch(e) {
+      } catch (e) {
         console.error('Error: Could not access microphone - ', e);
       }
     } else {
