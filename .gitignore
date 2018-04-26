@@ -9,7 +9,6 @@ training/lstm/data/t
 .cache
 /public
 /static
-/experiments
 
 website/translated_docs
 website/build/
