@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { processVideo } from '../utils/imageUtilities';
 
+
 class ImageClassifier {
   constructor() {
     this.net = null;
