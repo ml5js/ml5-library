@@ -39,6 +39,7 @@ class ImageClassifier {
     this.learningRate = options.learningRate || DEFAULTS.learningRate;
     this.batchSize = options.batchSize || DEFAULTS.batchSize;
     this.isPredicting = false;
+    this.mapStringToIndex = [];
 
     if (video instanceof HTMLVideoElement) {
       this.video = processVideo(video, this.imageSize);
@@ -64,19 +65,33 @@ class ImageClassifier {
   }
 
   // Add an image to retrain
-  addImage(label, callback = () => {}, input = null) {
+  addImage(labelOrInput, labelOrCallback, cb) {
+    let imgToAdd;
+    let label;
+    let callback;
+
+    if (labelOrInput instanceof HTMLImageElement || labelOrInput instanceof HTMLVideoElement) {
+      imgToAdd = labelOrInput;
+      label = labelOrCallback;
+      callback = cb;
+    } else {
+      imgToAdd = this.video;
+      label = labelOrInput;
+      callback = labelOrCallback;
+    }
+
+    if (typeof label === 'string') {
+      if (!this.mapStringToIndex.includes(label)) {
+        label = this.mapStringToIndex.push(label) - 1;
+      } else {
+        label = this.mapStringToIndex.indexOf(label);
+      }
+    }
+
     if (this.modelLoaded) {
       tf.tidy(() => {
-        let processedImg;
-
-        if (input) {
-          processedImg = ImageClassifier.imgToTensor(input);
-        } else {
-          processedImg = ImageClassifier.imgToTensor(this.video);
-        }
-
+        const processedImg = ImageClassifier.imgToTensor(imgToAdd);
         const prediction = this.mobilenetModified.predict(processedImg);
-
         const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label]), this.numClasses));
 
         if (this.xs == null) {
@@ -93,8 +108,9 @@ class ImageClassifier {
           y.dispose();
         }
       });
-
-      callback();
+      if (callback) {
+        callback();
+      }
     }
   }
 
@@ -144,38 +160,66 @@ class ImageClassifier {
   }
 
   /* eslint consistent-return: 0 */
-  async predict(inputOrNum, numOrCallback = null, cb = null) {
+  async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
     let imgToPredict = numOrCallback;
     let numberOfClasses;
     let callback = cb;
 
-    if (inputOrNum instanceof HTMLImageElement) {
-      imgToPredict = inputOrNum;
-    } else if (inputOrNum instanceof HTMLVideoElement) {
+    if (typeof inputNumOrCallback === 'function') {
       if (!this.video) {
-        this.video = processVideo(inputOrNum, this.imageSize);
+        this.video = processVideo(inputNumOrCallback, this.imageSize);
+      }
+      imgToPredict = this.video;
+      callback = inputNumOrCallback;
+    } else if (inputNumOrCallback instanceof HTMLImageElement) {
+      imgToPredict = inputNumOrCallback;
+    } else if (inputNumOrCallback instanceof HTMLVideoElement) {
+      if (!this.video) {
+        this.video = processVideo(inputNumOrCallback, this.imageSize);
       }
       imgToPredict = this.video;
     } else {
       imgToPredict = this.video;
-      numberOfClasses = inputOrNum;
+      numberOfClasses = inputNumOrCallback;
       callback = numOrCallback;
     }
 
     if (!this.modelLoaded) {
       this.waitingPredictions.push({ imgToPredict, num: numberOfClasses || this.topKPredictions, callback });
     } else {
-      const logits = tf.tidy(() => {
-        const pixels = tf.fromPixels(imgToPredict).toFloat();
-        const resized = tf.image.resizeBilinear(pixels, [this.imageSize, this.imageSize]);
-        const offset = tf.scalar(127.5);
-        const normalized = resized.sub(offset).div(offset);
-        const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
-        return this.mobilenet.predict(batched);
+      // If there is no custom model, then run over the original mobilenet
+      if (!this.customModel) {
+        const logits = tf.tidy(() => {
+          const pixels = tf.fromPixels(imgToPredict).toFloat();
+          const resized = tf.image.resizeBilinear(pixels, [this.imageSize, this.imageSize]);
+          const offset = tf.scalar(127.5);
+          const normalized = resized.sub(offset).div(offset);
+          const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
+          return this.mobilenet.predict(batched);
+        });
+
+        const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
+        return results;
+      }
+
+      this.isPredicting = true;
+      const predictedClass = tf.tidy(() => {
+        const processedImg = ImageClassifier.imgToTensor(imgToPredict);
+        const activation = this.mobilenetModified.predict(processedImg);
+        const predictions = this.customModel.predict(activation);
+        return predictions.as1D().argMax();
       });
 
-      const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
-      return results;
+      let classId = (await predictedClass.data())[0];
+
+      if (callback) {
+        if (this.mapStringToIndex.length > 0) {
+          classId = this.mapStringToIndex[classId];
+        }
+        callback(classId);
+      }
+
+      await tf.nextFrame();
     }
   }
 
