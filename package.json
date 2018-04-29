@@ -76,6 +76,6 @@
     ]
   },
   "dependencies": {
-    "@tensorflow/tfjs": "0.9.1"
+    "@tensorflow/tfjs": "0.10.3"
   }
 }

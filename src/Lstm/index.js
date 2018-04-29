@@ -9,7 +9,7 @@
 A LSTM Generator: Run inference mode for a pre-trained LSTM.
 */
 
-// import * as tf from '@tensorflow/tfjs';
+import * as tf from '@tensorflow/tfjs';
 // import sampleFromDistribution from './../utils/sample';
 
 // const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
@@ -17,57 +17,43 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 // const regexFullyConnected = /softmax/gi;
 
 class LSTMGenerator {
-  // constructor(model, callback) {
-  //   this.ready = false;
-  //   this.model = {};
-  //   this.cellsAmount = 0;
-  //   this.vocab = {};
-  //   this.vocabSize = 0;
-  //   this.defaults = {
-  //     seed: 'a',
-  //     length: 20,
-  //     temperature: 0.5,
-  //   };
-  //   this.loadCheckpoints(model, callback);
-  // }
+  constructor(modelPath = './', callback = () => {}) {
+    this.modelPath = modelPath;
+    this.ready = false;
+    this.indices_char = {};
+    this.char_indices = {};
+    this.defaults = {
+      seed: 'a',
+      inputLength: 40,
+      length: 20,
+      temperature: 0.5,
+    };
 
-  // loadCheckpoints(path, callback) {
-  //   const reader = new dl.CheckpointLoader(path);
-  //   reader.getAllVariables().then(async (vars) => {
-  //     Object.keys(vars).forEach((key) => {
-  //       if (key.match(regexCell)) {
-  //         if (key.match(regexWeights)) {
-  //           this.model[`Kernel_${key.match(/[0-9]/)[0]}`] = vars[key];
-  //           this.cellsAmount += 1;
-  //         } else {
-  //           this.model[`Bias_${key.match(/[0-9]/)[0]}`] = vars[key];
-  //         }
-  //       } else if (key.match(regexFullyConnected)) {
-  //         if (key.match(regexWeights)) {
-  //           this.model.fullyConnectedWeights = vars[key];
-  //         } else {
-  //           this.model.fullyConnectedBiases = vars[key];
-  //         }
-  //       } else {
-  //         this.model[key] = vars[key];
-  //       }
-  //     });
-  //     this.loadVocab(path, callback);
-  //   });
-  // }
+    this.loaders = [
+      this.loadFile('indices_char'),
+      this.loadFile('char_indices'),
+    ];
 
-  // loadVocab(file, callback) {
-  //   fetch(`${file}/vocab.json`)
-  //     .then(response => response.json())
-  //     .then((json) => {
-  //       this.vocab = json;
-  //       this.vocabSize = Object.keys(json).length;
-  //       this.ready = true;
-  //       callback();
-  //     }).catch((error) => {
-  //       console.error(`There has been a problem loading the vocab: ${error.message}`);
-  //     });
-  // }
+    tf.loadModel('model/model.json').then((model) => {
+      this.model = model;
+      console.log('model! loaded!', model);
+      // this.enableGeneration();
+    });
+
+    console.log('here!!');
+    // Promise
+    //   .all(this.loaders)
+    //   .then(() => tf.loadModel(`${this.modelPath}/model.json`))
+    //   .then((model) => { this.model = model; })
+    //   .then(() => callback());
+  }
+
+  loadFile(type) {
+    fetch(`${this.modelPath}/${type}.json`)
+      .then(response => response.json())
+      .then((json) => { this[type] = json; })
+      .catch(error => console.error(`Error when loading the model ${error}`));
+  }
 
   // async generate(options, callback) {
   //   const seed = options.seed || this.defaults.seed;
