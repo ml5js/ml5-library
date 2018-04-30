@@ -3,8 +3,10 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-// Pre process videos
-const processVideo = (input, size) => {
+import * as tf from '@tensorflow/tfjs';
+
+// Resize video elements
+const processVideo = (input, size, callback = () => {}) => {
   const videoInput = input;
   const element = document.createElement('video');
   videoInput.onplay = () => {
@@ -15,11 +17,12 @@ const processVideo = (input, size) => {
     element.autoplay = true;
     element.playsinline = true;
     element.muted = true;
+    callback();
   };
   return element;
 };
 
-// Converts a dl Array.3D to DOM img
+// Converts a tf Array.3D to DOM img
 const array3DToImage = (imgData) => {
   const [imgWidth, imgHeight] = imgData.shape;
   const data = imgData.dataSync();
@@ -48,7 +51,29 @@ const array3DToImage = (imgData) => {
   return outputImg;
 };
 
+// Static Method: crop the image
+const cropImage = (img) => {
+  const size = Math.min(img.shape[0], img.shape[1]);
+  const centerHeight = img.shape[0] / 2;
+  const beginHeight = centerHeight - (size / 2);
+  const centerWidth = img.shape[1] / 2;
+  const beginWidth = centerWidth - (size / 2);
+  return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
+};
+
+// Static Method: image to tf tensor
+function imgToTensor(input) {
+  return tf.tidy(() => {
+    const img = tf.fromPixels(input);
+    const croppedImage = cropImage(img);
+    const batchedImage = croppedImage.expandDims(0);
+    return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+  });
+}
+
 export {
   array3DToImage,
   processVideo,
+  cropImage,
+  imgToTensor,
 };
