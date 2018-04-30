@@ -6,6 +6,7 @@
 import * as tf from '@tensorflow/tfjs';
 import ImageClassifier from './ImageClassifier/';
 import Word2Vec from './Word2vec/';
+import YOLO from './YOLO';
 import * as imageUtils from './utils/imageUtilities';
 // import LSTMGenerator from './LSTM/';
 // import StyleTransfer from './StyleTransfer/';
@@ -13,9 +14,10 @@ import * as imageUtils from './utils/imageUtilities';
 
 module.exports = {
   ImageClassifier,
-  // LSTMGenerator,
-  // StyleTransfer,
+  YOLO,
   Word2Vec,
   ...imageUtils,
   tf,
+  // LSTMGenerator,
+  // StyleTransfer,
 };

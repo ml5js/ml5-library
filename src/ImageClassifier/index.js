@@ -10,7 +10,7 @@ Image classifier class
 
 import * as tf from '@tensorflow/tfjs';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
-import { processVideo } from '../utils/imageUtilities';
+import { processVideo, imgToTensor } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   learningRate: 0.0001,
@@ -58,7 +58,7 @@ class ImageClassifier {
     const layer = this.mobilenet.getLayer('conv_pw_13_relu');
 
     if (this.video) {
-      tf.tidy(() => this.mobilenet.predict(ImageClassifier.imgToTensor(this.video))); // Warm up
+      tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
     }
 
     return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
@@ -90,7 +90,7 @@ class ImageClassifier {
 
     if (this.modelLoaded) {
       tf.tidy(() => {
-        const processedImg = ImageClassifier.imgToTensor(imgToAdd);
+        const processedImg = imgToTensor(imgToAdd);
         const prediction = this.mobilenetModified.predict(processedImg);
         const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
         if (this.xs == null) {
@@ -204,7 +204,7 @@ class ImageClassifier {
 
       this.isPredicting = true;
       const predictedClass = tf.tidy(() => {
-        const processedImg = ImageClassifier.imgToTensor(imgToPredict);
+        const processedImg = imgToTensor(imgToPredict);
         const activation = this.mobilenetModified.predict(processedImg);
         const predictions = this.customModel.predict(activation);
         return predictions.as1D().argMax();
@@ -249,26 +249,6 @@ class ImageClassifier {
       callback(topClassesAndProbs);
     }
     return topClassesAndProbs;
-  }
-
-  // Static Method: crop the image
-  static cropImage(img) {
-    const size = Math.min(img.shape[0], img.shape[1]);
-    const centerHeight = img.shape[0] / 2;
-    const beginHeight = centerHeight - (size / 2);
-    const centerWidth = img.shape[1] / 2;
-    const beginWidth = centerWidth - (size / 2);
-    return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
-  }
-
-  // Static Method: image to tf tensor
-  static imgToTensor(input) {
-    return tf.tidy(() => {
-      const img = tf.fromPixels(input);
-      const croppedImage = ImageClassifier.cropImage(img);
-      const batchedImage = croppedImage.expandDims(0);
-      return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
-    });
   }
 }
 
