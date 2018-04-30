@@ -92,8 +92,7 @@ class ImageClassifier {
       tf.tidy(() => {
         const processedImg = ImageClassifier.imgToTensor(imgToAdd);
         const prediction = this.mobilenetModified.predict(processedImg);
-        const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label]), this.numClasses));
-
+        const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
         if (this.xs == null) {
           this.xs = tf.keep(prediction);
           this.ys = tf.keep(y);
@@ -155,6 +154,7 @@ class ImageClassifier {
           onProgress(logs.loss.toFixed(5));
           await tf.nextFrame();
         },
+        onTrainEnd: () => onProgress(null),
       },
     });
   }
