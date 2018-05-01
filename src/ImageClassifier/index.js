@@ -212,14 +212,14 @@ class ImageClassifier {
 
       let classId = (await predictedClass.data())[0];
 
+      await tf.nextFrame();
+
       if (callback) {
         if (this.mapStringToIndex.length > 0) {
           classId = this.mapStringToIndex[classId];
         }
         callback(classId);
       }
-
-      await tf.nextFrame();
     }
   }
 
@@ -245,6 +245,9 @@ class ImageClassifier {
         probability: topkValues[i],
       });
     }
+
+    await tf.nextFrame();
+
     if (callback) {
       callback(topClassesAndProbs);
     }
