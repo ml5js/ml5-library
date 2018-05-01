@@ -40,6 +40,7 @@ class YOLO {
     this.imageSize = 416;
     this.modelReady = false;
     this.videoReady = false;
+    this.isPredicting = false;
 
     this.loadModel();
 
@@ -56,9 +57,10 @@ class YOLO {
   }
 
   async detect(inputOrCallback, cb = null) {
-    if (this.modelReady && this.videoReady) {
+    if (this.modelReady && this.videoReady && !this.predicting) {
       let imgToPredict;
       let callback;
+      this.isPredicting = true;
 
       if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
         imgToPredict = inputOrCallback;
@@ -110,28 +112,32 @@ class YOLO {
         }
 
         const className = CLASS_NAMES[classIndx];
-        let [x, y, w, h] = boxesArr[i];
+        let [y, x, h, w] = boxesArr[i];
 
-        x = Math.max(0, x);
         y = Math.max(0, y);
-        w = Math.min(416, w);
-        h = Math.min(416, h);
+        x = Math.max(0, x);
+        h = Math.min(416, h) - y;
+        w = Math.min(416, w) - x;
 
         const resultObj = {
           className,
           classProb,
-          x,
-          y,
-          w,
-          h,
+          x: x / 416,
+          y: y / 416,
+          w: w / 416,
+          h: h / 416,
         };
 
         results.push(resultObj);
       });
 
+      await tf.nextFrame();
+      this.isPredicting = false;
+
       if (callback) {
         callback(results);
       }
+
       return results;
     }
     return 'Model not Loaded';
