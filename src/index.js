@@ -8,16 +8,15 @@ import ImageClassifier from './ImageClassifier/';
 import Word2Vec from './Word2vec/';
 import YOLO from './YOLO';
 import * as imageUtils from './utils/imageUtilities';
+import StyleTransfer from './StyleTransfer/';
 // import LSTMGenerator from './LSTM/';
-// import StyleTransfer from './StyleTransfer/';
-
 
 module.exports = {
   ImageClassifier,
   YOLO,
   Word2Vec,
+  StyleTransfer,
+  // LSTMGenerator,
   ...imageUtils,
   tf,
-  // LSTMGenerator,
-  // StyleTransfer,
 };

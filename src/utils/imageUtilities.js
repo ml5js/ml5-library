@@ -22,10 +22,10 @@ const processVideo = (input, size, callback = () => {}) => {
   return element;
 };
 
-// Converts a tf Array.3D to DOM img
-const array3DToImage = (imgData) => {
-  const [imgWidth, imgHeight] = imgData.shape;
-  const data = imgData.dataSync();
+// Converts a tf to DOM img
+const array3DToImage = (tensor) => {
+  const [imgWidth, imgHeight] = tensor.shape;
+  const data = tensor.dataSync();
   const canvas = document.createElement('canvas');
   canvas.width = imgWidth;
   canvas.height = imgHeight;

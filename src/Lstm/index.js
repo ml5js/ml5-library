@@ -65,8 +65,8 @@ class LSTMGenerator {
       });
       const index = await indexTensor.data();
       indexTensor.dispose();
-      callback(this.indices_char[index]);
       await tf.nextFrame();
+      callback(this.indices_char[index]);
     }
   }
 
