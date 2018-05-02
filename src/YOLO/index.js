@@ -31,6 +31,7 @@ const DEFAULTS = {
   inputDim: 416,
 };
 
+// TODO: add callback to constructor
 class YOLO {
   constructor(video = null, options = {}) {
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
