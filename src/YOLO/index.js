@@ -28,8 +28,10 @@ const DEFAULTS = {
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
-  inputDim: 416,
 };
+
+// Size of the video
+const inputDim = 416;
 
 // TODO: add callback to constructor
 class YOLO {
@@ -37,7 +39,6 @@ class YOLO {
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
-    this.inputDim = options.inputDim || DEFAULTS.inputDim;
     this.imageSize = 416;
     this.modelReady = false;
     this.videoReady = false;
@@ -87,8 +88,8 @@ class YOLO {
         return [];
       }
 
-      const width = tf.scalar(this.inputDim);
-      const height = tf.scalar(this.inputDim);
+      const width = tf.scalar(inputDim);
+      const height = tf.scalar(inputDim);
       const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
       const boxesModified = tf.mul(boxes, imageDims);
 
