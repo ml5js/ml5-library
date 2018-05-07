@@ -10,7 +10,8 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 
 import * as tf from '@tensorflow/tfjs';
-import { processVideo, imgToTensor } from '../utils/imageUtilities';
+import ImageAndVideo from './../ImageAndVideo';
+import { imgToTensor } from '../utils/imageUtilities';
 
 import CLASS_NAMES from './../utils/COCO_CLASSES';
 
@@ -31,31 +32,33 @@ const DEFAULTS = {
 };
 
 // Size of the video
-const inputDim = 416;
+const imageSize = 416;
 
-// TODO: add callback to constructor
-class YOLO {
-  constructor(video = null, options = {}) {
+class YOLO extends ImageAndVideo {
+  constructor(video = null, optionsOrCallback, cb = () => {}) {
+    super(video, imageSize);
+    let callback = cb;
+    let options = {};
+
+    if (typeof optionsOrCallback === 'object') {
+      options = optionsOrCallback;
+      callback = cb;
+    } else if (typeof optionsOrCallback === 'function') {
+      callback = optionsOrCallback;
+    }
+
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
-    this.imageSize = 416;
     this.modelReady = false;
-    this.videoReady = false;
     this.isPredicting = false;
-
-    this.loadModel();
-
-    if (video instanceof HTMLVideoElement) {
-      this.video = processVideo(video, this.imageSize, () => {
-        this.videoReady = true;
-      });
-    }
+    this.loadModel(callback);
   }
 
-  async loadModel() {
+  async loadModel(callback) {
     this.model = await tf.loadModel(URL);
     this.modelReady = true;
+    callback();
   }
 
   async detect(inputOrCallback, cb = null) {
@@ -88,8 +91,8 @@ class YOLO {
         return [];
       }
 
-      const width = tf.scalar(inputDim);
-      const height = tf.scalar(inputDim);
+      const width = tf.scalar(imageSize);
+      const height = tf.scalar(imageSize);
       const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
       const boxesModified = tf.mul(boxes, imageDims);
 
@@ -142,7 +145,8 @@ class YOLO {
 
       return results;
     }
-    return 'Model not Loaded';
+    console.warn('Model has not finished loading');
+    return false;
   }
 }
 
