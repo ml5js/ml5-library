@@ -34,7 +34,6 @@ class StyleTransfer {
   }
 
   async loadModel(callback) {
-    console.log(`${this.modelPath}/model.json`);
     this.model = await tf.loadModel(`${this.modelPath}/model.json`);
     this.modelReady = true;
     callback();
@@ -62,7 +61,7 @@ class StyleTransfer {
       }
     }
 
-    console.error('The model has not finished loading yet!');
+    console.error('The model has not finished loading');
     return false;
   }
 
