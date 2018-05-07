@@ -9,6 +9,7 @@ Image classifier class
 /* eslint max-len: ["error", { "code": 180 }] */
 
 import * as tf from '@tensorflow/tfjs';
+import ImageAndVideo from './../ImageAndVideo';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { processVideo, imgToTensor } from '../utils/imageUtilities';
 
@@ -20,14 +21,16 @@ const DEFAULTS = {
   batchSize: 0.4,
 };
 
-class ImageClassifier {
+const IMAGESIZE = 224;
+
+class ImageClassifier extends ImageAndVideo {
   constructor(video, options = {}, callback = () => {}) {
+    super(video, IMAGESIZE);
+
     this.mobilenet = null;
-    this.imageSize = 224;
     this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
     this.topKPredictions = 10;
     this.modelLoaded = false;
-    this.video = null;
     this.waitingPredictions = [];
 
     // Props for retraining mobilenet
@@ -40,10 +43,6 @@ class ImageClassifier {
     this.batchSize = options.batchSize || DEFAULTS.batchSize;
     this.isPredicting = false;
     this.mapStringToIndex = [];
-
-    if (video instanceof HTMLVideoElement) {
-      this.video = processVideo(video, this.imageSize);
-    }
 
     this.loadModel().then((net) => {
       this.modelLoaded = true;
