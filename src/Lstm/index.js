@@ -7,6 +7,7 @@
 /* eslint no-await-in-loop: "off" */
 /*
 A LSTM Generator: Run inference mode for a pre-trained LSTM.
+Heavily derived from https://github.com/reiinakano/tfjs-lstm-text-generation/
 */
 
 import * as tf from '@tensorflow/tfjs';
@@ -33,7 +34,6 @@ class LSTMGenerator {
     // This freezes the browser. See https://github.com/tensorflow/tfjs/issues/245
     tf.loadModel('model/model.json').then((model) => {
       this.model = model;
-      console.log('model! loaded!', model);
     });
 
     Promise
@@ -77,7 +77,7 @@ class LSTMGenerator {
       prediction = prediction.div(diversity);
       prediction = prediction.exp();
       prediction = prediction.div(prediction.sum());
-      prediction = prediction.mul(tf.randomNormal(prediction.shape));
+      prediction = prediction.mul(tf.randomUniform(prediction.shape));
       return prediction.argMax();
     });
   }
