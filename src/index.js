@@ -10,7 +10,7 @@ import YOLO from './YOLO';
 import PoseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
 import StyleTransfer from './StyleTransfer/';
-// import LSTMGenerator from './LSTM/';
+import LSTMGenerator from './LSTM/';
 
 module.exports = {
   ImageClassifier,
@@ -18,7 +18,7 @@ module.exports = {
   Word2Vec,
   StyleTransfer,
   PoseNet,
-  // LSTMGenerator,
+  LSTMGenerator,
   ...imageUtils,
   tf,
 };
