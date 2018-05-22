@@ -77,6 +77,6 @@
   },
   "dependencies": {
     "@tensorflow-models/posenet": "0.0.1",
-    "@tensorflow/tfjs": "0.10.3"
+    "@tensorflow/tfjs": "0.11.1"
   }
 }

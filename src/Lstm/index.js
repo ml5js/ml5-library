@@ -31,7 +31,6 @@ class LSTMGenerator {
       this.loadFile('char_indices'),
     ];
 
-    // This freezes the browser. See https://github.com/tensorflow/tfjs/issues/245
     tf.loadModel('model/model.json').then((model) => {
       this.model = model;
     });
@@ -50,24 +49,45 @@ class LSTMGenerator {
       .catch(error => console.error(`Error when loading the model ${error}`));
   }
 
-  async generateText(options = {}, callback = () => {}) {
+  async generate(options = {}, callback = () => {}) {
     this.length = options.length || DEFAULTS.length;
     this.seed = options.seed || DEFAULTS.seed;
     this.temperature = options.temperature || DEFAULTS.temperature;
     this.inputLength = options.inputLength || DEFAULTS.inputLength;
+    let seed = this.seed;
+    let generated = '';
 
     /* eslint no-loop-func: 0 */
     for (let i = 0; i < this.length; i += 1) {
       const indexTensor = tf.tidy(() => {
-        const input = LSTMGenerator.convert(this.seed);
+        const input = this.convert(seed);
         const prediction = this.model.predict(input).squeeze();
         return LSTMGenerator.sample(prediction, this.temperature);
       });
       const index = await indexTensor.data();
       indexTensor.dispose();
+      seed += this.indices_char[index];
+      generated += this.indices_char[index];
       await tf.nextFrame();
-      callback(this.indices_char[index]);
     }
+    callback(generated);
+  }
+
+  convert(input) {
+    let sentence = input.toLowerCase();
+    sentence = sentence.split('').filter(x => x in this.char_indices).join('');
+    if (sentence.length < this.inputLength) {
+      sentence = sentence.padStart(this.inputLength);
+    } else if (sentence.length > this.inputLength) {
+      sentence = sentence.substring(sentence.length - this.inputLength);
+    }
+    const buffer = tf.buffer([1, this.inputLength, Object.keys(this.indices_char).length]);
+    for (let i = 0; i < this.inputLength; i += 1) {
+      const char = sentence.charAt(i);
+      buffer.set(1, 0, i, this.char_indices[char]);
+    }
+    const result = buffer.toTensor();
+    return result;
   }
 
   static sample(input, temperature) {
@@ -80,23 +100,6 @@ class LSTMGenerator {
       prediction = prediction.mul(tf.randomUniform(prediction.shape));
       return prediction.argMax();
     });
-  }
-
-  static convert(input) {
-    let sentence = input.toLowerCase();
-    sentence = sentence.split('').filter(x => x in this.char_indices).join('');
-    if (sentence.length < this.length) {
-      sentence = sentence.padStart(this.length);
-    } else if (sentence.length > this.length) {
-      sentence = sentence.substring(sentence.length - this.length);
-    }
-    const buffer = tf.buffer([1, this.inputLength, Object.keys(this.indices_char).length]);
-    for (let i = 0; i < this.inputLength; i += 1) {
-      const char = sentence.charAt(i);
-      buffer.set(1, 0, i, this.char_indices[char]);
-    }
-    const result = buffer.toTensor();
-    return result;
   }
 }
 
