@@ -9,6 +9,7 @@ PoseNet
 
 import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
+
 import ImageAndVideo from './../ImageAndVideo';
 
 const DEFAULTS = {
@@ -19,20 +20,25 @@ const DEFAULTS = {
   maxPoseDetections: 5,
   scoreThreshold: 0.5,
   nmsRadius: 20,
+  detectionType: 'single',
 };
 
 class PoseNet extends ImageAndVideo {
-  constructor(videoOrCallback, optionsOrCallback, cb = null) {
+  constructor(videoOrCallback, optionsOrCallback, cb = () => {}) {
     super(videoOrCallback, 315);
     let options = {};
     let callback = cb;
+    this.detectionType = DEFAULTS.detectionType;
 
     if (typeof videoOrCallback === 'function') {
       callback = videoOrCallback;
     } else if (typeof optionsOrCallback === 'object') {
       options = optionsOrCallback;
+      this.detectionType = options.detectionType || DEFAULTS.detectionType;
     } else if (typeof optionsOrCallback === 'function') {
       callback = optionsOrCallback;
+    } else if (optionsOrCallback === 'multiple') {
+      this.detectionType = optionsOrCallback;
     }
 
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
@@ -45,7 +51,11 @@ class PoseNet extends ImageAndVideo {
       .then((net) => {
         this.net = net;
         if (this.video && callback) {
-          this.singlePose(callback);
+          if (this.detectionType === 'single') {
+            this.singlePose(callback);
+          } else if (this.detectionType === 'multiple') {
+            this.multiPose(callback);
+          }
         }
       })
       .catch((err) => { console.error(`Error loading the model: ${err}`); });
@@ -70,7 +80,7 @@ class PoseNet extends ImageAndVideo {
 
     this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
       .then((pose) => {
-        callback(pose);
+        callback([pose]);
         tf.nextFrame().then(() => { this.singlePose(callback); });
       });
   }
@@ -88,8 +98,8 @@ class PoseNet extends ImageAndVideo {
     }
 
     this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
-      .then((pose) => {
-        callback(pose);
+      .then((poses) => {
+        callback(poses);
         tf.nextFrame().then(() => { this.multiPose(callback); });
       });
   }
