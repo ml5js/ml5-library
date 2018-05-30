@@ -13,7 +13,6 @@ Heavily derived from https://github.com/reiinakano/tfjs-lstm-text-generation/
 import * as tf from '@tensorflow/tfjs';
 
 const DEFAULTS = {
-  seed: 'a',
   inputLength: 40,
   length: 20,
   temperature: 0.5,
@@ -31,10 +30,6 @@ class LSTMGenerator {
       this.loadFile('char_indices'),
     ];
 
-    tf.loadModel('model/model.json').then((model) => {
-      this.model = model;
-    });
-
     Promise
       .all(this.loaders)
       .then(() => tf.loadModel(`${this.modelPath}/model.json`))
@@ -51,7 +46,7 @@ class LSTMGenerator {
 
   async generate(options = {}, callback = () => {}) {
     this.length = options.length || DEFAULTS.length;
-    this.seed = options.seed || DEFAULTS.seed;
+    this.seed = options.seed || Object.keys(this.char_indices)[Math.floor(Math.random() * Object.keys(this.char_indices).length)];
     this.temperature = options.temperature || DEFAULTS.temperature;
     this.inputLength = options.inputLength || DEFAULTS.inputLength;
     let seed = this.seed;
