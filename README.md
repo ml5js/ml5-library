@@ -25,11 +25,11 @@ or
 
 ## Resources
 
-- [Getting Started](https://ml5js.github.io/docs/getting-started.html)
-- [API Reference](https://ml5js.github.io/docs/imageclassifier.html)
-- [Examples](https://ml5js.github.io/docs/simple-image-classification-example.html)
-- [Learn](https://ml5js.github.io/docs/glossary-statistics.html)
-- [Experiments](https://ml5js.github.io/en/experiments.html)
+- [Getting Started](https://ml5js.org/docs/getting-started.html)
+- [API Reference](https://ml5js.org/docs/imagenet.html)
+- [Examples](https://ml5js.org/docs/simple-image-classification-example.html)
+- [Learn](https://ml5js.org/docs/glossary-statistics.html)
+- [Experiments](https://ml5js.org/en/experiments.html)
 
 ## Standalone Examples
 
