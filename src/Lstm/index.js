@@ -44,6 +44,7 @@ class LSTMGenerator {
       .catch(error => console.error(`Error when loading the model ${error}`));
   }
 
+  /* eslint max-len: ["error", { "code": 180 }] */
   async generate(options = {}, callback = () => {}) {
     this.length = options.length || DEFAULTS.length;
     this.seed = options.seed || Object.keys(this.char_indices)[Math.floor(Math.random() * Object.keys(this.char_indices).length)];
