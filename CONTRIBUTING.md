@@ -109,7 +109,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
   That should output something very similar to the `webpack-dev-server` but you'll notice that at the end is this line:
 
   ```bash
-  > ml5@0.0.1 build:min /Users/cristobalvalenzuela/Desktop/sandbox/ml5
+  > ml5@0.0.1 build:min /Users/ml5/Desktop/sandbox/ml5
   > uglifyjs dist/ml5.js -o dist/ml5.min.js
   ```
 
@@ -143,7 +143,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
 
 ## ML5 Website
 
-The [ML5 website](https://ml5js.github.io/) is built with [Docusaurus](https://docusaurus.io/).
+The [ML5 website](https://ml5js.org/) is built with [Docusaurus](https://docusaurus.io/).
 
 Docusaurus is an open-source library, built with React, to create and maintain documentation websites.
 
