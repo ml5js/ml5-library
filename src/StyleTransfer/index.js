@@ -1,5 +1,5 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -8,16 +8,17 @@
 Fast Style Transfer
 */
 
-import * as dl from 'deeplearn';
+import * as tf from '@tensorflow/tfjs';
+import CheckpointLoader from '../utils/checkpointLoader';
 import { array3DToImage } from '../utils/imageUtilities';
 
 class StyleTransfer {
   constructor(model, callback) {
     this.ready = false;
     this.variableDictionary = {};
-    this.timesScalar = dl.scalar(150);
-    this.plusScalar = dl.scalar(255.0 / 2);
-    this.epsilonScalar = dl.scalar(1e-3);
+    this.timesScalar = tf.scalar(150);
+    this.plusScalar = tf.scalar(255.0 / 2);
+    this.epsilonScalar = tf.scalar(1e-3);
     this.loadCheckpoints(model).then(() => {
       this.ready = true;
       if (callback) {
@@ -26,28 +27,28 @@ class StyleTransfer {
     });
   }
   async loadCheckpoints(path) {
-    const checkpointLoader = new dl.CheckpointLoader(path);
+    const checkpointLoader = new CheckpointLoader(path);
     this.variables = await checkpointLoader.getAllVariables();
   }
 
   instanceNorm(input, id) {
     const [height, width, inDepth] = input.shape;
-    const moments = dl.moments(input, [0, 1]);
+    const moments = tf.moments(input, [0, 1]);
     const mu = moments.mean;
     const sigmaSq = moments.variance;
     const shift = this.variables[StyleTransfer.getVariableName(id)];
     const scale = this.variables[StyleTransfer.getVariableName(id + 1)];
     const epsilon = this.epsilonScalar;
-    const normalized = dl.div(dl.sub(input.asType('float32'), mu), dl.sqrt(dl.add(sigmaSq, epsilon)));
-    const shifted = dl.add(dl.mul(scale, normalized), shift);
+    const normalized = tf.div(tf.sub(input.asType('float32'), mu), tf.sqrt(tf.add(sigmaSq, epsilon)));
+    const shifted = tf.add(tf.mul(scale, normalized), shift);
     return shifted.as3D(height, width, inDepth);
   }
 
   convLayer(input, strides, relu, id) {
-    const y = dl.conv2d(input, this.variables[StyleTransfer.getVariableName(id)], [strides, strides], 'same');
+    const y = tf.conv2d(input, this.variables[StyleTransfer.getVariableName(id)], [strides, strides], 'same');
     const y2 = this.instanceNorm(y, id + 1);
     if (relu) {
-      return dl.relu(y2);
+      return tf.relu(y2);
     }
     return y2;
   }
@@ -55,7 +56,7 @@ class StyleTransfer {
   residualBlock(input, id) {
     const conv1 = this.convLayer(input, 1, true, id);
     const conv2 = this.convLayer(conv1, 1, false, id + 3);
-    return dl.add(conv2, input);
+    return tf.add(conv2, input);
   }
 
   convTransposeLayer(input, numFilters, strides, id) {
@@ -63,15 +64,15 @@ class StyleTransfer {
     const newRows = height * strides;
     const newCols = width * strides;
     const newShape = [newRows, newCols, numFilters];
-    const y = dl.conv2dTranspose(input, this.variables[StyleTransfer.getVariableName(id)], newShape, [strides, strides], 'same');
+    const y = tf.conv2dTranspose(input, this.variables[StyleTransfer.getVariableName(id)], newShape, [strides, strides], 'same');
     const y2 = this.instanceNorm(y, id + 1);
-    const y3 = dl.relu(y2);
+    const y3 = tf.relu(y2);
     return y3;
   }
 
   transfer(input) {
-    const image = dl.fromPixels(input);
-    const result = dl.tidy(() => {
+    const image = tf.fromPixels(input);
+    const result = tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
       const conv3 = this.convLayer(conv2, 2, true, 6);
@@ -83,11 +84,11 @@ class StyleTransfer {
       const convT1 = this.convTransposeLayer(res5, 64, 2, 39);
       const convT2 = this.convTransposeLayer(convT1, 32, 2, 42);
       const convT3 = this.convLayer(convT2, 1, false, 45);
-      const outTanh = dl.tanh(convT3);
-      const scaled = dl.mul(this.timesScalar, outTanh);
-      const shifted = dl.add(this.plusScalar, scaled);
-      const clamped = dl.clipByValue(shifted, 0, 255);
-      const normalized = dl.div(clamped, dl.scalar(255.0));
+      const outTanh = tf.tanh(convT3);
+      const scaled = tf.mul(this.timesScalar, outTanh);
+      const shifted = tf.add(this.plusScalar, scaled);
+      const clamped = tf.clipByValue(shifted, 0, 255);
+      const normalized = tf.div(clamped, tf.scalar(255.0));
       return normalized;
     });
     return array3DToImage(result);

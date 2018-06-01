@@ -1,5 +1,5 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -7,147 +7,95 @@
 /* eslint no-await-in-loop: "off" */
 /*
 A LSTM Generator: Run inference mode for a pre-trained LSTM.
+Heavily derived from https://github.com/reiinakano/tfjs-lstm-text-generation/
 */
 
-import * as dl from 'deeplearn';
-import sampleFromDistribution from './../utils/sample';
+import * as tf from '@tensorflow/tfjs';
 
-const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
-const regexWeights = /weights|weight|kernel|kernels|w/gi;
-const regexFullyConnected = /softmax/gi;
+const DEFAULTS = {
+  inputLength: 40,
+  length: 20,
+  temperature: 0.5,
+};
 
 class LSTMGenerator {
-  constructor(model, callback) {
+  constructor(modelPath = './', callback = () => {}) {
+    this.modelPath = modelPath;
     this.ready = false;
-    this.model = {};
-    this.cellsAmount = 0;
-    this.vocab = {};
-    this.vocabSize = 0;
-    this.defaults = {
-      seed: 'a',
-      length: 20,
-      temperature: 0.5,
-    };
-    this.loadCheckpoints(model, callback);
+    this.indices_char = {};
+    this.char_indices = {};
+
+    this.loaders = [
+      this.loadFile('indices_char'),
+      this.loadFile('char_indices'),
+    ];
+
+    Promise
+      .all(this.loaders)
+      .then(() => tf.loadModel(`${this.modelPath}/model.json`))
+      .then((model) => { this.model = model; })
+      .then(() => callback());
   }
 
-  loadCheckpoints(path, callback) {
-    const reader = new dl.CheckpointLoader(path);
-    reader.getAllVariables().then(async (vars) => {
-      Object.keys(vars).forEach((key) => {
-        if (key.match(regexCell)) {
-          if (key.match(regexWeights)) {
-            this.model[`Kernel_${key.match(/[0-9]/)[0]}`] = vars[key];
-            this.cellsAmount += 1;
-          } else {
-            this.model[`Bias_${key.match(/[0-9]/)[0]}`] = vars[key];
-          }
-        } else if (key.match(regexFullyConnected)) {
-          if (key.match(regexWeights)) {
-            this.model.fullyConnectedWeights = vars[key];
-          } else {
-            this.model.fullyConnectedBiases = vars[key];
-          }
-        } else {
-          this.model[key] = vars[key];
-        }
-      });
-      this.loadVocab(path, callback);
-    });
-  }
-
-  loadVocab(file, callback) {
-    fetch(`${file}/vocab.json`)
+  loadFile(type) {
+    fetch(`${this.modelPath}/${type}.json`)
       .then(response => response.json())
-      .then((json) => {
-        this.vocab = json;
-        this.vocabSize = Object.keys(json).length;
-        this.ready = true;
-        callback();
-      }).catch((error) => {
-        console.error(`There has been a problem loading the vocab: ${error.message}`);
-      });
+      .then((json) => { this[type] = json; })
+      .catch(error => console.error(`Error when loading the model ${error}`));
   }
 
-  async generate(options, callback) {
-    const seed = options.seed || this.defaults.seed;
-    const length = +options.length || this.defaults.length;
-    const temperature = +options.temperature || this.defaults.temperature;
-    const results = [];
+  /* eslint max-len: ["error", { "code": 180 }] */
+  async generate(options = {}, callback = () => {}) {
+    this.length = options.length || DEFAULTS.length;
+    this.seed = options.seed || Object.keys(this.char_indices)[Math.floor(Math.random() * Object.keys(this.char_indices).length)];
+    this.temperature = options.temperature || DEFAULTS.temperature;
+    this.inputLength = options.inputLength || DEFAULTS.inputLength;
+    let seed = this.seed;
+    let generated = '';
 
-    if (this.ready) {
-      const forgetBias = dl.tensor(1.0);
-      const LSTMCells = [];
-      let c = [];
-      let h = [];
-
-      const lstm = (i) => {
-        const cell = (DATA, C, H) => dl.basicLSTMCell(forgetBias, this.model[`Kernel_${i}`], this.model[`Bias_${i}`], DATA, C, H);
-        return cell;
-      };
-
-      for (let i = 0; i < this.cellsAmount; i += 1) {
-        c.push(dl.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-        h.push(dl.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-        LSTMCells.push(lstm(i));
-      }
-
-      const userInput = Array.from(seed);
-
-      const encodedInput = [];
-      userInput.forEach((char, ind) => {
-        if (ind < 100) {
-          encodedInput.push(this.vocab[char]);
-        }
+    /* eslint no-loop-func: 0 */
+    for (let i = 0; i < this.length; i += 1) {
+      const indexTensor = tf.tidy(() => {
+        const input = this.convert(seed);
+        const prediction = this.model.predict(input).squeeze();
+        return LSTMGenerator.sample(prediction, this.temperature);
       });
-
-      let current = 0;
-      let input = encodedInput[current];
-
-      for (let i = 0; i < userInput.length + length; i += 1) {
-        const onehotBuffer = dl.buffer([1, this.vocabSize]);
-        onehotBuffer.set(1.0, 0, input);
-        const onehot = onehotBuffer.toTensor();
-        let output;
-        if (this.model.embedding) {
-          const embedded = dl.matMul(onehot, this.model.embedding);
-          output = dl.multiRNNCell(LSTMCells, embedded, c, h);
-        } else {
-          output = dl.multiRNNCell(LSTMCells, onehot, c, h);
-        }
-
-        c = output[0];
-        h = output[1];
-
-        const outputH = h[1];
-        const weightedResult = dl.matMul(outputH, this.model.fullyConnectedWeights);
-        const logits = dl.add(weightedResult, this.model.fullyConnectedBiases);
-        const divided = dl.div(logits, dl.tensor(temperature));
-        const probabilities = dl.exp(divided);
-        const normalized = await dl.div(
-          probabilities,
-          dl.sum(probabilities),
-        ).data();
-
-        const sampledResult = sampleFromDistribution(normalized);
-        if (userInput.length > current) {
-          input = encodedInput[current];
-          current += 1;
-        } else {
-          input = sampledResult;
-          results.push(sampledResult);
-        }
-      }
-
-      let generated = '';
-      results.forEach((char) => {
-        const mapped = Object.keys(this.vocab).find(key => this.vocab[key] === char);
-        if (mapped) {
-          generated += mapped;
-        }
-      });
-      callback({ generated });
+      const index = await indexTensor.data();
+      indexTensor.dispose();
+      seed += this.indices_char[index];
+      generated += this.indices_char[index];
+      await tf.nextFrame();
     }
+    callback(generated);
+  }
+
+  convert(input) {
+    let sentence = input.toLowerCase();
+    sentence = sentence.split('').filter(x => x in this.char_indices).join('');
+    if (sentence.length < this.inputLength) {
+      sentence = sentence.padStart(this.inputLength);
+    } else if (sentence.length > this.inputLength) {
+      sentence = sentence.substring(sentence.length - this.inputLength);
+    }
+    const buffer = tf.buffer([1, this.inputLength, Object.keys(this.indices_char).length]);
+    for (let i = 0; i < this.inputLength; i += 1) {
+      const char = sentence.charAt(i);
+      buffer.set(1, 0, i, this.char_indices[char]);
+    }
+    const result = buffer.toTensor();
+    return result;
+  }
+
+  static sample(input, temperature) {
+    return tf.tidy(() => {
+      let prediction = input.log();
+      const diversity = tf.scalar(temperature);
+      prediction = prediction.div(diversity);
+      prediction = prediction.exp();
+      prediction = prediction.div(prediction.sum());
+      prediction = prediction.mul(tf.randomUniform(prediction.shape));
+      return prediction.argMax();
+    });
   }
 }
 

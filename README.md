@@ -9,7 +9,7 @@
 
 ml5.js is a high level JavaScript library for machine learning. The main idea of this project is to further reduce the barriers between lower level machine learning and creative outputs using JavaScript.
 
-It works by wrapping [deeplearn.js](https://deeplearnjs.org/), providing a simple and friendly interface to work with GPU accelerated machine learning in JavaScript.
+It works by wrapping [tensorflow.js](https://js.tensorflow.org/), providing a simple and friendly interface to work with GPU accelerated machine learning in JavaScript.
 
 ## Usage
 
@@ -25,11 +25,11 @@ or
 
 ## Resources
 
-- [Getting Started](https://ml5js.github.io/docs/getting-started.html)
-- [API Reference](https://ml5js.github.io/docs/imagenet.html)
-- [Examples](https://ml5js.github.io/docs/simple-image-classification-example.html)
-- [Learn](https://ml5js.github.io/docs/glossary-statistics.html)
-- [Experiments](https://ml5js.github.io/en/experiments.html)
+- [Getting Started](https://ml5js.org/docs/getting-started.html)
+- [API Reference](https://ml5js.org/docs/imagenet.html)
+- [Examples](https://ml5js.org/docs/simple-image-classification-example.html)
+- [Learn](https://ml5js.org/docs/glossary-statistics.html)
+- [Experiments](https://ml5js.org/en/experiments.html)
 
 ## Standalone Examples
 
