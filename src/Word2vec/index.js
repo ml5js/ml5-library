@@ -1,8 +1,13 @@
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 /*
 Word2Vec
 */
 
-import { div, tensor, add, sub, util } from 'deeplearn';
+import * as tf from '@tensorflow/tfjs';
 
 class Word2Vec {
   constructor(vectors, callback) {
@@ -17,7 +22,7 @@ class Word2Vec {
       .then(response => response.json())
       .then((json) => {
         Object.keys(json.vectors).forEach((word) => {
-          this.model[word] = tensor(json.vectors[word]);
+          this.model[word] = tf.tensor1d(json.vectors[word]);
         });
         this.modelSize = Object.keys(json).length;
         this.ready = true;
@@ -25,7 +30,7 @@ class Word2Vec {
           callback();
         }
       }).catch((error) => {
-        console.log(`There has been a problem loading the vocab: ${error.message}`);
+        console.error(`There has been a problem loading the vocab: ${error.message}`);
       });
   }
 
@@ -41,7 +46,7 @@ class Word2Vec {
 
   average(inputs, max = 1) {
     const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-    const avg = div(sum, tensor(inputs.length));
+    const avg = tf.div(sum, tf.tensor(inputs.length));
     return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
   }
 
@@ -79,11 +84,11 @@ class Word2Vec {
     let result = vectors[0];
     if (operation === 'ADD') {
       for (let i = 1; i < vectors.length; i += 1) {
-        result = add(result, vectors[i]);
+        result = tf.add(result, vectors[i]);
       }
     } else {
       for (let i = 1; i < vectors.length; i += 1) {
-        result = sub(result, vectors[i]);
+        result = tf.sub(result, vectors[i]);
       }
     }
     return result;
@@ -92,7 +97,7 @@ class Word2Vec {
   static nearest(model, input, start, max) {
     const nearestVectors = [];
     Object.keys(model).forEach((vector) => {
-      const distance = util.distSquared(input.dataSync(), model[vector].dataSync());
+      const distance = tf.util.distSquared(input.dataSync(), model[vector].dataSync());
       nearestVectors.push({ vector, distance });
     });
     nearestVectors.sort((a, b) => a.distance - b.distance);

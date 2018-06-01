@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.js",
   "directories": {
@@ -33,7 +33,6 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
-    "babel-jest": "22.4.1",
     "babel-loader": "7.1.4",
     "babel-plugin-transform-async-to-generator": "6.24.1",
     "babel-polyfill": "6.26.0",
@@ -68,9 +67,6 @@
   "config": {
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
-    },
-    "ghooks": {
-      "pre-commit": "npm run test"
     }
   },
   "files": [
@@ -88,8 +84,7 @@
     ]
   },
   "dependencies": {
-    "deeplearn": "0.5.1",
-    "deeplearn-knn-image-classifier": "0.4.2",
-    "deeplearn-squeezenet": "0.2.0"
+    "@tensorflow-models/posenet": "0.0.1",
+    "@tensorflow/tfjs": "0.11.2"
   }
 }

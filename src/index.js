@@ -1,17 +1,24 @@
-import * as dl from 'deeplearn';
-import ImageClassifier from './ImageClassifier/index';
-import KNNImageClassifier from './KNNImageClassifier/index';
-import LSTMGenerator from './LSTM/index';
-import Word2Vec from './Word2vec/index';
-import StyleTransfer from './StyleTransfer/index';
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+import * as tf from '@tensorflow/tfjs';
+import ImageClassifier from './ImageClassifier/';
+import Word2Vec from './Word2vec/';
+import YOLO from './YOLO';
+import PoseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
+import StyleTransfer from './StyleTransfer/';
+import LSTMGenerator from './LSTM/';
 
 module.exports = {
   ImageClassifier,
-  KNNImageClassifier,
-  LSTMGenerator,
-  StyleTransfer,
+  YOLO,
   Word2Vec,
+  StyleTransfer,
+  PoseNet,
+  LSTMGenerator,
   ...imageUtils,
-  dl,
+  tf,
 };
