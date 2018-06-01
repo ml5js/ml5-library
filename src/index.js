@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import Crepe from './Crepe/';
 import ImageClassifier from './ImageClassifier/';
 import Word2Vec from './Word2vec/';
 import YOLO from './YOLO';
@@ -14,6 +15,7 @@ import LSTMGenerator from './LSTM/';
 
 module.exports = {
   ImageClassifier,
+  Crepe,
   YOLO,
   Word2Vec,
   StyleTransfer,
