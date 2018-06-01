@@ -84,8 +84,8 @@ class Crepe {
         const predictedHz = 10 * ((predictedCent / 1200.0) ** 2);
 
         // update
-        let result = (confidence > 0.5) ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
-        const strlen = result.length;
+        const result = (confidence > 0.5) ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
+        // const strlen = result.length;
         // for (let i = 0; i < 11 - strlen; i += 1) result = result;
         this.results.result = result;
       });
@@ -105,9 +105,10 @@ class Crepe {
     // and is longer than 1024 samples when resampled to 16000 Hz.
     // In most platforms where the sample rate is 44.1 kHz or 48 kHz,
     // this will be 4096, giving 10-12 updates/sec.
-    const minBufferSize = this.audioContext.sampleRate / 16000 * 1024;
-    for (var bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
-    console.log('Buffer size = ' + bufferSize);
+    const minBufferSize = (this.audioContext.sampleRate / 16000) * 1024;
+    let bufferSize = 4;
+    while (bufferSize < minBufferSize) bufferSize *= 2;
+    console.log(`Buffer size = ${bufferSize}`);
     const scriptNode = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
     scriptNode.onaudioprocess = this.processMicrophoneBuffer.bind(this);
     // It seems necessary to connect the stream to a sink
