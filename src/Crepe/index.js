@@ -1,8 +1,11 @@
-/*
-Crepe Pitch Detection model
-https://github.com/marl/crepe/tree/gh-pages
-https://marl.github.io/crepe/crepe.js
-*/
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+// Crepe Pitch Detection model
+// https://github.com/marl/crepe/tree/gh-pages
+// https://marl.github.io/crepe/crepe.js
 
 import * as tf from '@tensorflow/tfjs';
 
