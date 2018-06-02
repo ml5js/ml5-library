@@ -13,7 +13,10 @@ class ImageAndVideo {
   constructor(video, size) {
     this.imageSize = size;
     this.videoReady = false;
-    this.onVideoReady = () => { this.videoReady = true; };
+    this.onVideoReady = () => {
+      this.videoReady = true;
+      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
+    };
 
     if (video instanceof HTMLVideoElement) {
       this.video = processVideo(video, this.imageSize, this.onVideoReady);
