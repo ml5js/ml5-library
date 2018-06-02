@@ -24,8 +24,17 @@ const DEFAULTS = {
 const IMAGESIZE = 224;
 
 class ImageClassifier extends ImageAndVideo {
-  constructor(video, options = {}, callback = () => {}) {
+  constructor(video, optionsOrCallback = {}, cb = () => {}) {
     super(video, IMAGESIZE);
+    let options = {};
+    let callback;
+
+    if (typeof optionsOrCallback === 'object') {
+      options = optionsOrCallback;
+      callback = cb;
+    } else if (typeof optionsOrCallback === 'function') {
+      callback = optionsOrCallback;
+    }
 
     this.mobilenet = null;
     this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
@@ -47,10 +56,7 @@ class ImageClassifier extends ImageAndVideo {
     this.loadModel().then((net) => {
       this.modelLoaded = true;
       this.mobilenetModified = net;
-      this.waitingPredictions.forEach((i) => {
-        // console.log(i.imgToPredict, i.num, i.callback);
-        this.predict(i.imgToPredict, i.num, i.callback);
-      });
+      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
       callback();
     });
   }
@@ -59,7 +65,7 @@ class ImageClassifier extends ImageAndVideo {
     this.mobilenet = await tf.loadModel(this.modelPath);
     const layer = this.mobilenet.getLayer('conv_pw_13_relu');
 
-    if (this.video) {
+    if (this.videoReady) {
       tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
     }
 
@@ -195,7 +201,7 @@ class ImageClassifier extends ImageAndVideo {
       callback = cb;
     }
 
-    if (!this.modelLoaded) {
+    if (!this.modelLoaded || !this.videoReady) {
       this.waitingPredictions.push({ imgToPredict, num: numberOfClasses || this.topKPredictions, callback });
     } else {
       // If there is no custom model, then run over the original mobilenet
