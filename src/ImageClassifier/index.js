@@ -179,6 +179,10 @@ class ImageClassifier extends ImageAndVideo {
         this.video = processVideo(inputNumOrCallback, this.imageSize);
       }
       imgToPredict = this.video;
+    } else if (typeof numOrCallback === 'number') {
+      if (this.video) {
+        numberOfClasses = inputNumOrCallback;
+      }
     }
 
     if (typeof numOrCallback === 'function') {
