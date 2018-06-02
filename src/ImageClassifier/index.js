@@ -47,7 +47,10 @@ class ImageClassifier extends ImageAndVideo {
     this.loadModel().then((net) => {
       this.modelLoaded = true;
       this.mobilenetModified = net;
-      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
+      this.waitingPredictions.forEach((i) => {
+        // console.log(i.imgToPredict, i.num, i.callback);
+        this.predict(i.imgToPredict, i.num, i.callback);
+      });
       callback();
     });
   }
@@ -160,16 +163,15 @@ class ImageClassifier extends ImageAndVideo {
 
   /* eslint consistent-return: 0 */
   async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
-    let imgToPredict = numOrCallback;
-    let numberOfClasses;
-    let callback = cb;
+    let imgToPredict;
+    let numberOfClasses = 10;
+    let callback;
 
     if (typeof inputNumOrCallback === 'function') {
-      if (!this.video) {
-        this.video = processVideo(inputNumOrCallback, this.imageSize);
+      if (this.video) {
+        imgToPredict = this.video;
+        callback = inputNumOrCallback;
       }
-      imgToPredict = this.video;
-      callback = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLVideoElement) {
@@ -177,10 +179,16 @@ class ImageClassifier extends ImageAndVideo {
         this.video = processVideo(inputNumOrCallback, this.imageSize);
       }
       imgToPredict = this.video;
-    } else {
-      imgToPredict = this.video;
-      numberOfClasses = inputNumOrCallback;
+    }
+
+    if (typeof numOrCallback === 'function') {
       callback = numOrCallback;
+    } else if (typeof numOrCallback === 'number') {
+      numberOfClasses = numOrCallback;
+    }
+
+    if (typeof cb === 'function') {
+      callback = cb;
     }
 
     if (!this.modelLoaded) {

@@ -11,6 +11,7 @@ module.exports = (config) => {
     // list of files / patterns to load in the browser
     files: [
       'src/*/*.test.js',
+      'src/images/*.jpg',
     ],
     // list of files / patterns to exclude
     exclude: [],
@@ -55,6 +56,6 @@ module.exports = (config) => {
     singleRun: false,
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
+    concurrency: Infinity,
   });
 };
