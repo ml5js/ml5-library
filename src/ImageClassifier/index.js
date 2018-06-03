@@ -178,6 +178,8 @@ class ImageClassifier extends ImageAndVideo {
       callback = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
+    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLImageElement) {
+      imgToPredict = inputNumOrCallback.elt;
     } else if (inputNumOrCallback instanceof HTMLVideoElement) {
       if (!this.video) {
         this.video = processVideo(inputNumOrCallback, this.imageSize);
