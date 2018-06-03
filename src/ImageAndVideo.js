@@ -23,6 +23,8 @@ class ImageAndVideo {
     } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
       // Handle p5.js video element
       this.video = processVideo(video.elt, this.imageSize, this.onVideoReady);
+    } else {
+      this.videoReady = true;
     }
   }
 }

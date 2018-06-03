@@ -65,7 +65,7 @@ class ImageClassifier extends ImageAndVideo {
     this.mobilenet = await tf.loadModel(this.modelPath);
     const layer = this.mobilenet.getLayer('conv_pw_13_relu');
 
-    if (this.videoReady) {
+    if (this.videoReady && this.video) {
       tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
     }
 
@@ -169,15 +169,13 @@ class ImageClassifier extends ImageAndVideo {
 
   /* eslint consistent-return: 0 */
   async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
-    let imgToPredict;
+    let imgToPredict = this.video;
     let numberOfClasses = 10;
     let callback;
 
     if (typeof inputNumOrCallback === 'function') {
-      if (this.video) {
-        imgToPredict = this.video;
-        callback = inputNumOrCallback;
-      }
+      imgToPredict = this.video;
+      callback = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLVideoElement) {
@@ -186,9 +184,8 @@ class ImageClassifier extends ImageAndVideo {
       }
       imgToPredict = this.video;
     } else if (typeof numOrCallback === 'number') {
-      if (this.video) {
-        numberOfClasses = inputNumOrCallback;
-      }
+      imgToPredict = this.video;
+      numberOfClasses = inputNumOrCallback;
     }
 
     if (typeof numOrCallback === 'function') {
