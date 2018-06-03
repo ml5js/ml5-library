@@ -15,7 +15,9 @@ class ImageAndVideo {
     this.videoReady = false;
     this.onVideoReady = () => {
       this.videoReady = true;
-      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
+      if (this.waitingPredictions) {
+        this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
+      }
     };
 
     if (video instanceof HTMLVideoElement) {
