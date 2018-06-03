@@ -34,17 +34,17 @@ describe('Create an image classifier', () => {
     expect(classifier.modelLoaded).toBe(true);
   });
 
-  it('Should classify an image', (done) => {
-    const img = new Image();
-    img.crossOrigin = '';
-    img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-    img.onload = () => {
-      classifier.predict(img, (results) => {
-        console.log(results); 
-      });
-      done();
-    };
-  });
+  // it('Should classify an image', (done) => {
+  //   const img = new Image();
+  //   img.crossOrigin = '';
+  //   img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
+  //   img.onload = () => {
+  //     classifier.predict(img, (results) => {
+  //       console.log(results);
+  //     });
+  //     done();
+  //   };
+  // });
 });
 
 
