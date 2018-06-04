@@ -6,9 +6,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.9.0
+      - image: circleci/node:8.9.0-browsers
         environment:
-          CHROME_BIN=/usr/bin/google-chrome
+          CHROME_BIN: "/usr/bin/google-chrome"
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
