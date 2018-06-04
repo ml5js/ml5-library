@@ -13,13 +13,20 @@ class ImageAndVideo {
   constructor(video, size) {
     this.imageSize = size;
     this.videoReady = false;
-    this.onVideoReady = () => { this.videoReady = true; };
+    this.onVideoReady = () => {
+      this.videoReady = true;
+      if (this.waitingPredictions) {
+        this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
+      }
+    };
 
     if (video instanceof HTMLVideoElement) {
       this.video = processVideo(video, this.imageSize, this.onVideoReady);
     } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
       // Handle p5.js video element
       this.video = processVideo(video.elt, this.imageSize, this.onVideoReady);
+    } else {
+      this.videoReady = true;
     }
   }
 }

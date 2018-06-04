@@ -80,7 +80,7 @@ class PoseNet extends ImageAndVideo {
 
     this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
       .then((pose) => {
-        callback([pose]);
+        callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
         tf.nextFrame().then(() => { this.singlePose(callback); });
       });
   }
@@ -99,7 +99,8 @@ class PoseNet extends ImageAndVideo {
 
     this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
       .then((poses) => {
-        callback(poses);
+        const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
+        callback(result);
         tf.nextFrame().then(() => { this.multiPose(callback); });
       });
   }
