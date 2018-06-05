@@ -26,14 +26,14 @@ npm install
   
   Run this command from the root of the project: 
   ```bash
-  npm run start:dev
+  npm run start
   ```
 
   Will output something like this:
 
   ```bash
   Project is running at http://localhost:8080/
-  webpack output is served from /dist/
+  webpack output is served from /
 
   Hash: 16b80528bf532975b279
   Version: webpack 2.6.1
@@ -71,7 +71,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
   <html>
   <head>
     <title>Test</title>
-    <script src="../../dist/ml5.js"></script>
+    <script src="http://localhost:8080/ml5.js"></script>
   </head>
   <body>
 
@@ -109,11 +109,11 @@ Create a new folder called `/experiments` in the project's root folder. Create a
   That should output something very similar to the `webpack-dev-server` but you'll notice that at the end is this line:
 
   ```bash
-  > ml5@0.0.1 build:min /Users/ml5/Desktop/sandbox/ml5
-  > uglifyjs dist/ml5.js -o dist/ml5.min.js
+  > webpack --config webpack.prod.babel.js
+  > Done in 15.13s.
   ```
 
-  Which means the library was successfully build and minified.
+  Which means the library was successfully built and minified.
 
   6. (OPTIONAL) Commit your changes. We are using [commitizen](https://github.com/commitizen/cz-cli) to commit changes. Commitizen is a tool that allows you to specify commit in a more precise way. You can run it instead of your regular `git commit -m 'msg'` with:
 
