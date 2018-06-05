@@ -1,9 +1,19 @@
-// Copyright (c) 2018 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
+// import Word2Vec from './index';
 
-// Just a test
-test('true should be true', () => {
-  expect(true).toBe(true);
-});
+// const URL = 'https://raw.githubusercontent.com/ml5js/ml5-examples/master/p5js/07_Word2Vec/data/wordvecs1000.json';
+
+// describe('initialize word2vec', () => {
+//   let word2vec;
+//   beforeAll((done) => {
+//     // word2vec = new Word2Vec(URL);
+//     done();
+//   });
+
+//   // it('creates a new instance', (done) => {
+//   //   expect(word2vec).toEqual(jasmine.objectContaining({
+//   //     ready: true,
+//   //     modelSize: 1,
+//   //   }));
+//   //   done();
+//   // });
+// });
