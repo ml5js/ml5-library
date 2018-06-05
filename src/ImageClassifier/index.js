@@ -24,8 +24,17 @@ const DEFAULTS = {
 const IMAGESIZE = 224;
 
 class ImageClassifier extends ImageAndVideo {
-  constructor(video, options = {}, callback = () => {}) {
+  constructor(video, optionsOrCallback = {}, cb = () => {}) {
     super(video, IMAGESIZE);
+    let options = {};
+    let callback;
+
+    if (typeof optionsOrCallback === 'object') {
+      options = optionsOrCallback;
+      callback = cb;
+    } else if (typeof optionsOrCallback === 'function') {
+      callback = optionsOrCallback;
+    }
 
     this.mobilenet = null;
     this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
@@ -56,7 +65,7 @@ class ImageClassifier extends ImageAndVideo {
     this.mobilenet = await tf.loadModel(this.modelPath);
     const layer = this.mobilenet.getLayer('conv_pw_13_relu');
 
-    if (this.video) {
+    if (this.videoReady && this.video) {
       tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
     }
 
@@ -160,30 +169,38 @@ class ImageClassifier extends ImageAndVideo {
 
   /* eslint consistent-return: 0 */
   async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
-    let imgToPredict = numOrCallback;
-    let numberOfClasses;
-    let callback = cb;
+    let imgToPredict = this.video;
+    let numberOfClasses = 10;
+    let callback;
 
     if (typeof inputNumOrCallback === 'function') {
-      if (!this.video) {
-        this.video = processVideo(inputNumOrCallback, this.imageSize);
-      }
       imgToPredict = this.video;
       callback = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
+    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLImageElement) {
+      imgToPredict = inputNumOrCallback.elt;
     } else if (inputNumOrCallback instanceof HTMLVideoElement) {
       if (!this.video) {
         this.video = processVideo(inputNumOrCallback, this.imageSize);
       }
       imgToPredict = this.video;
-    } else {
+    } else if (typeof numOrCallback === 'number') {
       imgToPredict = this.video;
       numberOfClasses = inputNumOrCallback;
-      callback = numOrCallback;
     }
 
-    if (!this.modelLoaded) {
+    if (typeof numOrCallback === 'function') {
+      callback = numOrCallback;
+    } else if (typeof numOrCallback === 'number') {
+      numberOfClasses = numOrCallback;
+    }
+
+    if (typeof cb === 'function') {
+      callback = cb;
+    }
+
+    if (!this.modelLoaded || !this.videoReady) {
       this.waitingPredictions.push({ imgToPredict, num: numberOfClasses || this.topKPredictions, callback });
     } else {
       // If there is no custom model, then run over the original mobilenet
