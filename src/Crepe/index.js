@@ -30,19 +30,19 @@ class Crepe {
 
   // perform resampling the audio to 16000 Hz, on which the model is trained.
   // setting a sample rate in AudioContext is not supported by most browsers at the moment.
-  resample(audioBuffer, onComplete) {
+  static resample(audioBuffer, onComplete) {
     const interpolate = (audioBuffer.sampleRate % 16000 !== 0);
     const multiplier = audioBuffer.sampleRate / 16000;
     const original = audioBuffer.getChannelData(0);
     const subsamples = new Float32Array(1024);
-    for (let i = 0; i < 1024; i++) {
+    for (let i = 0; i < 1024; i += 1) {
       if (!interpolate) {
         subsamples[i] = original[i * multiplier];
       } else {
         // simplistic, linear resampling
         const left = Math.floor(i * multiplier);
         const right = left + 1;
-        const p = i * multiplier - left;
+        const p = (i * multiplier) - left;
         subsamples[i] = (((1 - p) * original[left]) + (p * original[right]));
       }
     }
@@ -53,14 +53,14 @@ class Crepe {
     this.results = {};
     // bin number -> cent value mapping
     const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
-    this.resample(event.inputBuffer, (resampled) => {
+    Crepe.resample(event.inputBuffer, (resampled) => {
       tf.tidy(() => {
         this.running = true;
 
         // run the prediction on the model
         const frame = tf.tensor(resampled.slice(0, 1024));
         const zeromean = tf.sub(frame, tf.mean(frame));
-        const framestd = tf.tensor(tf.norm(zeromean).dataSync()/Math.sqrt(1024));
+        const framestd = tf.tensor(tf.norm(zeromean).dataSync() / Math.sqrt(1024));
         const normalized = tf.div(zeromean, framestd);
         const input = normalized.reshape([1, 1024]);
         const activation = this.model.predict([input]).reshape([360]);
@@ -81,12 +81,12 @@ class Crepe {
         const productSum = products.dataSync().reduce((a, b) => a + b, 0);
         const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
         const predictedCent = productSum / weightSum;
-        const predictedHz = 10 * Math.pow(2, predictedCent / 1200.0);
+        const predictedHz = 10 * ((predictedCent / 1200.0) ** 2);
 
         // update
-        let result = (confidence > 0.5) ? predictedHz.toFixed(3) + ' Hz' : 'no voice';
-        const strlen = result.length;
-        for (let i = 0; i < 11 - strlen; i++) result = result;
+        const result = (confidence > 0.5) ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
+        // const strlen = result.length;
+        // for (let i = 0; i < 11 - strlen; i += 1) result = result;
         this.results.result = result;
       });
     });
@@ -98,16 +98,17 @@ class Crepe {
 
   processStream(stream) {
     console.log('Setting up AudioContext ...');
-    console.log('Audio context sample rate = ' + this.audioContext.sampleRate);
+    console.log(`Audio context sample rate =  + ${this.audioContext.sampleRate}`);
     const mic = this.audioContext.createMediaStreamSource(stream);
 
     // We need the buffer size that is a power of two
     // and is longer than 1024 samples when resampled to 16000 Hz.
     // In most platforms where the sample rate is 44.1 kHz or 48 kHz,
     // this will be 4096, giving 10-12 updates/sec.
-    const minBufferSize = this.audioContext.sampleRate / 16000 * 1024;
-    for (var bufferSize = 4; bufferSize < minBufferSize; bufferSize *= 2);
-    console.log('Buffer size = ' + bufferSize);
+    const minBufferSize = (this.audioContext.sampleRate / 16000) * 1024;
+    let bufferSize = 4;
+    while (bufferSize < minBufferSize) bufferSize *= 2;
+    console.log(`Buffer size = ${bufferSize}`);
     const scriptNode = this.audioContext.createScriptProcessor(bufferSize, 1, 1);
     scriptNode.onaudioprocess = this.processMicrophoneBuffer.bind(this);
     // It seems necessary to connect the stream to a sink
