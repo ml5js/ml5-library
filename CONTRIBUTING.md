@@ -8,19 +8,19 @@ If you want to help develop this library, here are the steps to get started with
 
 1. Fork the repository to your account, and then clone it your computer:
 ```bash
-git clone https://github.com/YOURGITHUBHANDLE/ML5.git
+git clone https://github.com/YOURGITHUBHANDLE/ml5-library.git
 ```
 
 2. Install dependencies:
 
 ```bash
-cd ML5
+cd ml5-library
 npm install
 ```
 
 3. This project is developed using [webpack](https://webpack.js.org/). Webpack is a module bundler that allows to "bundle" different files into one file. This allows you to write files for specific things and then mix them all together into one single file that you can import in your page. 
 
-  Under the `/src` folder you will see that there are sub-folders for all ML5 methods. You can edit each file individually and then `build` everything into one single library.
+  Under the `/src` folder you will see that there are sub-folders for all ml5 methods. You can edit each file individually and then `build` everything into one single library.
 
   Before `building` the library you can see if everything is working.
   
@@ -89,7 +89,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
 
   ```javascript
   'use strict';
-  console.log('ML5 loaded');
+  console.log('ml5 loaded');
   ```
   
   To something like this:
@@ -139,46 +139,7 @@ Create a new folder called `/experiments` in the project's root folder. Create a
 
 ## Running Unit Tests
 
-
-
-## ML5 Website
-
-The [ML5 website](https://ml5js.org/) is built with [Docusaurus](https://docusaurus.io/).
-
-Docusaurus is an open-source library, built with React, to create and maintain documentation websites.
-
-All the website content and documentation lives in the master branch but website is served from `gh-pages`. 
-
-### Contributing
-
-Almost all the content for the website can be found in markdown under the `docs/` folder at the root level of the repository.
-The naming convention we are using is the following:
-
-* Examples are named: `examples-[name of example].md`
-* API Reference files are named: `api-[Class].md`
-* Glossary: `glossary-[type].md`
-
-If you wish to help develop the website, first you'll need to install the necessary dependencies for Docusaurus.
-
-From the root of the project run:
-```
-cd website
-npm install
-```
-
-And then start the development server:
-
-```
-npm run start
-```
-
-This wil create a server that will reload whenever there are changes in the website source code.
-
-To build the website run:
-
-```bash
-npm run build
-```
+WIP
 
 ## Additional Resources
 
