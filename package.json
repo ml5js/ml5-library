@@ -84,6 +84,7 @@
     ]
   },
   "dependencies": {
+    "@tensorflow-models/mobilenet": "0.1.0",
     "@tensorflow-models/posenet": "^0.1.1",
     "@tensorflow/tfjs": "0.11.4"
   }

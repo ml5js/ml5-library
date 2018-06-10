@@ -4,7 +4,9 @@
 // https://opensource.org/licenses/MIT
 
 /*
-Image and Video base class
+Base Video class that creates
+a separate video element with a correct
+video size to use with a model
 */
 
 class Video {
@@ -29,6 +31,7 @@ class Video {
       this.video.autoplay = true;
       this.video.playsinline = true;
       this.video.muted = true;
+      this.videoReady = true;
       resolve();
     });
   }
