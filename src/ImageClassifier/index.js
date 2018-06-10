@@ -13,43 +13,27 @@ import Video from './../utils/Video';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { processVideo, imgToTensor } from '../utils/imageUtilities';
 
-const DEFAULTS = {
-  learningRate: 0.0001,
-  hiddenUnits: 100,
-  epochs: 20,
-  numClasses: 2,
-  batchSize: 0.4,
-};
-
 const IMAGESIZE = 224;
 
 class ImageClassifier extends Video {
-  constructor(video, optionsOrCallback = {}, cb = () => {}) {
-    super(video, IMAGESIZE);
-    let options = {};
+  constructor(model, videoOrCallback, cb = () => {}) {
+    super(videoOrCallback, IMAGESIZE);
+
     let callback;
-    if (typeof optionsOrCallback === 'object') {
-      options = optionsOrCallback;
+    if (typeof videoOrCallback === 'function') {
       callback = cb;
-    } else if (typeof optionsOrCallback === 'function') {
-      callback = optionsOrCallback;
+    } else {
+      callback = cb;
     }
 
-    this.mobilenet = null;
-    this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
+    this.modelName = model;
+    this.model = null;
     this.topKPredictions = 10;
-    this.modelLoaded = false;
-
-    // Props for retraining mobilenet
-    this.hasAnyTrainedClass = false;
-    this.customModel = null;
-    this.epochs = options.epochs || DEFAULTS.epochs;
-    this.hiddenUnits = options.hiddenUnits || DEFAULTS.hiddenUnits;
-    this.numClasses = options.numClasses || DEFAULTS.numClasses;
-    this.learningRate = options.learningRate || DEFAULTS.learningRate;
-    this.batchSize = options.batchSize || DEFAULTS.batchSize;
-    this.isPredicting = false;
-    this.mapStringToIndex = [];
+    if (this.modelName === 'Mobilenet' || this.modelName === 'MobileNet' || this.modelName === 'mobilenet') {
+      this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
+    } else {
+      console.error('Please specify a model to use. E.g: "Mobilenet"');
+    }
 
     // Load the model and video
     if (this.videoElt) {
@@ -79,101 +63,6 @@ class ImageClassifier extends Video {
     }
 
     return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-  }
-
-  // Add an image to retrain
-  addImage(labelOrInput, labelOrCallback, cb) {
-    let imgToAdd;
-    let label;
-    let callback;
-
-    if (labelOrInput instanceof HTMLImageElement || labelOrInput instanceof HTMLVideoElement) {
-      imgToAdd = labelOrInput;
-      label = labelOrCallback;
-      callback = cb;
-    } else {
-      imgToAdd = this.video;
-      label = labelOrInput;
-      callback = labelOrCallback;
-    }
-
-    if (typeof label === 'string') {
-      if (!this.mapStringToIndex.includes(label)) {
-        label = this.mapStringToIndex.push(label) - 1;
-      } else {
-        label = this.mapStringToIndex.indexOf(label);
-      }
-    }
-
-    if (this.modelLoaded) {
-      tf.tidy(() => {
-        const processedImg = imgToTensor(imgToAdd);
-        const prediction = this.mobilenetFeatures.predict(processedImg);
-        const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
-        if (this.xs == null) {
-          this.xs = tf.keep(prediction);
-          this.ys = tf.keep(y);
-          this.hasAnyTrainedClass = true;
-        } else {
-          const oldX = this.xs;
-          this.xs = tf.keep(oldX.concat(prediction, 0));
-          const oldY = this.ys;
-          this.ys = tf.keep(oldY.concat(y, 0));
-          oldX.dispose();
-          oldY.dispose();
-          y.dispose();
-        }
-      });
-      if (callback) {
-        callback();
-      }
-    }
-  }
-
-  // Train
-  async train(onProgress) {
-    if (!this.hasAnyTrainedClass) {
-      throw new Error('Add some examples before training!');
-    }
-
-    this.isPredicting = false;
-
-    this.customModel = tf.sequential({
-      layers: [
-        tf.layers.flatten({ inputShape: [7, 7, 256] }),
-        tf.layers.dense({
-          units: this.hiddenUnits,
-          activation: 'relu',
-          kernelInitializer: 'varianceScaling',
-          useBias: true,
-        }),
-        tf.layers.dense({
-          units: this.numClasses,
-          kernelInitializer: 'varianceScaling',
-          useBias: false,
-          activation: 'softmax',
-        }),
-      ],
-    });
-
-    const optimizer = tf.train.adam(this.learningRate);
-    this.customModel.compile({ optimizer, loss: 'categoricalCrossentropy' });
-    const batchSize = Math.floor(this.xs.shape[0] * this.batchSize);
-    if (!(batchSize > 0)) {
-      throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
-    }
-
-    this.customModel.fit(this.xs, this.ys, {
-      batchSize,
-      epochs: this.epochs,
-      callbacks: {
-        onBatchEnd: async (batch, logs) => {
-          onProgress(logs.loss.toFixed(5));
-          await tf.nextFrame();
-        },
-        onTrainEnd: () => onProgress(null),
-      },
-    });
   }
 
   /* eslint consistent-return: 0 */
@@ -209,7 +98,7 @@ class ImageClassifier extends Video {
       callback = cb;
     }
 
-    // If there is no custom model, then run over the original mobilenet
+    // If there is no custom model, then run overcla the original mobilenet
     if (!this.customModel) {
       const logits = tf.tidy(() => {
         const pixels = tf.fromPixels(imgToPredict).toFloat();
@@ -217,7 +106,6 @@ class ImageClassifier extends Video {
         const offset = tf.scalar(127.5);
         const normalized = resized.sub(offset).div(offset);
         const batched = normalized.reshape([1, this.size, this.size, 3]);
-        console.log(batched);
         return this.mobilenet.predict(batched);
       });
       const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
