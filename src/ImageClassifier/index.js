@@ -105,7 +105,9 @@ class ImageClassifier extends Video {
 
     // Classify the image using the selected model
     return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-      callback(predictions);
+      if (callback) {
+        callback(predictions);
+      }
     });
   }
 }
