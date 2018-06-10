@@ -4,14 +4,12 @@
 // https://opensource.org/licenses/MIT
 
 /*
-Image classifier class
+Image Classifier using pre-trained networks
 */
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
-// import Video from './../utils/Video';
 
-// const IMAGESIZE = 224;
 const DEFAULTS = {
   mobilenet: {
     version: 1,
@@ -22,8 +20,6 @@ const DEFAULTS = {
 
 class ImageClassifier {
   constructor(modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) {
-    // super(videoOrOptionsOrCallback, IMAGESIZE);
-
     let options = {};
     let callback = cb;
     if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
