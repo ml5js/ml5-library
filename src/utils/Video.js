@@ -7,7 +7,7 @@
 Image and Video base class
 */
 
-class ImageAndVideo {
+class Video {
   constructor(video, size) {
     this.videoElt = null;
     this.size = size;
@@ -16,7 +16,6 @@ class ImageAndVideo {
     if (video instanceof HTMLVideoElement) {
       this.videoElt = video;
     } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
-      // Handle p5.js video element
       this.videoElt = video.elt;
     }
   }
@@ -35,4 +34,4 @@ class ImageAndVideo {
   }
 }
 
-export default ImageAndVideo;
+export default Video;

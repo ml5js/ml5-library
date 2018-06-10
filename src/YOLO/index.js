@@ -10,7 +10,7 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 
 import * as tf from '@tensorflow/tfjs';
-import ImageAndVideo from './../ImageAndVideo';
+import ImageAndVideo from '../ImageAndVideo';
 import { imgToTensor } from '../utils/imageUtilities';
 
 import CLASS_NAMES from './../utils/COCO_CLASSES';

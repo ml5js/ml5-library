@@ -9,7 +9,7 @@ Image classifier class
 /* eslint max-len: ["error", { "code": 180 }] */
 
 import * as tf from '@tensorflow/tfjs';
-import ImageAndVideo from './../ImageAndVideo';
+import Video from './../utils/Video';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { processVideo, imgToTensor } from '../utils/imageUtilities';
 
@@ -23,12 +23,11 @@ const DEFAULTS = {
 
 const IMAGESIZE = 224;
 
-class ImageClassifier extends ImageAndVideo {
+class ImageClassifier extends Video {
   constructor(video, optionsOrCallback = {}, cb = () => {}) {
     super(video, IMAGESIZE);
     let options = {};
     let callback;
-
     if (typeof optionsOrCallback === 'object') {
       options = optionsOrCallback;
       callback = cb;
@@ -40,7 +39,6 @@ class ImageClassifier extends ImageAndVideo {
     this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
     this.topKPredictions = 10;
     this.modelLoaded = false;
-    this.waitingPredictions = [];
 
     // Props for retraining mobilenet
     this.hasAnyTrainedClass = false;
@@ -53,12 +51,23 @@ class ImageClassifier extends ImageAndVideo {
     this.isPredicting = false;
     this.mapStringToIndex = [];
 
-    this.loadModel().then((net) => {
-      this.modelLoaded = true;
-      this.mobilenetModified = net;
-      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
-      callback();
-    });
+    // Load the model and video
+    if (this.videoElt) {
+      this.loadVideo().then(() => {
+        this.videoReady = true;
+        this.loadModel().then((net) => {
+          this.modelLoaded = true;
+          this.mobilenetFeatures = net;
+          callback();
+        });
+      });
+    } else {
+      this.loadModel().then((net) => {
+        this.modelLoaded = true;
+        this.mobilenetFeatures = net;
+        callback();
+      });
+    }
   }
 
   async loadModel() {
@@ -99,7 +108,7 @@ class ImageClassifier extends ImageAndVideo {
     if (this.modelLoaded) {
       tf.tidy(() => {
         const processedImg = imgToTensor(imgToAdd);
-        const prediction = this.mobilenetModified.predict(processedImg);
+        const prediction = this.mobilenetFeatures.predict(processedImg);
         const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
         if (this.xs == null) {
           this.xs = tf.keep(prediction);
@@ -200,42 +209,35 @@ class ImageClassifier extends ImageAndVideo {
       callback = cb;
     }
 
-    if (!this.modelLoaded || !this.videoReady) {
-      this.waitingPredictions.push({ imgToPredict, num: numberOfClasses || this.topKPredictions, callback });
-    } else {
-      // If there is no custom model, then run over the original mobilenet
-      if (!this.customModel) {
-        const logits = tf.tidy(() => {
-          const pixels = tf.fromPixels(imgToPredict).toFloat();
-          const resized = tf.image.resizeBilinear(pixels, [this.imageSize, this.imageSize]);
-          const offset = tf.scalar(127.5);
-          const normalized = resized.sub(offset).div(offset);
-          const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
-          return this.mobilenet.predict(batched);
-        });
-
-        const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
-        return results;
-      }
-
-      this.isPredicting = true;
-      const predictedClass = tf.tidy(() => {
-        const processedImg = imgToTensor(imgToPredict);
-        const activation = this.mobilenetModified.predict(processedImg);
-        const predictions = this.customModel.predict(activation);
-        return predictions.as1D().argMax();
+    // If there is no custom model, then run over the original mobilenet
+    if (!this.customModel) {
+      const logits = tf.tidy(() => {
+        const pixels = tf.fromPixels(imgToPredict).toFloat();
+        const resized = tf.image.resizeBilinear(pixels, [this.size, this.size]);
+        const offset = tf.scalar(127.5);
+        const normalized = resized.sub(offset).div(offset);
+        const batched = normalized.reshape([1, this.size, this.size, 3]);
+        console.log(batched);
+        return this.mobilenet.predict(batched);
       });
-
-      let classId = (await predictedClass.data())[0];
-
-      await tf.nextFrame();
-
-      if (callback) {
-        if (this.mapStringToIndex.length > 0) {
-          classId = this.mapStringToIndex[classId];
-        }
-        callback(classId);
+      const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
+      return results;
+    }
+    // Else, run over the custom model using mobilenet's feautures
+    this.isPredicting = true;
+    const predictedClass = tf.tidy(() => {
+      const processedImg = imgToTensor(imgToPredict);
+      const activation = this.mobilenetFeatures.predict(processedImg);
+      const predictions = this.customModel.predict(activation);
+      return predictions.as1D().argMax();
+    });
+    let classId = (await predictedClass.data())[0];
+    await tf.nextFrame();
+    if (callback) {
+      if (this.mapStringToIndex.length > 0) {
+        classId = this.mapStringToIndex[classId];
       }
+      callback(classId);
     }
   }
 
