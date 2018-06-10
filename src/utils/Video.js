@@ -13,12 +13,11 @@ class Video {
   constructor(video, size) {
     this.videoElt = null;
     this.size = size;
-    this.videoReady = false;
 
     if (video instanceof HTMLVideoElement) {
       this.videoElt = video;
     } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
-      this.videoElt = video.elt;
+      this.videoElt = video.elt; // Handle a p5.js video element
     }
   }
 
@@ -31,7 +30,6 @@ class Video {
       this.video.autoplay = true;
       this.video.playsinline = true;
       this.video.muted = true;
-      this.videoReady = true;
       resolve();
     });
   }
