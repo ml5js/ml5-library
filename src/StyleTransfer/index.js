@@ -30,15 +30,24 @@ class StyleTransfer extends Video {
       callback = videoOrCallback;
     }
 
-    this.loadVideo().then(() => {
-      this.videoReady = true;
+    if (this.videoElt) {
+      this.loadVideo().then(() => {
+        this.videoReady = true;
+        this.loadCheckpoints(model).then(() => {
+          this.ready = true;
+          if (callback) {
+            callback();
+          }
+        });
+      });
+    } else {
       this.loadCheckpoints(model).then(() => {
         this.ready = true;
         if (callback) {
           callback();
         }
       });
-    });
+    }
   }
 
   async loadCheckpoints(path) {
@@ -92,7 +101,7 @@ class StyleTransfer extends Video {
     if (inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLImageElement) {
       input = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLImageElement)) {
-      input = inputOrCallback;
+      input = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       input = this.video;
       callback = inputOrCallback;
