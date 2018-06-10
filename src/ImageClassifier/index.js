@@ -96,7 +96,9 @@ class ImageClassifier extends Video {
       callback = numOrCallback;
     } else if (typeof numOrCallback === 'number') {
       numberOfClasses = numOrCallback;
-    } else if (typeof cb === 'function') {
+    }
+
+    if (typeof cb === 'function') {
       callback = cb;
     }
 
