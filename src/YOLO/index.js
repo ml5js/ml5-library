@@ -10,7 +10,7 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 
 import * as tf from '@tensorflow/tfjs';
-import ImageAndVideo from '../ImageAndVideo';
+import Video from '../utils/Video';
 import { imgToTensor } from '../utils/imageUtilities';
 
 import CLASS_NAMES from './../utils/COCO_CLASSES';
@@ -23,6 +23,7 @@ import {
   ANCHORS,
 } from './postprocess';
 
+// const URL = 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json';
 const URL = 'https://raw.githubusercontent.com/MikeShi42/yolo-tiny-tfjs/master/model2.json';
 
 const DEFAULTS = {
@@ -34,15 +35,20 @@ const DEFAULTS = {
 // Size of the video
 const imageSize = 416;
 
-class YOLO extends ImageAndVideo {
-  constructor(video = null, optionsOrCallback, cb = () => {}) {
-    super(video, imageSize);
+class YOLO extends Video {
+  constructor(videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) {
+    super(videoOrOptionsOrCallback, imageSize);
     let callback = cb;
     let options = {};
 
+    if (typeof videoOrOptionsOrCallback === 'object') {
+      options = videoOrOptionsOrCallback;
+    } else if (typeof videoOrOptionsOrCallback === 'function') {
+      callback = videoOrOptionsOrCallback;
+    }
+
     if (typeof optionsOrCallback === 'object') {
       options = optionsOrCallback;
-      callback = cb;
     } else if (typeof optionsOrCallback === 'function') {
       callback = optionsOrCallback;
     }
@@ -56,21 +62,24 @@ class YOLO extends ImageAndVideo {
   }
 
   async loadModel(callback) {
-    this.model = await tf.loadModel(URL);
-    this.modelReady = true;
-    callback();
+    return this.loadVideo().then(async () => {
+      this.model = await tf.loadModel(URL);
+      this.modelReady = true;
+      callback();
+    });
   }
 
   async detect(inputOrCallback, cb = null) {
-    if (this.modelReady && this.videoReady && !this.predicting) {
+    if (this.modelReady && this.video && !this.predicting) {
       let imgToPredict;
-      let callback;
+      let callback = cb;
       this.isPredicting = true;
 
       if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
         imgToPredict = inputOrCallback;
-        callback = cb;
-      } else {
+      } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+        imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
+      } else if (typeof inputOrCallback === 'function') {
         imgToPredict = this.video;
         callback = inputOrCallback;
       }
@@ -121,16 +130,16 @@ class YOLO extends ImageAndVideo {
 
         y = Math.max(0, y);
         x = Math.max(0, x);
-        h = Math.min(416, h) - y;
-        w = Math.min(416, w) - x;
+        h = Math.min(imageSize, h) - y;
+        w = Math.min(imageSize, w) - x;
 
         const resultObj = {
           className,
           classProb,
-          x: x / 416,
-          y: y / 416,
-          w: w / 416,
-          h: h / 416,
+          x: x / imageSize,
+          y: y / imageSize,
+          w: w / imageSize,
+          h: h / imageSize,
         };
 
         results.push(resultObj);
