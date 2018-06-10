@@ -22,6 +22,7 @@ class ImageClassifier {
   constructor(modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) {
     let options = {};
     let callback = cb;
+
     if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
       this.video = videoOrOptionsOrCallback;
     } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
@@ -51,7 +52,7 @@ class ImageClassifier {
         this.modelToUse = null;
       }
 
-      // Load the model and video if necessary
+      // Load the model
       this.modelLoaded = this.loadModel(callback);
     } else {
       console.error('Please specify a model to use. E.g: "Mobilenet"');

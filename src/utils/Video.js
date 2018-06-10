@@ -15,7 +15,7 @@ class Video {
 
     if (video instanceof HTMLVideoElement) {
       this.videoElt = video;
-    } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
+    } else if (video !== null && typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
       // Handle p5.js video element
       this.videoElt = video.elt;
     }
