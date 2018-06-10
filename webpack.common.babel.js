@@ -3,16 +3,16 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { join } from 'path';
+import { join, resolve } from 'path';
 
 const include = join(__dirname, 'src');
 
 export default {
   entry: ['babel-polyfill', './src/index.js'],
   output: {
-    path: join(__dirname, 'dist'),
+    path: resolve(__dirname, 'dist'),
+    publicPath: '/',
     libraryTarget: 'umd',
-    publicPath: '/dist/',
     filename: 'ml5.js',
     library: 'ml5',
   },
@@ -30,5 +30,5 @@ export default {
         include,
       },
     ],
-  },
+  }
 };
