@@ -16,19 +16,14 @@ import { array3DToImage } from '../utils/imageUtilities';
 const IMAGE_SIZE = 200;
 
 class StyleTransfer extends Video {
-  constructor(model, videoOrCallback, cb = () => {}) {
-    super(videoOrCallback, IMAGE_SIZE);
+  constructor(model, video, callback) {
+    super(video, IMAGE_SIZE);
     this.ready = false;
     this.variableDictionary = {};
     this.timesScalar = tf.scalar(150);
     this.plusScalar = tf.scalar(255.0 / 2);
     this.epsilonScalar = tf.scalar(1e-3);
     this.video = null;
-
-    let callback = cb;
-    if (typeof videoOrCallback === 'function') {
-      callback = videoOrCallback;
-    }
 
     if (this.videoElt) {
       this.loadVideo().then(() => {
@@ -140,4 +135,15 @@ class StyleTransfer extends Video {
   }
 }
 
-export default StyleTransfer;
+const styleTransfer = (model, videoOrCallback, cb = () => {}) => {
+  const video = videoOrCallback;
+  let callback = cb;
+
+  if (typeof videoOrCallback === 'function') {
+    callback = videoOrCallback;
+  }
+
+  return new StyleTransfer(model, video, callback);
+};
+
+export default styleTransfer;
