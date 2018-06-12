@@ -23,29 +23,8 @@ const DEFAULTS = {
 };
 
 class PoseNet {
-  constructor(videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) {
-    let options = {};
-    let callback = cb;
-    let detectionType = null;
-
-    if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-      this.video = videoOrOptionsOrCallback;
-    } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
-      this.video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-    } else if (typeof videoOrOptionsOrCallback === 'object') {
-      options = videoOrOptionsOrCallback;
-    } else if (typeof videoOrOptionsOrCallback === 'function') {
-      callback = videoOrOptionsOrCallback;
-    }
-
-    if (typeof optionsOrCallback === 'object') {
-      options = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'function') {
-      callback = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'string') {
-      detectionType = optionsOrCallback;
-    }
-
+  constructor(video, options, detectionType, callback) {
+    this.video = video;
     this.detectionType = detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
@@ -116,4 +95,31 @@ class PoseNet {
   }
 }
 
-export default PoseNet;
+const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
+  let video;
+  let options = {};
+  let callback = cb;
+  let detectionType = null;
+
+  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
+    video = videoOrOptionsOrCallback;
+  } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
+    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
+  } else if (typeof videoOrOptionsOrCallback === 'object') {
+    options = videoOrOptionsOrCallback;
+  } else if (typeof videoOrOptionsOrCallback === 'function') {
+    callback = videoOrOptionsOrCallback;
+  }
+
+  if (typeof optionsOrCallback === 'object') {
+    options = optionsOrCallback;
+  } else if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  } else if (typeof optionsOrCallback === 'string') {
+    detectionType = optionsOrCallback;
+  }
+
+  return new PoseNet(video, options, detectionType, callback);
+};
+
+export default poseNet;
