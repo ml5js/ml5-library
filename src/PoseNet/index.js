@@ -18,7 +18,7 @@ const DEFAULTS = {
   maxPoseDetections: 5,
   scoreThreshold: 0.5,
   nmsRadius: 20,
-  detectionType: 'single',
+  detectionType: 'multiple',
   multiplier: 0.75,
 };
 
