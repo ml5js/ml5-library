@@ -57,12 +57,12 @@ class Mobilenet {
     return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
   }
 
-  asClassifier(video, callback) {
+  classification(video, callback) {
     this.usageType = 'classifier';
     return this.loadVideo(video, callback);
   }
 
-  asRegressor(video, callback) {
+  regression(video, callback) {
     this.usageType = 'regressor';
     return this.loadVideo(video, callback);
   }
