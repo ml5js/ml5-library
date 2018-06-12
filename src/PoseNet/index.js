@@ -18,8 +18,8 @@ const DEFAULTS = {
   maxPoseDetections: 5,
   scoreThreshold: 0.5,
   nmsRadius: 20,
-  detectionType: 'single',
-  multiplier: 1.01,
+  detectionType: 'multiple',
+  multiplier: 0.75,
 };
 
 class PoseNet {
