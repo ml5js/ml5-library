@@ -19,44 +19,21 @@ const DEFAULTS = {
 };
 
 class ImageClassifier {
-  constructor(modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) {
-    let options = {};
-    let callback = cb;
-
-    if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-      this.video = videoOrOptionsOrCallback;
-    } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
-      this.video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-    } else if (videoOrOptionsOrCallback === 'object') {
-      options = videoOrOptionsOrCallback;
-    } else if (videoOrOptionsOrCallback === 'function') {
-      callback = videoOrOptionsOrCallback;
-    }
-
-    if (typeof optionsOrCallback === 'object') {
-      options = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'function') {
-      callback = optionsOrCallback;
-    }
-
-    if (typeof modelName === 'string') {
-      this.modelName = modelName.toLowerCase();
-      this.version = options.version || DEFAULTS[this.modelName].version;
-      this.alpha = options.alpha || DEFAULTS[this.modelName].alpha;
-      this.topk = options.topk || DEFAULTS[this.modelName].topk;
-      this.modelLoaded = false;
-      this.model = null;
-      if (this.modelName === 'mobilenet') {
-        this.modelToUse = mobilenet;
-      } else {
-        this.modelToUse = null;
-      }
-
-      // Load the model
-      this.modelLoaded = this.loadModel(callback);
+  constructor(modelName, video, options, callback) {
+    this.modelName = modelName;
+    this.video = video;
+    this.version = options.version || DEFAULTS[this.modelName].version;
+    this.alpha = options.alpha || DEFAULTS[this.modelName].alpha;
+    this.topk = options.topk || DEFAULTS[this.modelName].topk;
+    this.modelLoaded = false;
+    this.model = null;
+    if (this.modelName === 'mobilenet') {
+      this.modelToUse = mobilenet;
     } else {
-      console.error('Please specify a model to use. E.g: "Mobilenet"');
+      this.modelToUse = null;
     }
+    // Load the model
+    this.modelLoaded = this.loadModel(callback);
   }
 
   async loadModel(callback) {
@@ -121,4 +98,35 @@ class ImageClassifier {
   }
 }
 
-export default ImageClassifier;
+const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) => {
+  let model;
+  let video;
+  let options = {};
+  let callback = cb;
+
+  if (typeof modelName === 'string') {
+    model = modelName.toLowerCase();
+  } else {
+    throw new Error('Please specify a model to use. E.g: "MobileNet"');
+  }
+
+  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
+    video = videoOrOptionsOrCallback;
+  } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
+    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
+  } else if (videoOrOptionsOrCallback === 'object') {
+    options = videoOrOptionsOrCallback;
+  } else if (videoOrOptionsOrCallback === 'function') {
+    callback = videoOrOptionsOrCallback;
+  }
+
+  if (typeof optionsOrCallback === 'object') {
+    options = optionsOrCallback;
+  } else if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  }
+
+  return new ImageClassifier(model, video, options, callback);
+};
+
+export default imageClassifier;

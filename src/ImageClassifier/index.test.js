@@ -11,9 +11,8 @@ const DEFAULTS = {
 };
 
 describe('Create an image classifier', () => {
-  //let classifier;
+  // let classifier;
 
-  
   it('true', () => {
     expect(true).toBe(true);
   });

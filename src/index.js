@@ -4,24 +4,24 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import Crepe from './Crepe/';
-import ImageClassifier from './ImageClassifier/';
-import FeatureExtractor from './FeatureExtractor/';
-import Word2Vec from './Word2vec/';
+import pitchDetection from './PitchDetection/';
+import imageClassifier from './ImageClassifier/';
+import featureExtractor from './FeatureExtractor/';
+import word2vec from './Word2vec/';
 import YOLO from './YOLO';
-import PoseNet from './PoseNet';
+import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
-import StyleTransfer from './StyleTransfer/';
+import styleTransfer from './StyleTransfer/';
 import LSTMGenerator from './LSTM/';
 
 module.exports = {
-  ImageClassifier,
-  FeatureExtractor,
-  Crepe,
+  imageClassifier,
+  featureExtractor,
+  pitchDetection,
   YOLO,
-  Word2Vec,
-  StyleTransfer,
-  PoseNet,
+  word2vec,
+  styleTransfer,
+  poseNet,
   LSTMGenerator,
   ...imageUtils,
   tf,

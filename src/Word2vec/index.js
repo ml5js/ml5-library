@@ -10,14 +10,14 @@ Word2Vec
 import * as tf from '@tensorflow/tfjs';
 
 class Word2Vec {
-  constructor(vectors, callback) {
+  constructor(model, callback) {
     this.ready = false;
     this.model = {};
     this.modelSize = 0;
-    this.loadVectors(vectors, callback);
+    this.loadModel(model, callback);
   }
 
-  loadVectors(file, callback) {
+  loadModel(file, callback) {
     fetch(file)
       .then(response => response.json())
       .then((json) => {
@@ -105,4 +105,6 @@ class Word2Vec {
   }
 }
 
-export default Word2Vec;
+const word2vec = (model, cb = () => {}) => new Word2Vec(model, cb);
+
+export default word2vec;
