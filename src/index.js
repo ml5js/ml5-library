@@ -7,7 +7,7 @@ import * as tf from '@tensorflow/tfjs';
 import pitchDetection from './PitchDetection/';
 import imageClassifier from './ImageClassifier/';
 import featureExtractor from './FeatureExtractor/';
-import Word2Vec from './Word2vec/';
+import word2vec from './Word2vec/';
 import YOLO from './YOLO';
 import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
@@ -19,7 +19,7 @@ module.exports = {
   featureExtractor,
   pitchDetection,
   YOLO,
-  Word2Vec,
+  word2vec,
   styleTransfer,
   poseNet,
   LSTMGenerator,
