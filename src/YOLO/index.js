@@ -23,8 +23,7 @@ import {
   ANCHORS,
 } from './postprocess';
 
-// const URL = 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json';
-const URL = 'https://raw.githubusercontent.com/MikeShi42/yolo-tiny-tfjs/master/model2.json';
+const URL = 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json';
 
 const DEFAULTS = {
   filterBoxesThreshold: 0.01,
@@ -35,23 +34,9 @@ const DEFAULTS = {
 // Size of the video
 const imageSize = 416;
 
-class YOLO extends Video {
-  constructor(videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) {
-    super(videoOrOptionsOrCallback, imageSize);
-    let callback = cb;
-    let options = {};
-
-    if (typeof videoOrOptionsOrCallback === 'object') {
-      options = videoOrOptionsOrCallback;
-    } else if (typeof videoOrOptionsOrCallback === 'function') {
-      callback = videoOrOptionsOrCallback;
-    }
-
-    if (typeof optionsOrCallback === 'object') {
-      options = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'function') {
-      callback = optionsOrCallback;
-    }
+class YOLOBase extends Video {
+  constructor(video, options, callback) {
+    super(video, imageSize);
 
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
@@ -158,6 +143,26 @@ class YOLO extends Video {
     return false;
   }
 }
+
+const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
+  let callback = cb;
+  let options = {};
+  const video = videoOrOptionsOrCallback;
+
+  if (typeof videoOrOptionsOrCallback === 'object') {
+    options = videoOrOptionsOrCallback;
+  } else if (typeof videoOrOptionsOrCallback === 'function') {
+    callback = videoOrOptionsOrCallback;
+  }
+
+  if (typeof optionsOrCallback === 'object') {
+    options = optionsOrCallback;
+  } else if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  }
+
+  return new YOLOBase(video, options, callback);
+};
 
 export default YOLO;
 
