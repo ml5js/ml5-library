@@ -19,7 +19,7 @@ const DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'single',
-  multiplier: 1.01,
+  multiplier: 0.75,
 };
 
 class PoseNet {
