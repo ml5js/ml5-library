@@ -18,8 +18,8 @@ const DEFAULTS = {
   temperature: 0.5,
 };
 
-class LSTMGenerator {
-  constructor(modelPath = './', callback = () => {}) {
+class LSTM {
+  constructor(modelPath, callback) {
     this.modelPath = modelPath;
     this.ready = false;
     this.indices_char = {};
@@ -58,7 +58,7 @@ class LSTMGenerator {
       const indexTensor = tf.tidy(() => {
         const input = this.convert(seed);
         const prediction = this.model.predict(input).squeeze();
-        return LSTMGenerator.sample(prediction, this.temperature);
+        return LSTM.sample(prediction, this.temperature);
       });
       const index = await indexTensor.data();
       indexTensor.dispose();
@@ -98,5 +98,7 @@ class LSTMGenerator {
     });
   }
 }
+
+const LSTMGenerator = (modelPath = './', callback = () => {}) => new LSTM(modelPath, callback);
 
 export default LSTMGenerator;
