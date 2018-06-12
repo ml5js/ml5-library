@@ -5,7 +5,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import Crepe from './Crepe/';
-import ImageClassifier from './ImageClassifier/';
+import imageClassifier from './ImageClassifier/';
 import FeatureExtractor from './FeatureExtractor/';
 import Word2Vec from './Word2vec/';
 import YOLO from './YOLO';
@@ -15,7 +15,7 @@ import StyleTransfer from './StyleTransfer/';
 import LSTMGenerator from './LSTM/';
 
 module.exports = {
-  ImageClassifier,
+  imageClassifier,
   FeatureExtractor,
   Crepe,
   YOLO,
