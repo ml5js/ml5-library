@@ -10,10 +10,8 @@ PoseNet
 import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
 
-import ImageAndVideo from './../ImageAndVideo';
-
 const DEFAULTS = {
-  imageScaleFactor: 0.5,
+  imageScaleFactor: 0.3,
   outputStride: 16,
   flipHorizontal: false,
   minConfidence: 0.5,
@@ -21,41 +19,51 @@ const DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'single',
+  multiplier: 1.01,
 };
 
-class PoseNet extends ImageAndVideo {
-  constructor(videoOrCallback, optionsOrCallback, cb = () => {}) {
-    super(videoOrCallback, 315);
+class PoseNet {
+  constructor(videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) {
     let options = {};
     let callback = cb;
-    this.detectionType = DEFAULTS.detectionType;
+    let detectionType = null;
 
-    if (typeof videoOrCallback === 'function') {
-      callback = videoOrCallback;
-    } else if (typeof optionsOrCallback === 'object') {
-      options = optionsOrCallback;
-      this.detectionType = options.detectionType || DEFAULTS.detectionType;
-    } else if (typeof optionsOrCallback === 'function') {
-      callback = optionsOrCallback;
-    } else if (optionsOrCallback === 'multiple') {
-      this.detectionType = optionsOrCallback;
+    if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
+      this.video = videoOrOptionsOrCallback;
+    } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
+      this.video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
+    } else if (typeof videoOrOptionsOrCallback === 'object') {
+      options = videoOrOptionsOrCallback;
+    } else if (typeof videoOrOptionsOrCallback === 'function') {
+      callback = videoOrOptionsOrCallback;
     }
 
+    if (typeof optionsOrCallback === 'object') {
+      options = optionsOrCallback;
+    } else if (typeof optionsOrCallback === 'function') {
+      callback = optionsOrCallback;
+    } else if (typeof optionsOrCallback === 'string') {
+      detectionType = optionsOrCallback;
+    }
+
+    this.detectionType = detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
+    this.multiplier = options.multiplier || DEFAULTS.multiplier;
 
-    // TODO: Specify model
-    posenet.load()
+    posenet.load(this.multiplier)
       .then((net) => {
         this.net = net;
-        if (this.video && callback) {
-          if (this.detectionType === 'single') {
-            this.singlePose(callback);
-          } else if (this.detectionType === 'multiple') {
-            this.multiPose(callback);
-          }
+        if (this.video) {
+          (this.video.onplay = () => {
+            if (this.detectionType === 'single') {
+              this.singlePose(callback);
+            } else if (this.detectionType === 'multiple') {
+              this.multiPose(callback);
+            }
+          })();
         }
       })
       .catch((err) => { console.error(`Error loading the model: ${err}`); });
@@ -68,11 +76,12 @@ class PoseNet extends ImageAndVideo {
   /* eslint max-len: ["error", { "code": 180 }] */
   singlePose(inputOrCallback, cb = () => {}) {
     let input;
-    let callback;
+    let callback = cb;
 
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       input = inputOrCallback;
-      callback = cb;
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      input = inputOrCallback.elt; // Handle p5.js image and video
     } else if (typeof inputOrCallback === 'function' && this.video) {
       input = this.video;
       callback = inputOrCallback;
@@ -87,11 +96,12 @@ class PoseNet extends ImageAndVideo {
 
   multiPose(inputOrCallback, cb = () => {}) {
     let input;
-    let callback;
+    let callback = cb;
 
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       input = inputOrCallback;
-      callback = cb;
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      input = inputOrCallback.elt; // Handle p5.js image and video
     } else if (typeof inputOrCallback === 'function' && this.video) {
       input = this.video;
       callback = inputOrCallback;

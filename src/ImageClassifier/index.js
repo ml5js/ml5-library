@@ -4,270 +4,120 @@
 // https://opensource.org/licenses/MIT
 
 /*
-Image classifier class
+Image Classifier using pre-trained networks
 */
-/* eslint max-len: ["error", { "code": 180 }] */
 
 import * as tf from '@tensorflow/tfjs';
-import ImageAndVideo from './../ImageAndVideo';
-import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
-import { processVideo, imgToTensor } from '../utils/imageUtilities';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 
 const DEFAULTS = {
-  learningRate: 0.0001,
-  hiddenUnits: 100,
-  epochs: 20,
-  numClasses: 2,
-  batchSize: 0.4,
+  mobilenet: {
+    version: 1,
+    alpha: 1.0,
+    topk: 3,
+  },
 };
 
-const IMAGESIZE = 224;
-
-class ImageClassifier extends ImageAndVideo {
-  constructor(video, optionsOrCallback = {}, cb = () => {}) {
-    super(video, IMAGESIZE);
+class ImageClassifier {
+  constructor(modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) {
     let options = {};
-    let callback;
+    let callback = cb;
+
+    if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
+      this.video = videoOrOptionsOrCallback;
+    } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
+      this.video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
+    } else if (videoOrOptionsOrCallback === 'object') {
+      options = videoOrOptionsOrCallback;
+    } else if (videoOrOptionsOrCallback === 'function') {
+      callback = videoOrOptionsOrCallback;
+    }
 
     if (typeof optionsOrCallback === 'object') {
       options = optionsOrCallback;
-      callback = cb;
     } else if (typeof optionsOrCallback === 'function') {
       callback = optionsOrCallback;
     }
 
-    this.mobilenet = null;
-    this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
-    this.topKPredictions = 10;
-    this.modelLoaded = false;
-    this.waitingPredictions = [];
-
-    // Props for retraining mobilenet
-    this.hasAnyTrainedClass = false;
-    this.customModel = null;
-    this.epochs = options.epochs || DEFAULTS.epochs;
-    this.hiddenUnits = options.hiddenUnits || DEFAULTS.hiddenUnits;
-    this.numClasses = options.numClasses || DEFAULTS.numClasses;
-    this.learningRate = options.learningRate || DEFAULTS.learningRate;
-    this.batchSize = options.batchSize || DEFAULTS.batchSize;
-    this.isPredicting = false;
-    this.mapStringToIndex = [];
-
-    this.loadModel().then((net) => {
-      this.modelLoaded = true;
-      this.mobilenetModified = net;
-      this.waitingPredictions.forEach(i => this.predict(i.imgToPredict, i.num, i.callback));
-      callback();
-    });
-  }
-
-  async loadModel() {
-    this.mobilenet = await tf.loadModel(this.modelPath);
-    const layer = this.mobilenet.getLayer('conv_pw_13_relu');
-
-    if (this.videoReady && this.video) {
-      tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
-    }
-
-    return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-  }
-
-  // Add an image to retrain
-  addImage(labelOrInput, labelOrCallback, cb) {
-    let imgToAdd;
-    let label;
-    let callback;
-
-    if (labelOrInput instanceof HTMLImageElement || labelOrInput instanceof HTMLVideoElement) {
-      imgToAdd = labelOrInput;
-      label = labelOrCallback;
-      callback = cb;
-    } else {
-      imgToAdd = this.video;
-      label = labelOrInput;
-      callback = labelOrCallback;
-    }
-
-    if (typeof label === 'string') {
-      if (!this.mapStringToIndex.includes(label)) {
-        label = this.mapStringToIndex.push(label) - 1;
+    if (typeof modelName === 'string') {
+      this.modelName = modelName.toLowerCase();
+      this.version = options.version || DEFAULTS[this.modelName].version;
+      this.alpha = options.alpha || DEFAULTS[this.modelName].alpha;
+      this.topk = options.topk || DEFAULTS[this.modelName].topk;
+      this.modelLoaded = false;
+      this.model = null;
+      if (this.modelName === 'mobilenet') {
+        this.modelToUse = mobilenet;
       } else {
-        label = this.mapStringToIndex.indexOf(label);
+        this.modelToUse = null;
       }
-    }
 
-    if (this.modelLoaded) {
-      tf.tidy(() => {
-        const processedImg = imgToTensor(imgToAdd);
-        const prediction = this.mobilenetModified.predict(processedImg);
-        const y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
-        if (this.xs == null) {
-          this.xs = tf.keep(prediction);
-          this.ys = tf.keep(y);
-          this.hasAnyTrainedClass = true;
-        } else {
-          const oldX = this.xs;
-          this.xs = tf.keep(oldX.concat(prediction, 0));
-          const oldY = this.ys;
-          this.ys = tf.keep(oldY.concat(y, 0));
-          oldX.dispose();
-          oldY.dispose();
-          y.dispose();
-        }
-      });
+      // Load the model
+      this.modelLoaded = this.loadModel(callback);
+    } else {
+      console.error('Please specify a model to use. E.g: "Mobilenet"');
+    }
+  }
+
+  async loadModel(callback) {
+    return this.modelToUse.load(this.version, this.alpha).then((model) => {
+      this.model = model;
       if (callback) {
         callback();
       }
-    }
-  }
-
-  // Train
-  async train(onProgress) {
-    if (!this.hasAnyTrainedClass) {
-      throw new Error('Add some examples before training!');
-    }
-
-    this.isPredicting = false;
-
-    this.customModel = tf.sequential({
-      layers: [
-        tf.layers.flatten({ inputShape: [7, 7, 256] }),
-        tf.layers.dense({
-          units: this.hiddenUnits,
-          activation: 'relu',
-          kernelInitializer: 'varianceScaling',
-          useBias: true,
-        }),
-        tf.layers.dense({
-          units: this.numClasses,
-          kernelInitializer: 'varianceScaling',
-          useBias: false,
-          activation: 'softmax',
-        }),
-      ],
-    });
-
-    const optimizer = tf.train.adam(this.learningRate);
-    this.customModel.compile({ optimizer, loss: 'categoricalCrossentropy' });
-    const batchSize = Math.floor(this.xs.shape[0] * this.batchSize);
-    if (!(batchSize > 0)) {
-      throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
-    }
-
-    this.customModel.fit(this.xs, this.ys, {
-      batchSize,
-      epochs: this.epochs,
-      callbacks: {
-        onBatchEnd: async (batch, logs) => {
-          onProgress(logs.loss.toFixed(5));
-          await tf.nextFrame();
-        },
-        onTrainEnd: () => onProgress(null),
-      },
     });
   }
 
-  /* eslint consistent-return: 0 */
   async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
-    let imgToPredict = this.video;
-    let numberOfClasses = 10;
+    let imgToPredict;
+    let numberOfClasses = this.topk;
     let callback;
 
+    // Handle the image to predict
     if (typeof inputNumOrCallback === 'function') {
       imgToPredict = this.video;
       callback = inputNumOrCallback;
+    } else if (typeof inputNumOrCallback === 'number') {
+      imgToPredict = this.video;
+      numberOfClasses = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
     } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLImageElement) {
-      imgToPredict = inputNumOrCallback.elt;
-    } else if (inputNumOrCallback instanceof HTMLVideoElement) {
-      if (!this.video) {
-        this.video = processVideo(inputNumOrCallback, this.imageSize);
-      }
-      imgToPredict = this.video;
-    } else if (typeof numOrCallback === 'number') {
-      imgToPredict = this.video;
-      numberOfClasses = inputNumOrCallback;
+      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
     }
 
-    if (typeof numOrCallback === 'function') {
+    if (typeof numOrCallback === 'number') {
+      numberOfClasses = inputNumOrCallback;
+    } else if (typeof numOrCallback === 'function') {
       callback = numOrCallback;
-    } else if (typeof numOrCallback === 'number') {
-      numberOfClasses = numOrCallback;
     }
 
     if (typeof cb === 'function') {
       callback = cb;
     }
 
-    if (!this.modelLoaded || !this.videoReady) {
-      this.waitingPredictions.push({ imgToPredict, num: numberOfClasses || this.topKPredictions, callback });
-    } else {
-      // If there is no custom model, then run over the original mobilenet
-      if (!this.customModel) {
-        const logits = tf.tidy(() => {
-          const pixels = tf.fromPixels(imgToPredict).toFloat();
-          const resized = tf.image.resizeBilinear(pixels, [this.imageSize, this.imageSize]);
-          const offset = tf.scalar(127.5);
-          const normalized = resized.sub(offset).div(offset);
-          const batched = normalized.reshape([1, this.imageSize, this.imageSize, 3]);
-          return this.mobilenet.predict(batched);
-        });
-
-        const results = await ImageClassifier.getTopKClasses(logits, numberOfClasses || this.topKPredictions, callback);
-        return results;
-      }
-
-      this.isPredicting = true;
-      const predictedClass = tf.tidy(() => {
-        const processedImg = imgToTensor(imgToPredict);
-        const activation = this.mobilenetModified.predict(processedImg);
-        const predictions = this.customModel.predict(activation);
-        return predictions.as1D().argMax();
-      });
-
-      let classId = (await predictedClass.data())[0];
-
-      await tf.nextFrame();
-
-      if (callback) {
-        if (this.mapStringToIndex.length > 0) {
-          classId = this.mapStringToIndex[classId];
-        }
-        callback(classId);
-      }
-    }
-  }
-
-  // Static Method: get top k classes for mobilenet
-  static async getTopKClasses(logits, topK, callback) {
-    const values = await logits.data();
-    const valuesAndIndices = [];
-    for (let i = 0; i < values.length; i += 1) {
-      valuesAndIndices.push({ value: values[i], index: i });
-    }
-    valuesAndIndices.sort((a, b) => b.value - a.value);
-    const topkValues = new Float32Array(topK);
-
-    const topkIndices = new Int32Array(topK);
-    for (let i = 0; i < topK; i += 1) {
-      topkValues[i] = valuesAndIndices[i].value;
-      topkIndices[i] = valuesAndIndices[i].index;
-    }
-    const topClassesAndProbs = [];
-    for (let i = 0; i < topkIndices.length; i += 1) {
-      topClassesAndProbs.push({
-        className: IMAGENET_CLASSES[topkIndices[i]],
-        probability: topkValues[i],
-      });
-    }
-
+    // Wait for the model to be ready
+    await this.modelLoaded;
     await tf.nextFrame();
 
-    if (callback) {
-      callback(topClassesAndProbs);
+    // Classify the image using the selected model
+    /* eslint arrow-body-style: 0 */
+    if (this.videoElt && !this.addedListener) {
+      /* eslint func-names: 0 */
+      this.video.addEventListener('onloadstart', function () {
+        return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
+          if (callback) {
+            callback(predictions);
+          }
+        });
+      });
+      this.addedListener = true;
     }
-    return topClassesAndProbs;
+    return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
+      if (callback) {
+        callback(predictions);
+      }
+    });
   }
 }
 
