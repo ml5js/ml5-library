@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import Crepe from './Crepe/';
+import pitchDetection from './PitchDetection/';
 import imageClassifier from './ImageClassifier/';
 import featureExtractor from './FeatureExtractor/';
 import Word2Vec from './Word2vec/';
@@ -17,7 +17,7 @@ import LSTMGenerator from './LSTM/';
 module.exports = {
   imageClassifier,
   featureExtractor,
-  Crepe,
+  pitchDetection,
   YOLO,
   Word2Vec,
   StyleTransfer,

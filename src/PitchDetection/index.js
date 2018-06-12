@@ -11,8 +11,9 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-class Crepe {
-  constructor(audioContext, stream) {
+class PitchDetection {
+  constructor(modelName, audioContext, stream) {
+    this.modelName = modelName;
     this.audioContext = audioContext;
     this.stream = stream;
     this.loadModel();
@@ -76,7 +77,7 @@ class Crepe {
   processMicrophoneBuffer(event) {
     this.results = {};
     const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
-    Crepe.resample(event.inputBuffer, (resampled) => {
+    PitchDetection.resample(event.inputBuffer, (resampled) => {
       tf.tidy(() => {
         this.running = true;
         const frame = tf.tensor(resampled.slice(0, 1024));
@@ -111,6 +112,18 @@ class Crepe {
   }
 }
 
-const crepe = (context, stream) => new Crepe(context, stream);
+const pitchDetection = (modelName, context, stream) => {
+  let model;
+  if (typeof modelName === 'string') {
+    model = modelName.toLowerCase();
+  } else {
+    throw new Error('Please specify a model to use. E.g: "Crepe"');
+  }
 
-export default crepe;
+  if (model === 'crepe') {
+    return new PitchDetection(model, context, stream);
+  }
+  throw new Error(`${model} is not a valid model to use in pitchDetection()`);
+};
+
+export default pitchDetection;
