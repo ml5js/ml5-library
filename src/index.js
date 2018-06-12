@@ -11,7 +11,7 @@ import Word2Vec from './Word2vec/';
 import YOLO from './YOLO';
 import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
-import StyleTransfer from './StyleTransfer/';
+import styleTransfer from './StyleTransfer/';
 import LSTMGenerator from './LSTM/';
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
   pitchDetection,
   YOLO,
   Word2Vec,
-  StyleTransfer,
+  styleTransfer,
   poseNet,
   LSTMGenerator,
   ...imageUtils,
