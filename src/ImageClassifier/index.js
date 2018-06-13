@@ -19,13 +19,12 @@ const DEFAULTS = {
 };
 
 class ImageClassifier {
-  constructor(modelName, video, options, callback) {
+  constructor(modelName, video, options, callback = () => {}) {
     this.modelName = modelName;
     this.video = video;
     this.version = options.version || DEFAULTS[this.modelName].version;
     this.alpha = options.alpha || DEFAULTS[this.modelName].alpha;
     this.topk = options.topk || DEFAULTS[this.modelName].topk;
-    this.modelLoaded = false;
     this.model = null;
     if (this.modelName === 'mobilenet') {
       this.modelToUse = mobilenet;
@@ -33,16 +32,14 @@ class ImageClassifier {
       this.modelToUse = null;
     }
     // Load the model
-    this.modelLoaded = this.loadModel(callback);
+    this.ready = this.loadModel().then(() => {
+      callback();
+      return this;
+    });
   }
 
-  async loadModel(callback) {
-    return this.modelToUse.load(this.version, this.alpha).then((model) => {
-      this.model = model;
-      if (callback) {
-        callback();
-      }
-    });
+  async loadModel() {
+    this.model = await this.modelToUse.load(this.version, this.alpha);
   }
 
   async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
@@ -74,31 +71,31 @@ class ImageClassifier {
     }
 
     // Wait for the model to be ready
-    await this.modelLoaded;
+    await this.ready;
     await tf.nextFrame();
 
     // Classify the image using the selected model
     /* eslint arrow-body-style: 0 */
     if (this.videoElt && !this.addedListener) {
       /* eslint func-names: 0 */
-      this.video.addEventListener('onloadstart', function () {
-        return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-          if (callback) {
-            callback(predictions);
-          }
-        });
-      });
       this.addedListener = true;
+      await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
+      return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
+        if (callback) {
+          callback(predictions);
+        }
+        return predictions;
+      });
     }
-    return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-      if (callback) {
-        callback(predictions);
-      }
-    });
+    const predictions = await this.model.classify(imgToPredict, numberOfClasses);
+    if (callback) {
+      callback(predictions);
+    }
+    return predictions;
   }
 }
 
-const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) => {
+const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   let model;
   let video;
   let options = {};
@@ -126,7 +123,8 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
     callback = optionsOrCallback;
   }
 
-  return new ImageClassifier(model, video, options, callback);
+  const instance = new ImageClassifier(model, video, options, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default imageClassifier;

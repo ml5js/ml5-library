@@ -35,7 +35,7 @@ const DEFAULTS = {
 const imageSize = 416;
 
 class YOLOBase extends Video {
-  constructor(video, options, callback) {
+  constructor(video, options, callback = () => {}) {
     super(video, imageSize);
 
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
@@ -43,108 +43,104 @@ class YOLOBase extends Video {
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
     this.modelReady = false;
     this.isPredicting = false;
-    this.loadModel(callback);
-  }
-
-  async loadModel(callback) {
-    return this.loadVideo().then(async () => {
-      this.model = await tf.loadModel(URL);
-      this.modelReady = true;
+    this.ready = this.loadModel().then(() => {
       callback();
+      return this;
     });
   }
 
-  async detect(inputOrCallback, cb = null) {
-    if (this.modelReady && this.video && !this.predicting) {
-      let imgToPredict;
-      let callback = cb;
-      this.isPredicting = true;
-
-      if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
-        imgToPredict = inputOrCallback;
-      } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
-        imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-      } else if (typeof inputOrCallback === 'function') {
-        imgToPredict = this.video;
-        callback = inputOrCallback;
-      }
-
-      const input = imgToTensor(imgToPredict);
-
-      const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
-        const activation = this.model.predict(input);
-        const [boxXY, boxWH, bConfidence, bClassProbs] = head(activation, ANCHORS, 80);
-        const aBoxes = boxesToCorners(boxXY, boxWH);
-        return [aBoxes, bConfidence, bClassProbs];
-      });
-
-      const [boxes, scores, classes] = await filterBoxes(allBoxes, boxConfidence, boxClassProbs, this.filterBoxesThreshold);
-
-      // If all boxes have been filtered out
-      if (boxes == null) {
-        return [];
-      }
-
-      const width = tf.scalar(imageSize);
-      const height = tf.scalar(imageSize);
-      const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
-      const boxesModified = tf.mul(boxes, imageDims);
-
-      const [preKeepBoxesArr, scoresArr] = await Promise.all([
-        boxesModified.data(), scores.data(),
-      ]);
-
-      const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
-        preKeepBoxesArr,
-        scoresArr,
-        this.IOUThreshold,
-      );
-
-      const classesIndxArr = await classes.gather(tf.tensor1d(keepIndx, 'int32')).data();
-
-      const results = [];
-
-      classesIndxArr.forEach((classIndx, i) => {
-        const classProb = keepScores[i];
-        if (classProb < this.classProbThreshold) {
-          return;
-        }
-
-        const className = CLASS_NAMES[classIndx];
-        let [y, x, h, w] = boxesArr[i];
-
-        y = Math.max(0, y);
-        x = Math.max(0, x);
-        h = Math.min(imageSize, h) - y;
-        w = Math.min(imageSize, w) - x;
-
-        const resultObj = {
-          className,
-          classProb,
-          x: x / imageSize,
-          y: y / imageSize,
-          w: w / imageSize,
-          h: h / imageSize,
-        };
-
-        results.push(resultObj);
-      });
-
-      await tf.nextFrame();
-      this.isPredicting = false;
-
-      if (callback) {
-        callback(results);
-      }
-
-      return results;
+  async loadModel() {
+    if (this.video) {
+      await this.loadVideo();
     }
-    console.warn('Model has not finished loading');
-    return false;
+    this.model = await tf.loadModel(URL);
+    this.modelReady = true;
+  }
+
+  async detect(inputOrCallback, cb = () => {}) {
+    await this.ready;
+    let imgToPredict;
+    let callback = cb;
+    this.isPredicting = true;
+
+    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
+      imgToPredict = inputOrCallback;
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
+    } else if (typeof inputOrCallback === 'function') {
+      imgToPredict = this.video;
+      callback = inputOrCallback;
+    }
+
+    const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
+      const input = imgToTensor(imgToPredict);
+      const activation = this.model.predict(input);
+      const [boxXY, boxWH, bConfidence, bClassProbs] = head(activation, ANCHORS, 80);
+      const aBoxes = boxesToCorners(boxXY, boxWH);
+      return [aBoxes, bConfidence, bClassProbs];
+    });
+
+    const [boxes, scores, classes] = await filterBoxes(allBoxes, boxConfidence, boxClassProbs, this.filterBoxesThreshold);
+
+    // If all boxes have been filtered out
+    if (boxes == null) {
+      return [];
+    }
+
+    const width = tf.scalar(imageSize);
+    const height = tf.scalar(imageSize);
+    const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
+    const boxesModified = tf.mul(boxes, imageDims);
+
+    const [preKeepBoxesArr, scoresArr] = await Promise.all([
+      boxesModified.data(), scores.data(),
+    ]);
+
+    const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
+      preKeepBoxesArr,
+      scoresArr,
+      this.IOUThreshold,
+    );
+
+    const classesIndxArr = await classes.gather(tf.tensor1d(keepIndx, 'int32')).data();
+
+    const results = [];
+
+    classesIndxArr.forEach((classIndx, i) => {
+      const classProb = keepScores[i];
+      if (classProb < this.classProbThreshold) {
+        return;
+      }
+
+      const className = CLASS_NAMES[classIndx];
+      let [y, x, h, w] = boxesArr[i];
+
+      y = Math.max(0, y);
+      x = Math.max(0, x);
+      h = Math.min(imageSize, h) - y;
+      w = Math.min(imageSize, w) - x;
+
+      const resultObj = {
+        className,
+        classProb,
+        x: x / imageSize,
+        y: y / imageSize,
+        w: w / imageSize,
+        h: h / imageSize,
+      };
+
+      results.push(resultObj);
+    });
+
+    await tf.nextFrame();
+    this.isPredicting = false;
+
+    callback(results);
+    return results;
   }
 }
 
-const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
+const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   let callback = cb;
   let options = {};
   const video = videoOrOptionsOrCallback;
@@ -161,8 +157,8 @@ const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
     callback = optionsOrCallback;
   }
 
-  return new YOLOBase(video, options, callback);
+  const instance = new YOLOBase(video, options, callback);
+  return cb ? instance : instance.ready;
 };
 
 export default YOLO;
-

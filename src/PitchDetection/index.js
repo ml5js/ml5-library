@@ -16,12 +16,12 @@ class PitchDetection {
     this.modelName = modelName;
     this.audioContext = audioContext;
     this.stream = stream;
-    this.loadModel();
+    this.ready = this.loadModel().then(() => this);
   }
 
   async loadModel() {
     this.model = await tf.loadModel('model/model.json');
-    this.initAudio();
+    await this.initAudio();
   }
 
   initAudio() {

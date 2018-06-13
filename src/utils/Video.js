@@ -34,7 +34,7 @@ class Video {
       const playPromise = this.video.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
-          resolve();
+          resolve(this.video);
         });
       }
     });

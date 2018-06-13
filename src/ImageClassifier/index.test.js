@@ -1,50 +1,44 @@
 /* eslint new-cap: 0 */
 
-import * as ImageClassifier from './index';
+import imageClassifier from './index';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 
-const DEFAULTS = {
-  learningRate: 0.0001,
-  hiddenUnits: 100,
-  epochs: 20,
-  numClasses: 2,
-  batchSize: 0.4,
+const MOBILENET_DEFAULTS = {
+  version: 1,
+  alpha: 1.0,
+  topk: 3,
 };
 
-describe('Create an image classifier', () => {
-  // let classifier;
-
-  it('true', () => {
-    expect(true).toBe(true);
+describe('underlying Mobilenet', () => {
+  // This is the core issue: Mobilenet itself cannot be initialized
+  // in the karma / webpack / etc environment
+  it('Can initialize mobilenet', async () => {
+    await mobilenet.load();
   });
-  // beforeEach((done) => {
+});
+
+describe('Create an image classifier', () => {
+  let classifier;
+
+
+  // beforeEach(async () => {
   //   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  //   classifier = new ImageClassifier.default('', {}, () => {
-  //     done();
-  //   });
+  //   classifier = await imageClassifier('MobileNet', undefined, {});
   // });
 
-  // it('Should create a classifier with all the defaults', () => {
-  //   expect(classifier.learningRate).toBe(DEFAULTS.learningRate);
-  //   expect(classifier.learningRate).toBe(DEFAULTS.learningRate);
-  //   expect(classifier.hiddenUnits).toBe(DEFAULTS.hiddenUnits);
-  //   expect(classifier.epochs).toBe(DEFAULTS.epochs);
-  //   expect(classifier.numClasses).toBe(DEFAULTS.numClasses);
-  //   expect(classifier.batchSize).toBe(DEFAULTS.batchSize);
+  // it('Should create a classifier with all the defaults', async () => {
+  //   expect(classifier.version).toBe(MOBILENET_DEFAULTS.version);
+  //   expect(classifier.alpha).toBe(MOBILENET_DEFAULTS.alpha);
+  //   expect(classifier.topk).toBe(MOBILENET_DEFAULTS.topk);
+  //   expect(classifier.ready).toBeTruthy();
   // });
 
-  // it('Should load the model', () => {
-  //   expect(classifier.modelLoaded).toBe(true);
-  // });
-
-  // it('Should classify an image', (done) => {
+  // it('Should classify an image', async () => {
   //   const img = new Image();
   //   img.crossOrigin = '';
   //   img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-  //   img.onload = () => {
-  //     classifier.predict(img, (results) => {
-  //       console.log(results);
-  //     });
-  //     done();
-  //   };
+  //   await new Promise((resolve) => { img.onload = resolve; });
+  //   const results = await classifier.predict(img);
+  //   expect(results[0].className).toBe('robin, American robin, Turdus migratorius');
   // });
 });
