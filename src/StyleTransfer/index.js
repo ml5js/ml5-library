@@ -16,7 +16,7 @@ import { array3DToImage } from '../utils/imageUtilities';
 const IMAGE_SIZE = 200;
 
 class StyleTransfer extends Video {
-  constructor(model, video, callback) {
+  constructor(model, video, callback = () => {}) {
     super(video, IMAGE_SIZE);
     this.ready = false;
     this.variableDictionary = {};
@@ -24,25 +24,18 @@ class StyleTransfer extends Video {
     this.plusScalar = tf.scalar(255.0 / 2);
     this.epsilonScalar = tf.scalar(1e-3);
     this.video = null;
+    this.ready = this.load(model).then(() => {
+      callback();
+      return this;
+    });
+  }
 
+  async load(model) {
     if (this.videoElt) {
-      this.loadVideo().then(() => {
-        this.videoReady = true;
-        this.loadCheckpoints(model).then(() => {
-          this.ready = true;
-          if (callback) {
-            callback();
-          }
-        });
-      });
-    } else {
-      this.loadCheckpoints(model).then(() => {
-        this.ready = true;
-        if (callback) {
-          callback();
-        }
-      });
+      await this.loadVideo();
+      this.videoReady = true;
     }
+    await this.loadCheckpoints(model);
   }
 
   async loadCheckpoints(path) {
@@ -103,7 +96,7 @@ class StyleTransfer extends Video {
     }
 
     const image = tf.fromPixels(input);
-    const result = tf.tidy(() => {
+    const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
       const conv3 = this.convLayer(conv2, 2, true, 6);
@@ -121,9 +114,12 @@ class StyleTransfer extends Video {
       const clamped = tf.clipByValue(shifted, 0, 255);
       const normalized = tf.div(clamped, tf.scalar(255.0));
       return normalized;
-    });
+    }));
     await tf.nextFrame();
-    callback(array3DToImage(result));
+    if (callback) {
+      callback(result);
+    }
+    return result;
   }
 
   // Static Methods
@@ -135,7 +131,7 @@ class StyleTransfer extends Video {
   }
 }
 
-const styleTransfer = (model, videoOrCallback, cb = () => {}) => {
+const styleTransfer = (model, videoOrCallback, cb) => {
   const video = videoOrCallback;
   let callback = cb;
 
@@ -143,7 +139,8 @@ const styleTransfer = (model, videoOrCallback, cb = () => {}) => {
     callback = videoOrCallback;
   }
 
-  return new StyleTransfer(model, video, callback);
+  const instance = new StyleTransfer(model, video, callback);
+  return cb ? instance : instance.ready;
 };
 
 export default styleTransfer;

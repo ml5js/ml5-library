@@ -10,28 +10,23 @@ Word2Vec
 import * as tf from '@tensorflow/tfjs';
 
 class Word2Vec {
-  constructor(model, callback) {
-    this.ready = false;
+  constructor(model, callback = () => {}) {
     this.model = {};
     this.modelSize = 0;
-    this.loadModel(model, callback);
+    this.ready = this.loadModel(model).then(() => {
+      callback();
+      return this;
+    });
   }
 
-  loadModel(file, callback) {
-    fetch(file)
-      .then(response => response.json())
-      .then((json) => {
-        Object.keys(json.vectors).forEach((word) => {
-          this.model[word] = tf.tensor1d(json.vectors[word]);
-        });
-        this.modelSize = Object.keys(json).length;
-        this.ready = true;
-        if (callback) {
-          callback();
-        }
-      }).catch((error) => {
-        console.error(`There has been a problem loading the vocab: ${error.message}`);
-      });
+  async loadModel(file, callback = () => {}) {
+    const json = await fetch(file)
+      .then(response => response.json());
+    Object.keys(json.vectors).forEach((word) => {
+      this.model[word] = tf.tensor1d(json.vectors[word]);
+    });
+    this.modelSize = Object.keys(json).length;
+    callback();
   }
 
   add(inputs, max = 1) {
@@ -105,6 +100,9 @@ class Word2Vec {
   }
 }
 
-const word2vec = (model, cb = () => {}) => new Word2Vec(model, cb);
+const word2vec = (model, cb) => {
+  const instance = new Word2Vec(model, cb);
+  return cb ? instance : instance.ready;
+};
 
 export default word2vec;

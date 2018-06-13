@@ -23,7 +23,7 @@ const DEFAULTS = {
 };
 
 class PoseNet {
-  constructor(video, options, detectionType, callback) {
+  constructor(video, options, detectionType, callback = () => {}) {
     this.video = video;
     this.detectionType = detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
@@ -31,21 +31,25 @@ class PoseNet {
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
+    this.ready = this.load().then(() => {
+      callback();
+      return this;
+    });
+  }
 
-    posenet.load(this.multiplier)
-      .then((net) => {
-        this.net = net;
-        if (this.video) {
-          (this.video.onplay = () => {
-            if (this.detectionType === 'single') {
-              this.singlePose(callback);
-            } else if (this.detectionType === 'multiple') {
-              this.multiPose(callback);
-            }
-          })();
-        }
-      })
-      .catch((err) => { console.error(`Error loading the model: ${err}`); });
+  async load(callback = () => {}) {
+    const net = await posenet.load(this.multiplier);
+    this.net = net;
+    if (this.video) {
+      await new Promise((resolve) => {
+        this.video.onplay = resolve;
+      });
+      if (this.detectionType === 'single') {
+        return this.singlePose(callback);
+      }
+      return this.multiPose(callback);
+    }
+    return this;
   }
 
   skeleton(keypoints, confidence = this.minConfidence) {
@@ -53,7 +57,7 @@ class PoseNet {
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
-  singlePose(inputOrCallback, cb = () => {}) {
+  async singlePose(inputOrCallback, cb = () => {}) {
     let input;
     let callback = cb;
 
@@ -66,14 +70,12 @@ class PoseNet {
       callback = inputOrCallback;
     }
 
-    this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
-      .then((pose) => {
-        callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
-        tf.nextFrame().then(() => { this.singlePose(callback); });
-      });
+    const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
+    return tf.nextFrame().then(() => this.singlePose(callback));
   }
 
-  multiPose(inputOrCallback, cb = () => {}) {
+  async multiPose(inputOrCallback, cb = () => {}) {
     let input;
     let callback = cb;
 
@@ -86,12 +88,10 @@ class PoseNet {
       callback = inputOrCallback;
     }
 
-    this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
-      .then((poses) => {
-        const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
-        callback(result);
-        tf.nextFrame().then(() => { this.multiPose(callback); });
-      });
+    const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
+    callback(result);
+    return tf.nextFrame().then(() => this.multiPose(callback));
   }
 }
 
@@ -119,7 +119,8 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => 
     detectionType = optionsOrCallback;
   }
 
-  return new PoseNet(video, options, detectionType, callback);
+  const instance = new PoseNet(video, options, detectionType, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default poseNet;

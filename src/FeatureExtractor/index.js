@@ -10,7 +10,7 @@ General Feature Extractor Manager
 import Mobilenet from './Mobilenet';
 
 /* eslint max-len: ["error", { "code": 180 }] */
-const featureExtractor = (model, optionsOrCallback, cb = () => {}) => {
+const featureExtractor = (model, optionsOrCallback, cb) => {
   let modelName;
   if (typeof model !== 'string') {
     throw new Error('Please specify a model to use. E.g: "MobileNet"');
@@ -28,7 +28,8 @@ const featureExtractor = (model, optionsOrCallback, cb = () => {}) => {
   }
 
   if (modelName === 'mobilenet') {
-    return new Mobilenet(options, callback);
+    const instance = new Mobilenet(options, callback);
+    return callback ? instance : instance.ready;
   }
   throw new Error(`${modelName} is not a valid model.`);
 };
