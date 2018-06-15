@@ -16,14 +16,11 @@ const saveFile = (name, data) => {
 
 const loadFile = (path, callback) => {
   fetch(path)
-    .then(response => response.json())
-    .then(json => callback(json))
+    .then((response) => response.json())
+    .then((json) => callback(json))
     .catch((error) => {
       console.error(`There has been a problem loading the file: ${error.message}`);
     });
 };
 
-export {
-  saveFile,
-  loadFile,
-};
+export { saveFile, loadFile };

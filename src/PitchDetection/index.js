@@ -57,7 +57,7 @@ class PitchDetection {
   }
 
   static resample(audioBuffer, onComplete) {
-    const interpolate = (audioBuffer.sampleRate % 16000 !== 0);
+    const interpolate = audioBuffer.sampleRate % 16000 !== 0;
     const multiplier = audioBuffer.sampleRate / 16000;
     const original = audioBuffer.getChannelData(0);
     const subsamples = new Float32Array(1024);
@@ -67,8 +67,8 @@ class PitchDetection {
       } else {
         const left = Math.floor(i * multiplier);
         const right = left + 1;
-        const p = (i * multiplier) - left;
-        subsamples[i] = (((1 - p) * original[left]) + (p * original[right]));
+        const p = i * multiplier - left;
+        subsamples[i] = (1 - p) * original[left] + p * original[right];
       }
     }
     onComplete(subsamples);
@@ -99,9 +99,9 @@ class PitchDetection {
         const productSum = products.dataSync().reduce((a, b) => a + b, 0);
         const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
         const predictedCent = productSum / weightSum;
-        const predictedHz = 10 * ((predictedCent / 1200.0) ** 2);
+        const predictedHz = 10 * (predictedCent / 1200.0) ** 2;
 
-        const result = (confidence > 0.5) ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
+        const result = confidence > 0.5 ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
         this.results.result = result;
       });
     });

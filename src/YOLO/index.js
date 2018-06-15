@@ -15,13 +15,7 @@ import { imgToTensor } from '../utils/imageUtilities';
 
 import CLASS_NAMES from './../utils/COCO_CLASSES';
 
-import {
-  nonMaxSuppression,
-  boxesToCorners,
-  head,
-  filterBoxes,
-  ANCHORS,
-} from './postprocess';
+import { nonMaxSuppression, boxesToCorners, head, filterBoxes, ANCHORS } from './postprocess';
 
 const URL = 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json';
 
@@ -62,7 +56,10 @@ class YOLOBase extends Video {
 
       if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
         imgToPredict = inputOrCallback;
-      } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      } else if (
+        typeof inputOrCallback === 'object' &&
+        (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)
+      ) {
         imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
       } else if (typeof inputOrCallback === 'function') {
         imgToPredict = this.video;
@@ -78,7 +75,12 @@ class YOLOBase extends Video {
         return [aBoxes, bConfidence, bClassProbs];
       });
 
-      const [boxes, scores, classes] = await filterBoxes(allBoxes, boxConfidence, boxClassProbs, this.filterBoxesThreshold);
+      const [boxes, scores, classes] = await filterBoxes(
+        allBoxes,
+        boxConfidence,
+        boxClassProbs,
+        this.filterBoxesThreshold,
+      );
 
       // If all boxes have been filtered out
       if (boxes == null) {
@@ -90,15 +92,9 @@ class YOLOBase extends Video {
       const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
       const boxesModified = tf.mul(boxes, imageDims);
 
-      const [preKeepBoxesArr, scoresArr] = await Promise.all([
-        boxesModified.data(), scores.data(),
-      ]);
+      const [preKeepBoxesArr, scoresArr] = await Promise.all([boxesModified.data(), scores.data()]);
 
-      const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
-        preKeepBoxesArr,
-        scoresArr,
-        this.IOUThreshold,
-      );
+      const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(preKeepBoxesArr, scoresArr, this.IOUThreshold);
 
       const classesIndxArr = await classes.gather(tf.tensor1d(keepIndx, 'int32')).data();
 
@@ -165,4 +161,3 @@ const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
 };
 
 export default YOLO;
-

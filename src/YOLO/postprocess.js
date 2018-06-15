@@ -9,8 +9,11 @@
 import * as tf from '@tensorflow/tfjs';
 
 export const ANCHORS = tf.tensor2d([
-  [0.57273, 0.677385], [1.87446, 2.06253], [3.33843, 5.47434],
-  [7.88282, 3.52778], [9.77052, 9.16828],
+  [0.57273, 0.677385],
+  [1.87446, 2.06253],
+  [3.33843, 5.47434],
+  [7.88282, 3.52778],
+  [9.77052, 9.16828],
 ]);
 
 export const boxIntersection = (a, b) => {
@@ -24,17 +27,12 @@ export const boxIntersection = (a, b) => {
 
 export const boxUnion = (a, b) => {
   const i = boxIntersection(a, b);
-  return (((a[3] - a[1]) * (a[2] - a[0])) + ((b[3] - b[1]) * (b[2] - b[0]))) - i;
+  return (a[3] - a[1]) * (a[2] - a[0]) + (b[3] - b[1]) * (b[2] - b[0]) - i;
 };
 
 export const boxIOU = (a, b) => boxIntersection(a, b) / boxUnion(a, b);
 
-export async function filterBoxes(
-  boxes,
-  boxConfidence,
-  boxClassProbs,
-  threshold,
-) {
+export async function filterBoxes(boxes, boxConfidence, boxClassProbs, threshold) {
   const boxScores = tf.mul(boxConfidence, boxClassProbs);
   const boxClasses = tf.argMax(boxScores, -1);
   const boxClassScores = tf.max(boxScores, -1);
@@ -74,21 +72,22 @@ export const boxesToCorners = (boxXY, boxWH) => {
   const dim2 = boxMins.shape[2];
   const size = [dim0, dim1, dim2, 1];
 
-  return tf.concat([
-    boxMins.slice([0, 0, 0, 1], size),
-    boxMins.slice([0, 0, 0, 0], size),
-    boxMaxes.slice([0, 0, 0, 1], size),
-    boxMaxes.slice([0, 0, 0, 0], size),
-  ], 3);
+  return tf.concat(
+    [
+      boxMins.slice([0, 0, 0, 1], size),
+      boxMins.slice([0, 0, 0, 0], size),
+      boxMaxes.slice([0, 0, 0, 1], size),
+      boxMaxes.slice([0, 0, 0, 0], size),
+    ],
+    3,
+  );
 };
 
 export const nonMaxSuppression = (boxes, scores, iouThreshold) => {
   // Zip together scores, box corners, and index
   const zipped = [];
   for (let i = 0; i < scores.length; i += 1) {
-    zipped.push([
-      scores[i], [boxes[4 * i], boxes[(4 * i) + 1], boxes[(4 * i) + 2], boxes[(4 * i) + 3]], i,
-    ]);
+    zipped.push([scores[i], [boxes[4 * i], boxes[4 * i + 1], boxes[4 * i + 2], boxes[4 * i + 3]], i]);
   }
   const sortedBoxes = zipped.sort((a, b) => b[0] - a[0]);
   const selectedBoxes = [];
@@ -107,11 +106,7 @@ export const nonMaxSuppression = (boxes, scores, iouThreshold) => {
     }
   });
 
-  return [
-    selectedBoxes.map(e => e[2]),
-    selectedBoxes.map(e => e[1]),
-    selectedBoxes.map(e => e[0]),
-  ];
+  return [selectedBoxes.map((e) => e[2]), selectedBoxes.map((e) => e[1]), selectedBoxes.map((e) => e[0])];
 };
 
 // Convert yolo output to bounding box + prob tensors

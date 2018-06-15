@@ -59,13 +59,14 @@ class LSTM {
 
   loadVocab(file, callback) {
     fetch(`${file}/vocab.json`)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((json) => {
         this.vocab = json;
         this.vocabSize = Object.keys(json).length;
         this.ready = true;
         callback();
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error(`There has been a problem loading the vocab: ${error.message}`);
       });
   }
@@ -126,10 +127,7 @@ class LSTM {
         const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
         const divided = tf.div(logits, tf.tensor(temperature));
         const probabilities = tf.exp(divided);
-        const normalized = await tf.div(
-          probabilities,
-          tf.sum(probabilities),
-        ).data();
+        const normalized = await tf.div(probabilities, tf.sum(probabilities)).data();
 
         const sampledResult = sampleFromDistribution(normalized);
         if (userInput.length > current) {
@@ -143,7 +141,7 @@ class LSTM {
 
       let generated = '';
       results.forEach((char) => {
-        const mapped = Object.keys(this.vocab).find(key => this.vocab[key] === char);
+        const mapped = Object.keys(this.vocab).find((key) => this.vocab[key] === char);
         if (mapped) {
           generated += mapped;
         }

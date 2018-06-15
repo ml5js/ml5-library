@@ -19,7 +19,7 @@ class Word2Vec {
 
   loadModel(file, callback) {
     fetch(file)
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((json) => {
         Object.keys(json.vectors).forEach((word) => {
           this.model[word] = tf.tensor1d(json.vectors[word]);
@@ -29,7 +29,8 @@ class Word2Vec {
         if (callback) {
           callback();
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.error(`There has been a problem loading the vocab: ${error.message}`);
       });
   }

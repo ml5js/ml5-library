@@ -32,7 +32,8 @@ class PoseNet {
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
 
-    posenet.load(this.multiplier)
+    posenet
+      .load(this.multiplier)
       .then((net) => {
         this.net = net;
         if (this.video) {
@@ -45,7 +46,9 @@ class PoseNet {
           })();
         }
       })
-      .catch((err) => { console.error(`Error loading the model: ${err}`); });
+      .catch((err) => {
+        console.error(`Error loading the model: ${err}`);
+      });
   }
 
   skeleton(keypoints, confidence = this.minConfidence) {
@@ -59,18 +62,22 @@ class PoseNet {
 
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (
+      typeof inputOrCallback === 'object' &&
+      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)
+    ) {
       input = inputOrCallback.elt; // Handle p5.js image and video
     } else if (typeof inputOrCallback === 'function' && this.video) {
       input = this.video;
       callback = inputOrCallback;
     }
 
-    this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
-      .then((pose) => {
-        callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
-        tf.nextFrame().then(() => { this.singlePose(callback); });
+    this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride).then((pose) => {
+      callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
+      tf.nextFrame().then(() => {
+        this.singlePose(callback);
       });
+    });
   }
 
   multiPose(inputOrCallback, cb = () => {}) {
@@ -79,18 +86,24 @@ class PoseNet {
 
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (
+      typeof inputOrCallback === 'object' &&
+      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)
+    ) {
       input = inputOrCallback.elt; // Handle p5.js image and video
     } else if (typeof inputOrCallback === 'function' && this.video) {
       input = this.video;
       callback = inputOrCallback;
     }
 
-    this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
+    this.net
+      .estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride)
       .then((poses) => {
-        const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
+        const result = poses.map((pose) => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
         callback(result);
-        tf.nextFrame().then(() => { this.multiPose(callback); });
+        tf.nextFrame().then(() => {
+          this.multiPose(callback);
+        });
       });
   }
 }

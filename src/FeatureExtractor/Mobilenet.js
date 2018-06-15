@@ -94,7 +94,10 @@ class Mobilenet {
 
     if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement) {
       imgToAdd = inputOrLabel;
-    } else if (typeof inputOrLabel === 'object' && (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)) {
+    } else if (
+      typeof inputOrLabel === 'object' &&
+      (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)
+    ) {
       imgToAdd = inputOrLabel;
     } else if (typeof inputOrLabel === 'string' || typeof inputOrLabel === 'number') {
       imgToAdd = this.video;
@@ -224,7 +227,10 @@ class Mobilenet {
 
       if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
         imgToPredict = inputOrCallback;
-      } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      } else if (
+        typeof inputOrCallback === 'object' &&
+        (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)
+      ) {
         imgToPredict = inputOrCallback.elt; // p5.js image element
       } else if (typeof inputOrCallback === 'function') {
         imgToPredict = this.video;
@@ -263,7 +269,10 @@ class Mobilenet {
 
       if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
         imgToPredict = inputOrCallback;
-      } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      } else if (
+        typeof inputOrCallback === 'object' &&
+        (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)
+      ) {
         imgToPredict = inputOrCallback.elt; // p5.js image element
       } else if (typeof inputOrCallback === 'function') {
         imgToPredict = this.video;
@@ -281,7 +290,7 @@ class Mobilenet {
         const predictions = this.customModel.predict(activation);
         return predictions.as1D();
       });
-      const prediction = (await predictedClass.data());
+      const prediction = await predictedClass.data();
       predictedClass.dispose();
       await tf.nextFrame();
       if (callback) {
