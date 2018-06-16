@@ -97,9 +97,9 @@ class Word2Vec {
 
   static nearest(model, input, start, max) {
     const nearestVectors = [];
-    Object.keys(model).forEach((vector) => {
-      const distance = tf.util.distSquared(input.dataSync(), model[vector].dataSync());
-      nearestVectors.push({ vector, distance });
+    Object.keys(model).forEach((word) => {
+      const distance = tf.util.distSquared(input.dataSync(), model[word].dataSync());
+      nearestVectors.push({ word, distance });
     });
     nearestVectors.sort((a, b) => a.distance - b.distance);
     return nearestVectors.slice(start, max);
