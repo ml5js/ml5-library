@@ -55,9 +55,9 @@ const array3DToImage = (tensor) => {
 const cropImage = (img) => {
   const size = Math.min(img.shape[0], img.shape[1]);
   const centerHeight = img.shape[0] / 2;
-  const beginHeight = centerHeight - (size / 2);
+  const beginHeight = centerHeight - size / 2;
   const centerWidth = img.shape[1] / 2;
-  const beginWidth = centerWidth - (size / 2);
+  const beginWidth = centerWidth - size / 2;
   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
 };
 
@@ -67,13 +67,11 @@ function imgToTensor(input) {
     const img = tf.fromPixels(input);
     const croppedImage = cropImage(img);
     const batchedImage = croppedImage.expandDims(0);
-    return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+    return batchedImage
+      .toFloat()
+      .div(tf.scalar(127))
+      .sub(tf.scalar(1));
   });
 }
 
-export {
-  array3DToImage,
-  processVideo,
-  cropImage,
-  imgToTensor,
-};
+export { array3DToImage, processVideo, cropImage, imgToTensor };

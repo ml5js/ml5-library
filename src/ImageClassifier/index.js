@@ -81,7 +81,7 @@ class ImageClassifier {
     /* eslint arrow-body-style: 0 */
     if (this.videoElt && !this.addedListener) {
       /* eslint func-names: 0 */
-      this.video.addEventListener('onloadstart', function () {
+      this.video.addEventListener('onloadstart', function() {
         return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
           if (callback) {
             callback(predictions);

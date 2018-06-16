@@ -83,7 +83,13 @@ class StyleTransfer extends Video {
     const newRows = height * strides;
     const newCols = width * strides;
     const newShape = [newRows, newCols, numFilters];
-    const y = tf.conv2dTranspose(input, this.variables[StyleTransfer.getVariableName(id)], newShape, [strides, strides], 'same');
+    const y = tf.conv2dTranspose(
+      input,
+      this.variables[StyleTransfer.getVariableName(id)],
+      newShape,
+      [strides, strides],
+      'same',
+    );
     const y2 = this.instanceNorm(y, id + 1);
     const y3 = tf.relu(y2);
     return y3;
@@ -95,7 +101,10 @@ class StyleTransfer extends Video {
 
     if (inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLImageElement) {
       input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLImageElement)) {
+    } else if (
+      typeof inputOrCallback === 'object' &&
+      (inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLImageElement)
+    ) {
       input = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       input = this.video;
