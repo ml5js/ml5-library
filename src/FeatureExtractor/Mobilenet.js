@@ -127,7 +127,7 @@ class Mobilenet {
       if (this.usageType === 'classifier') {
         y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
       } else if (this.usageType === 'regressor') {
-        y = tf.tidy(() => tf.tensor2d([[label]]));
+        y = tf.tensor2d([[label]]);
       }
 
       if (this.xs == null) {
