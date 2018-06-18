@@ -53,23 +53,17 @@ class Mobilenet {
     return this;
   }
 
-  classification(video, callback = () => {}) {
+  classification(video, callback) {
     this.usageType = 'classifier';
-    return this.loadVideo(video).then(() => {
-      callback();
-      return this;
-    });
+    return callCallback(this.loadVideo(video), callback);
   }
 
-  regression(video, callback = () => {}) {
+  regression(video, callback) {
     this.usageType = 'regressor';
-    return this.loadVideo(video).then(() => {
-      callback();
-      return this;
-    });
+    return callCallback(this.loadVideo(video), callback);
   }
 
-  async loadVideo(video, callback = () => {}) {
+  async loadVideo(video) {
     let inputVideo = null;
 
     if (video instanceof HTMLVideoElement) {
@@ -83,7 +77,6 @@ class Mobilenet {
       this.video = await vid.loadVideo();
     }
 
-    callback();
     return this;
   }
 
