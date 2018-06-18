@@ -9,6 +9,7 @@ Image Classifier using pre-trained networks
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
+import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
   mobilenet: {
@@ -19,7 +20,7 @@ const DEFAULTS = {
 };
 
 class ImageClassifier {
-  constructor(modelName, video, options, callback = () => {}) {
+  constructor(modelName, video, options, callback) {
     this.modelName = modelName;
     this.video = video;
     this.version = options.version || DEFAULTS[this.modelName].version;
@@ -32,17 +33,30 @@ class ImageClassifier {
       this.modelToUse = null;
     }
     // Load the model
-    this.ready = this.loadModel().then(() => {
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
     this.model = await this.modelToUse.load(this.version, this.alpha);
   }
 
-  async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
+  async predictInternal(imgToPredict, numberOfClasses) {
+    // Wait for the model to be ready
+    await this.ready;
+    await tf.nextFrame();
+
+    // Classify the image using the selected model
+    /* eslint arrow-body-style: 0 */
+    if (this.videoElt && !this.addedListener) {
+      /* eslint func-names: 0 */
+      this.addedListener = true;
+      await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
+      return this.model.classify(imgToPredict, numberOfClasses);
+    }
+    return this.model.classify(imgToPredict, numberOfClasses);
+  }
+
+  async predict(inputNumOrCallback, numOrCallback = null, cb) {
     let imgToPredict;
     let numberOfClasses = this.topk;
     let callback;
@@ -70,28 +84,7 @@ class ImageClassifier {
       callback = cb;
     }
 
-    // Wait for the model to be ready
-    await this.ready;
-    await tf.nextFrame();
-
-    // Classify the image using the selected model
-    /* eslint arrow-body-style: 0 */
-    if (this.videoElt && !this.addedListener) {
-      /* eslint func-names: 0 */
-      this.addedListener = true;
-      await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
-      return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-        if (callback) {
-          callback(predictions);
-        }
-        return predictions;
-      });
-    }
-    const predictions = await this.model.classify(imgToPredict, numberOfClasses);
-    if (callback) {
-      callback(predictions);
-    }
-    return predictions;
+    return callCallback(this.predictInternal(imgToPredict, numberOfClasses), callback);
   }
 }
 

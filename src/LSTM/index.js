@@ -12,13 +12,14 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 import * as tf from '@tensorflow/tfjs';
 import sampleFromDistribution from './../utils/sample';
 import CheckpointLoader from '../utils/checkpointLoader';
+import callCallback from '../utils/callcallback';
 
 const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
 const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
 class LSTM {
-  constructor(model, callback = () => {}) {
+  constructor(model, callback) {
     this.ready = false;
     this.model = {};
     this.cellsAmount = 0;
@@ -29,13 +30,10 @@ class LSTM {
       length: 20,
       temperature: 0.5,
     };
-    this.ready = this.loadCheckpoints(model).then(() => {
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.loadCheckpoints(model), callback);
   }
 
-  async loadCheckpoints(path, callback = () => {}) {
+  async loadCheckpoints(path) {
     const reader = new CheckpointLoader(path);
     const vars = await reader.getAllVariables();
     Object.keys(vars).forEach((key) => {
@@ -57,18 +55,17 @@ class LSTM {
       }
     });
     await this.loadVocab(path);
-    callback();
+    return this;
   }
 
-  async loadVocab(file, callback = () => {}) {
+  async loadVocab(file) {
     const json = await fetch(`${file}/vocab.json`)
       .then(response => response.json());
     this.vocab = json;
     this.vocabSize = Object.keys(json).length;
-    callback();
   }
 
-  async generate(options, callback = () => {}) {
+  async generateInternal(options) {
     const seed = options.seed || this.defaults.seed;
     const length = +options.length || this.defaults.length;
     const temperature = +options.temperature || this.defaults.temperature;
@@ -146,8 +143,11 @@ class LSTM {
         generated += mapped;
       }
     });
-    callback({ generated });
     return generated;
+  }
+
+  async generate(options, callback) {
+    return callCallback(this.generateInternal(options), callback);
   }
 }
 
