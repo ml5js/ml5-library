@@ -12,11 +12,12 @@ import * as tf from '@tensorflow/tfjs';
 import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
 import { array3DToImage } from '../utils/imageUtilities';
+import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
 
 class StyleTransfer extends Video {
-  constructor(model, video, callback = () => {}) {
+  constructor(model, video, callback) {
     super(video, IMAGE_SIZE);
     this.ready = false;
     this.variableDictionary = {};
@@ -24,10 +25,7 @@ class StyleTransfer extends Video {
     this.plusScalar = tf.scalar(255.0 / 2);
     this.epsilonScalar = tf.scalar(1e-3);
     this.video = null;
-    this.ready = this.load(model).then(() => {
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.load(model), callback);
   }
 
   async load(model) {
@@ -36,6 +34,7 @@ class StyleTransfer extends Video {
       this.videoReady = true;
     }
     await this.loadCheckpoints(model);
+    return this;
   }
 
   async loadCheckpoints(path) {
@@ -82,7 +81,7 @@ class StyleTransfer extends Video {
     return y3;
   }
 
-  async transfer(inputOrCallback, cb = () => {}) {
+  async transfer(inputOrCallback, cb) {
     let input;
     let callback = cb;
 
@@ -95,6 +94,10 @@ class StyleTransfer extends Video {
       callback = inputOrCallback;
     }
 
+    return callCallback(this.transferInternal(input), callback);
+  }
+
+  async transferInternal(input) {
     const image = tf.fromPixels(input);
     const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
@@ -116,9 +119,6 @@ class StyleTransfer extends Video {
       return normalized;
     }));
     await tf.nextFrame();
-    if (callback) {
-      callback(result);
-    }
     return result;
   }
 

@@ -10,18 +10,20 @@
 */
 
 import * as tf from '@tensorflow/tfjs';
+import callCallback from '../utils/callcallback';
 
 class PitchDetection {
-  constructor(modelName, audioContext, stream) {
+  constructor(modelName, audioContext, stream, callback) {
     this.modelName = modelName;
     this.audioContext = audioContext;
     this.stream = stream;
-    this.ready = this.loadModel().then(() => this);
+    this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
     this.model = await tf.loadModel('model/model.json');
     await this.initAudio();
+    return this;
   }
 
   initAudio() {

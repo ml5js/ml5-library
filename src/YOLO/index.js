@@ -12,7 +12,7 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 import * as tf from '@tensorflow/tfjs';
 import Video from '../utils/Video';
 import { imgToTensor } from '../utils/imageUtilities';
-
+import callCallback from '../utils/callcallback';
 import CLASS_NAMES from './../utils/COCO_CLASSES';
 
 import {
@@ -35,7 +35,7 @@ const DEFAULTS = {
 const imageSize = 416;
 
 class YOLOBase extends Video {
-  constructor(video, options, callback = () => {}) {
+  constructor(video, options, callback) {
     super(video, imageSize);
 
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
@@ -43,10 +43,7 @@ class YOLOBase extends Video {
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
     this.modelReady = false;
     this.isPredicting = false;
-    this.ready = this.loadModel().then(() => {
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
@@ -55,14 +52,12 @@ class YOLOBase extends Video {
     }
     this.model = await tf.loadModel(URL);
     this.modelReady = true;
+    return this;
   }
 
-  async detect(inputOrCallback, cb = () => {}) {
-    await this.ready;
+  async detect(inputOrCallback, cb) {
     let imgToPredict;
     let callback = cb;
-    this.isPredicting = true;
-
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
@@ -71,7 +66,12 @@ class YOLOBase extends Video {
       imgToPredict = this.video;
       callback = inputOrCallback;
     }
+    return callCallback(this.detectInternal(imgToPredict), callback);
+  }
 
+  async detectInternal(imgToPredict) {
+    await this.ready;
+    this.isPredicting = true;
     const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
       const input = imgToTensor(imgToPredict);
       const activation = this.model.predict(input);
@@ -134,8 +134,6 @@ class YOLOBase extends Video {
 
     await tf.nextFrame();
     this.isPredicting = false;
-
-    callback(results);
     return results;
   }
 }

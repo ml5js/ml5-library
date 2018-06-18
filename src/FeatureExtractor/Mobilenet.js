@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import Video from './../utils/Video';
 import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
 import { imgToTensor } from '../utils/imageUtilities';
+import callCallback from '../utils/callcallback';
 
 const IMAGESIZE = 224;
 const DEFAULTS = {
@@ -25,7 +26,7 @@ const DEFAULTS = {
 };
 
 class Mobilenet {
-  constructor(options, callback = () => {}) {
+  constructor(options, callback) {
     this.mobilenet = null;
     this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
     this.topKPredictions = 10;
@@ -39,12 +40,7 @@ class Mobilenet {
     this.isPredicting = false;
     this.mapStringToIndex = [];
     this.usageType = null;
-
-    this.ready = this.loadModel().then((net) => {
-      this.mobilenetFeatures = net;
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
@@ -53,7 +49,8 @@ class Mobilenet {
     if (this.video) {
       tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
     }
-    return tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
+    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
+    return this;
   }
 
   classification(video, callback = () => {}) {
@@ -90,7 +87,7 @@ class Mobilenet {
     return this;
   }
 
-  async addImage(inputOrLabel, labelOrCallback, cb = () => {}) {
+  async addImage(inputOrLabel, labelOrCallback, cb) {
     let imgToAdd;
     let label;
     let callback = cb;
@@ -118,6 +115,10 @@ class Mobilenet {
       }
     }
 
+    return callCallback(this.addImageInternal(imgToAdd, label), callback);
+  }
+
+  async addImageInternal(imgToAdd, label) {
     await this.ready;
     tf.tidy(() => {
       const processedImg = imgToTensor(imgToAdd);
@@ -144,7 +145,7 @@ class Mobilenet {
         y.dispose();
       }
     });
-    callback();
+    return this;
   }
 
   async train(onProgress) {
@@ -201,7 +202,7 @@ class Mobilenet {
       throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
     }
 
-    this.customModel.fit(this.xs, this.ys, {
+    return this.customModel.fit(this.xs, this.ys, {
       batchSize,
       epochs: this.epochs,
       callbacks: {
@@ -215,10 +216,7 @@ class Mobilenet {
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
-  async classify(inputOrCallback, cb = () => {}) {
-    if (this.usageType === 'classifier') {
-      throw new Error('Mobilenet Feature Extraction has not been set to be a classifier.');
-    }
+  async classify(inputOrCallback, cb) {
     let imgToPredict;
     let callback;
 
@@ -233,6 +231,14 @@ class Mobilenet {
 
     if (typeof cb === 'function') {
       callback = cb;
+    }
+
+    return callCallback(this.classifyInternal(imgToPredict), callback);
+  }
+
+  async classifyInternal(imgToPredict) {
+    if (this.usageType === 'classifier') {
+      throw new Error('Mobilenet Feature Extraction has not been set to be a classifier.');
     }
 
     this.isPredicting = true;
@@ -247,19 +253,13 @@ class Mobilenet {
     if (this.mapStringToIndex.length > 0) {
       classId = this.mapStringToIndex[classId];
     }
-    callback(classId);
     return classId;
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
-  async predict(inputOrCallback, cb = () => {}) {
-    if (this.usageType !== 'regressor') {
-      throw new Error('Mobilenet Feature Extraction has not been set to be a regressor.');
-    }
-
+  async predict(inputOrCallback, cb) {
     let imgToPredict;
     let callback;
-
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
@@ -272,6 +272,13 @@ class Mobilenet {
     if (typeof cb === 'function') {
       callback = cb;
     }
+    return callCallback(this.predictInternal(imgToPredict), callback);
+  }
+
+  async predictInternal(imgToPredict) {
+    if (this.usageType !== 'regressor') {
+      throw new Error('Mobilenet Feature Extraction has not been set to be a regressor.');
+    }
 
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
@@ -283,7 +290,6 @@ class Mobilenet {
     const prediction = await predictedClass.data();
     predictedClass.dispose();
     await tf.nextFrame();
-    callback(prediction[0]);
     return prediction[0];
   }
 
@@ -312,7 +318,7 @@ class Mobilenet {
 
     await tf.nextFrame();
 
-    callback(topClassesAndProbs);
+    callback(undefined, topClassesAndProbs);
     return topClassesAndProbs;
   }
 }

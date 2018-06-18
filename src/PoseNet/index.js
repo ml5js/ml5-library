@@ -7,8 +7,10 @@
 PoseNet
 */
 
+import EventEmitter from 'events';
 import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
+import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
   imageScaleFactor: 0.3,
@@ -22,8 +24,9 @@ const DEFAULTS = {
   multiplier: 0.75,
 };
 
-class PoseNet {
-  constructor(video, options, detectionType, callback = () => {}) {
+class PoseNet extends EventEmitter {
+  constructor(video, options, detectionType, callback) {
+    super();
     this.video = video;
     this.detectionType = detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
@@ -31,13 +34,10 @@ class PoseNet {
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
-    this.ready = this.load().then(() => {
-      callback();
-      return this;
-    });
+    this.ready = callCallback(this.load(), callback);
   }
 
-  async load(callback = () => {}) {
+  async load() {
     const net = await posenet.load(this.multiplier);
     this.net = net;
     if (this.video) {
@@ -45,9 +45,9 @@ class PoseNet {
         this.video.onplay = resolve;
       });
       if (this.detectionType === 'single') {
-        return this.singlePose(callback);
+        return this.singlePose();
       }
-      return this.multiPose(callback);
+      return this.multiPose();
     }
     return this;
   }
@@ -57,45 +57,41 @@ class PoseNet {
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
-  async singlePose(inputOrCallback, cb = () => {}) {
+  async singlePose(inputOr) {
     let input;
-    let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
-      input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
-      input = inputOrCallback.elt; // Handle p5.js image and video
-    } else if (typeof inputOrCallback === 'function' && this.video) {
+    if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
+      input = inputOr;
+    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
+      input = inputOr.elt; // Handle p5.js image and video
+    } else if (typeof inputOr === 'function' && this.video) {
       input = this.video;
-      callback = inputOrCallback;
     }
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
-    callback([{ pose, skeleton: this.skeleton(pose.keypoints) }]);
-    return tf.nextFrame().then(() => this.singlePose(callback));
+    this.emit('pose', [{ pose, skeleton: this.skeleton(pose.keypoints) }]);
+    return tf.nextFrame().then(() => this.singlePose());
   }
 
-  async multiPose(inputOrCallback, cb = () => {}) {
+  async multiPose(inputOr) {
     let input;
-    let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
-      input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
-      input = inputOrCallback.elt; // Handle p5.js image and video
-    } else if (typeof inputOrCallback === 'function' && this.video) {
+    if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
+      input = inputOr;
+    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
+      input = inputOr.elt; // Handle p5.js image and video
+    } else if (typeof inputOr === 'function' && this.video) {
       input = this.video;
-      callback = inputOrCallback;
     }
 
     const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
-    callback(result);
-    return tf.nextFrame().then(() => this.multiPose(callback));
+    this.emit('pose', result);
+    return tf.nextFrame().then(() => this.multiPose());
   }
 }
 
-const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb = () => {}) => {
+const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   let video;
   let options = {};
   let callback = cb;

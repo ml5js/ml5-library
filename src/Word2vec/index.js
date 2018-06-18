@@ -8,25 +8,24 @@ Word2Vec
 */
 
 import * as tf from '@tensorflow/tfjs';
+import callCallback from '../utils/callcallback';
 
 class Word2Vec {
-  constructor(model, callback = () => {}) {
+  constructor(model, callback) {
     this.model = {};
     this.modelSize = 0;
-    this.ready = this.loadModel(model).then(() => {
-      callback();
-      return this;
-    });
-  }
 
-  async loadModel(file, callback = () => {}) {
-    const json = await fetch(file)
-      .then(response => response.json());
-    Object.keys(json.vectors).forEach((word) => {
-      this.model[word] = tf.tensor1d(json.vectors[word]);
-    });
-    this.modelSize = Object.keys(json).length;
-    callback();
+    const loadModel = async (file) => {
+      const json = await fetch(file)
+        .then(response => response.json());
+      Object.keys(json.vectors).forEach((word) => {
+        this.model[word] = tf.tensor1d(json.vectors[word]);
+      });
+      this.modelSize = Object.keys(json).length;
+      return this;
+    };
+
+    this.ready = callCallback(loadModel(model), callback);
   }
 
   add(inputs, max = 1) {

@@ -14,7 +14,7 @@ describe('YOLO', () => {
   let yolo;
 
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
     yolo = await YOLO();
   });
 
@@ -25,7 +25,6 @@ describe('YOLO', () => {
   it('classifies the robin', async () => {
     const robin = await getRobin();
     const detection = await yolo.detect(robin);
-    console.log(robin, detection);
     expect(robin).toBeTruthy();
   });
 });
