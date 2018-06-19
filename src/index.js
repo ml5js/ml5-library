@@ -14,7 +14,7 @@ import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
 import LSTMGenerator from './LSTM/';
 
-module.exports = {
+export default {
   imageClassifier,
   featureExtractor,
   pitchDetection,
@@ -24,5 +24,5 @@ module.exports = {
   poseNet,
   LSTMGenerator,
   ...imageUtils,
-  tf,
+  tf
 };
