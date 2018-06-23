@@ -19,8 +19,8 @@ module.exports = (config) => {
       stats: 'errors-only',
     },
     browserStack: {
-      username: process.env.BROWSERSTACK_USERNAME,
-      accessKey: process.env.BROWSERSTACK_KEY
+      username: process.env.username,
+      accessKey: process.env.access_key
     },
     captureTimeout: 120000,
     reportSlowerThan: 500,
