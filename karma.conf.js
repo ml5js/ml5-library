@@ -1,4 +1,3 @@
-console.log('KARMA', process.env, process.env.username, process.env.access_key);
 module.exports = (config) => {
   config.set({
     frameworks: ['jasmine'],
