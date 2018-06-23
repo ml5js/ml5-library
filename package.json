@@ -12,7 +12,8 @@
     "prebuild": "rimraf dist",
     "start": "webpack-dev-server --open --config webpack.dev.babel.js",
     "build": "webpack --config webpack.prod.babel.js",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js"
+    "test": "./node_modules/karma/bin/karma start karma.conf.js",
+    "test-travis": "./scripts/test-travis.sh"
   },
   "repository": {
     "type": "git",
