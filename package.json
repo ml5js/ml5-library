@@ -12,8 +12,7 @@
     "prebuild": "rimraf dist",
     "start": "webpack-dev-server --open --config webpack.dev.babel.js",
     "build": "webpack --config webpack.prod.babel.js",
-    "test:dev": "./node_modules/karma/bin/karma start karma.conf.js",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js --no-auto-watch --single-run"
+    "test": "./node_modules/karma/bin/karma start karma.conf.js"
   },
   "repository": {
     "type": "git",
@@ -49,9 +48,7 @@
     "jasmine-core": "3.1.0",
     "karma": "2.0.0",
     "karma-chrome-launcher": "2.2.0",
-    "karma-firefox-launcher": "1.1.0",
     "karma-jasmine": "1.1.1",
-    "karma-safari-launcher": "1.0.0",
     "karma-webpack": "3.0.0",
     "npm-run-all": "4.1.2",
     "regenerator-runtime": "0.11.1",
