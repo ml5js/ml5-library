@@ -7,3 +7,4 @@ git:
 script:
   - yarn build
   - yarn test-travis
+  
