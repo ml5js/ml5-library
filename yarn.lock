@@ -137,9 +137,13 @@
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
 
-"@tensorflow-models/mobilenet@0.1.0":
+"@tensorflow-models/knn-classifier@^0.1.0":
   version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@tensorflow-models/mobilenet/-/mobilenet-0.1.0.tgz#db8a6934f016a980a83be659a4519cc78509024e"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/knn-classifier/-/knn-classifier-0.1.0.tgz#837868c390cf3f82350ae5aa61a24ff2f2e13952"
+
+"@tensorflow-models/mobilenet@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@tensorflow-models/mobilenet/-/mobilenet-0.1.1.tgz#bfe159b0e0abee31da421cc36e5051e4622bcd03"
 
 "@tensorflow-models/posenet@^0.1.2":
   version "0.1.2"

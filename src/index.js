@@ -6,6 +6,7 @@
 import * as tf from '@tensorflow/tfjs';
 import pitchDetection from './PitchDetection/';
 import imageClassifier from './ImageClassifier/';
+import KNNClassifier from './KNNClassifier/';
 import featureExtractor from './FeatureExtractor/';
 import word2vec from './Word2vec/';
 import YOLO from './YOLO';
@@ -16,6 +17,7 @@ import LSTMGenerator from './LSTM/';
 
 module.exports = {
   imageClassifier,
+  KNNClassifier,
   featureExtractor,
   pitchDetection,
   YOLO,
