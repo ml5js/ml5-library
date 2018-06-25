@@ -18,3 +18,5 @@ website/node_modules
 
 website/i18n/*
 !website/i18n/en.json
+
+yarn-error.log
