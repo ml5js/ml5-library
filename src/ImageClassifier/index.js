@@ -46,13 +46,8 @@ class ImageClassifier {
     await tf.nextFrame();
 
     // Classify the image using the selected model
-    /* eslint arrow-body-style: 0 */
-    if (this.videoElt && !this.addedListener) {
-      /* eslint func-names: 0 */
-      this.addedListener = true;
-      await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
-      return this.model.classify(imgToPredict, numberOfClasses);
-    }
+    this.addedListener = true;
+    await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
     return this.model.classify(imgToPredict, numberOfClasses);
   }
 
