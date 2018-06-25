@@ -9,7 +9,9 @@
  * learning with an embedding from another pretrained model.
 */
 
+import * as tf from '@tensorflow/tfjs';
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
+import * as io from '../utils/io';
 
 class KNN {
   constructor() {
@@ -21,16 +23,21 @@ class KNN {
   }
 
   async predictClass(input, k = 3) {
-    const res = await this.knnClassifier.predictClass(input, k);
-    return res;
+    const numClass = this.knnClassifier.getNumClasses();
+    if (numClass <= 0) {
+      throw new Error('There is no example in any class');
+    } else {
+      const res = await this.knnClassifier.predictClass(input, k);
+      return res;
+    }
   }
 
   clearClass(classIndex) {
     this.knnClassifier.clearClass(classIndex);
   }
 
-  clearAllClasses(classIndex) {
-    this.knnClassifier.clearAllClasses(classIndex);
+  clearAllClasses() {
+    this.knnClassifier.clearAllClasses();
   }
 
   getClassExampleCount() {
@@ -51,6 +58,41 @@ class KNN {
 
   dispose() {
     this.knnClassifier.dispose();
+  }
+
+  saveDataset(name) {
+    const dataset = this.knnClassifier.getClassifierDataset();
+    const tensors = Object.keys(dataset).map((key) => {
+      const t = dataset[key];
+      if (t) {
+        return t.dataSync();
+      }
+      return null;
+    });
+    const fileName = name || Date.now();
+    io.saveFile(`${fileName}.json`, JSON.stringify({ dataset, tensors }));
+  }
+
+  loadDataset(path, callback) {
+    io.loadFile(path, (data) => {
+      const { dataset, tensors } = data;
+      const tensorsData = tensors
+        .map((tensor, i) => {
+          if (tensor) {
+            const values = Object.keys(tensor).map(v => tensor[v]);
+            return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
+          }
+          return null;
+        })
+        .reduce((acc, cur, j) => {
+          acc[j] = cur;
+          return acc;
+        }, {});
+      this.knnClassifier.setClassifierDataset(tensorsData);
+      if (callback) {
+        callback();
+      }
+    });
   }
 }
 
