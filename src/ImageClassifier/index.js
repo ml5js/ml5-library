@@ -104,9 +104,9 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
     video = videoOrOptionsOrCallback;
   } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
     video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (videoOrOptionsOrCallback === 'object') {
+  } else if (typeof videoOrOptionsOrCallback === 'object') {
     options = videoOrOptionsOrCallback;
-  } else if (videoOrOptionsOrCallback === 'function') {
+  } else if (typeof videoOrOptionsOrCallback === 'function') {
     callback = videoOrOptionsOrCallback;
   }
 
