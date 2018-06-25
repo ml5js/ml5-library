@@ -44,6 +44,7 @@ class YOLOBase extends Video {
     this.modelReady = false;
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
+    this.then = this.ready.then;
   }
 
   async loadModel() {
@@ -155,8 +156,7 @@ const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     callback = optionsOrCallback;
   }
 
-  const instance = new YOLOBase(video, options, callback);
-  return cb ? instance : instance.ready;
+  return new YOLOBase(video, options, callback);
 };
 
 export default YOLO;
