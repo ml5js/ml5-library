@@ -34,7 +34,7 @@ module.exports = (config) => {
         os_version: 'High Sierra'
       },
     },
-    reporters: ['progress'],
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

@@ -41,6 +41,7 @@ class Mobilenet {
     this.mapStringToIndex = [];
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
+    this.then = this.ready.then;
   }
 
   async loadModel() {

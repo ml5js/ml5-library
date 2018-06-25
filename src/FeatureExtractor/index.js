@@ -28,8 +28,7 @@ const featureExtractor = (model, optionsOrCallback, cb) => {
   }
 
   if (modelName === 'mobilenet') {
-    const instance = new Mobilenet(options, callback);
-    return callback ? instance : instance.ready;
+    return new Mobilenet(options, callback);
   }
   throw new Error(`${modelName} is not a valid model.`);
 };

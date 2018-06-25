@@ -4,9 +4,11 @@
 // https://opensource.org/licenses/MIT
 
 export default function callCallback(promise, callback) {
-  return callback ? promise.then((result) => {
-    callback(undefined, result);
-  }, (error) => {
-    callback(error);
-  }) : promise;
+  if (callback) {
+    promise.then((result) => {
+      callback(undefined, result);
+      return result;
+    });
+  }
+  return promise;
 }

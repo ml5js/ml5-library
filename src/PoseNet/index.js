@@ -35,6 +35,7 @@ class PoseNet extends EventEmitter {
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.ready = callCallback(this.load(), callback);
+    this.then = this.ready.then;
   }
 
   async load() {
@@ -115,8 +116,7 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     detectionType = optionsOrCallback;
   }
 
-  const instance = new PoseNet(video, options, detectionType, callback);
-  return callback ? instance : instance.ready;
+  return new PoseNet(video, options, detectionType, callback);
 };
 
 export default poseNet;

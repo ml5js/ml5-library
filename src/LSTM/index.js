@@ -31,6 +31,7 @@ class LSTM {
       temperature: 0.5,
     };
     this.ready = callCallback(this.loadCheckpoints(model), callback);
+    this.then = this.ready.then.bind(this.ready);
   }
 
   async loadCheckpoints(path) {
@@ -152,8 +153,7 @@ class LSTM {
 }
 
 const LSTMGenerator = (modelPath = './', callback) => {
-  const instance = new LSTM(modelPath);
-  return callback ? instance : instance.ready;
+  return new LSTM(modelPath, callback);
 };
 
 export default LSTMGenerator;

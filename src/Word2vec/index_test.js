@@ -15,8 +15,9 @@ describe('initialize word2vec', () => {
     }));
   });
 
-  it('computes nearest words', () => {
-    expect(word2vec.nearest('love', 5).map(v => v.vector))
+  it('computes nearest words', async () => {
+    const nearest = await word2vec.nearest('love', 5);
+    expect(nearest.map(v => v.vector))
       .toEqual(['loved', 'loves', 'hate', 'wonderful', 'beautiful']);
   });
 });
