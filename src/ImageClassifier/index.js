@@ -38,6 +38,7 @@ class ImageClassifier {
 
   async loadModel() {
     this.model = await this.modelToUse.load(this.version, this.alpha);
+    return this;
   }
 
   async predictInternal(imgToPredict, numberOfClasses) {
