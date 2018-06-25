@@ -71,6 +71,7 @@ class YOLOBase extends Video {
 
   async detectInternal(imgToPredict) {
     await this.ready;
+    await tf.nextFrame();
     this.isPredicting = true;
     const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
       const input = imgToTensor(imgToPredict);
@@ -132,7 +133,6 @@ class YOLOBase extends Video {
       results.push(resultObj);
     });
 
-    await tf.nextFrame();
     this.isPredicting = false;
     return results;
   }
