@@ -41,7 +41,6 @@ class Word2Vec {
   add(inputs, max = 1) {
     return tf.tidy(() => {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-      console.log(sum);
       return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
     });
   }
