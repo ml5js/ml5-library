@@ -1,6 +1,6 @@
 /* eslint new-cap: 0 */
 
-import * as ImageClassifier from './index';
+const { ImageClassifier } = ml5;
 
 const DEFAULTS = {
   learningRate: 0.0001,
