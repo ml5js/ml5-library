@@ -10,61 +10,39 @@ export default class CheckpointLoader {
     }
   }
 
-  loadManifest() {
-    return new Promise((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', this.urlPath + MANIFEST_FILE);
-      xhr.onload = () => {
-        this.checkpointManifest = JSON.parse(xhr.responseText);
-        resolve();
-      };
-      xhr.onerror = (error) => {
-        throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${error}`);
-      };
-      xhr.send();
-    });
+  async loadManifest() {
+    try {
+      this.checkpointManifest = await (await fetch(this.urlPath + MANIFEST_FILE)).json();
+    } catch (e) {
+      throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${e}`);
+    }
   }
 
-  getCheckpointManifest() {
+  async getCheckpointManifest() {
     if (this.checkpointManifest == null) {
-      return new Promise((resolve) => {
-        this.loadManifest().then(() => {
-          resolve(this.checkpointManifest);
-        });
-      });
+      await this.loadManifest();
     }
-    return new Promise((resolve) => {
-      resolve(this.checkpointManifest);
-    });
+    return this.checkpointManifest;
   }
 
-  getAllVariables() {
+  async getAllVariables() {
     if (this.variables != null) {
-      return new Promise((resolve) => {
-        resolve(this.variables);
-      });
+      return Promise.resolve(this.variables);
     }
-
-    return new Promise((resolve) => {
-      this.getCheckpointManifest().then(() => {
-        const variableNames = Object.keys(this.checkpointManifest);
-        const variablePromises = [];
-        for (let i = 0; i < variableNames.length; i += 1) {
-          variablePromises.push(this.getVariable(variableNames[i]));
-        }
-        Promise.all(variablePromises).then((variables) => {
-          this.variables = {};
-          for (let i = 0; i < variables.length; i += 1) {
-            this.variables[variableNames[i]] = variables[i];
-          }
-          resolve(this.variables);
-        });
-      });
+    await this.getCheckpointManifest();
+    const variableNames = Object.keys(this.checkpointManifest);
+    const variablePromises = variableNames.map(v => this.getVariable(v));
+    return Promise.all(variablePromises).then((variables) => {
+      this.variables = {};
+      for (let i = 0; i < variables.length; i += 1) {
+        this.variables[variableNames[i]] = variables[i];
+      }
+      return this.variables;
     });
   }
   getVariable(varName) {
     if (!(varName in this.checkpointManifest)) {
-      throw new Error(`Cannot load non-existant variable ${varName}`);
+      throw new Error(`Cannot load non-existent variable ${varName}`);
     }
     const variableRequestPromiseMethod = (resolve) => {
       const xhr = new XMLHttpRequest();

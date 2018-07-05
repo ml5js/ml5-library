@@ -12,6 +12,7 @@ import * as tf from '@tensorflow/tfjs';
 import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
 import { array3DToImage } from '../utils/imageUtilities';
+import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
 
@@ -24,25 +25,17 @@ class StyleTransfer extends Video {
     this.plusScalar = tf.scalar(255.0 / 2);
     this.epsilonScalar = tf.scalar(1e-3);
     this.video = null;
+    this.ready = callCallback(this.load(model), callback);
+    this.then = this.ready.then;
+  }
 
+  async load(model) {
     if (this.videoElt) {
-      this.loadVideo().then(() => {
-        this.videoReady = true;
-        this.loadCheckpoints(model).then(() => {
-          this.ready = true;
-          if (callback) {
-            callback();
-          }
-        });
-      });
-    } else {
-      this.loadCheckpoints(model).then(() => {
-        this.ready = true;
-        if (callback) {
-          callback();
-        }
-      });
+      await this.loadVideo();
+      this.videoReady = true;
     }
+    await this.loadCheckpoints(model);
+    return this;
   }
 
   async loadCheckpoints(path) {
@@ -89,7 +82,7 @@ class StyleTransfer extends Video {
     return y3;
   }
 
-  async transfer(inputOrCallback, cb = () => {}) {
+  async transfer(inputOrCallback, cb) {
     let input;
     let callback = cb;
 
@@ -102,8 +95,12 @@ class StyleTransfer extends Video {
       callback = inputOrCallback;
     }
 
+    return callCallback(this.transferInternal(input), callback);
+  }
+
+  async transferInternal(input) {
     const image = tf.fromPixels(input);
-    const result = tf.tidy(() => {
+    const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
       const conv3 = this.convLayer(conv2, 2, true, 6);
@@ -121,9 +118,9 @@ class StyleTransfer extends Video {
       const clamped = tf.clipByValue(shifted, 0, 255);
       const normalized = tf.div(clamped, tf.scalar(255.0));
       return normalized;
-    });
+    }));
     await tf.nextFrame();
-    callback(array3DToImage(result));
+    return result;
   }
 
   // Static Methods
@@ -135,7 +132,7 @@ class StyleTransfer extends Video {
   }
 }
 
-const styleTransfer = (model, videoOrCallback, cb = () => {}) => {
+const styleTransfer = (model, videoOrCallback, cb) => {
   const video = videoOrCallback;
   let callback = cb;
 
