@@ -117,8 +117,6 @@ class Word2Vec {
   }
 }
 
-const word2vec = (model, cb) => {
-  return new Word2Vec(model, cb);
-};
+const word2vec = (model, cb) => new Word2Vec(model, cb);
 
 export default word2vec;
