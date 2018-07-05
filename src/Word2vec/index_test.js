@@ -13,8 +13,8 @@ describe('word2vec', () => {
 
   afterAll(() => {
     word2vecInstance.dispose();
-    let numTensorsAfterAll = tf.memory().numTensors;
-    if(numTensorsBeforeAll !== numTensorsAfterAll) {
+    const numTensorsAfterAll = tf.memory().numTensors;
+    if (numTensorsBeforeAll !== numTensorsAfterAll) {
       throw new Error(`Leaking Tensors (${numTensorsAfterAll} vs ${numTensorsBeforeAll})`);
     }
   });
@@ -24,8 +24,8 @@ describe('word2vec', () => {
   });
 
   afterEach(() => {
-    let numTensorsAfterEach = tf.memory().numTensors;
-    if(numTensorsBeforeEach !== numTensorsAfterEach) {
+    const numTensorsAfterEach = tf.memory().numTensors;
+    if (numTensorsBeforeEach !== numTensorsAfterEach) {
       throw new Error(`Leaking Tensors (${numTensorsAfterEach} vs ${numTensorsBeforeEach})`);
     }
   });
@@ -39,18 +39,18 @@ describe('word2vec', () => {
 
   describe('getRandomWord', () => {
     it('returns a word', () => {
-      let word = word2vecInstance.getRandomWord();
+      const word = word2vecInstance.getRandomWord();
       expect(typeof word).toEqual('string');
     });
   });
 
   describe('nearest', () => {
     it('returns a sorted array of nearest words', () => {
-      for(let i = 0; i < 100; i++) {
-        let word = word2vecInstance.getRandomWord();
-        let nearest = word2vecInstance.nearest(word);
+      for (let i = 0; i < 100; i += 1) {
+        const word = word2vecInstance.getRandomWord();
+        const nearest = word2vecInstance.nearest(word);
         let currentDistance = 0;
-        for(let { word, distance: nextDistance } of nearest) {
+        for (let { word, distance: nextDistance } of nearest) {
           expect(typeof word).toEqual('string');
           expect(nextDistance).toBeGreaterThan(currentDistance);
           currentDistance = nextDistance;
@@ -59,9 +59,9 @@ describe('word2vec', () => {
     });
 
     it('returns a list of the right length', () => {
-      for(let i = 0; i < 100; i++) {
-        let word = word2vecInstance.getRandomWord();
-        let nearest = word2vecInstance.nearest(word, i);
+      for (let i = 0; i < 100; i += 1) {
+        const word = word2vecInstance.getRandomWord();
+        const nearest = word2vecInstance.nearest(word, i);
         expect(nearest.length).toEqual(i);
       }
     });
@@ -69,27 +69,27 @@ describe('word2vec', () => {
 
   describe('add', () => {
     it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let sum = word2vecInstance.subtract([word1, word2]);
+      const word1 = word2vecInstance.getRandomWord();
+      const word2 = word2vecInstance.getRandomWord();
+      const sum = word2vecInstance.subtract([word1, word2]);
       expect(sum[0].distance).toBeGreaterThan(0);
-    })
+    });
   });
 
   describe('subtract', () => {
     it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let sum = word2vecInstance.subtract([word1, word2]);
+      const word1 = word2vecInstance.getRandomWord();
+      const word2 = word2vecInstance.getRandomWord();
+      const sum = word2vecInstance.subtract([word1, word2]);
       expect(sum[0].distance).toBeGreaterThan(0);
-    })
+    });
   });
 
   describe('average', () => {
     it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let average = word2vecInstance.average([word1, word2]);
+      const word1 = word2vecInstance.getRandomWord();
+      const word2 = word2vecInstance.getRandomWord();
+      const average = word2vecInstance.average([word1, word2]);
       expect(average[0].distance).toBeGreaterThan(0);
     });
   });

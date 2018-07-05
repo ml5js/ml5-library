@@ -8,51 +8,49 @@ Word2Vec
 */
 
 import * as tf from '@tensorflow/tfjs';
+import callCallback from '../utils/callcallback';
 
 class Word2Vec {
   constructor(model, callback) {
-    this.ready = false;
     this.model = {};
     this.modelSize = 0;
-    this.loadModel(model, callback);
-  }
 
-  loadModel(file, callback) {
-    fetch(file)
-      .then(response => response.json())
-      .then((json) => {
-        Object.keys(json.vectors).forEach((word) => {
-          this.model[word] = tf.tensor1d(json.vectors[word]);
-        });
-        this.modelSize = Object.keys(json).length;
-        this.ready = true;
-        if (callback) {
-          callback();
-        }
-      }).catch((error) => {
-        console.error(`There has been a problem loading the vocab: ${error.message}`);
+    const loadModel = async (file) => {
+      const json = await fetch(file)
+        .then(response => response.json());
+      Object.keys(json.vectors).forEach((word) => {
+        this.model[word] = tf.tensor1d(json.vectors[word]);
       });
+      this.modelSize = Object.keys(json).length;
+      return this;
+    };
+
+    this.ready = callCallback(loadModel(model), callback);
+    this.then = this.ready.then.bind(this.ready);
   }
 
   dispose() {
     Object.values(this.model).forEach(x => x.dispose());
   }
 
-  add(inputs, max = 1) {
+  async add(inputs, max = 1) {
+    await this.ready;
     return tf.tidy(() => {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
       return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
     });
   }
 
-  subtract(inputs, max = 1) {
+  async subtract(inputs, max = 1) {
+    await this.ready;
     return tf.tidy(() => {
       const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
       return Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
     });
   }
 
-  average(inputs, max = 1) {
+  async average(inputs, max = 1) {
+    await this.ready;
     return tf.tidy(() => {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
       const avg = tf.div(sum, tf.tensor(inputs.length));
@@ -60,7 +58,8 @@ class Word2Vec {
     });
   }
 
-  nearest(input, max = 10) {
+  async nearest(input, max = 10) {
+    await this.ready;
     const vector = this.model[input];
     if (!vector) {
       return null;
@@ -68,7 +67,8 @@ class Word2Vec {
     return Word2Vec.nearest(this.model, vector, 1, max + 1);
   }
 
-  getRandomWord() {
+  async getRandomWord() {
+    await this.ready;
     const words = Object.keys(this.model);
     return words[Math.floor(Math.random() * words.length)];
   }
@@ -117,6 +117,8 @@ class Word2Vec {
   }
 }
 
-const word2vec = (model, cb = () => {}) => new Word2Vec(model, cb);
+const word2vec = (model, cb) => {
+  return new Word2Vec(model, cb);
+};
 
 export default word2vec;
