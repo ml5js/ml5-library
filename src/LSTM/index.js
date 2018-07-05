@@ -152,8 +152,6 @@ class LSTM {
   }
 }
 
-const LSTMGenerator = (modelPath = './', callback) => {
-  return new LSTM(modelPath, callback);
-};
+const LSTMGenerator = (modelPath = './', callback) => new LSTM(modelPath, callback);
 
 export default LSTMGenerator;

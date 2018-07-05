@@ -6,11 +6,11 @@
 export default function callCallback(promise, callback) {
   if (callback) {
     promise
-      .then(result => {
+      .then((result) => {
         callback(undefined, result);
         return result;
       })
-      .catch(error => {
+      .catch((error) => {
         callback(error);
       });
   }
