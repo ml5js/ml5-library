@@ -1,61 +1,71 @@
-// Karma configuration
-// Generated on Thu Mar 29 2018 11:50:44 GMT-0400 (EDT)
-
 module.exports = (config) => {
   config.set({
-    // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine'],
-    // list of files / patterns to load in the browser
     files: [
-      'src/*/*.test.js',
-      'src/images/*.jpg',
+      'src/index.js',
+      'src/**/*_test.js',
     ],
-    // list of files / patterns to exclude
-    exclude: [],
-    // preprocess matching files before serving them to the browser
-    // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      // add webpack as preprocessor
-      'src/*/*.test.js': ['webpack'],
+      'src/index.js': ['webpack'],
     },
     webpack: {
-      // karma watches the test entry points
-      // (you don't need to specify the entry option)
-      // webpack watches dependencies
-
-      // webpack configuration
-
+      // TODO: This is duplication of the webpack.common.babel.js file, but they
+      // use different import syntaxes so it's not easy to just require it here.
+      // Maybe this could be put into a JSON file, but the include in the module
+      // rules is dynamic.
+      entry: ['babel-polyfill', './src/index.js'],
+      output: {
+        libraryTarget: 'umd',
+        filename: 'ml5.js',
+        library: 'ml5',
+      },
+      module: {
+        rules: [
+          {
+            enforce: 'pre',
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'eslint-loader',
+          },
+          {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            include: require('path').resolve(__dirname, 'src'),
+          },
+        ],
+      },
+      // Don't minify the webpack build for better stack traces
+      optimization: {
+        minimize: false,
+      },
     },
     webpackMiddleware: {
-      // webpack-dev-middleware configuration
-      // i. e.
+      noInfo: true,
       stats: 'errors-only',
     },
-    // test results reporter to use
-    // possible values: 'dots', 'progress'
-    // available reporters: https://npmjs.org/browse/keyword/karma-reporter
+    browserStack: {
+      username: process.env.BROWSERSTACK_USERNAME,
+      accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+    },
+    captureTimeout: 120000,
+    reportSlowerThan: 500,
+    browserNoActivityTimeout: 180000,
+    customLaunchers: {
+      bs_chrome_mac: {
+        base: 'BrowserStack',
+        browser: 'chrome',
+        browser_version: 'latest',
+        os: 'OS X',
+        os_version: 'High Sierra'
+      },
+    },
     reporters: ['progress'],
-    // web server port
     port: 9876,
-    // enable / disable colors in the output (reporters and logs)
     colors: true,
-    // level of logging
-    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
-    // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-    // start these browsers
-    // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    // browsers: ['Chrome', 'Firefox', 'Safari'],
     browsers: ['Chrome'],
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
     singleRun: false,
-    // Concurrency level
-    // how many browser should be started simultaneous
-    concurrency: Infinity,
+    concurrency: Infinity
   });
 };

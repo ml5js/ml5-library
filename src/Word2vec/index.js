@@ -34,20 +34,30 @@ class Word2Vec {
       });
   }
 
+  dispose() {
+    Object.values(this.model).forEach(x => x.dispose());
+  }
+
   add(inputs, max = 1) {
-    const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-    return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
+    return tf.tidy(() => {
+      const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
+      return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
+    });
   }
 
   subtract(inputs, max = 1) {
-    const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
-    return Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
+    return tf.tidy(() => {
+      const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
+      return Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
+    });
   }
 
   average(inputs, max = 1) {
-    const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-    const avg = tf.div(sum, tf.tensor(inputs.length));
-    return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
+    return tf.tidy(() => {
+      const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
+      const avg = tf.div(sum, tf.tensor(inputs.length));
+      return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
+    });
   }
 
   nearest(input, max = 10) {
@@ -64,41 +74,43 @@ class Word2Vec {
   }
 
   static addOrSubtract(model, values, operation) {
-    const vectors = [];
-    const notFound = [];
-    if (values.length < 2) {
-      throw new Error('Invalid input, must be passed more than 1 value');
-    }
-    values.forEach((value) => {
-      const vector = model[value];
-      if (!vector) {
-        notFound.push(value);
-      } else {
-        vectors.push(vector);
+    return tf.tidy(() => {
+      const vectors = [];
+      const notFound = [];
+      if (values.length < 2) {
+        throw new Error('Invalid input, must be passed more than 1 value');
       }
-    });
+      values.forEach((value) => {
+        const vector = model[value];
+        if (!vector) {
+          notFound.push(value);
+        } else {
+          vectors.push(vector);
+        }
+      });
 
-    if (notFound.length > 0) {
-      throw new Error(`Invalid input, vector not found for: ${notFound.toString()}`);
-    }
-    let result = vectors[0];
-    if (operation === 'ADD') {
-      for (let i = 1; i < vectors.length; i += 1) {
-        result = tf.add(result, vectors[i]);
+      if (notFound.length > 0) {
+        throw new Error(`Invalid input, vector not found for: ${notFound.toString()}`);
       }
-    } else {
-      for (let i = 1; i < vectors.length; i += 1) {
-        result = tf.sub(result, vectors[i]);
+      let result = vectors[0];
+      if (operation === 'ADD') {
+        for (let i = 1; i < vectors.length; i += 1) {
+          result = tf.add(result, vectors[i]);
+        }
+      } else {
+        for (let i = 1; i < vectors.length; i += 1) {
+          result = tf.sub(result, vectors[i]);
+        }
       }
-    }
-    return result;
+      return result;
+    });
   }
 
   static nearest(model, input, start, max) {
     const nearestVectors = [];
-    Object.keys(model).forEach((vector) => {
-      const distance = tf.util.distSquared(input.dataSync(), model[vector].dataSync());
-      nearestVectors.push({ vector, distance });
+    Object.keys(model).forEach((word) => {
+      const distance = tf.util.distSquared(input.dataSync(), model[word].dataSync());
+      nearestVectors.push({ word, distance });
     });
     nearestVectors.sort((a, b) => a.distance - b.distance);
     return nearestVectors.slice(start, max);
