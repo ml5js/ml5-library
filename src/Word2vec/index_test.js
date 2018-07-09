@@ -1,5 +1,5 @@
 /* eslint no-loop-func: 0 */
-const { tf, word2vec } = ml5;
+const { word2vec } = ml5;
 
 const URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/wordvecs/common-english/wordvecs1000.json';
 
