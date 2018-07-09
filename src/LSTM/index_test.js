@@ -1,21 +1,23 @@
-/* eslint new-cap: 0 */
+const { LSTMGenerator } = ml5;
 
-// import LSTMGenerator from './index';
+const LSTM_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/lstm/woolf/';
+const LSTM_MODEL_DEFAULTS = {
+  cellsAmount: 2,
+  vocabSize: 90,
+  firstChar: 61,
+};
 
-describe('LSTM', () => {
-  // let generator;
+describe('LSTMGenerator', () => {
+  let lstm;
 
-  // beforeEach(async () => {
-  //   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  //   generator = await LSTMGenerator('https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/lstm/dubois/');
-  // });
+  beforeEach(async () => {
+    // This never resolves.
+    // lstm = await LSTMGenerator(LSTM_MODEL_URL);
+  });
 
-  // it('instantiates a generator', () => {
-  //   expect(generator).toBeTruthy();
-  // });
-
-  // Fails with 'must be a Tensor' error that's particular to this test suite.
-  // it('generates some text', async () => {
-  //   expect(await generator.generate('Hi there')).toBeTruthy();
-  // });
+  it('instantiates a lstm generator', () => {
+    // expect(lstm.cellsAmount).toBe(LSTM_MODEL_DEFAULTS.cellsAmount);
+    // expect(lstm.vocabSize).toBe(DEFAULTS.vocabSize);
+    // expect(lstm.vocab[0]).toBe(DEFAULTS.firstChar);
+  });
 });

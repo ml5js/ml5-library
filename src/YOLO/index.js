@@ -44,7 +44,7 @@ class YOLOBase extends Video {
     this.modelReady = false;
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
-    this.then = this.ready.then;
+    // this.then = this.ready.then;
   }
 
   async loadModel() {
@@ -75,7 +75,7 @@ class YOLOBase extends Video {
     await tf.nextFrame();
     this.isPredicting = true;
     const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
-      const input = imgToTensor(imgToPredict);
+      const input = imgToTensor(imgToPredict, [imageSize, imageSize]);
       const activation = this.model.predict(input);
       const [boxXY, boxWH, bConfidence, bClassProbs] = head(activation, ANCHORS, 80);
       const aBoxes = boxesToCorners(boxXY, boxWH);
