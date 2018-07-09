@@ -1,4 +1,7 @@
-/* eslint new-cap: 0 */
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
 
 const { YOLO } = ml5;
 
