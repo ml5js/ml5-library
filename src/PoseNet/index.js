@@ -35,7 +35,7 @@ class PoseNet extends EventEmitter {
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.ready = callCallback(this.load(), callback);
-    this.then = this.ready.then;
+    // this.then = this.ready.then;
   }
 
   async load() {
@@ -70,8 +70,12 @@ class PoseNet extends EventEmitter {
     }
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
-    this.emit('pose', [{ pose, skeleton: this.skeleton(pose.keypoints) }]);
-    return tf.nextFrame().then(() => this.singlePose());
+    const result = [{ pose, skeleton: this.skeleton(pose.keypoints) }];
+    this.emit('pose', result);
+    if (this.video) {
+      return tf.nextFrame().then(() => this.singlePose());
+    }
+    return result;
   }
 
   async multiPose(inputOr) {
@@ -88,7 +92,10 @@ class PoseNet extends EventEmitter {
     const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
     this.emit('pose', result);
-    return tf.nextFrame().then(() => this.multiPose());
+    if (this.video) {
+      return tf.nextFrame().then(() => this.multiPose());
+    }
+    return result;
   }
 }
 
