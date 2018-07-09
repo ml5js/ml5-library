@@ -13,7 +13,7 @@ const DEFAULTS = {
   version: 1,
 };
 
-describe('Create an image classifier', () => {
+describe('imageClassifier', () => {
   let classifier;
 
   beforeEach(async () => {
@@ -28,12 +28,14 @@ describe('Create an image classifier', () => {
     expect(classifier.ready).toBeTruthy();
   });
 
-  it('Should classify an robin, American robin, Turdus migratorius', async () => {
-    const img = new Image();
-    img.crossOrigin = '';
-    img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-    await new Promise((resolve) => { img.onload = resolve; });
-    classifier.predict(img)
-      .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+  describe('predict', () => {
+    it('Should classify an image of a Robin', async () => {
+      const img = new Image();
+      img.crossOrigin = '';
+      img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
+      await new Promise((resolve) => { img.onload = resolve; });
+      classifier.predict(img)
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
   });
 });

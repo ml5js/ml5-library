@@ -1,7 +1,7 @@
 /* eslint no-loop-func: 0 */
 const { word2vec } = ml5;
 
-const URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/wordvecs/common-english/wordvecs1000.json';
+const W2V_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/wordvecs/common-english/wordvecs1000.json';
 
 describe('word2vec', () => {
   let word2vecInstance;
@@ -10,7 +10,7 @@ describe('word2vec', () => {
   beforeAll((done) => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     numTensorsBeforeAll = tf.memory().numTensors;
-    word2vecInstance = word2vec(URL, done);
+    word2vecInstance = word2vec(W2V_MODEL_URL, done);
   });
 
   afterAll(() => {

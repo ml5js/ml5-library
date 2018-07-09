@@ -30,8 +30,9 @@ class LSTM {
       length: 20,
       temperature: 0.5,
     };
+
     this.ready = callCallback(this.loadCheckpoints(model), callback);
-    this.then = this.ready.then.bind(this.ready);
+    // this.then = this.ready.then.bind(this.ready);
   }
 
   async loadCheckpoints(path) {
@@ -59,9 +60,10 @@ class LSTM {
     return this;
   }
 
-  async loadVocab(file) {
-    const json = await fetch(`${file}/vocab.json`)
-      .then(response => response.json());
+  async loadVocab(path) {
+    const json = await fetch(`${path}/vocab.json`)
+      .then(response => response.json())
+      .catch(err => console.error(err));
     this.vocab = json;
     this.vocabSize = Object.keys(json).length;
   }
