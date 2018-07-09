@@ -23,7 +23,7 @@ import {
   ANCHORS,
 } from './postprocess';
 
-const URL = 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json';
+const URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/YOLO/model.json';
 
 const DEFAULTS = {
   filterBoxesThreshold: 0.01,
