@@ -14,7 +14,7 @@ const STYLE_TRANSFER_DEFAULTS = {
 describe('styleTransfer', () => {
   let style;
 
-  async function getRobin() {
+  async function getImage() {
     const img = new Image();
     img.crossOrigin = '';
     img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
@@ -33,7 +33,7 @@ describe('styleTransfer', () => {
 
   it('styles an image', async () => {
     // Same as with LSTM. There's an issue with the checkpoint loader
-    // const image = await getRobin();
+    // const image = await getImage();
     // const transfer = await style.transfer(image);
     // console.log(transfer);
     // expect(transfer).toBe('bird');
