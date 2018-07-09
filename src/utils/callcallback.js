@@ -12,6 +12,7 @@ export default function callCallback(promise, callback) {
       })
       .catch((error) => {
         callback(error);
+        return error;
       });
   }
   return promise;
