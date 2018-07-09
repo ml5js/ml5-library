@@ -1,3 +1,8 @@
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 /* eslint no-loop-func: 0 */
 const { word2vec } = ml5;
 

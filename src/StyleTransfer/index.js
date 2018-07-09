@@ -26,7 +26,7 @@ class StyleTransfer extends Video {
     this.epsilonScalar = tf.scalar(1e-3);
     this.video = null;
     this.ready = callCallback(this.load(model), callback);
-    this.then = this.ready.then;
+    // this.then = this.ready.then;
   }
 
   async load(model) {
