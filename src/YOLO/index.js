@@ -3,12 +3,10 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 /* eslint max-len: ["error", { "code": 180 }] */
-
 /*
 YOLO Object detection
 Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: modeldepot.io)
 */
-
 import * as tf from "@tensorflow/tfjs";
 import CLASS_NAMES from "./../utils/COCO_CLASSES";
 
@@ -16,16 +14,15 @@ const DEFAULTS = {
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
-  URL:  "https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json"
+  URL:
+    "https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json"
 };
 
 class YOLO {
   constructor(options) {
-    this.filterBoxesThreshold =
-      options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
+    this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
-    this.classProbThreshold =
-      options.classProbThreshold || DEFAULTS.classProbThreshold;
+    this.classProbThreshold =options.classProbThreshold || DEFAULTS.classProbThreshold;
     this.modelURL = options.url || DEFAULTS.URL;
     this.model = null;
     this.inputWidth = 416;
@@ -112,11 +109,10 @@ class YOLO {
     let img = tf.fromPixels(input);
     this.imgWidth = img.shape[1];
     this.imgHeight = img.shape[0];
-    img = tf.image
-      .resizeBilinear(img, [this.inputHeight, this.inputWidth])
-      .toFloat()
-      .div(tf.scalar(255))
-      .expandDims(0);
+    img = tf.image.resizeBilinear(img, [this.inputHeight, this.inputWidth])
+                  .toFloat()
+                  .div(tf.scalar(255))
+                  .expandDims(0);
     //Scale Stuff
     this.scaleX = this.imgHeight / this.inputHeight;
     this.scaleY = this.imgWidth / this.inputWidth;
@@ -124,42 +120,29 @@ class YOLO {
   }
 
   async postProccess(rawPrediction) {
-    let results = { totalDetections: 0, detections: [] };
+    let results = {
+      totalDetections: 0,
+      detections: []
+    };
 
     const [boxes, boxScores, classes, Indices] = tf.tidy(() => {
-      rawPrediction = tf.reshape(rawPrediction, [
-        13,
-        13,
-        this.anchorsLength,
-        this.classesLength + 5
-      ]);
+      rawPrediction = tf.reshape(rawPrediction, [13,13,this.anchorsLength,this.classesLength + 5]);
       // Box Coords
-      let BoxXY = tf.sigmoid(
-        rawPrediction.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2])
-      );
-      let BoxWH = tf.exp(
-        rawPrediction.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2])
-      );
+      let BoxXY = tf.sigmoid(rawPrediction.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
+      let BoxWH = tf.exp(rawPrediction.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
       // ObjectnessScore
-      let BoxConfidence = tf.sigmoid(
-        rawPrediction.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1])
-      );
+      let BoxConfidence = tf.sigmoid(rawPrediction.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
       // ClassProb
-      let BoxClassProbs = tf.softmax(
-        rawPrediction.slice(
-          [0, 0, 0, 5],
-          [13, 13, this.anchorsLength, this.classesLength]
-        )
-      );
+      let BoxClassProbs = tf.softmax(rawPrediction.slice([0, 0, 0, 5],[13, 13, this.anchorsLength, this.classesLength]));
 
       // from boxes with xy wh to x1,y1 x2,y2
       // Mainly for NMS + rescaling
       /*
-      x1 = x + (h/2)
-      y1 = y - (w/2)
-      x2 = x - (h/2)
-      y2 = y + (w/2)
-      */
+            x1 = x + (h/2)
+            y1 = y - (w/2)
+            x2 = x - (h/2)
+            y2 = y + (w/2)
+            */
       // BoxScale
       BoxXY = tf.div(tf.add(BoxXY, this.ConvIndex), this.ConvDims);
 
@@ -180,9 +163,7 @@ class YOLO {
             BoxMins.slice([0, 0, 0, 0], Size),
             BoxMaxes.slice([0, 0, 0, 1], Size),
             BoxMaxes.slice([0, 0, 0, 0], Size)
-          ],
-          3
-        )
+          ],3)
         .reshape([845, 4]);
 
       // Filterboxes by objectness threshold
@@ -254,16 +235,7 @@ class YOLO {
     let zipped = [];
     for (let i = 0; i < scoreArr.length; i++) {
       // [Score,x,y,w,h,classindex]
-      zipped.push([
-        scoreArr[i],
-        [
-          boxArr[4 * i],
-          boxArr[4 * i + 1],
-          boxArr[4 * i + 2],
-          boxArr[4 * i + 3]
-        ],
-        classesArr[i]
-      ]);
+      zipped.push([scoreArr[i],[boxArr[4 * i],boxArr[4 * i + 1],boxArr[4 * i + 2],boxArr[4 * i + 3]],classesArr[i]]);
     }
 
     // Sort by descending order of scores (first index of zipped array)
@@ -275,18 +247,10 @@ class YOLO {
       let Push = true;
       for (let i = 0; i < selectedBoxes.length; i++) {
         // Compare IoU of zipped[1], since that is the box coordinates arr
-        let w =
-          Math.min(box[1][3], selectedBoxes[i][1][3]) -
-          Math.max(box[1][1], selectedBoxes[i][1][1]);
-        let h =
-          Math.min(box[1][2], selectedBoxes[i][1][2]) -
-          Math.max(box[1][0], selectedBoxes[i][1][0]);
+        let w =Math.min(box[1][3], selectedBoxes[i][1][3]) -Math.max(box[1][1], selectedBoxes[i][1][1]);
+        let h =Math.min(box[1][2], selectedBoxes[i][1][2]) -Math.max(box[1][0], selectedBoxes[i][1][0]);
         let Intersection = w < 0 || h < 0 ? 0 : w * h;
-        let Union =
-          (box[1][3] - box[1][1]) * (box[1][2] - box[1][0]) +
-          (selectedBoxes[i][1][3] - selectedBoxes[i][1][1]) *
-            (selectedBoxes[i][1][2] - selectedBoxes[i][1][0]) -
-          Intersection;
+        let Union = (box[1][3] - box[1][1]) * (box[1][2] - box[1][0]) + (selectedBoxes[i][1][3] - selectedBoxes[i][1][1]) * (selectedBoxes[i][1][2] - selectedBoxes[i][1][0]) - Intersection;
         let Iou = Intersection / Union;
         if (Iou > this.IOUThreshold) {
           Push = false;
