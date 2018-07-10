@@ -1,15 +1,16 @@
-/* eslint new-cap: 0 */
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
 
-// import StyleTransfer from './index';
-// describe('StyleTransfer', () => {
-//   let transferer;
-// 
-//   beforeEach(async () => {
-//     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-//     transferer = await StyleTransfer('Crepe', {}, new Image());
-//   });
-// 
-//   it('instantiates a classifier', () => {
-//     expect(transferer).toBeTruthy();
-//   });
-// });
+const { pitchDetection } = ml5;
+
+describe('pitchDetection', () => {
+  let pitch;
+
+  // beforeAll(async () => {
+  // });
+
+  // it('instantiates a pitchDetection', async () => {
+  // });
+});

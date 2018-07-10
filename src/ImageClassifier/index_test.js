@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { tf, imageClassifier } = ml5;
+const { imageClassifier } = ml5;
 
 const DEFAULTS = {
   learningRate: 0.0001,
@@ -19,8 +19,16 @@ const DEFAULTS = {
 describe('imageClassifier', () => {
   let classifier;
 
+  async function getImage() {
+    const img = new Image();
+    img.crossOrigin = true;
+    img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
+    await new Promise((resolve) => { img.onload = resolve; });
+    return img;
+  }
+
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     classifier = await imageClassifier('MobileNet', undefined, {});
   });
 
@@ -33,12 +41,10 @@ describe('imageClassifier', () => {
 
   describe('predict', () => {
     it('Should classify an image of a Robin', async () => {
-      const img = new Image();
-      img.crossOrigin = '';
-      img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-      await new Promise((resolve) => { img.onload = resolve; });
-      classifier.predict(img)
+      const img = await getImage();
+      await classifier.predict(img)
         .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
     });
   });
 });
+

@@ -46,16 +46,16 @@ class ImageClassifier {
     await this.ready;
     await tf.nextFrame();
 
-    if (this.video) {
-      this.addedListener = true;
-      await new Promise(resolve => this.video.addEventListener('onloadstart', resolve));
+    if (this.video && this.video.readyState === 0) {
+      await new Promise((resolve) => {
+        this.video.onloadeddata = () => resolve();
+      });
     }
-
     return this.model.classify(imgToPredict, numberOfClasses);
   }
 
   async predict(inputNumOrCallback, numOrCallback = null, cb) {
-    let imgToPredict;
+    let imgToPredict = this.video;
     let numberOfClasses = this.topk;
     let callback;
 
@@ -73,7 +73,7 @@ class ImageClassifier {
     }
 
     if (typeof numOrCallback === 'number') {
-      numberOfClasses = inputNumOrCallback;
+      numberOfClasses = numOrCallback;
     } else if (typeof numOrCallback === 'function') {
       callback = numOrCallback;
     }

@@ -29,7 +29,6 @@ describe('PoseNet', () => {
   beforeAll(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     net = await poseNet();
-    console.log(net);
   });
 
   it('instantiates poseNet', () => {

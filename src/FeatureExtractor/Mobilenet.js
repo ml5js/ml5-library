@@ -41,7 +41,7 @@ class Mobilenet {
     this.mapStringToIndex = [];
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
-    this.then = this.ready.then;
+    // this.then = this.ready.then;
   }
 
   async loadModel() {
@@ -56,12 +56,18 @@ class Mobilenet {
 
   classification(video, callback) {
     this.usageType = 'classifier';
-    return callCallback(this.loadVideo(video), callback);
+    if (video) {
+      callCallback(this.loadVideo(video), callback);
+    }
+    return this;
   }
 
   regression(video, callback) {
     this.usageType = 'regressor';
-    return callCallback(this.loadVideo(video), callback);
+    if (video) {
+      callCallback(this.loadVideo(video), callback);
+    }
+    return this;
   }
 
   async loadVideo(video) {
@@ -70,7 +76,7 @@ class Mobilenet {
     if (video instanceof HTMLVideoElement) {
       inputVideo = video;
     } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
-      inputVideo = video.elt;
+      inputVideo = video.elt; // p5.js video element
     }
 
     if (inputVideo) {
@@ -231,10 +237,10 @@ class Mobilenet {
   }
 
   async classifyInternal(imgToPredict) {
-    if (this.usageType === 'classifier') {
+    if (this.usageType !== 'classifier') {
       throw new Error('Mobilenet Feature Extraction has not been set to be a classifier.');
     }
-
+    await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
       const processedImg = imgToTensor(imgToPredict);
@@ -243,7 +249,6 @@ class Mobilenet {
       return predictions.as1D().argMax();
     });
     let classId = (await predictedClass.data())[0];
-    await tf.nextFrame();
     if (this.mapStringToIndex.length > 0) {
       classId = this.mapStringToIndex[classId];
     }
@@ -273,7 +278,7 @@ class Mobilenet {
     if (this.usageType !== 'regressor') {
       throw new Error('Mobilenet Feature Extraction has not been set to be a regressor.');
     }
-
+    await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
       const processedImg = imgToTensor(imgToPredict);
@@ -283,7 +288,6 @@ class Mobilenet {
     });
     const prediction = await predictedClass.data();
     predictedClass.dispose();
-    await tf.nextFrame();
     return prediction[0];
   }
 
