@@ -9,12 +9,13 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 import * as tf from '@tensorflow/tfjs';
 import CLASS_NAMES from './../utils/COCO_CLASSES';
+import { iou } from './utils';
 
 const DEFAULTS = {
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
-  URL: 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json'
+  URL: 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json',
 
 };
 
@@ -92,7 +93,7 @@ class YOLO {
     }
   }
 
-  //does not dispose of the model atm
+  // does not dispose of the model atm
   dispose() {
     this.model = null;
     tf.disposeconstiables();
@@ -102,17 +103,17 @@ class YOLO {
   cache() {
     tf.tidy(() => {
       const dummy = tf.zeros([0, 416, 416, 3]);
-      const data = this.model.predict(dummy);
+      this.model.predict(dummy);
     });
   }
 
   preProccess(input) {
     let img = tf.fromPixels(input);
+
     this.imgWidth = img.shape[1];
     this.imgHeight = img.shape[0];
+
     img = tf.image.resizeBilinear(img, [this.inputHeight, this.inputWidth]).toFloat().div(tf.scalar(255)).expandDims(0);
-
-
 
     // Scale Stuff
     this.scaleX = this.imgHeight / this.inputHeight;
@@ -125,16 +126,15 @@ class YOLO {
       totalDetections: 0,
       detections: [],
     };
-    const [boxes, boxScores, classes, Indices,] = tf.tidy(() => {
-
-      rawPrediction = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
+    const [boxes, boxScores, classes, Indices] = tf.tidy(() => {
+      const rawPrediction1 = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
       // Box Coords
-      const boxXY = tf.sigmoid(rawPrediction.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
-      const boxWH = tf.exp(rawPrediction.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
+      const boxxy = tf.sigmoid(rawPrediction1.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
+      const boxwh = tf.exp(rawPrediction1.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
       // ObjectnessScore
-      const boxConfidence = tf.sigmoid(rawPrediction.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
+      const boxConfidence = tf.sigmoid(rawPrediction1.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
       // ClassProb
-      const boxClassProbs = tf.softmax(rawPrediction.slice([0, 0, 0, 5],[13, 13, this.anchorsLength, this.classesLength]));
+      const boxClassProbs = tf.softmax(rawPrediction1.slice([0, 0, 0, 5], [13, 13, this.anchorsLength, this.classesLength]));
 
       // from boxes with xy wh to x1,y1 x2,y2
       // Mainly for NMS + rescaling
@@ -145,43 +145,48 @@ class YOLO {
             y2 = y + (w/2)
             */
       // BoxScale
-      const BoxXY_1 = tf.div(tf.add(boxXY, this.ConvIndex), this.ConvDims);
+      const boxXY1 = tf.div(tf.add(boxxy, this.ConvIndex), this.ConvDims);
 
-      const BoxWH_1 = tf.div(tf.mul(boxWH, this.AnchorsTensor), this.ConvDims);
+      const boxWH1 = tf.div(tf.mul(boxwh, this.AnchorsTensor), this.ConvDims);
 
-      const Div = tf.div(BoxWH_1, tf.scalar(2));
+      const Div = tf.div(boxWH1, tf.scalar(2));
 
-      const boxMins = tf.sub(BoxXY_1, Div);
-      const boxMaxes = tf.add(BoxXY_1, Div);
+      const boxMins = tf.sub(boxXY1, Div);
+      const boxMaxes = tf.add(boxXY1, Div);
 
       const size = [boxMins.shape[0], boxMins.shape[1], boxMins.shape[2], 1];
 
       // main box tensor
-      const boxes = tf.concat([boxMins.slice([0, 0, 0, 1], Size), boxMins.slice([0, 0, 0, 0], size), boxMaxes.slice([0, 0, 0, 1], size), boxMaxes.slice([0, 0, 0, 0], size)], 3).reshape([845, 4]);
+      const finalboxes = tf.concat([
+        boxMins.slice([0, 0, 0, 1], size),
+        boxMins.slice([0, 0, 0, 0], size),
+        boxMaxes.slice([0, 0, 0, 1], size),
+        boxMaxes.slice([0, 0, 0, 0], size),
+      ], 3).reshape([845, 4]);
 
       // Filterboxes by objectness threshold
       // not filtering / getting a mask really
 
-      const boxConfidence_1 = boxConfidence.squeeze([3]);
-      const objectnessMask = tf.greaterEqual(boxConfidence_1,tf.scalar(this.filterBoxesThreshold));
+      const boxConfidence1 = boxConfidence.squeeze([3]);
+      const objectnessMask = tf.greaterEqual(boxConfidence1, tf.scalar(this.filterBoxesThreshold));
 
       // Filterboxes by class probability threshold
-      const boxScores = tf.mul(boxConfidence_1, tf.max(boxClassProbs, 3));
-      const boxClassProbMask = tf.greaterEqual(boxScores,tf.scalar(this.classProbThreshold));
+      const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
+      const boxClassProbMask = tf.greaterEqual(boxScores, tf.scalar(this.classProbThreshold));
 
       //  getting classes indices
-      const classes = tf.argMax(boxClassProbs, -1);
+      const classes1 = tf.argMax(boxClassProbs, -1);
 
       // Final Mask  each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
       const finalMask = boxClassProbMask.mul(objectnessMask);
 
       const indices = finalMask.flatten().toInt().mul(this.indicesTensor);
-      return [boxes, boxScores, classes, indices];
+      return [finalboxes, boxScores1, classes1, indices];
     });
 
-    //we started at one in the range so we remove 1 now
+    // we started at one in the range so we remove 1 now
 
-    let indicesArr = Array.from(await Indices.data()).filter(i => i > 0).map(i => i - 1);
+    const indicesArr = Array.from(await Indices.data()).filter(i => i > 0).map(i => i - 1);
 
     if (indicesArr.length === 0) {
       boxes.dispose();
@@ -189,34 +194,30 @@ class YOLO {
       classes.dispose();
       return results;
     }
-    const [filteredBoxes, filteredScores, filteredclasses] = tf.tidy(()=>{
-    const indicesTensor = tf.tensor1d(indicesArr, "int32");
-    const filteredBoxes = boxes.gather(indicesTensor);
-    const filteredScores = boxScores.flatten().gather(indicesTensor);
-    const filteredclasses = classes.flatten().gather(indicesTensor);
+    const [filteredBoxes, filteredScores, filteredclasses] = tf.tidy(() => {
+      const indicesTensor = tf.tensor1d(indicesArr, 'int32');
+      const filteredBoxes1 = boxes.gather(indicesTensor);
+      const filteredScores1 = boxScores.flatten().gather(indicesTensor);
+      const filteredclasses1 = classes.flatten().gather(indicesTensor);
+      // Img Rescale
+      const Height = tf.scalar(this.imgHeight);
+      const Width = tf.scalar(this.imgWidth);
+      const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
+      const filteredBoxes2 = filteredBoxes1.mul(ImageDims);
+      return [filteredBoxes2, filteredScores1, filteredclasses1];
+    });
 
-     // Img Rescale
-     const Height = tf.scalar(this.imgHeight);
-     const Width = tf.scalar(this.imgWidth);
-     const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
-     const filteredBoxes_1 = filteredBoxes.mul(ImageDims);
- 
-    return  [filteredBoxes_1, filteredScores, filteredclasses]
-  })
-
-   
     // NonMaxSuppression
     // GreedyNMS
-    const [boxArr, scoreArr, classesArr] = await Promise.all([filteredBoxes.data(), filteredScores.data(), filteredclasses.data(), ]);
-
+    const [boxArr, scoreArr, classesArr] = await Promise.all([filteredBoxes.data(), filteredScores.data(), filteredclasses.data()]);
     filteredBoxes.dispose();
     filteredScores.dispose();
     filteredclasses.dispose();
 
-    let zipped = [];
-    for (let i = 0; i < scoreArr.length; i++) {
+    const zipped = [];
+    for (let i = 0; i < scoreArr.length; i += 1) {
       // [Score,x,y,w,h,classindex]
-      zipped.push([scoreArr[i], [boxArr[4 * i], boxArr[4 * i + 1], boxArr[4 * i + 2], boxArr[4 * i + 3]], classesArr[i]]);
+      zipped.push([scoreArr[i], [boxArr[4 * i], boxArr[(4 * i) + 1], boxArr[(4 * i) + 2], boxArr[(4 * i) + 3]], classesArr[i]]);
     }
 
     // Sort by descending order of scores (first index of zipped array)
@@ -224,15 +225,11 @@ class YOLO {
     const selectedBoxes = [];
     // Greedily go through boxes in descending score order and only
     // return boxes that are below the IoU threshold.
-    sorted.forEach(box => {
+    sorted.forEach((box) => {
       let Push = true;
-      for (let i = 0; i < selectedBoxes.length; i++) {
+      for (let i = 0; i < selectedBoxes.length; i += 1) {
         // Compare IoU of zipped[1], since that is the box coordinates arr
-        let w =Math.min(box[1][3], selectedBoxes[i][1][3]) - Math.max(box[1][1], selectedBoxes[i][1][1]);
-        let h =Math.min(box[1][2], selectedBoxes[i][1][2]) - Math.max(box[1][0], selectedBoxes[i][1][0]);
-        let Intersection = w < 0 || h < 0 ? 0 : w * h;
-        let Union = (box[1][3] - box[1][1]) * (box[1][2] - box[1][0]) + (selectedBoxes[i][1][3] - selectedBoxes[i][1][1]) * (selectedBoxes[i][1][2] - selectedBoxes[i][1][0]) - Intersection;
-        let Iou = Intersection / Union;
+        const Iou = iou(box[1], selectedBoxes[i]);
         if (Iou > this.IOUThreshold) {
           Push = false;
           break;
@@ -244,7 +241,7 @@ class YOLO {
     // final phase
 
     // add any output you want
-    for (let id = 0; id < selectedBoxes.length; id++) {
+    for (let id = 0; id < selectedBoxes.length; id += 1) {
       const classProb = selectedBoxes[id][0];
       const classProbRounded = Math.round(classProb * 1000) / 10;
       const className = this.classNames[selectedBoxes[id][2]];
@@ -252,7 +249,17 @@ class YOLO {
       const [x1, y1, x2, y2] = selectedBoxes[id][1];
       // Need to get this out
       // TODO :  add a hsla color for later visualization
-      const resultObj = {id, className, classIndex, classProb, classProbRounded, x1, y1, x2, y2, };
+      const resultObj = {
+        id,
+        className,
+        classIndex,
+        classProb,
+        classProbRounded,
+        x1,
+        y1,
+        x2,
+        y2,
+      };
       results.detections.push(resultObj);
     }
     // Misc
