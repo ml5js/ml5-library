@@ -49,7 +49,7 @@ class Word2Vec {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
       const result = Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
       if (callback) {
-        callback(result);
+        callback(undefined, result);
       }
       return result;
     });
@@ -63,7 +63,7 @@ class Word2Vec {
       const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
       const result = Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
       if (callback) {
-        callback(result);
+        callback(undefined, result);
       }
       return result;
     });
@@ -78,7 +78,7 @@ class Word2Vec {
       const avg = tf.div(sum, tf.tensor(inputs.length));
       const result = Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
       if (callback) {
-        callback(result);
+        callback(undefined, result);
       }
       return result;
     });
@@ -97,7 +97,7 @@ class Word2Vec {
     }
 
     if (callback) {
-      callback(result);
+      callback(undefined, result);
     }
     return result;
   }
@@ -107,7 +107,7 @@ class Word2Vec {
     const words = Object.keys(this.model);
     const result = words[Math.floor(Math.random() * words.length)];
     if (callback) {
-      callback(result);
+      callback(undefined, result);
     }
     return result;
   }

@@ -48,8 +48,8 @@ class YOLOBase extends Video {
   }
 
   async loadModel() {
-    if (this.video) {
-      await this.loadVideo();
+    if (!this.video) {
+      this.video = await this.loadVideo();
     }
     this.model = await tf.loadModel(URL);
     this.modelReady = true;
@@ -57,8 +57,10 @@ class YOLOBase extends Video {
   }
 
   async detect(inputOrCallback, cb) {
+    await this.ready;
     let imgToPredict;
     let callback = cb;
+
     if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
@@ -67,12 +69,14 @@ class YOLOBase extends Video {
       imgToPredict = this.video;
       callback = inputOrCallback;
     }
+
     return callCallback(this.detectInternal(imgToPredict), callback);
   }
 
   async detectInternal(imgToPredict) {
     await this.ready;
     await tf.nextFrame();
+
     this.isPredicting = true;
     const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
       const input = imgToTensor(imgToPredict, [imageSize, imageSize]);
@@ -139,21 +143,25 @@ class YOLOBase extends Video {
   }
 }
 
-const YOLO = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
-  let callback = cb;
+const YOLO = (videoOr, optionsOr, cb) => {
+  let video = null;
   let options = {};
-  const video = videoOrOptionsOrCallback;
+  let callback = cb;
 
-  if (typeof videoOrOptionsOrCallback === 'object') {
-    options = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === 'function') {
-    callback = videoOrOptionsOrCallback;
+  if (videoOr instanceof HTMLVideoElement) {
+    video = videoOr;
+  } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
+    video = videoOr.elt; // Handle p5.js image
+  } else if (typeof videoOr === 'function') {
+    callback = videoOr;
+  } else if (typeof videoOr === 'object') {
+    options = videoOr;
   }
 
-  if (typeof optionsOrCallback === 'object') {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
+  if (typeof optionsOr === 'object') {
+    options = optionsOr;
+  } else if (typeof optionsOr === 'function') {
+    callback = optionsOr;
   }
 
   return new YOLOBase(video, options, callback);
