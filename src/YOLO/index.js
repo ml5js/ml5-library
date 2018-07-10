@@ -108,17 +108,17 @@ class YOLO {
   }
 
   preProccess(input) {
-    let img = tf.fromPixels(input);
+    const img = tf.fromPixels(input);
+    const [w, h] = [img.shape[1], img.shape[0]];
+    this.imgWidth = w;
+    this.imgHeight = h;
 
-    this.imgWidth = img.shape[1];
-    this.imgHeight = img.shape[0];
-
-    img = tf.image.resizeBilinear(img, [this.inputHeight, this.inputWidth]).toFloat().div(tf.scalar(255)).expandDims(0);
+    const img1 = tf.image.resizeBilinear(img, [this.inputHeight, this.inputWidth]).toFloat().div(tf.scalar(255)).expandDims(0);
 
     // Scale Stuff
     this.scaleX = this.imgHeight / this.inputHeight;
     this.scaleY = this.imgWidth / this.inputWidth;
-    return img;
+    return img1;
   }
 
   async postProccess(rawPrediction) {
