@@ -15,14 +15,14 @@ const LSTM_MODEL_DEFAULTS = {
 describe('LSTMGenerator', () => {
   let lstm;
 
-  beforeEach(async () => {
-    // This never resolves.
+  beforeAll(async () => {
+    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
     // lstm = await LSTMGenerator(LSTM_MODEL_URL);
   });
 
-  it('instantiates a lstm generator', () => {
+  it('instantiates a lstm generator', async () => {
     // expect(lstm.cellsAmount).toBe(LSTM_MODEL_DEFAULTS.cellsAmount);
-    // expect(lstm.vocabSize).toBe(DEFAULTS.vocabSize);
-    // expect(lstm.vocab[0]).toBe(DEFAULTS.firstChar);
+    // expect(lstm.vocabSize).toBe(LSTM_MODEL_DEFAULTS.vocabSize);
+    // expect(lstm.vocab[0]).toBe(LSTM_MODEL_DEFAULTS.firstChar);
   });
 });

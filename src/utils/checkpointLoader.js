@@ -16,12 +16,22 @@ export default class CheckpointLoader {
   }
 
   async loadManifest() {
-    try {
-      this.checkpointManifest = await (await fetch(this.urlPath + MANIFEST_FILE)).json();
-    } catch (e) {
-      throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${e}`);
-    }
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', this.urlPath + MANIFEST_FILE);
+
+      xhr.onload = () => {
+        this.checkpointManifest = JSON.parse(xhr.responseText);
+        resolve();
+      };
+      xhr.onerror = (error) => {
+        reject();
+        throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${error}`);
+      };
+      xhr.send();
+    });
   }
+
 
   async getCheckpointManifest() {
     if (this.checkpointManifest == null) {

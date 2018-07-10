@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 /* eslint no-loop-func: 0 */
-const { word2vec } = ml5;
+const { tf, word2vec } = ml5;
 
 const W2V_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/wordvecs/common-english/wordvecs1000.json';
 

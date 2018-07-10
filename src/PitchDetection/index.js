@@ -13,15 +13,15 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
 class PitchDetection {
-  constructor(modelName, audioContext, stream, callback) {
-    this.modelName = modelName;
+  constructor(model, audioContext, stream, callback) {
+    this.model = model;
     this.audioContext = audioContext;
     this.stream = stream;
-    this.ready = callCallback(this.loadModel(), callback);
+    this.ready = callCallback(this.loadModel(model), callback);
   }
 
-  async loadModel() {
-    this.model = await tf.loadModel('model/model.json');
+  async loadModel(model) {
+    this.model = await tf.loadModel(`${model}/model.json`);
     await this.initAudio();
     return this;
   }
@@ -114,18 +114,6 @@ class PitchDetection {
   }
 }
 
-const pitchDetection = (modelName, context, stream) => {
-  let model;
-  if (typeof modelName === 'string') {
-    model = modelName.toLowerCase();
-  } else {
-    throw new Error('Please specify a model to use. E.g: "Crepe"');
-  }
-
-  if (model === 'crepe') {
-    return new PitchDetection(model, context, stream);
-  }
-  throw new Error(`${model} is not a valid model to use in pitchDetection()`);
-};
+const pitchDetection = (modelPath = './', context, stream, callback) => new PitchDetection(modelPath, context, stream, callback);
 
 export default pitchDetection;
