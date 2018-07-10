@@ -21,7 +21,7 @@ class Video {
     }
   }
 
-  loadVideo() {
+  async loadVideo() {
     return new Promise((resolve) => {
       this.video = document.createElement('video');
       const stream = this.videoElt.captureStream();

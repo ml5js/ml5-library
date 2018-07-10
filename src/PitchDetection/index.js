@@ -17,29 +17,24 @@ class PitchDetection {
     this.model = model;
     this.audioContext = audioContext;
     this.stream = stream;
+    this.frequency = null;
     this.ready = callCallback(this.loadModel(model), callback);
   }
 
   async loadModel(model) {
     this.model = await tf.loadModel(`${model}/model.json`);
-    await this.initAudio();
-    return this;
-  }
-
-  initAudio() {
     if (this.audioContext) {
-      try {
-        this.processStream(this.stream);
-      } catch (e) {
-        throw new Error(`Error: Could not access microphone - ${e}`);
-      }
+      await this.processStream();
     } else {
       throw new Error('Could not access microphone - getUserMedia not available');
     }
+    return this;
   }
 
-  processStream(stream) {
-    const mic = this.audioContext.createMediaStreamSource(stream);
+  async processStream() {
+    await tf.nextFrame();
+
+    const mic = this.audioContext.createMediaStreamSource(this.stream);
     const minBufferSize = (this.audioContext.sampleRate / 16000) * 1024;
     let bufferSize = 4;
     while (bufferSize < minBufferSize) bufferSize *= 2;
@@ -58,25 +53,8 @@ class PitchDetection {
     }
   }
 
-  static resample(audioBuffer, onComplete) {
-    const interpolate = (audioBuffer.sampleRate % 16000 !== 0);
-    const multiplier = audioBuffer.sampleRate / 16000;
-    const original = audioBuffer.getChannelData(0);
-    const subsamples = new Float32Array(1024);
-    for (let i = 0; i < 1024; i += 1) {
-      if (!interpolate) {
-        subsamples[i] = original[i * multiplier];
-      } else {
-        const left = Math.floor(i * multiplier);
-        const right = left + 1;
-        const p = (i * multiplier) - left;
-        subsamples[i] = (((1 - p) * original[left]) + (p * original[right]));
-      }
-    }
-    onComplete(subsamples);
-  }
-
-  processMicrophoneBuffer(event) {
+  async processMicrophoneBuffer(event) {
+    await tf.nextFrame();
     this.results = {};
     const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
     PitchDetection.resample(event.inputBuffer, (resampled) => {
@@ -103,14 +81,38 @@ class PitchDetection {
         const predictedCent = productSum / weightSum;
         const predictedHz = 10 * ((predictedCent / 1200.0) ** 2);
 
-        const result = (confidence > 0.5) ? `${predictedHz.toFixed(3)} +  Hz` : 'no voice';
-        this.results.result = result;
+        const frequency = (confidence > 0.5) ? predictedHz : null;
+        this.frequency = frequency;
       });
     });
   }
 
-  getResults() {
-    return this.results;
+  async getPitch(callback) {
+    await this.ready;
+    await tf.nextFrame();
+    const { frequency } = this;
+    if (callback) {
+      callback(undefined, frequency);
+    }
+    return frequency;
+  }
+
+  static resample(audioBuffer, onComplete) {
+    const interpolate = (audioBuffer.sampleRate % 16000 !== 0);
+    const multiplier = audioBuffer.sampleRate / 16000;
+    const original = audioBuffer.getChannelData(0);
+    const subsamples = new Float32Array(1024);
+    for (let i = 0; i < 1024; i += 1) {
+      if (!interpolate) {
+        subsamples[i] = original[i * multiplier];
+      } else {
+        const left = Math.floor(i * multiplier);
+        const right = left + 1;
+        const p = (i * multiplier) - left;
+        subsamples[i] = (((1 - p) * original[left]) + (p * original[right]));
+      }
+    }
+    onComplete(subsamples);
   }
 }
 

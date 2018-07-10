@@ -39,16 +39,18 @@ class PoseNet extends EventEmitter {
   }
 
   async load() {
-    const net = await posenet.load(this.multiplier);
-    this.net = net;
-    if (this.video) {
+    this.net = await posenet.load(this.multiplier);
+
+    if (this.video && this.video.readyState === 0) {
       await new Promise((resolve) => {
-        this.video.onplay = resolve;
+        this.video.onloadeddata = () => resolve();
       });
+
       if (this.detectionType === 'single') {
-        return this.singlePose();
+        this.singlePose();
       }
-      return this.multiPose();
+
+      this.multiPose();
     }
     return this;
   }
@@ -65,7 +67,7 @@ class PoseNet extends EventEmitter {
       input = inputOr;
     } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
       input = inputOr.elt; // Handle p5.js image and video
-    } else if (typeof inputOr === 'function' && this.video) {
+    } else {
       input = this.video;
     }
 
@@ -85,7 +87,7 @@ class PoseNet extends EventEmitter {
       input = inputOr;
     } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
       input = inputOr.elt; // Handle p5.js image and video
-    } else if (typeof inputOr === 'function' && this.video) {
+    } else {
       input = this.video;
     }
 
