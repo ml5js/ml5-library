@@ -41,11 +41,12 @@ class PoseNet extends EventEmitter {
   async load() {
     this.net = await posenet.load(this.multiplier);
 
-    if (this.video && this.video.readyState === 0) {
-      await new Promise((resolve) => {
-        this.video.onloadeddata = () => resolve();
-      });
-
+    if (this.video) {
+      if (this.video.readyState === 0) {
+        await new Promise((resolve) => {
+          this.video.onloadeddata = () => resolve();
+        });
+      }
       if (this.detectionType === 'single') {
         this.singlePose();
       }
