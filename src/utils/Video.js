@@ -21,7 +21,7 @@ class Video {
     }
   }
 
-  loadVideo() {
+  async loadVideo() {
     return new Promise((resolve) => {
       this.video = document.createElement('video');
       const stream = this.videoElt.captureStream();
@@ -34,7 +34,7 @@ class Video {
       const playPromise = this.video.play();
       if (playPromise !== undefined) {
         playPromise.then(() => {
-          resolve();
+          resolve(this.video);
         });
       }
     });
