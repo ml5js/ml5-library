@@ -7,7 +7,7 @@ export default class CheckpointLoaderPix2pix {
     this.urlPath = urlPath;
   }
 
-  fetchWeights() {
+  getAllVariables() {
     return new Promise((resolve, reject) => {
       const weightsCache = {};
       if (this.urlPath in weightsCache) {
