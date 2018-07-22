@@ -8,69 +8,120 @@ Word2Vec
 */
 
 import * as tf from '@tensorflow/tfjs';
+import callCallback from '../utils/callcallback';
+
 
 class Word2Vec {
-  constructor(model, callback) {
-    this.ready = false;
+  constructor(modelPath, callback) {
     this.model = {};
+    this.modelPath = modelPath;
     this.modelSize = 0;
-    this.loadModel(model, callback);
+    this.modelLoaded = false;
+
+    this.ready = callCallback(this.loadModel(), callback);
+    // TODO: Add support to Promise
+    // this.then = this.ready.then.bind(this.ready);
   }
 
-  loadModel(file, callback) {
-    fetch(file)
-      .then(response => response.json())
-      .then((json) => {
-        Object.keys(json.vectors).forEach((word) => {
-          this.model[word] = tf.tensor1d(json.vectors[word]);
-        });
-        this.modelSize = Object.keys(json).length;
-        this.ready = true;
-        if (callback) {
-          callback();
-        }
-      }).catch((error) => {
-        console.error(`There has been a problem loading the vocab: ${error.message}`);
-      });
+  async loadModel() {
+    const json = await fetch(this.modelPath)
+      .then(response => response.json());
+    Object.keys(json.vectors).forEach((word) => {
+      this.model[word] = tf.tensor1d(json.vectors[word]);
+    });
+    this.modelSize = Object.keys(this.model).length;
+    this.modelLoaded = true;
+    return this;
   }
 
-  dispose() {
+  dispose(callback) {
     Object.values(this.model).forEach(x => x.dispose());
+    if (callback) {
+      callback();
+    }
   }
 
-  add(inputs, max = 1) {
+  async add(inputs, maxOrCb, cb) {
+    const { max, callback } = Word2Vec.parser(maxOrCb, cb, 10);
+
+    await this.ready;
     return tf.tidy(() => {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
-      return Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
+      const result = Word2Vec.nearest(this.model, sum, inputs.length, inputs.length + max);
+      if (callback) {
+        callback(undefined, result);
+      }
+      return result;
     });
   }
 
-  subtract(inputs, max = 1) {
+  async subtract(inputs, maxOrCb, cb) {
+    const { max, callback } = Word2Vec.parser(maxOrCb, cb, 10);
+
+    await this.ready;
     return tf.tidy(() => {
       const subtraction = Word2Vec.addOrSubtract(this.model, inputs, 'SUBTRACT');
-      return Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
+      const result = Word2Vec.nearest(this.model, subtraction, inputs.length, inputs.length + max);
+      if (callback) {
+        callback(undefined, result);
+      }
+      return result;
     });
   }
 
-  average(inputs, max = 1) {
+  async average(inputs, maxOrCb, cb) {
+    const { max, callback } = Word2Vec.parser(maxOrCb, cb, 10);
+
+    await this.ready;
     return tf.tidy(() => {
       const sum = Word2Vec.addOrSubtract(this.model, inputs, 'ADD');
       const avg = tf.div(sum, tf.tensor(inputs.length));
-      return Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
+      const result = Word2Vec.nearest(this.model, avg, inputs.length, inputs.length + max);
+      if (callback) {
+        callback(undefined, result);
+      }
+      return result;
     });
   }
 
-  nearest(input, max = 10) {
+  async nearest(input, maxOrCb, cb) {
+    const { max, callback } = Word2Vec.parser(maxOrCb, cb, 10);
+
+    await this.ready;
     const vector = this.model[input];
-    if (!vector) {
-      return null;
+    let result;
+    if (vector) {
+      result = Word2Vec.nearest(this.model, vector, 1, max + 1);
+    } else {
+      result = null;
     }
-    return Word2Vec.nearest(this.model, vector, 1, max + 1);
+
+    if (callback) {
+      callback(undefined, result);
+    }
+    return result;
   }
 
-  getRandomWord() {
+  async getRandomWord(callback) {
+    await this.ready;
     const words = Object.keys(this.model);
-    return words[Math.floor(Math.random() * words.length)];
+    const result = words[Math.floor(Math.random() * words.length)];
+    if (callback) {
+      callback(undefined, result);
+    }
+    return result;
+  }
+
+  static parser(maxOrCallback, cb, defaultMax) {
+    let max = defaultMax;
+    let callback = cb;
+
+    if (typeof maxOrCallback === 'function') {
+      callback = maxOrCallback;
+    } else if (typeof maxOrCallback === 'number') {
+      max = maxOrCallback;
+    }
+    return { max, callback };
   }
 
   static addOrSubtract(model, values, operation) {
@@ -117,6 +168,6 @@ class Word2Vec {
   }
 }
 
-const word2vec = (model, cb = () => {}) => new Word2Vec(model, cb);
+const word2vec = (model, cb) => new Word2Vec(model, cb);
 
 export default word2vec;

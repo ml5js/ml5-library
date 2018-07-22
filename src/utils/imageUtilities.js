@@ -62,9 +62,12 @@ const cropImage = (img) => {
 };
 
 // Static Method: image to tf tensor
-function imgToTensor(input) {
+function imgToTensor(input, size = null) {
   return tf.tidy(() => {
-    const img = tf.fromPixels(input);
+    let img = tf.fromPixels(input);
+    if (size) {
+      img = tf.image.resizeBilinear(img, size);
+    }
     const croppedImage = cropImage(img);
     const batchedImage = croppedImage.expandDims(0);
     return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));

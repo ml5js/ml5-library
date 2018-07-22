@@ -1,6 +1,9 @@
-/* eslint new-cap: 0 */
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
 
-const { ImageClassifier } = ml5;
+const { imageClassifier } = ml5;
 
 const DEFAULTS = {
   learningRate: 0.0001,
@@ -8,43 +11,40 @@ const DEFAULTS = {
   epochs: 20,
   numClasses: 2,
   batchSize: 0.4,
+  topk: 3,
+  alpha: 1,
+  version: 1,
 };
 
-describe('Create an image classifier', () => {
-  // let classifier;
+describe('imageClassifier', () => {
+  let classifier;
 
-  it('true', () => {
-    expect(true).toBe(true);
+  async function getImage() {
+    const img = new Image();
+    img.crossOrigin = true;
+    img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
+    await new Promise((resolve) => { img.onload = resolve; });
+    return img;
+  }
+
+  beforeEach(async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    classifier = await imageClassifier('MobileNet', undefined, {});
   });
-  // beforeEach((done) => {
-  //   jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  //   classifier = new ImageClassifier.default('', {}, () => {
-  //     done();
-  //   });
-  // });
 
-  // it('Should create a classifier with all the defaults', () => {
-  //   expect(classifier.learningRate).toBe(DEFAULTS.learningRate);
-  //   expect(classifier.learningRate).toBe(DEFAULTS.learningRate);
-  //   expect(classifier.hiddenUnits).toBe(DEFAULTS.hiddenUnits);
-  //   expect(classifier.epochs).toBe(DEFAULTS.epochs);
-  //   expect(classifier.numClasses).toBe(DEFAULTS.numClasses);
-  //   expect(classifier.batchSize).toBe(DEFAULTS.batchSize);
-  // });
+  it('Should create a classifier with all the defaults', async () => {
+    expect(classifier.version).toBe(DEFAULTS.version);
+    expect(classifier.alpha).toBe(DEFAULTS.alpha);
+    expect(classifier.topk).toBe(DEFAULTS.topk);
+    expect(classifier.ready).toBeTruthy();
+  });
 
-  // it('Should load the model', () => {
-  //   expect(classifier.modelLoaded).toBe(true);
-  // });
-
-  // it('Should classify an image', (done) => {
-  //   const img = new Image();
-  //   img.crossOrigin = '';
-  //   img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-  //   img.onload = () => {
-  //     classifier.predict(img, (results) => {
-  //       console.log(results);
-  //     });
-  //     done();
-  //   };
-  // });
+  describe('predict', () => {
+    it('Should classify an image of a Robin', async () => {
+      const img = await getImage();
+      await classifier.predict(img)
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
+  });
 });
+
