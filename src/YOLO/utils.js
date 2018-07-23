@@ -27,4 +27,5 @@ const iou = (box1, box2) => {
   // compute the IoU
   return interarea / unionarea;
 };
+
 export default iou;

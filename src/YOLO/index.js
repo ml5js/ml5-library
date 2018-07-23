@@ -9,7 +9,7 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 import * as tf from '@tensorflow/tfjs';
 import CLASS_NAMES from './../utils/COCO_CLASSES';
-import { iou } from './utils';
+import iou from './utils';
 
 const DEFAULTS = {
   filterBoxesThreshold: 0.01,
@@ -172,7 +172,7 @@ class YOLO {
 
       // Filterboxes by class probability threshold
       const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
-      const boxClassProbMask = tf.greaterEqual(boxScores, tf.scalar(this.classProbThreshold));
+      const boxClassProbMask = tf.greaterEqual(boxScores1, tf.scalar(this.classProbThreshold));
 
       //  getting classes indices
       const classes1 = tf.argMax(boxClassProbs, -1);
@@ -202,6 +202,7 @@ class YOLO {
       // Img Rescale
       const Height = tf.scalar(this.imgHeight);
       const Width = tf.scalar(this.imgWidth);
+      // 4
       const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
       const filteredBoxes2 = filteredBoxes1.mul(ImageDims);
       return [filteredBoxes2, filteredScores1, filteredclasses1];
@@ -229,8 +230,8 @@ class YOLO {
       let Push = true;
       for (let i = 0; i < selectedBoxes.length; i += 1) {
         // Compare IoU of zipped[1], since that is the box coordinates arr
-        const Iou = iou(box[1], selectedBoxes[i]);
-        if (Iou > this.IOUThreshold) {
+        const IOU = iou(box[1], selectedBoxes[i][1]);
+        if (IOU > this.IOUThreshold) {
           Push = false;
           break;
         }
@@ -246,7 +247,7 @@ class YOLO {
       const classProbRounded = Math.round(classProb * 1000) / 10;
       const className = this.classNames[selectedBoxes[id][2]];
       const classIndex = selectedBoxes[id][2];
-      const [x1, y1, x2, y2] = selectedBoxes[id][1];
+      const [y1, x1, y2, x2] = selectedBoxes[id][1];
       // Need to get this out
       // TODO :  add a hsla color for later visualization
       const resultObj = {
