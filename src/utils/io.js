@@ -14,14 +14,17 @@ const saveFile = (name, data) => {
   document.body.removeChild(downloadElt);
 };
 
-const loadFile = (path, callback) => {
-  fetch(path)
-    .then(response => response.json())
-    .then(json => callback(json))
-    .catch((error) => {
-      console.error(`There has been a problem loading the file: ${error.message}`);
-    });
-};
+const loadFile = async (path, callback) => fetch(path)
+  .then(response => response.json())
+  .then((json) => {
+    callback(null, json);
+    return json;
+  })
+  .catch((error) => {
+    callback(error);
+    console.error(`There has been a problem loading the file: ${error.message}`);
+    throw error;
+  });
 
 export {
   saveFile,

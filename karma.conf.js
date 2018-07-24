@@ -2,17 +2,42 @@ module.exports = (config) => {
   config.set({
     frameworks: ['jasmine'],
     files: [
+      'src/index.js',
       'src/**/*_test.js',
     ],
     preprocessors: {
-      'src/**/*_test.js': ['webpack'],
+      'src/index.js': ['webpack'],
     },
     webpack: {
-      // karma watches the test entry points
-      // (you don't need to specify the entry option)
-      // webpack watches dependencies
-
-      // webpack configuration
+      // TODO: This is duplication of the webpack.common.babel.js file, but they
+      // use different import syntaxes so it's not easy to just require it here.
+      // Maybe this could be put into a JSON file, but the include in the module
+      // rules is dynamic.
+      entry: ['babel-polyfill', './src/index.js'],
+      output: {
+        libraryTarget: 'umd',
+        filename: 'ml5.js',
+        library: 'ml5',
+      },
+      module: {
+        rules: [
+          {
+            enforce: 'pre',
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: 'eslint-loader',
+          },
+          {
+            test: /\.js$/,
+            loader: 'babel-loader',
+            include: require('path').resolve(__dirname, 'src'),
+          },
+        ],
+      },
+      // Don't minify the webpack build for better stack traces
+      optimization: {
+        minimize: false,
+      },
     },
     webpackMiddleware: {
       noInfo: true,
@@ -34,7 +59,7 @@ module.exports = (config) => {
         os_version: 'High Sierra'
       },
     },
-    reporters: ['progress'],
+    reporters: ['mocha'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
