@@ -140,7 +140,8 @@ const styleTransfer = (model, videoOrCallback, cb) => {
     callback = videoOrCallback;
   }
 
-  return new StyleTransfer(model, video, callback);
+  const instance = new StyleTransfer(model, video, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default styleTransfer;
