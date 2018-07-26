@@ -1,96 +1,98 @@
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+/* eslint no-loop-func: 0 */
 const { tf, word2vec } = ml5;
 
-const URL = 'https://raw.githubusercontent.com/ml5js/ml5-examples/master/p5js/Word2Vec/data/wordvecs1000.json';
+const W2V_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/wordvecs/common-english/wordvecs1000.json';
 
 describe('word2vec', () => {
   let word2vecInstance;
   let numTensorsBeforeAll;
   let numTensorsBeforeEach;
   beforeAll((done) => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     numTensorsBeforeAll = tf.memory().numTensors;
-    word2vecInstance = word2vec(URL, done);
+    word2vecInstance = word2vec(W2V_MODEL_URL, done);
   });
 
-  afterAll(() => {
-    word2vecInstance.dispose();
-    let numTensorsAfterAll = tf.memory().numTensors;
-    if(numTensorsBeforeAll !== numTensorsAfterAll) {
-      throw new Error(`Leaking Tensors (${numTensorsAfterAll} vs ${numTensorsBeforeAll})`);
-    }
-  });
+  // afterAll(() => {
+  //   word2vecInstance.dispose();
+  //   const numTensorsAfterAll = tf.memory().numTensors;
+  //   if (numTensorsBeforeAll !== numTensorsAfterAll) {
+  //     throw new Error(`Leaking Tensors (${numTensorsAfterAll} vs ${numTensorsBeforeAll})`);
+  //   }
+  // });
 
   beforeEach(() => {
     numTensorsBeforeEach = tf.memory().numTensors;
   });
 
   afterEach(() => {
-    let numTensorsAfterEach = tf.memory().numTensors;
-    if(numTensorsBeforeEach !== numTensorsAfterEach) {
+    const numTensorsAfterEach = tf.memory().numTensors;
+    if (numTensorsBeforeEach !== numTensorsAfterEach) {
       throw new Error(`Leaking Tensors (${numTensorsAfterEach} vs ${numTensorsBeforeEach})`);
     }
   });
 
   it('creates a new instance', () => {
     expect(word2vecInstance).toEqual(jasmine.objectContaining({
-      ready: true,
-      modelSize: 1,
+      modelLoaded: true,
+      modelSize: 1000,
     }));
   });
 
   describe('getRandomWord', () => {
-    it('returns a word', () => {
-      let word = word2vecInstance.getRandomWord();
-      expect(typeof word).toEqual('string');
+    it('returns a random word', () => {
+      word2vecInstance.getRandomWord()
+        .then(word => expect(typeof word).toEqual('string'));
     });
   });
 
   describe('nearest', () => {
     it('returns a sorted array of nearest words', () => {
-      for(let i = 0; i < 100; i++) {
-        let word = word2vecInstance.getRandomWord();
-        let nearest = word2vecInstance.nearest(word);
-        let currentDistance = 0;
-        for(let { word, distance: nextDistance } of nearest) {
-          expect(typeof word).toEqual('string');
-          expect(nextDistance).toBeGreaterThan(currentDistance);
-          currentDistance = nextDistance;
-        }
+      for (let i = 0; i < 100; i += 1) {
+        word2vecInstance.getRandomWord()
+          .then(word => word2vecInstance.nearest(word))
+          .then((nearest) => {
+            let currentDistance = 0;
+            for (let { word, distance: nextDistance } of nearest) {
+              expect(typeof word).toEqual('string');
+              expect(nextDistance).toBeGreaterThan(currentDistance);
+              currentDistance = nextDistance;
+            }
+          })
       }
     });
 
     it('returns a list of the right length', () => {
-      for(let i = 0; i < 100; i++) {
-        let word = word2vecInstance.getRandomWord();
-        let nearest = word2vecInstance.nearest(word, i);
-        expect(nearest.length).toEqual(i);
+      for (let i = 0; i < 100; i += 1) {
+        word2vecInstance.getRandomWord()
+          .then(word => word2vecInstance.nearest(word, i))
+          .then(nearest => expect(nearest.length).toEqual(i));
       }
     });
   });
-
   describe('add', () => {
-    it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let sum = word2vecInstance.subtract([word1, word2]);
-      expect(sum[0].distance).toBeGreaterThan(0);
-    })
+    it('cat + dog = horse', () => {
+      word2vecInstance.add(['cat', 'dog'], 1)
+        .then(result => expect(result[0].word).toBe('horse'));
+    });
   });
 
   describe('subtract', () => {
-    it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let sum = word2vecInstance.subtract([word1, word2]);
-      expect(sum[0].distance).toBeGreaterThan(0);
-    })
+    it('cat - dog = fish', () => {
+      word2vecInstance.subtract(['cat', 'dog'], 1)
+        .then(result => expect(result[0].word).toBe('fish'));
+    });
   });
 
   describe('average', () => {
-    it('returns a value', () => {
-      let word1 = word2vecInstance.getRandomWord();
-      let word2 = word2vecInstance.getRandomWord();
-      let average = word2vecInstance.average([word1, word2]);
-      expect(average[0].distance).toBeGreaterThan(0);
+    it('moon & sun = avenue', () => {
+      word2vecInstance.average(['moon', 'sun'], 1)
+        .then(result => expect(result[0].word).toBe('earth'));
     });
   });
 });

@@ -9,6 +9,7 @@ Image Classifier using pre-trained networks
 
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
+import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
   mobilenet: {
@@ -25,7 +26,6 @@ class ImageClassifier {
     this.version = options.version || DEFAULTS[this.modelName].version;
     this.alpha = options.alpha || DEFAULTS[this.modelName].alpha;
     this.topk = options.topk || DEFAULTS[this.modelName].topk;
-    this.modelLoaded = false;
     this.model = null;
     if (this.modelName === 'mobilenet') {
       this.modelToUse = mobilenet;
@@ -33,20 +33,29 @@ class ImageClassifier {
       this.modelToUse = null;
     }
     // Load the model
-    this.modelLoaded = this.loadModel(callback);
+    this.ready = callCallback(this.loadModel(), callback);
   }
 
-  async loadModel(callback) {
-    return this.modelToUse.load(this.version, this.alpha).then((model) => {
-      this.model = model;
-      if (callback) {
-        callback();
-      }
-    });
+  async loadModel() {
+    this.model = await this.modelToUse.load(this.version, this.alpha);
+    return this;
   }
 
-  async predict(inputNumOrCallback, numOrCallback = null, cb = null) {
-    let imgToPredict;
+  async predictInternal(imgToPredict, numberOfClasses) {
+    // Wait for the model to be ready
+    await this.ready;
+    await tf.nextFrame();
+
+    if (this.video && this.video.readyState === 0) {
+      await new Promise((resolve) => {
+        this.video.onloadeddata = () => resolve();
+      });
+    }
+    return this.model.classify(imgToPredict, numberOfClasses);
+  }
+
+  async predict(inputNumOrCallback, numOrCallback = null, cb) {
+    let imgToPredict = this.video;
     let numberOfClasses = this.topk;
     let callback;
 
@@ -64,7 +73,7 @@ class ImageClassifier {
     }
 
     if (typeof numOrCallback === 'number') {
-      numberOfClasses = inputNumOrCallback;
+      numberOfClasses = numOrCallback;
     } else if (typeof numOrCallback === 'function') {
       callback = numOrCallback;
     }
@@ -73,28 +82,7 @@ class ImageClassifier {
       callback = cb;
     }
 
-    // Wait for the model to be ready
-    await this.modelLoaded;
-    await tf.nextFrame();
-
-    // Classify the image using the selected model
-    /* eslint arrow-body-style: 0 */
-    if (this.videoElt && !this.addedListener) {
-      /* eslint func-names: 0 */
-      this.video.addEventListener('onloadstart', function () {
-        return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-          if (callback) {
-            callback(predictions);
-          }
-        });
-      });
-      this.addedListener = true;
-    }
-    return this.model.classify(imgToPredict, numberOfClasses).then((predictions) => {
-      if (callback) {
-        callback(predictions);
-      }
-    });
+    return callCallback(this.predictInternal(imgToPredict, numberOfClasses), callback);
   }
 
   getFeatures(input) {
@@ -116,7 +104,7 @@ class ImageClassifier {
   }
 }
 
-const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb = null) => {
+const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   let model;
   let video;
   let options = {};
@@ -132,9 +120,9 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
     video = videoOrOptionsOrCallback;
   } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
     video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (videoOrOptionsOrCallback === 'object') {
+  } else if (typeof videoOrOptionsOrCallback === 'object') {
     options = videoOrOptionsOrCallback;
-  } else if (videoOrOptionsOrCallback === 'function') {
+  } else if (typeof videoOrOptionsOrCallback === 'function') {
     callback = videoOrOptionsOrCallback;
   }
 
@@ -144,7 +132,8 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
     callback = optionsOrCallback;
   }
 
-  return new ImageClassifier(model, video, options, callback);
+  const instance = new ImageClassifier(model, video, options, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default imageClassifier;
