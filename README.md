@@ -4,6 +4,7 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/ml5js)
 
 
+
 **_This project is currently in development._**
 
 ## Friendly machine learning for the web!
@@ -23,7 +24,7 @@ Download the [full](https://raw.githubusercontent.com/ml5js/ml5-library/master/d
 ```
 or 
 ```javascript
-<script src="https://unpkg.com/ml5" type="text/javascript"></script>
+<script src="https://unpkg.com/ml5@0.1.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 ## Resources
