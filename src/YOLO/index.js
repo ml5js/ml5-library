@@ -16,18 +16,17 @@ const DEFAULTS = {
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
   URL: 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json',
-
+  imageSize: 416,
 };
 
-class YOLO {
+class YOLOBase {
   constructor(options) {
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
     this.modelURL = options.url || DEFAULTS.URL;
     this.model = null;
-    this.inputWidth = 416;
-    this.inputHeight = 416;
+    this.imageSize = options.imageSize || DEFAULTS.imageSize;
     this.classNames = CLASS_NAMES;
     this.anchors = [
       [0.57273, 0.677385],
@@ -36,8 +35,6 @@ class YOLO {
       [7.88282, 3.52778],
       [9.77052, 9.16828],
     ];
-    // this.scaleX;
-    // this.scaleY;
     this.anchorsLength = this.anchors.length;
     this.classesLength = this.classNames.length;
     this.init();
@@ -71,11 +68,16 @@ class YOLO {
     });
   }
 
-  // takes  HTMLCanvasElement || HTMLImageElement ||HTMLVideoElement || ImageData as input
-  // outs results obj
-  async detect(input) {
+  /**
+   * Infers through the model.
+   * TODO : Optionally takes an endpoint to return an intermediate activation.
+   * @param img The image to classify. Can be a tensor or a DOM element image,
+   * video, or canvas.
+   * img: tf.Tensor3D|ImageData|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement
+   */
+  async detect(img) {
     const predictions = tf.tidy(() => {
-      const data = this.preProccess(input);
+      const data = this.preProccess(img);
       const preds = this.model.predict(data);
       return preds;
     });
@@ -99,63 +101,73 @@ class YOLO {
     tf.disposeconstiables();
   }
 
-  // should be called after loadModel()
-  cache() {
-    tf.tidy(() => {
-      const dummy = tf.zeros([0, 416, 416, 3]);
-      this.model.predict(dummy);
-    });
+  // should be called after load()
+  async cache() {
+    const dummy = tf.zeros([416, 416, 3]);
+    await this.detect(dummy);
+    dummy.dispose();
   }
 
-  preProccess(input) {
-    const img = tf.fromPixels(input);
-    const [w, h] = [img.shape[1], img.shape[0]];
-    this.imgWidth = w;
-    this.imgHeight = h;
+  preProccess(img) {
+    let image;
+    if (!(img instanceof tf.Tensor)) {
+      if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
+        image = tf.fromPixels(img);
+      } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement)) {
+        image = tf.fromPixels(img.elt); // Handle p5.js image and video.
+      }
+    } else {
+      image = img;
+    }
 
-    const img1 = tf.image.resizeBilinear(img, [this.inputHeight, this.inputWidth]).toFloat().div(tf.scalar(255)).expandDims(0);
+    [this.imgWidth, this.imgHeight] = [image.shape[1], image.shape[0]];
 
+    // Normalize the image from [0, 255] to [0, 1].
+    const normalized = image.toFloat().div(tf.scalar(255));
+    let resized = normalized;
+    if (normalized.shape[0] !== this.imageSize || normalized.shape[1] !== this.imageSize) {
+      const alignCorners = true;
+      resized = tf.image.resizeBilinear(normalized, [this.imageSize, this.imageSize], alignCorners);
+    }
+    // Reshape to a single-element batch so we can pass it to predict.
+    const batched = resized.reshape([1, this.imageSize, this.imageSize, 3]);
     // Scale Stuff
-    this.scaleX = this.imgHeight / this.inputHeight;
-    this.scaleY = this.imgWidth / this.inputWidth;
-    return img1;
+    // this.scaleX = this.imgHeight / this.inputHeight;
+    // this.scaleY = this.imgWidth / this.inputWidth;
+    return batched;
   }
 
+
+  /**
+   * postproccessing for the yolo output
+   * TODO : make this more modular in preperation for yolov3-tiny
+   * @param rawPrediction a 4D tensor 13*13*425
+   */
   async postProccess(rawPrediction) {
-    const results = {
-      totalDetections: 0,
-      detections: [],
-    };
     const [boxes, boxScores, classes, Indices] = tf.tidy(() => {
-      const rawPrediction1 = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
+      const reshaped = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
       // Box Coords
-      const boxxy = tf.sigmoid(rawPrediction1.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
-      const boxwh = tf.exp(rawPrediction1.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
+      const boxxy = tf.sigmoid(reshaped.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
+      const boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
       // ObjectnessScore
-      const boxConfidence = tf.sigmoid(rawPrediction1.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
+      const boxConfidence = tf.sigmoid(reshaped.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
       // ClassProb
-      const boxClassProbs = tf.softmax(rawPrediction1.slice([0, 0, 0, 5], [13, 13, this.anchorsLength, this.classesLength]));
+      const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [13, 13, this.anchorsLength, this.classesLength]));
 
       // from boxes with xy wh to x1,y1 x2,y2
+      // xy:bounding box center  wh:width/Height
       // Mainly for NMS + rescaling
-      /*
-            x1 = x + (h/2)
-            y1 = y - (w/2)
-            x2 = x - (h/2)
-            y2 = y + (w/2)
-            */
-      // BoxScale
-      const boxXY1 = tf.div(tf.add(boxxy, this.ConvIndex), this.ConvDims);
+      // x1 = x + (h/2)
+      // y1 = y - (w/2)
+      // x2 = x - (h/2)
+      // y2 = y + (w/2)
 
-      const boxWH1 = tf.div(tf.mul(boxwh, this.AnchorsTensor), this.ConvDims);
-
-      const Div = tf.div(boxWH1, tf.scalar(2));
-
-      const boxMins = tf.sub(boxXY1, Div);
-      const boxMaxes = tf.add(boxXY1, Div);
-
+      const boxxy1 = tf.div(tf.add(boxxy, this.ConvIndex), this.ConvDims);
+      const boxwh1 = tf.div(tf.mul(boxwh, this.AnchorsTensor), this.ConvDims);
+      const div = tf.div(boxwh1, tf.scalar(2));
+      const boxMins = tf.sub(boxxy1, div);
+      const boxMaxes = tf.add(boxxy1, div);
       const size = [boxMins.shape[0], boxMins.shape[1], boxMins.shape[2], 1];
-
       // main box tensor
       const finalboxes = tf.concat([
         boxMins.slice([0, 0, 0, 1], size),
@@ -166,7 +178,6 @@ class YOLO {
 
       // Filterboxes by objectness threshold
       // not filtering / getting a mask really
-
       const boxConfidence1 = boxConfidence.squeeze([3]);
       const objectnessMask = tf.greaterEqual(boxConfidence1, tf.scalar(this.filterBoxesThreshold));
 
@@ -174,10 +185,10 @@ class YOLO {
       const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
       const boxClassProbMask = tf.greaterEqual(boxScores1, tf.scalar(this.classProbThreshold));
 
-      //  getting classes indices
+      // getting classes indices
       const classes1 = tf.argMax(boxClassProbs, -1);
 
-      // Final Mask  each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
+      // Final Mask each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
       const finalMask = boxClassProbMask.mul(objectnessMask);
 
       const indices = finalMask.flatten().toInt().mul(this.indicesTensor);
@@ -185,6 +196,10 @@ class YOLO {
     });
 
     // we started at one in the range so we remove 1 now
+    // this is where a major bottleneck happens
+    // this can be replaced with tf.boolean_mask() if tfjs team implements it
+    // thisis also why wehave 2 tf.tidy()'s
+    // more info : https://github.com/ModelDepot/tfjs-yolo-tiny/issues/6
 
     const indicesArr = Array.from(await Indices.data()).filter(i => i > 0).map(i => i - 1);
 
@@ -192,18 +207,19 @@ class YOLO {
       boxes.dispose();
       boxScores.dispose();
       classes.dispose();
-      return results;
+      return [];
     }
+
     const [filteredBoxes, filteredScores, filteredclasses] = tf.tidy(() => {
       const indicesTensor = tf.tensor1d(indicesArr, 'int32');
       const filteredBoxes1 = boxes.gather(indicesTensor);
       const filteredScores1 = boxScores.flatten().gather(indicesTensor);
       const filteredclasses1 = classes.flatten().gather(indicesTensor);
-      // Img Rescale
+      // Image Rescale
       const Height = tf.scalar(this.imgHeight);
       const Width = tf.scalar(this.imgWidth);
-      // 4
       const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
+
       const filteredBoxes2 = filteredBoxes1.mul(ImageDims);
       return [filteredBoxes2, filteredScores1, filteredclasses1];
     });
@@ -240,7 +256,7 @@ class YOLO {
     });
 
     // final phase
-
+    const detections = [];
     // add any output you want
     for (let id = 0; id < selectedBoxes.length; id += 1) {
       const classProb = selectedBoxes[id][0];
@@ -248,9 +264,8 @@ class YOLO {
       const className = this.classNames[selectedBoxes[id][2]];
       const classIndex = selectedBoxes[id][2];
       const [y1, x1, y2, x2] = selectedBoxes[id][1];
-      // Need to get this out
       // TODO :  add a hsla color for later visualization
-      const resultObj = {
+      const detection = {
         id,
         className,
         classIndex,
@@ -261,14 +276,11 @@ class YOLO {
         x2,
         y2,
       };
-      results.detections.push(resultObj);
+      detections.push(detection);
     }
-    // Misc
-    results.totalDetections = results.detections.length;
-    results.scaleX = this.scaleX;
-    results.scaleY = this.scaleY;
-    return results;
+    return detections;
   }
 }
 
+const YOLO = options => new YOLOBase(options);
 export default YOLO;
