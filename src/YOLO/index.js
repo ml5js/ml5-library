@@ -77,11 +77,11 @@ class YOLOBase {
    */
   async detect(img) {
     const predictions = tf.tidy(() => {
-      const data = this.preProccess(img);
+      const data = this.preProcess(img);
       const preds = this.model.predict(data);
       return preds;
     });
-    const results = await this.postProccess(predictions);
+    const results = await this.postProcess(predictions);
     return results;
   }
 
@@ -108,7 +108,7 @@ class YOLOBase {
     dummy.dispose();
   }
 
-  preProccess(img) {
+  preProcess(img) {
     let image;
     if (!(img instanceof tf.Tensor)) {
       if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
@@ -139,11 +139,11 @@ class YOLOBase {
 
 
   /**
-   * postproccessing for the yolo output
+   * postProcessing for the yolo output
    * TODO : make this more modular in preperation for yolov3-tiny
    * @param rawPrediction a 4D tensor 13*13*425
    */
-  async postProccess(rawPrediction) {
+  async postProcess(rawPrediction) {
     const [boxes, boxScores, classes, Indices] = tf.tidy(() => {
       const reshaped = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
       // Box Coords

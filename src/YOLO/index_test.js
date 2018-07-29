@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { tf, YOLO } = ml5;
+const { YOLO } = ml5;
 
 const YOLO_DEFAULTS = {
   filterBoxesThreshold: 0.01,
