@@ -79,7 +79,7 @@ class PitchDetection {
         const productSum = products.dataSync().reduce((a, b) => a + b, 0);
         const weightSum = weights.dataSync().reduce((a, b) => a + b, 0);
         const predictedCent = productSum / weightSum;
-        const predictedHz = 10 * ((predictedCent / 1200.0) ** 2);
+        const predictedHz = 10 * (2 ** (predictedCent / 1200.0));
 
         const frequency = (confidence > 0.5) ? predictedHz : null;
         this.frequency = frequency;
