@@ -37,6 +37,6 @@ class SketchRNN {
     }
 
     async generate(options, strokes, callback) {
-        return callCallback(this.generateInternal(options), callback);
+        return callCallback(this.generateInternal(options, strokes), callback);
     }
 }
