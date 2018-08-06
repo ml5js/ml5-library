@@ -95,7 +95,7 @@ class Mobilenet {
     if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement) {
       imgToAdd = inputOrLabel;
     } else if (typeof inputOrLabel === 'object' && (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)) {
-      imgToAdd = inputOrLabel;
+      imgToAdd = inputOrLabel.elt;
     } else if (typeof inputOrLabel === 'string' || typeof inputOrLabel === 'number') {
       imgToAdd = this.video;
       label = inputOrLabel;
@@ -121,7 +121,7 @@ class Mobilenet {
   async addImageInternal(imgToAdd, label) {
     await this.ready;
     tf.tidy(() => {
-      const processedImg = imgToTensor(imgToAdd);
+      const processedImg = imgToTensor(imgToAdd, [224, 224]);
       const prediction = this.mobilenetFeatures.predict(processedImg);
 
       let y;
@@ -243,7 +243,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const processedImg = imgToTensor(imgToPredict);
+      const processedImg = imgToTensor(imgToPredict, [224, 224]);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
       return predictions.as1D().argMax();
@@ -281,7 +281,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const processedImg = imgToTensor(imgToPredict);
+      const processedImg = imgToTensor(imgToPredict, [224, 224]);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
       return predictions.as1D();
