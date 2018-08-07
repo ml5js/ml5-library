@@ -11,10 +11,21 @@ SketchRNN
 
 import * as ms from '@magenta/sketch';
 import callCallback from '../utils/callcallback';
+import modelPaths from './models';
+
+const pathStartLarge = "https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/";
+const pathStartSmall = "https://storage.googleapis.com/quickdraw-models/sketchRNN/models/";
+const pathEnd = ".gen.json";
 
 class SketchRNN {
-    constructor(checkpointUrl, callback) {
-        this.ready = false;
+    constructor(checkpointUrl, callback, large=true) {
+        if (modelPaths.has(checkpointUrl)) {
+            if (large) {
+                checkpointUrl = pathStartLarge + checkpointUrl + pathEnd;
+            } else {
+                checkpointUrl = pathStartSmall + checkpointUrl + pathEnd;
+            }
+        }
         this.defaults = {
             temperature: 0.65
         }
@@ -26,6 +37,8 @@ class SketchRNN {
 
     async generateInternal(options, strokes) {
         const temperature = +options.temperature || this.defaults.temperature;
+        
+        await this.ready;
 
         if (strokes !== undefined) {
             this.model.updateStrokes(strokes, this.rnnState);
