@@ -6,6 +6,8 @@
 /* eslint max-len: "off" */
 /*
 Fast Style Transfer
+This implementation is heavily based on github.com/reiinakano/fast-style-transfer-deeplearnjs by Reiichiro Nakano.
+The original Tensorflow implementation was developed by Logan Engstrom: github.com/lengstrom/fast-style-transfer 
 */
 
 import * as tf from '@tensorflow/tfjs';
