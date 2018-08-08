@@ -86,10 +86,10 @@
     ]
   },
   "dependencies": {
-    "@magenta/sketch": "^0.1.1",
+    "@magenta/sketch": "^0.1.2",
     "@tensorflow-models/mobilenet": "0.1.0",
     "@tensorflow-models/posenet": "0.1.3",
-    "@tensorflow/tfjs": "0.11.4",
+    "@tensorflow/tfjs": "0.12.4",
     "events": "^3.0.0"
   }
 }
