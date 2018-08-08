@@ -6,8 +6,8 @@
 /* eslint max-len: "off" */
 /*
 Pix2pix
-The original pix2pix Tensorflow implementation was made by affinelayer: github.com/affinelayer/pix2pix-tensorflow
-This version is heavily based on Christopher Hesse Tensorflow.js implementation: https://github.com/affinelayer/pix2pix-tensorflow/tree/master/server
+The original pix2pix TensorFlow implementation was made by affinelayer: github.com/affinelayer/pix2pix-tensorflow
+This version is heavily based on Christopher Hesse TensorFlow.js implementation: https://github.com/affinelayer/pix2pix-tensorflow/tree/master/server
 */
 
 import * as tf from '@tensorflow/tfjs';
