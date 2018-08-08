@@ -7,7 +7,7 @@
 /*
 Pix2pix
 The original pix2pix Tensorflow implementation was made by affinelayer: github.com/affinelayer/pix2pix-tensorflow
-This version is heavily based on Christopher Hesse Tensorflow.js implementation: https://github.com/affinelayer/pix2pix-tensorflow/tree/master/server 
+This version is heavily based on Christopher Hesse Tensorflow.js implementation: https://github.com/affinelayer/pix2pix-tensorflow/tree/master/server
 */
 
 import * as tf from '@tensorflow/tfjs';

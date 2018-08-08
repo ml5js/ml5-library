@@ -5,7 +5,7 @@
 
 /*
 PoseNet
-The priginal PoseNet model was ported to Tensorflow.js by Dan Oved.
+The original PoseNet model was ported to Tensorflow.js by Dan Oved.
 */
 
 import EventEmitter from 'events';

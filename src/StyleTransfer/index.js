@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 /* eslint max-len: "off" */
+/* eslint no-trailing-spaces: "off" */
 /*
 Fast Style Transfer
 This implementation is heavily based on github.com/reiinakano/fast-style-transfer-deeplearnjs by Reiichiro Nakano.
