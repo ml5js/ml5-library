@@ -25,7 +25,8 @@ describe('YOLO', () => {
 
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-    yolo = new ml5.YOLO();
+    yolo = ml5.YOLO();
+    await yolo.loadModel();
   });
 
   it('instantiates the YOLO classifier with defaults', () => {

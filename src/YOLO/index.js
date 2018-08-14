@@ -15,7 +15,7 @@ const DEFAULTS = {
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
-  URL: 'https://raw.githubusercontent.com/ml5js/ml5-library/master/src/YOLO/model.json',
+  URL: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/YOLO/model.json',
   imageSize: 416,
 };
 
@@ -41,31 +41,9 @@ class YOLOBase {
   }
 
   init() {
-    // indices tensor to filter the elements later on
-    this.indicesTensor = tf.range(1, 846, 1, 'int32');
-
-    // Grid To Split the raw predictions : Assumes Our Model output is 1 Tensor with 13x13x425
-    // gonna hard code all this stuff see if it works
-    // this can be done once at the initial phase
-    // TODO : make this more modular
-
-    [this.ConvIndex, this.ConvDims, this.AnchorsTensor] = tf.tidy(() => {
-      let ConvIndex = tf.range(0, 13);
-      const ConvHeightIndex = tf.tile(ConvIndex, [13]);
-
-      let ConvWidthindex = tf.tile(tf.expandDims(ConvIndex, 0), [13, 1]);
-      ConvWidthindex = tf.transpose(ConvWidthindex).flatten();
-
-      ConvIndex = tf.transpose(tf.stack([ConvHeightIndex, ConvWidthindex]));
-      ConvIndex = tf.reshape(ConvIndex, [13, 13, 1, 2]);
-
-      const ConvDims = tf.reshape(tf.tensor1d([13, 13]), [1, 1, 1, 2]);
-      // AnchorsTensor
-      const Aten = tf.tensor2d(this.anchors);
-      const AnchorsTensor = tf.reshape(Aten, [1, 1, this.anchorsLength, 2]);
-
-      return [ConvIndex, ConvDims, AnchorsTensor];
-    });
+    const Aten = tf.tensor2d(this.anchors);
+    this.anchorsTensor = tf.reshape(Aten, [1, 1, this.anchorsLength, 2]);
+    Aten.dispose();
   }
 
   /**
@@ -84,6 +62,7 @@ class YOLOBase {
     const results = await this.postProcess(predictions);
     return results;
   }
+
 
   async loadModel() {
     try {
@@ -137,68 +116,22 @@ class YOLOBase {
     return batched;
   }
 
-
   /**
    * postProcessing for the yolo output
    * TODO : make this more modular in preperation for yolov3-tiny
-   * @param rawPrediction a 4D tensor 13*13*425
+   * @param rawPrediction a 4D tensor
    */
   async postProcess(rawPrediction) {
-    const [boxes, boxScores, classes, Indices] = tf.tidy(() => {
-      const reshaped = tf.reshape(rawPrediction, [13, 13, this.anchorsLength, this.classesLength + 5]);
-      // Box Coords
-      const boxxy = tf.sigmoid(reshaped.slice([0, 0, 0, 0], [13, 13, this.anchorsLength, 2]));
-      const boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [13, 13, this.anchorsLength, 2]));
-      // ObjectnessScore
-      const boxConfidence = tf.sigmoid(reshaped.slice([0, 0, 0, 4], [13, 13, this.anchorsLength, 1]));
-      // ClassProb
-      const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [13, 13, this.anchorsLength, this.classesLength]));
-
-      // from boxes with xy wh to x1,y1 x2,y2
-      // xy:bounding box center  wh:width/Height
-      // Mainly for NMS + rescaling
-      // x1 = x + (h/2)
-      // y1 = y - (w/2)
-      // x2 = x - (h/2)
-      // y2 = y + (w/2)
-
-      const boxxy1 = tf.div(tf.add(boxxy, this.ConvIndex), this.ConvDims);
-      const boxwh1 = tf.div(tf.mul(boxwh, this.AnchorsTensor), this.ConvDims);
-      const div = tf.div(boxwh1, tf.scalar(2));
-      const boxMins = tf.sub(boxxy1, div);
-      const boxMaxes = tf.add(boxxy1, div);
-      const size = [boxMins.shape[0], boxMins.shape[1], boxMins.shape[2], 1];
-      // main box tensor
-      const finalboxes = tf.concat([
-        boxMins.slice([0, 0, 0, 1], size),
-        boxMins.slice([0, 0, 0, 0], size),
-        boxMaxes.slice([0, 0, 0, 1], size),
-        boxMaxes.slice([0, 0, 0, 0], size),
-      ], 3).reshape([845, 4]);
-
-      // Filterboxes by objectness threshold
-      // not filtering / getting a mask really
-      const boxConfidence1 = boxConfidence.squeeze([3]);
-      const objectnessMask = tf.greaterEqual(boxConfidence1, tf.scalar(this.filterBoxesThreshold));
-
-      // Filterboxes by class probability threshold
-      const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
-      const boxClassProbMask = tf.greaterEqual(boxScores1, tf.scalar(this.classProbThreshold));
-
-      // getting classes indices
-      const classes1 = tf.argMax(boxClassProbs, -1);
-
-      // Final Mask each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
-      const finalMask = boxClassProbMask.mul(objectnessMask);
-
-      const indices = finalMask.flatten().toInt().mul(this.indicesTensor);
-      return [finalboxes, boxScores1, classes1, indices];
-    });
+    const [boxes, boxScores, classes, Indices] = tf.tidy(() => this.split(rawPrediction.squeeze([0]), this.anchorsTensor));
+    // for the case of yolov3  there are 2 output tensors
+    // v3
+    // this.split(rawPrediction[0], this.AnchorsTensorL1);
+    // this.split(rawPrediction[1], this.AnchorsTensorL2);
 
     // we started at one in the range so we remove 1 now
     // this is where a major bottleneck happens
     // this can be replaced with tf.boolean_mask() if tfjs team implements it
-    // thisis also why wehave 2 tf.tidy()'s
+    // this is also why wehave 2 tf.tidy()'s
     // more info : https://github.com/ModelDepot/tfjs-yolo-tiny/issues/6
 
     const indicesArr = Array.from(await Indices.data()).filter(i => i > 0).map(i => i - 1);
@@ -218,8 +151,11 @@ class YOLOBase {
       // Image Rescale
       const Height = tf.scalar(this.imgHeight);
       const Width = tf.scalar(this.imgWidth);
-      const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
+      // this for x1 y1 x2 y2
+      // const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
 
+      // this for x y w h
+      const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
       const filteredBoxes2 = filteredBoxes1.mul(ImageDims);
       return [filteredBoxes2, filteredScores1, filteredclasses1];
     });
@@ -246,7 +182,17 @@ class YOLOBase {
       let Push = true;
       for (let i = 0; i < selectedBoxes.length; i += 1) {
         // Compare IoU of zipped[1], since that is the box coordinates arr
-        const IOU = iou(box[1], selectedBoxes[i][1]);
+        // this a quick fix that can be done muck better the iou atm takes x1 y1 x2 y2 and we have xy wh
+        // this is dirty & needs to be directly  edited in the iou func
+        // x1 = x - (w/2)
+        // y1 = y - (h/2)
+        // x2 = x + (w/2)
+        // y2 = y + (h/2)
+        const a = selectedBoxes[i][1];
+        const b = box[1];
+        const box1 = [b[0] - (b[2] / 2), b[1] - (b[3] / 2), b[0] + (b[2] / 2), b[1] + (b[3] / 2)];
+        const box2 = [a[0] - (a[2] / 2), a[1] - (a[3] / 2), a[0] + (a[2] / 2), a[1] + (a[3] / 2)];
+        const IOU = iou(box1, box2);
         if (IOU > this.IOUThreshold) {
           Push = false;
           break;
@@ -254,31 +200,77 @@ class YOLOBase {
       }
       if (Push) selectedBoxes.push(box);
     });
-
     // final phase
     const detections = [];
     // add any output you want
     for (let id = 0; id < selectedBoxes.length; id += 1) {
       const classProb = selectedBoxes[id][0];
-      const classProbRounded = Math.round(classProb * 1000) / 10;
       const className = this.classNames[selectedBoxes[id][2]];
+      const [x, y, w, h] = selectedBoxes[id][1];
       const classIndex = selectedBoxes[id][2];
-      const [y1, x1, y2, x2] = selectedBoxes[id][1];
       // TODO :  add a hsla color for later visualization
       const detection = {
         id,
         className,
-        classIndex,
         classProb,
-        classProbRounded,
-        x1,
-        y1,
-        x2,
-        y2,
+        classIndex,
+        x,
+        y,
+        w,
+        h,
       };
       detections.push(detection);
     }
     return detections;
+  }
+
+  split(rawPrediction, AnchorsTensor) {
+    const [outputWidth, outputHeight] = [rawPrediction.shape[0], rawPrediction.shape[1]];
+    const reshaped = tf.reshape(rawPrediction, [outputWidth, outputHeight, this.anchorsLength, this.classesLength + 5]);
+    // Box Coords
+    const boxxy = tf.sigmoid(reshaped.slice([0, 0, 0, 0], [outputWidth, outputHeight, this.anchorsLength, 2]));
+    const boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [outputWidth, outputHeight, this.anchorsLength, 2]));
+    // ObjectnessScore
+    const boxConfidence = tf.sigmoid(reshaped.slice([0, 0, 0, 4], [outputWidth, outputHeight, this.anchorsLength, 1]));
+    // ClassProb
+    const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [outputWidth, outputHeight, this.anchorsLength, this.classesLength]));
+
+    // this assumes that we have a square output tensor eg 13x13 // 26x26
+    // this is making an index map to add to the w y coordinates
+    // see this
+    let ConvIndex = tf.range(0, outputWidth);
+    const ConvHeightIndex = tf.tile(ConvIndex, [outputWidth]);
+    let ConvWidthindex = tf.tile(tf.expandDims(ConvIndex, 0), [outputWidth, 1]);
+    ConvWidthindex = tf.transpose(ConvWidthindex).flatten();
+    ConvIndex = tf.transpose(tf.stack([ConvHeightIndex, ConvWidthindex]));
+
+    ConvIndex = tf.reshape(ConvIndex, [outputWidth, outputWidth, 1, 2]);
+    const ConvDims = tf.reshape(tf.tensor1d([outputWidth, outputWidth]), [1, 1, 1, 2]);
+    // ConvIndex.print();
+    const boxxy1 = tf.div(tf.add(boxxy, ConvIndex), ConvDims);
+    const boxwh1 = tf.div(tf.mul(boxwh, AnchorsTensor), ConvDims);
+
+    // TODO : need to get the anchors size frome the input anchors tensor
+    const finalboxes = tf.concat([boxxy1, boxwh1], 3).reshape([(outputWidth * outputHeight * this.anchorsLength), 4]);
+
+    // Filterboxes by objectness threshold
+    // not filtering / getting a mask really
+    const boxConfidence1 = boxConfidence.squeeze([3]);
+    const objectnessMask = tf.greaterEqual(boxConfidence1, tf.scalar(this.filterBoxesThreshold));
+
+    // Filterboxes by class probability threshold
+    const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
+    const boxClassProbMask = tf.greaterEqual(boxScores1, tf.scalar(this.classProbThreshold));
+
+    // getting classes indices
+    const classes1 = tf.argMax(boxClassProbs, -1);
+
+    // removed this from init as it semm to not be affecting perf very much
+    const indicesTensor = tf.range(1, (outputWidth * outputHeight * this.anchorsLength) + 1, 1, 'int32');
+    // Final Mask each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
+    const finalMask = boxClassProbMask.mul(objectnessMask);
+    const indices = finalMask.flatten().toInt().mul(indicesTensor);
+    return [finalboxes, boxScores1, classes1, indices];
   }
 }
 
