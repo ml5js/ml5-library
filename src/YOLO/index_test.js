@@ -25,7 +25,7 @@ describe('YOLO', () => {
 
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-    yolo = ml5.YOLO();
+    yolo = YOLO();
     await yolo.loadModel();
   });
 
