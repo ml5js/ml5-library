@@ -126,10 +126,6 @@ export class Darknet {
 
 
 export async function load(version) {
-  if (tf == null) {
-    throw new Error('Cannot find TensorFlow.js. If you are using a <script> tag, please ' +
-      'also include @tensorflow/tfjs on the page before using this model.');
-  }
   if (version !== 'reference' && version !== 'tiny') {
     throw new Error('Please select a version : darknet-reference or darknet-tiny');
   }
