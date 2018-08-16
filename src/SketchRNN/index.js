@@ -17,7 +17,7 @@ const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketch
 const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/';
 const PATH_END = '.gen.json';
 
-export default class SketchRNN {
+class SketchRNN {
   constructor(model, callback, large = true) {
     let checkpointUrl = model;
     if (modelPaths.has(checkpointUrl)) {
@@ -62,3 +62,7 @@ export default class SketchRNN {
     }
   }
 }
+
+const SketchRNNGenerator = (model, callback, large = true) => new SketchRNN(model, callback, large);
+
+export default SketchRNNGenerator;
