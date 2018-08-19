@@ -17,7 +17,7 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 ## Usage
 
-Download the [full](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.js), [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) or use the online version and add it to the head section of your HTML document:
+Download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) or use the online version and add it to the head section of your HTML document:
 
 ```javascript
 <script src="ml5.min.js" type="text/javascript"></script>
