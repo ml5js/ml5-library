@@ -70,6 +70,9 @@ class ImageClassifier {
       imgToPredict = inputNumOrCallback;
     } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
+    } else if (!(this.video instanceof HTMLVideoElement)) {
+      // Handle unsupported input
+      throw new Error('No input image provided. If you want to classify a video, pass the video element in the constructor. ');
     }
 
     if (typeof numOrCallback === 'number') {
