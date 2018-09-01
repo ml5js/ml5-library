@@ -4,8 +4,11 @@
 // https://opensource.org/licenses/MIT
 
 /* eslint max-len: "off" */
+/* eslint no-trailing-spaces: "off" */
 /*
 Fast Style Transfer
+This implementation is heavily based on github.com/reiinakano/fast-style-transfer-deeplearnjs by Reiichiro Nakano.
+The original TensorFlow implementation was developed by Logan Engstrom: github.com/lengstrom/fast-style-transfer 
 */
 
 import * as tf from '@tensorflow/tfjs';
@@ -140,7 +143,8 @@ const styleTransfer = (model, videoOrCallback, cb) => {
     callback = videoOrCallback;
   }
 
-  return new StyleTransfer(model, video, callback);
+  const instance = new StyleTransfer(model, video, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default styleTransfer;
