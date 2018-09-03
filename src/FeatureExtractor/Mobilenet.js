@@ -361,7 +361,6 @@ class Mobilenet {
       }
       // Normalize the image from [0, 255] to [-1, 1].
       const normalized = image.toFloat().sub(this.normalizationOffset).div(this.normalizationOffset);
-      console.log('normalized: ', normalized);
       // Resize the image to
       let resized = normalized;
       if (image.shape[0] !== IMAGESIZE || image.shape[1] !== IMAGESIZE) {
