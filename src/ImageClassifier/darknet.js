@@ -13,7 +13,6 @@ const DEFAULTS = {
   IMAGE_SIZE_DARKNET_TINY: 224,
 };
 
-
 async function getTopKClasses(logits, topK) {
   const values = await logits.data();
   const valuesAndIndices = [];
@@ -53,20 +52,16 @@ function preProcess(img, size) {
   } else {
     image = img;
   }
-  // Normalize the image from [0, 255] to [0, 1].
   const normalized = image.toFloat().div(tf.scalar(255));
   let resized = normalized;
   if (normalized.shape[0] !== size || normalized.shape[1] !== size) {
     const alignCorners = true;
     resized = tf.image.resizeBilinear(normalized, [size, size], alignCorners);
   }
-  // Reshape to a single-element batch so we can pass it to predict.
   const batched = resized.reshape([1, size, size, 3]);
-  // Scale Stuff
-  // this.scaleX = this.imgHeight / this.inputHeight;
-  // this.scaleY = this.imgWidth / this.inputWidth;
   return batched;
 }
+
 export class Darknet {
   constructor(version) {
     this.version = version;
@@ -77,7 +72,6 @@ export class Darknet {
       case 'tiny':
         this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET_TINY;
         break;
-
       default:
         break;
     }
@@ -85,15 +79,12 @@ export class Darknet {
 
   async load() {
     switch (this.version) {
-      // might add darknet_448
       case 'reference':
         this.model = await tf.loadModel(DEFAULTS.DARKNET_URL);
         break;
-
       case 'tiny':
         this.model = await tf.loadModel(DEFAULTS.DARKNET_TINY_URL);
         break;
-
       default:
         break;
     }
@@ -104,14 +95,6 @@ export class Darknet {
     result.dispose();
   }
 
-  /**
-   * Classifies an image from the 1000 ImageNet classes returning a map of
-   * the most likely class names to their probability.
-   *
-   * @param img The image to classify. Can be a tensor or a DOM element image,
-   * video, or canvas.
-   * @param topk How many top values to use. Defaults to 3.
-   */
   async classify(img, topk = 3) {
     const logits = tf.tidy(() => {
       const imgData = preProcess(img, this.imgSize);
@@ -124,10 +107,9 @@ export class Darknet {
   }
 }
 
-
 export async function load(version) {
   if (version !== 'reference' && version !== 'tiny') {
-    throw new Error('Please select a version : darknet-reference or darknet-tiny');
+    throw new Error('Please select a version: darknet-reference or darknet-tiny');
   }
 
   const darknet = new Darknet(version);

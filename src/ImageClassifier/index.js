@@ -12,7 +12,6 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as darknet from './darknet';
 import callCallback from '../utils/callcallback';
 
-
 const DEFAULTS = {
   mobilenet: {
     version: 1,
