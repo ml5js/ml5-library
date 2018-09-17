@@ -27,6 +27,15 @@ describe('imageClassifier', () => {
     return img;
   }
 
+  async function getCanvas() {
+    const img = await getImage();
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    canvas.getContext('2d').drawImage(img, 0, 0);
+    return canvas;
+  }
+
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     classifier = await imageClassifier('MobileNet', undefined, {});
@@ -45,6 +54,29 @@ describe('imageClassifier', () => {
       await classifier.predict(img)
         .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
     });
+
+    it('Should support p5 elements with an image on .elt', async () => {
+      const img = await getImage();
+      await classifier.predict({ elt: img })
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
+
+    it('Should support HTMLCanvasElement', async () => {
+      const canvas = await getCanvas();
+      await classifier.predict(canvas)
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
+
+    it('Should support p5 elements with canvas on .canvas', async () => {
+      const canvas = await getCanvas();
+      await classifier.predict({ canvas })
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
+
+    it('Should support p5 elements with canvas on .elt', async () => {
+      const canvas = await getCanvas();
+      await classifier.predict({ elt: canvas })
+        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+    });
   });
 });
-
