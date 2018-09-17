@@ -5,8 +5,8 @@
 
 /*
   Crepe Pitch Detection model
-  https://github.com/marl/crepe/tree/gh-pages
-  https://marl.github.io/crepe/crepe.js
+  Based on https://github.com/marl/crepe/tree/gh-pages
+  Original model and code: https://marl.github.io/crepe/crepe.js
 */
 
 import * as tf from '@tensorflow/tfjs';
