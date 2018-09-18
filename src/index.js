@@ -14,6 +14,7 @@ import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
 import LSTMGenerator from './LSTM/';
 import pix2pix from './Pix2pix/';
+import SketchRNN from './SketchRNN';
 
 module.exports = {
   imageClassifier,
@@ -25,6 +26,7 @@ module.exports = {
   poseNet,
   LSTMGenerator,
   pix2pix,
+  SketchRNN,
   ...imageUtils,
   tf,
 };
