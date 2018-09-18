@@ -41,11 +41,14 @@ class Mobilenet {
     this.mapStringToIndex = [];
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
+    this.normalizationOffset = tf.scalar(127.5);
+    this.intermediateModels = {};
     // this.then = this.ready.then;
   }
 
   async loadModel() {
     this.mobilenet = await tf.loadModel(this.modelPath);
+    this.endpoints = this.mobilenet.layers.map(l => l.name);
     const layer = this.mobilenet.getLayer('conv_pw_13_relu');
     if (this.video) {
       tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
@@ -321,6 +324,70 @@ class Mobilenet {
 
     callback(undefined, topClassesAndProbs);
     return topClassesAndProbs;
+  }
+
+  getFeatures(input) {
+    let inputImg;
+    if (input instanceof HTMLImageElement ||
+      input instanceof HTMLVideoElement ||
+      input instanceof HTMLCanvasElement ||
+      input instanceof ImageData
+    ) {
+      inputImg = input;
+    } else if (typeof input === 'object' &&
+      (input.elt instanceof HTMLImageElement ||
+        input.elt instanceof HTMLVideoElement ||
+        input.elt instanceof HTMLCanvasElement)) {
+      inputImg = input.elt; // p5.js image/video/canvas element
+    }
+    return this.inferInternal(inputImg, 'conv_preds');
+  }
+
+  /**
+   * Infers through the model. Optionally takes an endpoint to return an
+   * intermediate activation.
+   *
+   * @param img The image to classify. Can be a tensor or a DOM element image,
+   * video, or canvas.
+   * @param endpoint The endpoint to infer through. If not defined, returns
+   * logits.
+   */
+  inferInternal(img, endpoint) {
+    if (endpoint != null && this.endpoints.indexOf(endpoint) === -1) {
+      throw new Error(`Unknown endpoint ${endpoint}. Available endpoints: ${this.endpoints}.`);
+    }
+
+    return tf.tidy(() => {
+      let image = img;
+      if (!(img instanceof tf.Tensor)) {
+        image = tf.fromPixels(img);
+      }
+      // Normalize the image from [0, 255] to [-1, 1].
+      const normalized = image.toFloat().sub(this.normalizationOffset).div(this.normalizationOffset);
+      // Resize the image to
+      let resized = normalized;
+      if (image.shape[0] !== IMAGESIZE || image.shape[1] !== IMAGESIZE) {
+        const alignCorners = true;
+        resized = tf.image.resizeBilinear(normalized, [IMAGESIZE, IMAGESIZE], alignCorners);
+      }
+
+      // Reshape to a single-element batch so we can pass it to predict.
+      const batched = resized.reshape([1, IMAGESIZE, IMAGESIZE, 3]);
+
+      let model;
+      if (endpoint == null) {
+        model = this.mobilenet;
+      } else {
+        if (this.intermediateModels[endpoint] == null) {
+          const layer = this.mobilenet.layers.find(l => l.name === endpoint);
+          this.intermediateModels[endpoint] =
+              tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
+        }
+        model = this.intermediateModels[endpoint];
+      }
+
+      return model.predict(batched);
+    });
   }
 }
 
