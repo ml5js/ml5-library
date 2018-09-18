@@ -98,7 +98,7 @@ class Mobilenet {
     if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement) {
       imgToAdd = inputOrLabel;
     } else if (typeof inputOrLabel === 'object' && (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)) {
-      imgToAdd = inputOrLabel;
+      imgToAdd = inputOrLabel.elt;
     } else if (typeof inputOrLabel === 'string' || typeof inputOrLabel === 'number') {
       imgToAdd = this.video;
       label = inputOrLabel;
@@ -124,7 +124,8 @@ class Mobilenet {
   async addImageInternal(imgToAdd, label) {
     await this.ready;
     tf.tidy(() => {
-      const processedImg = imgToTensor(imgToAdd);
+      const imageResize = (imgToAdd === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const processedImg = imgToTensor(imgToAdd, imageResize);
       const prediction = this.mobilenetFeatures.predict(processedImg);
 
       let y;
@@ -246,7 +247,8 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const processedImg = imgToTensor(imgToPredict);
+      const imageResize = (imgToPredict === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const processedImg = imgToTensor(imgToPredict, imageResize);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
       return predictions.as1D().argMax();
@@ -284,7 +286,8 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const processedImg = imgToTensor(imgToPredict);
+      const imageResize = (imgToPredict === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const processedImg = imgToTensor(imgToPredict, imageResize);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
       return predictions.as1D();
