@@ -123,23 +123,15 @@ class YOLOBase {
    */
   async postProcess(rawPrediction) {
     const [boxes, boxScores, classes, Indices] = tf.tidy(() => this.split(rawPrediction.squeeze([0]), this.anchorsTensor));
-    // for the case of yolov3  there are 2 output tensors
-    // v3
-    // this.split(rawPrediction[0], this.AnchorsTensorL1);
-    // this.split(rawPrediction[1], this.AnchorsTensorL2);
 
     // we started at one in the range so we remove 1 now
-    // this is where a major bottleneck happens
-    // this can be replaced with tf.boolean_mask() if tfjs team implements it
-    // this is also why wehave 2 tf.tidy()'s
-    // more info : https://github.com/ModelDepot/tfjs-yolo-tiny/issues/6
-
     const indicesArr = Array.from(await Indices.data()).filter(i => i > 0).map(i => i - 1);
 
     if (indicesArr.length === 0) {
       boxes.dispose();
       boxScores.dispose();
       classes.dispose();
+      Indices.dispose();
       return [];
     }
 
@@ -148,18 +140,20 @@ class YOLOBase {
       const filteredBoxes1 = boxes.gather(indicesTensor);
       const filteredScores1 = boxScores.flatten().gather(indicesTensor);
       const filteredclasses1 = classes.flatten().gather(indicesTensor);
-      // Image Rescale
+
       const Height = tf.scalar(this.imgHeight);
       const Width = tf.scalar(this.imgWidth);
       // this for x1 y1 x2 y2
       // const ImageDims = tf.stack([Height, Width, Height, Width]).reshape([1, 4]);
-
       // this for x y w h
       const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
       const filteredBoxes2 = filteredBoxes1.mul(ImageDims);
       return [filteredBoxes2, filteredScores1, filteredclasses1];
     });
-
+    boxes.dispose();
+    boxScores.dispose();
+    classes.dispose();
+    Indices.dispose();
     // NonMaxSuppression
     // GreedyNMS
     const [boxArr, scoreArr, classesArr] = await Promise.all([filteredBoxes.data(), filteredScores.data(), filteredclasses.data()]);
@@ -182,8 +176,8 @@ class YOLOBase {
       let Push = true;
       for (let i = 0; i < selectedBoxes.length; i += 1) {
         // Compare IoU of zipped[1], since that is the box coordinates arr
-        // this a quick fix that can be done muck better the iou atm takes x1 y1 x2 y2 and we have xy wh
-        // this is dirty & needs to be directly  edited in the iou func
+        // this a quick fix that can be done much better the iou atm takes x1 y1 x2 y2 and we have xy wh
+        // this needs to be directly implemented in the iou function
         // x1 = x - (w/2)
         // y1 = y - (h/2)
         // x2 = x + (w/2)
@@ -200,7 +194,7 @@ class YOLOBase {
       }
       if (Push) selectedBoxes.push(box);
     });
-    // final phase
+
     const detections = [];
     // add any output you want
     for (let id = 0; id < selectedBoxes.length; id += 1) {
@@ -227,47 +221,40 @@ class YOLOBase {
   split(rawPrediction, AnchorsTensor) {
     const [outputWidth, outputHeight] = [rawPrediction.shape[0], rawPrediction.shape[1]];
     const reshaped = tf.reshape(rawPrediction, [outputWidth, outputHeight, this.anchorsLength, this.classesLength + 5]);
-    // Box Coords
+    // Box xywh
     const boxxy = tf.sigmoid(reshaped.slice([0, 0, 0, 0], [outputWidth, outputHeight, this.anchorsLength, 2]));
     const boxwh = tf.exp(reshaped.slice([0, 0, 0, 2], [outputWidth, outputHeight, this.anchorsLength, 2]));
-    // ObjectnessScore
+    // objectnessScore
     const boxConfidence = tf.sigmoid(reshaped.slice([0, 0, 0, 4], [outputWidth, outputHeight, this.anchorsLength, 1]));
-    // ClassProb
+    // classProb
     const boxClassProbs = tf.softmax(reshaped.slice([0, 0, 0, 5], [outputWidth, outputHeight, this.anchorsLength, this.classesLength]));
 
-    // this assumes that we have a square output tensor eg 13x13 // 26x26
-    // this is making an index map to add to the w y coordinates
-    // see this
     let ConvIndex = tf.range(0, outputWidth);
-    const ConvHeightIndex = tf.tile(ConvIndex, [outputWidth]);
+    const ConvHeightIndex = tf.tile(ConvIndex, [outputHeight]);
     let ConvWidthindex = tf.tile(tf.expandDims(ConvIndex, 0), [outputWidth, 1]);
     ConvWidthindex = tf.transpose(ConvWidthindex).flatten();
     ConvIndex = tf.transpose(tf.stack([ConvHeightIndex, ConvWidthindex]));
+    ConvIndex = tf.reshape(ConvIndex, [outputWidth, outputHeight, 1, 2]);
+    const ConvDims = tf.reshape(tf.tensor1d([outputWidth, outputHeight]), [1, 1, 1, 2]);
 
-    ConvIndex = tf.reshape(ConvIndex, [outputWidth, outputWidth, 1, 2]);
-    const ConvDims = tf.reshape(tf.tensor1d([outputWidth, outputWidth]), [1, 1, 1, 2]);
-    // ConvIndex.print();
     const boxxy1 = tf.div(tf.add(boxxy, ConvIndex), ConvDims);
     const boxwh1 = tf.div(tf.mul(boxwh, AnchorsTensor), ConvDims);
 
-    // TODO : need to get the anchors size frome the input anchors tensor
     const finalboxes = tf.concat([boxxy1, boxwh1], 3).reshape([(outputWidth * outputHeight * this.anchorsLength), 4]);
 
-    // Filterboxes by objectness threshold
-    // not filtering / getting a mask really
+    // filter boxes by objectness threshold
     const boxConfidence1 = boxConfidence.squeeze([3]);
     const objectnessMask = tf.greaterEqual(boxConfidence1, tf.scalar(this.filterBoxesThreshold));
 
-    // Filterboxes by class probability threshold
+    // filter boxes by class probability threshold
     const boxScores1 = tf.mul(boxConfidence1, tf.max(boxClassProbs, 3));
     const boxClassProbMask = tf.greaterEqual(boxScores1, tf.scalar(this.classProbThreshold));
 
-    // getting classes indices
+    // classes indices
     const classes1 = tf.argMax(boxClassProbs, -1);
 
-    // removed this from init as it semm to not be affecting perf very much
     const indicesTensor = tf.range(1, (outputWidth * outputHeight * this.anchorsLength) + 1, 1, 'int32');
-    // Final Mask each elem that survived both filters (0x0 0x1 1x0 = fail ) 1x1 = survived
+    // Final Mask each elem that survived both filters
     const finalMask = boxClassProbMask.mul(objectnessMask);
     const indices = finalMask.flatten().toInt().mul(indicesTensor);
     return [finalboxes, boxScores1, classes1, indices];
