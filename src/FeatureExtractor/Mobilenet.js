@@ -8,49 +8,53 @@ A class that extract features from Mobilenet
 */
 
 import * as tf from '@tensorflow/tfjs';
+import * as mobilenet from '@tensorflow-models/mobilenet';
+
 import Video from './../utils/Video';
-import { IMAGENET_CLASSES } from './../utils/IMAGENET_CLASSES';
+
 import { imgToTensor } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
-const IMAGESIZE = 224;
+const IMAGE_SIZE = 224;
 const DEFAULTS = {
   version: 1,
-  alpha: 1.0,
+  alpha: 0.25,
   topk: 3,
-  learningRate: 0.0001,
+  learningRate: 0.001,
   hiddenUnits: 100,
   epochs: 20,
   numClasses: 2,
   batchSize: 0.4,
+  layer: 'conv_pw_13_relu',
 };
 
 class Mobilenet {
   constructor(options, callback) {
-    this.mobilenet = null;
-    this.modelPath = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json';
+    this.mobilenet = mobilenet;
     this.topKPredictions = 10;
     this.hasAnyTrainedClass = false;
     this.customModel = null;
     this.epochs = options.epochs || DEFAULTS.epochs;
+    this.version = options.version || DEFAULTS.version;
     this.hiddenUnits = options.hiddenUnits || DEFAULTS.hiddenUnits;
     this.numClasses = options.numClasses || DEFAULTS.numClasses;
     this.learningRate = options.learningRate || DEFAULTS.learningRate;
     this.batchSize = options.batchSize || DEFAULTS.batchSize;
+    this.layer = options.layer || DEFAULTS.layer;
+    this.alpha = options.alpha || DEFAULTS.alpha;
     this.isPredicting = false;
     this.mapStringToIndex = [];
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
-    // this.then = this.ready.then;
   }
 
   async loadModel() {
-    this.mobilenet = await tf.loadModel(this.modelPath);
-    const layer = this.mobilenet.getLayer('conv_pw_13_relu');
+    this.mobilenet = await this.mobilenet.load(this.version, this.alpha);
+    const layer = this.mobilenet.model.getLayer(this.layer);
+    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.model.inputs, outputs: layer.output });
     if (this.video) {
-      tf.tidy(() => this.mobilenet.predict(imgToTensor(this.video))); // Warm up
+      await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
     }
-    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
     return this;
   }
 
@@ -80,7 +84,7 @@ class Mobilenet {
     }
 
     if (inputVideo) {
-      const vid = new Video(inputVideo, IMAGESIZE);
+      const vid = new Video(inputVideo, IMAGE_SIZE);
       this.video = await vid.loadVideo();
     }
 
@@ -121,10 +125,9 @@ class Mobilenet {
   async addImageInternal(imgToAdd, label) {
     await this.ready;
     tf.tidy(() => {
-      const imageResize = (imgToAdd === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const imageResize = (imgToAdd === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToAdd, imageResize);
       const prediction = this.mobilenetFeatures.predict(processedImg);
-
       let y;
       if (this.usageType === 'classifier') {
         y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
@@ -244,7 +247,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const imageResize = (imgToPredict === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
@@ -283,7 +286,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const imageResize = (imgToPredict === this.video) ? null : [IMAGESIZE, IMAGESIZE];
+      const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
@@ -294,33 +297,32 @@ class Mobilenet {
     return prediction[0];
   }
 
-  // Static Method: get top k classes for mobilenet
-  static async getTopKClasses(logits, topK, callback = () => {}) {
-    const values = await logits.data();
-    const valuesAndIndices = [];
-    for (let i = 0; i < values.length; i += 1) {
-      valuesAndIndices.push({ value: values[i], index: i });
-    }
-    valuesAndIndices.sort((a, b) => b.value - a.value);
-    const topkValues = new Float32Array(topK);
+  async load(filesOrPath = null) {
+    let model = null;
+    let weights = null;
 
-    const topkIndices = new Int32Array(topK);
-    for (let i = 0; i < topK; i += 1) {
-      topkValues[i] = valuesAndIndices[i].value;
-      topkIndices[i] = valuesAndIndices[i].index;
-    }
-    const topClassesAndProbs = [];
-    for (let i = 0; i < topkIndices.length; i += 1) {
-      topClassesAndProbs.push({
-        className: IMAGENET_CLASSES[topkIndices[i]],
-        probability: topkValues[i],
+    if (typeof filesOrPath !== 'string') {
+      Array.from(filesOrPath).forEach((file) => {
+        if (file.name.indexOf('.json') !== -1) {
+          model = file;
+        } else if (file.name.indexOf('.bin') !== -1) {
+          weights = file;
+        }
       });
     }
 
-    await tf.nextFrame();
+    if (model && weights) {
+      this.customModel = await tf.loadModel(tf.io.browserFiles([model, weights]));
+    } else {
+      await model.loadModel(filesOrPath);
+    }
+  }
 
-    callback(undefined, topClassesAndProbs);
-    return topClassesAndProbs;
+  async save(destination = 'downloads://') {
+    if (!this.customModel) {
+      throw new Error('No model found.');
+    }
+    await this.customModel.model.save(destination);
   }
 }
 
