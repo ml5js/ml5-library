@@ -20,7 +20,7 @@ const DEFAULTS = {
   version: 1,
   alpha: 0.25,
   topk: 3,
-  learningRate: 0.001,
+  learningRate: 0.0001,
   hiddenUnits: 100,
   epochs: 20,
   numClasses: 2,
