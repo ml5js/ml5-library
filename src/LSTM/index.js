@@ -77,8 +77,9 @@ class LSTM {
     await this.ready;
     const forgetBias = tf.tensor(1.0);
     const LSTMCells = [];
-    let c = [];
-    let h = [];
+    let c = options.c || [];
+    let h = options.h || [];
+    let probabilitiesNormalized = []; // will contain final probabilities (normalized)
 
     const lstm = (i) => {
       const cell = (DATA, C, H) =>
@@ -87,8 +88,14 @@ class LSTM {
     };
 
     for (let i = 0; i < this.cellsAmount; i += 1) {
-      c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-      h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
+      if (!options.c) {
+        c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
+        console.log('init c');
+      }
+      if (!options.h) {
+        h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
+        console.log('init h');
+      }
       LSTMCells.push(lstm(i));
     }
 
@@ -124,12 +131,12 @@ class LSTM {
       const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
       const divided = tf.div(logits, tf.tensor(temperature));
       const probabilities = tf.exp(divided);
-      const normalized = await tf.div(
+      probabilitiesNormalized = await tf.div(
         probabilities,
         tf.sum(probabilities),
       ).data();
 
-      const sampledResult = sampleFromDistribution(normalized);
+      const sampledResult = sampleFromDistribution(probabilitiesNormalized);
       if (userInput.length > current) {
         input = encodedInput[current];
         current += 1;
@@ -146,7 +153,12 @@ class LSTM {
         generated += mapped;
       }
     });
-    return generated;
+    return {
+      sample: generated,
+      c,
+      h,
+      probabilities: probabilitiesNormalized,
+    };
   }
 
   async generate(options, callback) {
