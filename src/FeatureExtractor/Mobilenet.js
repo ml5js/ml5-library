@@ -297,32 +297,35 @@ class Mobilenet {
     return prediction[0];
   }
 
-  async load(filesOrPath = null) {
-    let model = null;
-    let weights = null;
-
+  async load(filesOrPath = null, callback) {
     if (typeof filesOrPath !== 'string') {
+      let model = null;
+      let weights = null;
       Array.from(filesOrPath).forEach((file) => {
-        if (file.name.indexOf('.json') !== -1) {
+        if (file.name.includes('.json')) {
           model = file;
-        } else if (file.name.indexOf('.bin') !== -1) {
+        } else if (file.name.includes('.bin')) {
           weights = file;
         }
       });
-    }
-
-    if (model && weights) {
       this.customModel = await tf.loadModel(tf.io.browserFiles([model, weights]));
     } else {
-      await model.loadModel(filesOrPath);
+      this.customModel = await tf.loadModel(filesOrPath);
     }
+    if (callback) {
+      callback();
+    }
+    return this.customModel;
   }
 
-  async save(destination = 'downloads://') {
+  async save(destination = 'downloads://', callback) {
     if (!this.customModel) {
       throw new Error('No model found.');
     }
     await this.customModel.model.save(destination);
+    if (callback) {
+      callback();
+    }
   }
 }
 
