@@ -19,19 +19,23 @@ const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
 class LSTM {
-  constructor(model, callback) {
+  constructor(modelPath, callback) {
     this.ready = false;
     this.model = {};
     this.cellsAmount = 0;
+    this.cells = [];
+    this.zeroState = { c: [], h: [] };
+    this.state = { c: [], h: [] };
     this.vocab = {};
     this.vocabSize = 0;
     this.defaults = {
-      seed: 'a',
+      seed: 'a', // TODO: use no seed by default
       length: 20,
       temperature: 0.5,
+      stateful: false,
     };
 
-    this.ready = callCallback(this.loadCheckpoints(model), callback);
+    this.ready = callCallback(this.loadCheckpoints(modelPath), callback);
     // this.then = this.ready.then.bind(this.ready);
   }
 
@@ -57,6 +61,7 @@ class LSTM {
       }
     });
     await this.loadVocab(path);
+    await this.initCells();
     return this;
   }
 
@@ -68,18 +73,10 @@ class LSTM {
     this.vocabSize = Object.keys(json).length;
   }
 
-  async generateInternal(options) {
-    const seed = options.seed || this.defaults.seed;
-    const length = +options.length || this.defaults.length;
-    const temperature = +options.temperature || this.defaults.temperature;
-    const results = [];
-
-    await this.ready;
+  async initCells() {
+    this.cells = [];
+    this.zeroState = { c: [], h: [] };
     const forgetBias = tf.tensor(1.0);
-    const LSTMCells = [];
-    let c = options.c || [];
-    let h = options.h || [];
-    let probabilitiesNormalized = []; // will contain final probabilities (normalized)
 
     const lstm = (i) => {
       const cell = (DATA, C, H) =>
@@ -88,45 +85,55 @@ class LSTM {
     };
 
     for (let i = 0; i < this.cellsAmount; i += 1) {
-      if (!options.c) {
-        c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-        console.log('init c');
-      }
-      if (!options.h) {
-        h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-        console.log('init h');
-      }
-      LSTMCells.push(lstm(i));
+      this.zeroState.c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
+      this.zeroState.h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
+      this.cells.push(lstm(i));
     }
 
-    const userInput = Array.from(seed);
+    this.state = this.zeroState;
+  }
 
+
+  async generateInternal(options) {
+    await this.ready;
+    const seed = options.seed || this.defaults.seed;
+    const length = +options.length || this.defaults.length;
+    const temperature = +options.temperature || this.defaults.temperature;
+    const stateful = options.stateful || this.defaults.stateful;
+    if (!stateful) {
+      // await this.initCells();
+      this.state = this.zeroState;
+    }
+
+    const results = [];
+    const userInput = Array.from(seed);
     const encodedInput = [];
+
     userInput.forEach((char, ind) => {
-      if (ind < 100) {
+      if (ind < 100) { // TODO: What is this?
         encodedInput.push(this.vocab[char]);
       }
     });
 
-    let current = 0;
-    let input = encodedInput[current];
+    let input = encodedInput[0];
+    let probabilitiesNormalized = []; // will contain final probabilities (normalized)
 
-    for (let i = 0; i < userInput.length + length; i += 1) {
+    for (let i = 0; i < userInput.length + length + -1; i += 1) {
       const onehotBuffer = tf.buffer([1, this.vocabSize]);
       onehotBuffer.set(1.0, 0, input);
       const onehot = onehotBuffer.toTensor();
       let output;
       if (this.model.embedding) {
         const embedded = tf.matMul(onehot, this.model.embedding);
-        output = tf.multiRNNCell(LSTMCells, embedded, c, h);
+        output = tf.multiRNNCell(this.cells, embedded, this.state.c, this.state.h);
       } else {
-        output = tf.multiRNNCell(LSTMCells, onehot, c, h);
+        output = tf.multiRNNCell(this.cells, onehot, this.state.c, this.state.h);
       }
 
-      c = output[0];
-      h = output[1];
+      this.state.c = output[0];
+      this.state.h = output[1];
 
-      const outputH = h[1];
+      const outputH = this.state.h[1];
       const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
       const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
       const divided = tf.div(logits, tf.tensor(temperature));
@@ -136,13 +143,11 @@ class LSTM {
         tf.sum(probabilities),
       ).data();
 
-      const sampledResult = sampleFromDistribution(probabilitiesNormalized);
-      if (userInput.length > current) {
-        input = encodedInput[current];
-        current += 1;
+      if (i < userInput.length - 1) {
+        input = encodedInput[i + 1];
       } else {
-        input = sampledResult;
-        results.push(sampledResult);
+        input = sampleFromDistribution(probabilitiesNormalized);
+        results.push(input);
       }
     }
 
@@ -155,8 +160,7 @@ class LSTM {
     });
     return {
       sample: generated,
-      c,
-      h,
+      state: this.state,
       probabilities: probabilitiesNormalized,
     };
   }
