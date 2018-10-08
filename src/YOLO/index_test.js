@@ -26,7 +26,6 @@ describe('YOLO', () => {
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
     yolo = YOLO();
-    await yolo.loadModel();
   });
 
   it('instantiates the YOLO classifier with defaults', () => {
@@ -38,6 +37,7 @@ describe('YOLO', () => {
 
   it('detects a robin', async () => {
     const robin = await getRobin();
+    await yolo.loadModel();
     const detection = await yolo.detect(robin);
     expect(detection[0].className).toBe('bird');
   });
