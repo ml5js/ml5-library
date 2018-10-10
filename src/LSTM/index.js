@@ -40,6 +40,18 @@ class LSTM {
     // this.then = this.ready.then.bind(this.ready);
   }
 
+  resetState() {
+    this.state = this.zeroState;
+  }
+
+  setState(state) {
+    this.state = state;
+  }
+
+  getState() {
+    return this.state;
+  }
+
   async loadCheckpoints(path) {
     const reader = new CheckpointLoader(path);
     const vars = await reader.getAllVariables();
