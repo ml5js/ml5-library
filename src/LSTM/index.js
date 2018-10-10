@@ -110,10 +110,8 @@ class LSTM {
     const userInput = Array.from(seed);
     const encodedInput = [];
 
-    userInput.forEach((char, ind) => {
-      if (ind < 100) { // TODO: What is this?
-        encodedInput.push(this.vocab[char]);
-      }
+    userInput.forEach((char) => {
+      encodedInput.push(this.vocab[char]);
     });
 
     let input = encodedInput[0];
