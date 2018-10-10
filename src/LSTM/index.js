@@ -102,7 +102,6 @@ class LSTM {
     const temperature = +options.temperature || this.defaults.temperature;
     const stateful = options.stateful || this.defaults.stateful;
     if (!stateful) {
-      // await this.initCells();
       this.state = this.zeroState;
     }
 
