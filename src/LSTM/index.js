@@ -28,6 +28,7 @@ class LSTM {
     this.state = { c: [], h: [] };
     this.vocab = {};
     this.vocabSize = 0;
+    this.probabilities = [];
     this.defaults = {
       seed: 'a', // TODO: use no seed by default
       length: 20,
@@ -158,10 +159,11 @@ class LSTM {
         generated += mapped;
       }
     });
+    this.probabilities = probabilitiesNormalized;
     return {
       sample: generated,
       state: this.state,
-      probabilities: probabilitiesNormalized,
+      probabilities: this.probabilities,
     };
   }
 
