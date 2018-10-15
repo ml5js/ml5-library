@@ -21,7 +21,7 @@ const featureExtractor = (model, optionsOrCallback, cb) => {
   let options = {};
   let callback = cb;
 
-  if (optionsOrCallback === 'object') {
+  if (typeof optionsOrCallback === 'object') {
     options = optionsOrCallback;
   } else if (typeof optionsOrCallback === 'function') {
     callback = optionsOrCallback;
