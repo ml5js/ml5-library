@@ -12,31 +12,84 @@
 import * as tf from '@tensorflow/tfjs';
 import * as knnClassifier from '@tensorflow-models/knn-classifier';
 import * as io from '../utils/io';
+import callCallback from '../utils/callcallback';
 
 class KNN {
   constructor() {
     this.knnClassifier = knnClassifier.create();
+    this.mapStringToIndex = [];
   }
 
-  addExample(example, classIndex) {
+  addExample(example, classIndexOrLabel) {
+    let classIndex;
+    if (typeof classIndexOrLabel === 'string') {
+      if (!this.mapStringToIndex.includes(classIndexOrLabel)) {
+        classIndex = this.mapStringToIndex.push(classIndexOrLabel) - 1;
+      } else {
+        classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
+      }
+    } else if (classIndexOrLabel === 'number') {
+      classIndex = classIndexOrLabel;
+    }
     this.knnClassifier.addExample(example, classIndex);
   }
 
-  async predictClass(input, k = 3) {
+  async predictClass(input, kOrCallback, cb) {
+    let k = 3;
+    let callback = cb;
+
+    if (typeof kOrCallback === 'number') {
+      k = kOrCallback;
+    } else if (typeof kOrCallback === 'function') {
+      callback = kOrCallback;
+    }
+
+    return callCallback(this.predictClassInternal(input, k), callback);
+  }
+
+  async predictClassInternal(input, k) {
     const numClass = this.knnClassifier.getNumClasses();
     if (numClass <= 0) {
       throw new Error('There is no example in any class');
     } else {
       const res = await this.knnClassifier.predictClass(input, k);
+      if (this.mapStringToIndex.length > 0) {
+        if (res.classIndex || res.classIndex === 0) {
+          const classLabel = this.mapStringToIndex[res.classIndex];
+          if (classLabel) res.classLabel = classLabel;
+        }
+        if (res.confidences) {
+          res.confidencesByLabel = {};
+          const { confidences } = res;
+          const indexes = Object.keys(confidences);
+          indexes.forEach((index) => {
+            const label = this.mapStringToIndex[index];
+            res.confidencesByLabel[label] = confidences[index];
+          });
+        }
+      }
+      console.log('res: ', res);
       return res;
     }
   }
 
-  clearClass(classIndex) {
+  clearClass(classIndexOrLabel) {
+    let classIndex;
+    if (typeof classIndexOrLabel === 'string') {
+      if (!this.mapStringToIndex.includes(classIndexOrLabel)) {
+        classIndex = this.mapStringToIndex.push(classIndexOrLabel) - 1;
+      } else {
+        classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
+      }
+    } else if (classIndexOrLabel === 'number') {
+      classIndex = classIndexOrLabel;
+    }
+    this.mapStringToIndex = this.mapStringToIndex.splice(classIndex, 0);
     this.knnClassifier.clearClass(classIndex);
   }
 
   clearAllClasses() {
+    this.mapStringToIndex = [];
     this.knnClassifier.clearAllClasses();
   }
 
