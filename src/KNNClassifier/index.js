@@ -68,7 +68,6 @@ class KNN {
           });
         }
       }
-      console.log('res: ', res);
       return res;
     }
   }
@@ -76,21 +75,33 @@ class KNN {
   clearClass(classIndexOrLabel) {
     let classIndex;
     if (typeof classIndexOrLabel === 'string') {
-      if (!this.mapStringToIndex.includes(classIndexOrLabel)) {
-        classIndex = this.mapStringToIndex.push(classIndexOrLabel) - 1;
-      } else {
+      if (this.mapStringToIndex.includes(classIndexOrLabel)) {
         classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
       }
-    } else if (classIndexOrLabel === 'number') {
+    } else {
       classIndex = classIndexOrLabel;
     }
-    this.mapStringToIndex = this.mapStringToIndex.splice(classIndex, 0);
     this.knnClassifier.clearClass(classIndex);
   }
 
   clearAllClasses() {
     this.mapStringToIndex = [];
     this.knnClassifier.clearAllClasses();
+  }
+
+  getClassExampleCountByLabel() {
+    const countByIndex = this.knnClassifier.getClassExampleCount();
+    if (this.mapStringToIndex.length > 0) {
+      const countByLabel = {};
+      Object.keys(countByIndex).forEach((key) => {
+        if (this.mapStringToIndex[key]) {
+          const label = this.mapStringToIndex[key];
+          countByLabel[label] = countByIndex[key];
+        }
+      });
+      return countByLabel;
+    }
+    return countByIndex;
   }
 
   getClassExampleCount() {
@@ -115,6 +126,13 @@ class KNN {
 
   saveDataset(name) {
     const dataset = this.knnClassifier.getClassifierDataset();
+    if (this.mapStringToIndex.length > 0) {
+      Object.keys(dataset).forEach((key) => {
+        if (this.mapStringToIndex[key]) {
+          dataset[key].label = this.mapStringToIndex[key];
+        }
+      });
+    }
     const tensors = Object.keys(dataset).map((key) => {
       const t = dataset[key];
       if (t) {
@@ -130,6 +148,7 @@ class KNN {
     io.loadFile(path, (err, data) => {
       if (data) {
         const { dataset, tensors } = data;
+        this.mapStringToIndex = Object.keys(dataset).map(key => dataset[key].label);
         const tensorsData = tensors
           .map((tensor, i) => {
             if (tensor) {
