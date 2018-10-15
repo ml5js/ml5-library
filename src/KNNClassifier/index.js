@@ -74,23 +74,25 @@ class KNN {
   }
 
   loadDataset(path, callback) {
-    io.loadFile(path, (data) => {
-      const { dataset, tensors } = data;
-      const tensorsData = tensors
-        .map((tensor, i) => {
-          if (tensor) {
-            const values = Object.keys(tensor).map(v => tensor[v]);
-            return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
-          }
-          return null;
-        })
-        .reduce((acc, cur, j) => {
-          acc[j] = cur;
-          return acc;
-        }, {});
-      this.knnClassifier.setClassifierDataset(tensorsData);
-      if (callback) {
-        callback();
+    io.loadFile(path, (err, data) => {
+      if (data) {
+        const { dataset, tensors } = data;
+        const tensorsData = tensors
+          .map((tensor, i) => {
+            if (tensor) {
+              const values = Object.keys(tensor).map(v => tensor[v]);
+              return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
+            }
+            return null;
+          })
+          .reduce((acc, cur, j) => {
+            acc[j] = cur;
+            return acc;
+          }, {});
+        this.knnClassifier.setClassifierDataset(tensorsData);
+        if (callback) {
+          callback();
+        }
       }
     });
   }

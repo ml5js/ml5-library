@@ -104,24 +104,6 @@ class ImageClassifier {
 
     return callCallback(this.predictInternal(imgToPredict, numberOfClasses), callback);
   }
-
-  getFeatures(input) {
-    let inputImg;
-
-    if (input instanceof HTMLImageElement ||
-      input instanceof HTMLVideoElement ||
-      input instanceof HTMLCanvasElement ||
-      input instanceof ImageData
-    ) {
-      inputImg = input;
-    } else if (typeof input === 'object' &&
-      (input.elt instanceof HTMLImageElement ||
-        input.elt instanceof HTMLVideoElement)) {
-      inputImg = input.elt; // p5.js image/video element
-    }
-
-    return this.model.infer(inputImg, 'conv_preds');
-  }
 }
 
 const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {

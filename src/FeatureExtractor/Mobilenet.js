@@ -327,6 +327,24 @@ class Mobilenet {
       callback();
     }
   }
+
+  infer(input, endpoint) {
+    let imgToPredict;
+    let endpointToPredict;
+    if (input instanceof HTMLImageElement || input instanceof HTMLVideoElement || input instanceof HTMLCanvasElement || input instanceof ImageData) {
+      imgToPredict = input;
+    } else if (typeof input === 'object' && (input.elt instanceof HTMLImageElement || input.elt instanceof HTMLVideoElement || input.elt instanceof HTMLCanvasElement)) {
+      imgToPredict = input.elt; // p5.js image/canvas/video element
+    } else {
+      throw new Error('No input image found.');
+    }
+    if (endpoint && typeof endpoint === 'string') {
+      endpointToPredict = endpoint;
+    } else {
+      endpointToPredict = 'conv_preds';
+    }
+    return this.mobilenet.infer(imgToPredict, endpointToPredict);
+  }
 }
 
 export default Mobilenet;
