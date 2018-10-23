@@ -34,7 +34,7 @@ class KNN {
     this.knnClassifier.addExample(example, classIndex);
   }
 
-  async predictClass(input, kOrCallback, cb) {
+  async classify(input, kOrCallback, cb) {
     let k = 3;
     let callback = cb;
 
@@ -44,10 +44,10 @@ class KNN {
       callback = kOrCallback;
     }
 
-    return callCallback(this.predictClassInternal(input, k), callback);
+    return callCallback(this.classifyInternal(input, k), callback);
   }
 
-  async predictClassInternal(input, k) {
+  async classifyInternal(input, k) {
     const numClass = this.knnClassifier.getNumClasses();
     if (numClass <= 0) {
       throw new Error('There is no example in any class');
@@ -55,8 +55,8 @@ class KNN {
       const res = await this.knnClassifier.predictClass(input, k);
       if (this.mapStringToIndex.length > 0) {
         if (res.classIndex || res.classIndex === 0) {
-          const classLabel = this.mapStringToIndex[res.classIndex];
-          if (classLabel) res.classLabel = classLabel;
+          const label = this.mapStringToIndex[res.classIndex];
+          if (label) res.label = label;
         }
         if (res.confidences) {
           res.confidencesByLabel = {};
