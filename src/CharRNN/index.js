@@ -207,7 +207,7 @@ class CharRNN {
     return result;
   }
 
-  async feed(inputSeed) {
+  async feed(inputSeed, callback) {
     await this.ready;
     const seed = Array.from(inputSeed);
     const encodedInput = [];
@@ -233,6 +233,9 @@ class CharRNN {
       if (i < seed.length - 1) {
         input = encodedInput[i + 1];
       }
+    }
+    if (callback) {
+      callback();
     }
   }
 }
