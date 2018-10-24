@@ -12,7 +12,7 @@ import YOLO from './YOLO';
 import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
-import LSTMGenerator from './LSTM/';
+import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
 import SketchRNN from './SketchRNN';
 
@@ -24,7 +24,7 @@ module.exports = {
   word2vec,
   styleTransfer,
   poseNet,
-  LSTMGenerator,
+  charRNN,
   pix2pix,
   SketchRNN,
   ...imageUtils,

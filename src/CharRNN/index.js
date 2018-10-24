@@ -18,7 +18,7 @@ const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
 const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
-class LSTM {
+class CharRNN {
   constructor(modelPath, callback) {
     this.ready = false;
     this.model = {};
@@ -176,11 +176,67 @@ class LSTM {
     };
   }
 
+  reset() {
+    this.state = this.zeroState;
+  }
+
+  // stateless
   async generate(options, callback) {
+    this.reset();
     return callCallback(this.generateInternal(options), callback);
+  }
+
+  // stateful
+  async predict(temperature, callback) {
+    let probabilitiesNormalized = [];
+    const outputH = this.state.h[1];
+    const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
+    const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
+    const divided = tf.div(logits, tf.tensor(temperature));
+    const probabilities = tf.exp(divided);
+    probabilitiesNormalized = await tf.div(
+      probabilities,
+      tf.sum(probabilities),
+    ).data();
+
+    const sample = sampleFromDistribution(probabilitiesNormalized);
+    const result = Object.keys(this.vocab).find(key => this.vocab[key] === sample);
+    if (callback) {
+      callback(result);
+    }
+    return result;
+  }
+
+  async feed(inputSeed) {
+    await this.ready;
+    const seed = Array.from(inputSeed);
+    const encodedInput = [];
+
+    seed.forEach((char) => {
+      encodedInput.push(this.vocab[char]);
+    });
+
+    let input = encodedInput[0];
+    for (let i = 0; i < seed.length + seed + -1; i += 1) {
+      const onehotBuffer = tf.buffer([1, this.vocabSize]);
+      onehotBuffer.set(1.0, 0, input);
+      const onehot = onehotBuffer.toTensor();
+      let output;
+      if (this.model.embedding) {
+        const embedded = tf.matMul(onehot, this.model.embedding);
+        output = tf.multiRNNCell(this.cells, embedded, this.state.c, this.state.h);
+      } else {
+        output = tf.multiRNNCell(this.cells, onehot, this.state.c, this.state.h);
+      }
+      this.state.c = output[0];
+      this.state.h = output[1];
+      if (i < seed.length - 1) {
+        input = encodedInput[i + 1];
+      }
+    }
   }
 }
 
-const LSTMGenerator = (modelPath = './', callback) => new LSTM(modelPath, callback);
+const charRNN = (modelPath = './', callback) => new CharRNN(modelPath, callback);
 
-export default LSTMGenerator;
+export default charRNN;
