@@ -217,7 +217,7 @@ class CharRNN {
     });
 
     let input = encodedInput[0];
-    for (let i = 0; i < seed.length + seed + -1; i += 1) {
+    for (let i = 0; i < seed.length; i += 1) {
       const onehotBuffer = tf.buffer([1, this.vocabSize]);
       onehotBuffer.set(1.0, 0, input);
       const onehot = onehotBuffer.toTensor();
@@ -230,9 +230,7 @@ class CharRNN {
       }
       this.state.c = output[0];
       this.state.h = output[1];
-      if (i < seed.length - 1) {
-        input = encodedInput[i + 1];
-      }
+      input = encodedInput[i];
     }
     if (callback) {
       callback();
