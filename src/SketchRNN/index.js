@@ -62,7 +62,25 @@ class SketchRNN {
     return result;
   }
 
-  async generate(options, seedStrokes, callback) {
+  async generate(optionsOrCallback, seedOrCallback, cb) {
+    let callback;
+    let options;
+    let seedStrokes;
+
+    if (typeof optionsOrCallback === 'function') {
+      options = {};
+      seedStrokes = [];
+      callback = optionsOrCallback;
+    } else if (typeof seedOrCallback === 'function') {
+      options = optionsOrCallback || {};
+      seedStrokes = [];
+      callback = seedOrCallback;
+    } else {
+      options = optionsOrCallback || {};
+      seedStrokes = seedOrCallback || [];
+      callback = cb;
+    }
+
     const strokes = seedStrokes.map((s) => {
       const up = s.pen === 'up' ? 1 : 0;
       const down = s.pen === 'down' ? 1 : 0;
