@@ -14,6 +14,16 @@ const saveFile = (name, data) => {
   document.body.removeChild(downloadElt);
 };
 
+const saveBlob = async (data, name, type) => {
+  const link = document.createElement('a');
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  const blob = new Blob([data], { type });
+  link.href = URL.createObjectURL(blob);
+  link.download = name;
+  link.click();
+};
+
 const loadFile = async (path, callback) => fetch(path)
   .then(response => response.json())
   .then((json) => {
@@ -28,5 +38,6 @@ const loadFile = async (path, callback) => fetch(path)
 
 export {
   saveFile,
+  saveBlob,
   loadFile,
 };

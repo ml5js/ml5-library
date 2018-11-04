@@ -13,6 +13,7 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import Video from './../utils/Video';
 
 import { imgToTensor } from '../utils/imageUtilities';
+import { saveBlob } from '../utils/io';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 224;
@@ -304,28 +305,49 @@ class Mobilenet {
       Array.from(filesOrPath).forEach((file) => {
         if (file.name.includes('.json')) {
           model = file;
+          const fr = new FileReader();
+          fr.onload = (d) => {
+            this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+          };
+          fr.readAsText(file);
         } else if (file.name.includes('.bin')) {
           weights = file;
         }
       });
       this.customModel = await tf.loadModel(tf.io.browserFiles([model, weights]));
     } else {
+      fetch(filesOrPath)
+        .then(r => r.json())
+        .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
       this.customModel = await tf.loadModel(filesOrPath);
-    }
-    if (callback) {
-      callback();
+      if (callback) {
+        callback();
+      }
     }
     return this.customModel;
   }
 
-  async save(destination = 'downloads://', callback) {
+  async save(callback) {
     if (!this.customModel) {
       throw new Error('No model found.');
     }
-    await this.customModel.model.save(destination);
-    if (callback) {
-      callback();
-    }
+    this.customModel.save(tf.io.withSaveHandler(async (data) => {
+      this.weightsManifest = {
+        modelTopology: data.modelTopology,
+        weightsManifest: [{
+          paths: ['./model.weights.bin'],
+          weights: data.weightSpecs,
+        }],
+        ml5Specs: {
+          mapStringToIndex: this.mapStringToIndex,
+        },
+      };
+      await saveBlob(data.weightData, 'model.weights.bin', 'application/octet-stream');
+      await saveBlob(JSON.stringify(this.weightsManifest), 'model.json', 'text/plain');
+      if (callback) {
+        callback();
+      }
+    }));
   }
 
   infer(input, endpoint) {
