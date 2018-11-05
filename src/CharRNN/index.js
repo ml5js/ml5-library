@@ -106,7 +106,6 @@ class CharRNN {
     this.state = this.zeroState;
   }
 
-
   async generateInternal(options) {
     await this.ready;
     const seed = options.seed || this.defaults.seed;
@@ -172,7 +171,6 @@ class CharRNN {
     return {
       sample: generated,
       state: this.state,
-      probabilities: this.probabilities,
     };
   }
 
@@ -187,8 +185,9 @@ class CharRNN {
   }
 
   // stateful
-  async predict(temperature, callback) {
+  async predict(temp, callback) {
     let probabilitiesNormalized = [];
+    const temperature = temp > 0 ? temp : 0.1;
     const outputH = this.state.h[1];
     const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
     const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
@@ -201,10 +200,16 @@ class CharRNN {
 
     const sample = sampleFromDistribution(probabilitiesNormalized);
     const result = Object.keys(this.vocab).find(key => this.vocab[key] === sample);
+    this.probabilities = probabilitiesNormalized;
     if (callback) {
       callback(result);
     }
-    return result;
+    /* eslint max-len: ["error", { "code": 180 }] */
+    const pm = Object.keys(this.vocab).map(c => ({ char: c, probability: this.probabilities[this.vocab[c]] }));
+    return {
+      sample: result,
+      probabilities: pm,
+    };
   }
 
   async feed(inputSeed, callback) {
