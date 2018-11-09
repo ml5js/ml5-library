@@ -62,21 +62,25 @@ class SketchRNN {
     return result;
   }
 
-  async generate(optionsOrCallback, seedOrCallback, cb) {
+  async generate(optionsOrSeedOrCallback, seedOrCallback, cb) {
     let callback;
     let options;
     let seedStrokes;
 
-    if (typeof optionsOrCallback === 'function') {
+    if (typeof optionsOrSeedOrCallback === 'function') {
       options = {};
       seedStrokes = [];
-      callback = optionsOrCallback;
+      callback = optionsOrSeedOrCallback;
+    } else if (Array.isArray(optionsOrSeedOrCallback)) {
+      options = {};
+      seedStrokes = optionsOrSeedOrCallback;
+      callback = seedOrCallback;
     } else if (typeof seedOrCallback === 'function') {
-      options = optionsOrCallback || {};
+      options = optionsOrSeedOrCallback || {};
       seedStrokes = [];
       callback = seedOrCallback;
     } else {
-      options = optionsOrCallback || {};
+      options = optionsOrSeedOrCallback || {};
       seedStrokes = seedOrCallback || [];
       callback = cb;
     }
