@@ -83,10 +83,10 @@ class PoseNet extends EventEmitter {
     }
 
     if (typeof cb === 'function') {
-      if (typeof result === 'object') {
-        cb(null, result);
+      if (typeof result !== 'object') {
+        cb(new Error('Expected Object, returned something else'));
       } else {
-        cb(new Error('result is not valid'));
+        cb(null, result);
       }
     }
 
@@ -112,10 +112,10 @@ class PoseNet extends EventEmitter {
     }
 
     if (typeof cb === 'function') {
-      if (typeof result === 'object') {
-        cb(null, result);
+      if (typeof result !== 'object') {
+        cb(new Error('Expected Object, returned something else'));
       } else {
-        cb(new Error('result is not valid'));
+        cb(null, result);
       }
     }
 
