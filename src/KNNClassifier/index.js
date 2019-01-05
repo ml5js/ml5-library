@@ -20,8 +20,10 @@ class KNN {
     this.mapStringToIndex = [];
   }
 
-  addExample(example, classIndexOrLabel) {
+  addExample(input, classIndexOrLabel) {
     let classIndex;
+    let example;
+
     if (typeof classIndexOrLabel === 'string') {
       if (!this.mapStringToIndex.includes(classIndexOrLabel)) {
         classIndex = this.mapStringToIndex.push(classIndexOrLabel) - 1;
@@ -31,12 +33,19 @@ class KNN {
     } else if (classIndexOrLabel === 'number') {
       classIndex = classIndexOrLabel;
     }
+
+    if (Array.isArray(input)) {
+      example = tf.tensor(input);
+    } else {
+      example = input;
+    }
     this.knnClassifier.addExample(example, classIndex);
   }
 
   async classify(input, kOrCallback, cb) {
     let k = 3;
     let callback = cb;
+    let example;
 
     if (typeof kOrCallback === 'number') {
       k = kOrCallback;
@@ -44,7 +53,13 @@ class KNN {
       callback = kOrCallback;
     }
 
-    return callCallback(this.classifyInternal(input, k), callback);
+    if (Array.isArray(input)) {
+      example = tf.tensor(input);
+    } else {
+      example = input;
+    }
+
+    return callCallback(this.classifyInternal(example, k), callback);
   }
 
   async classifyInternal(input, k) {
