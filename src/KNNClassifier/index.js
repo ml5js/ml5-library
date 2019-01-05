@@ -155,8 +155,11 @@ class KNN {
       }
       return null;
     });
-    const fileName = name || Date.now();
-    io.saveFile(`${fileName}.json`, JSON.stringify({ dataset, tensors }));
+    let fileName = `myKNN-${Date.now()}.json`;
+    if (name) {
+      fileName = name.endsWith('.json') ? name : `${name}.json`;
+    }
+    io.saveFile(fileName, JSON.stringify({ dataset, tensors }));
   }
 
   load(path, callback) {
