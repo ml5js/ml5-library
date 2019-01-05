@@ -155,7 +155,7 @@ class KNN {
       }
       return null;
     });
-    let fileName = `myKNN-${Date.now()}.json`;
+    let fileName = 'myKNN.json';
     if (name) {
       fileName = name.endsWith('.json') ? name : `${name}.json`;
     }
