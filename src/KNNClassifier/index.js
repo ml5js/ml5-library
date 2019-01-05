@@ -87,14 +87,14 @@ class KNN {
     }
   }
 
-  clearLabel(classIndexOrLabel) {
+  clearLabel(labelIndex) {
     let classIndex;
-    if (typeof classIndexOrLabel === 'string') {
-      if (this.mapStringToIndex.includes(classIndexOrLabel)) {
-        classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
+    if (typeof labelIndex === 'string') {
+      if (this.mapStringToIndex.includes(labelIndex)) {
+        classIndex = this.mapStringToIndex.indexOf(labelIndex);
       }
     } else {
-      classIndex = classIndexOrLabel;
+      classIndex = labelIndex;
     }
     this.knnClassifier.clearClass(classIndex);
   }
