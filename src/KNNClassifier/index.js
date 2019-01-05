@@ -87,7 +87,7 @@ class KNN {
     }
   }
 
-  clearClass(classIndexOrLabel) {
+  clearLabel(classIndexOrLabel) {
     let classIndex;
     if (typeof classIndexOrLabel === 'string') {
       if (this.mapStringToIndex.includes(classIndexOrLabel)) {
@@ -99,12 +99,12 @@ class KNN {
     this.knnClassifier.clearClass(classIndex);
   }
 
-  clearAllClasses() {
+  clearAllLabels() {
     this.mapStringToIndex = [];
     this.knnClassifier.clearAllClasses();
   }
 
-  getClassExampleCountByLabel() {
+  getCountByLabel() {
     const countByIndex = this.knnClassifier.getClassExampleCount();
     if (this.mapStringToIndex.length > 0) {
       const countByLabel = {};
@@ -119,7 +119,7 @@ class KNN {
     return countByIndex;
   }
 
-  getClassExampleCount() {
+  getCount() {
     return this.knnClassifier.getClassExampleCount();
   }
 
@@ -131,7 +131,7 @@ class KNN {
     this.knnClassifier.setClassifierDataset(dataset);
   }
 
-  getNumClasses() {
+  getNumLabels() {
     return this.knnClassifier.getNumClasses();
   }
 
@@ -139,7 +139,7 @@ class KNN {
     this.knnClassifier.dispose();
   }
 
-  saveDataset(name) {
+  save(name) {
     const dataset = this.knnClassifier.getClassifierDataset();
     if (this.mapStringToIndex.length > 0) {
       Object.keys(dataset).forEach((key) => {
@@ -159,7 +159,7 @@ class KNN {
     io.saveFile(`${fileName}.json`, JSON.stringify({ dataset, tensors }));
   }
 
-  loadDataset(path, callback) {
+  load(path, callback) {
     io.loadFile(path, (err, data) => {
       if (data) {
         const { dataset, tensors } = data;
