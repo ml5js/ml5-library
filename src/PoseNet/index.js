@@ -89,7 +89,7 @@ class PoseNet extends EventEmitter {
     return result;
   }
 
-  async multiPose(inputOr) {
+  async multiPose(inputOr, cb) {
     let input;
 
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
@@ -105,6 +105,10 @@ class PoseNet extends EventEmitter {
     this.emit('pose', result);
     if (this.video) {
       return tf.nextFrame().then(() => this.multiPose());
+    }
+
+    if (typeof cb === 'function') {
+      cb(result);
     }
 
     return result;
