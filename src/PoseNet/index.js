@@ -83,7 +83,7 @@ class PoseNet extends EventEmitter {
     }
 
     if (typeof cb === 'function') {
-        cb(result);
+      cb(result);
     }
 
     return result;
@@ -108,7 +108,7 @@ class PoseNet extends EventEmitter {
     }
 
     if (typeof cb === 'function') {
-        cb(result);
+      cb(result);
     }
 
     return result;
