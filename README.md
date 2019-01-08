@@ -24,7 +24,7 @@ Download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/mast
 ```
 or 
 ```javascript
-<script src="https://unpkg.com/ml5@0.1.1/dist/ml5.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/ml5/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 ## Resources
