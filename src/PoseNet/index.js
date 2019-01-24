@@ -62,7 +62,7 @@ class PoseNet extends EventEmitter {
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
-  async singlePose(inputOr) {
+  async singlePose(inputOr, cb) {
     let input;
 
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
@@ -74,15 +74,22 @@ class PoseNet extends EventEmitter {
     }
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+
     const result = [{ pose, skeleton: this.skeleton(pose.keypoints) }];
     this.emit('pose', result);
+
     if (this.video) {
       return tf.nextFrame().then(() => this.singlePose());
     }
+
+    if (typeof cb === 'function') {
+      cb(result);
+    }
+
     return result;
   }
 
-  async multiPose(inputOr) {
+  async multiPose(inputOr, cb) {
     let input;
 
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
@@ -99,6 +106,11 @@ class PoseNet extends EventEmitter {
     if (this.video) {
       return tf.nextFrame().then(() => this.multiPose());
     }
+
+    if (typeof cb === 'function') {
+      cb(result);
+    }
+
     return result;
   }
 }
