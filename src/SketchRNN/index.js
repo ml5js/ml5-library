@@ -48,10 +48,49 @@ class SketchRNN {
     this.rnnState = this.model.update(this.penState, this.rnnState);
     const pdf = this.model.getPDF(this.rnnState, temperature);
     this.penState = this.model.sample(pdf);
-    return this.penState;
+    const result = {
+      dx: this.penState[0],
+      dy: this.penState[1],
+    };
+    if (this.penState[2] === 1) {
+      result.pen = 'down';
+    } else if (this.penState[3] === 1) {
+      result.pen = 'up';
+    } else if (this.penState[4] === 1) {
+      result.pen = 'end';
+    }
+    return result;
   }
 
-  async generate(options, strokes, callback) {
+  async generate(optionsOrSeedOrCallback, seedOrCallback, cb) {
+    let callback;
+    let options;
+    let seedStrokes;
+
+    if (typeof optionsOrSeedOrCallback === 'function') {
+      options = {};
+      seedStrokes = [];
+      callback = optionsOrSeedOrCallback;
+    } else if (Array.isArray(optionsOrSeedOrCallback)) {
+      options = {};
+      seedStrokes = optionsOrSeedOrCallback;
+      callback = seedOrCallback;
+    } else if (typeof seedOrCallback === 'function') {
+      options = optionsOrSeedOrCallback || {};
+      seedStrokes = [];
+      callback = seedOrCallback;
+    } else {
+      options = optionsOrSeedOrCallback || {};
+      seedStrokes = seedOrCallback || [];
+      callback = cb;
+    }
+
+    const strokes = seedStrokes.map((s) => {
+      const up = s.pen === 'up' ? 1 : 0;
+      const down = s.pen === 'down' ? 1 : 0;
+      const end = s.pen === 'end' ? 1 : 0;
+      return [s.dx, s.dy, down, up, end];
+    });
     return callCallback(this.generateInternal(options, strokes), callback);
   }
 
