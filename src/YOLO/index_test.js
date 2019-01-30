@@ -31,7 +31,6 @@ describe('YOLO', () => {
   it('instantiates the YOLO classifier with defaults', () => {
     expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
     expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
-    expect(yolo.filterBoxesThreshold).toBe(YOLO_DEFAULTS.filterBoxesThreshold);
     expect(yolo.imageSize).toBe(YOLO_DEFAULTS.imageSize);
   });
 
