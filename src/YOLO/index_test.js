@@ -9,7 +9,7 @@ const YOLO_DEFAULTS = {
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
-  imageSize: 416,
+  modelSize: 416,
 };
 
 describe('YOLO', () => {
@@ -31,7 +31,7 @@ describe('YOLO', () => {
   it('instantiates the YOLO classifier with defaults', () => {
     expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
     expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
-    expect(yolo.imageSize).toBe(YOLO_DEFAULTS.imageSize);
+    expect(yolo.modelSize).toBe(YOLO_DEFAULTS.modelSize);
   });
 
   it('detects a robin', async () => {
