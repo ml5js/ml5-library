@@ -6,12 +6,15 @@
 // Save a File
 const saveFile = (name, data) => {
   const downloadElt = document.createElement('a');
-  downloadElt.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`);
+  const blob = new Blob([data], { type: 'octet/stream' });
+  const url = URL.createObjectURL(blob);
+  downloadElt.setAttribute('href', url);
   downloadElt.setAttribute('download', name);
   downloadElt.style.display = 'none';
   document.body.appendChild(downloadElt);
   downloadElt.click();
   document.body.removeChild(downloadElt);
+  URL.revokeObjectURL(url);
 };
 
 const saveBlob = async (data, name, type) => {
