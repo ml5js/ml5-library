@@ -38,7 +38,7 @@ describe('YOLO', () => {
   it('detects a robin', async () => {
     const robin = await getRobin();
     await yolo.loadModel();
-    const detection = await yolo.detect(robin);
+    const detection = await yolo.detectAsync(robin);
     expect(detection[0].className).toBe('bird');
   });
 });
