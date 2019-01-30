@@ -20,7 +20,7 @@ const DEFAULTS = {
 
   // we can change this dynamically now whhoo!
   // 128 || 144 || 224 || 256 || 320 || 416 (or any multiple of 32 really)
-  modelSize: 244,
+  modelSize: 416,
 
   // inference parameters
 
