@@ -4,6 +4,7 @@ experiments/node_modules
 node_modules
 **/npm-debug.log
 .vscode
+.idea
 *.DS_STORE
 experiments
 training/lstm/data/t

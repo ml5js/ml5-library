@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "allowJs": false,
+      "declaration": true,
+      "lib": ["es7", "dom", "es2017"],
+      "module": "commonjs",
+      "target": "es6",
+      "skipLibCheck": true,
+      "sourceMap": false,
+      "strict": true,
+      "rootDir": "src",
+      "noImplicitAny": false
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+}
