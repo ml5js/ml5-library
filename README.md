@@ -26,7 +26,12 @@ There are several ways you can use the ml5.js library:
 ```
 
 * Or you can use an specific version of the library:
+**v0.2.1**
+```javascript
+<script src="https://unpkg.com/ml5@0.2.1/dist/ml5.min.js" type="text/javascript"></script>
+```
 
+**v0.1.3**
 ```javascript
 <script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
 ```
