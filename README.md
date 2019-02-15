@@ -1,6 +1,6 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
 
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5) 
+[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
 [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/ml5js)
 
 
@@ -17,14 +17,29 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 ## Usage
 
-Download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) or use the online version and add it to the head section of your HTML document:
+There are several ways you can use the ml5.js library:
+
+* You can use the latest online version by adding it to the head section of your HTML document:
+
+```javascript
+<script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+* Or you can use an specific version of the library:
+**v0.2.1**
+```javascript
+<script src="https://unpkg.com/ml5@0.2.1/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+**v0.1.3**
+```javascript
+<script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+* Or you can download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) and include the file:
 
 ```javascript
 <script src="ml5.min.js" type="text/javascript"></script>
-```
-or 
-```javascript
-<script src="https://unpkg.com/ml5@0.1.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 ## Resources
@@ -37,7 +52,7 @@ or
 
 ## Standalone Examples
 
-You can find a collection of standalone examples in this repository: [github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples) 
+You can find a collection of standalone examples in this repository: [github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples)
 
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 
@@ -46,9 +61,3 @@ These examples are meant to serve as an introduction to the library and machine 
 See [CONTRIBUTING](CONTRIBUTING.md)
 
 Thanks [BrowserStack](https://www.browserstack.com/) for providing testing support.
-
-
-
-
-
-
