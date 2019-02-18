@@ -3,17 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-// Save a File
-const saveFile = (name, data) => {
-  const downloadElt = document.createElement('a');
-  downloadElt.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(data)}`);
-  downloadElt.setAttribute('download', name);
-  downloadElt.style.display = 'none';
-  document.body.appendChild(downloadElt);
-  downloadElt.click();
-  document.body.removeChild(downloadElt);
-};
-
 const saveBlob = async (data, name, type) => {
   const link = document.createElement('a');
   link.style.display = 'none';
@@ -37,7 +26,6 @@ const loadFile = async (path, callback) => fetch(path)
   });
 
 export {
-  saveFile,
   saveBlob,
   loadFile,
 };
