@@ -139,7 +139,7 @@ class KNN {
     this.knnClassifier.dispose();
   }
 
-  save(name) {
+  async save(name) {
     const dataset = this.knnClassifier.getClassifierDataset();
     if (this.mapStringToIndex.length > 0) {
       Object.keys(dataset).forEach((key) => {
@@ -159,7 +159,7 @@ class KNN {
     if (name) {
       fileName = name.endsWith('.json') ? name : `${name}.json`;
     }
-    io.saveFile(fileName, JSON.stringify({ dataset, tensors }));
+    await io.saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
   }
 
   load(path, callback) {
