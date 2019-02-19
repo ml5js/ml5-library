@@ -32,3 +32,6 @@ module.exports = {
   ...imageUtils,
   tf,
 };
+
+console.log('hello world it is me, maya!');
+
