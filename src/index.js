@@ -23,7 +23,7 @@ const withPreload = {
   imageClassifier,
 };
 
-module.exports = Object.assign(preloadRegister(withPreload), {
+module.exports = Object.assign({}, preloadRegister(withPreload), {
   KNNClassifier,
   featureExtractor,
   pitchDetection,
