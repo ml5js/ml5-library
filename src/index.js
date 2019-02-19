@@ -16,9 +16,13 @@ import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
 import SketchRNN from './SketchRNN';
+import preloadRegister from './utils/p5PreloadHelper';
 
-module.exports = {
+const withPreload = {
   imageClassifier,
+};
+
+module.exports = Object.assign(preloadRegister(withPreload), {
   KNNClassifier,
   featureExtractor,
   pitchDetection,
@@ -31,5 +35,4 @@ module.exports = {
   SketchRNN,
   ...imageUtils,
   tf,
-};
-
+});
