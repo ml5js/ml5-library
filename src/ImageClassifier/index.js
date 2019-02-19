@@ -65,7 +65,7 @@ class ImageClassifier {
     return this.model.classify(imgToPredict, numberOfClasses);
   }
 
-  async predict(inputNumOrCallback, numOrCallback = null, cb) {
+  async classify(inputNumOrCallback, numOrCallback = null, cb) {
     let imgToPredict = this.video;
     let numberOfClasses = this.topk;
     let callback;
@@ -103,6 +103,10 @@ class ImageClassifier {
     }
 
     return callCallback(this.predictInternal(imgToPredict, numberOfClasses), callback);
+  }
+
+  async predict(inputNumOrCallback, numOrCallback, cb) {
+    return this.classify(inputNumOrCallback, numOrCallback || null, cb);
   }
 }
 
