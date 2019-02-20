@@ -67,7 +67,7 @@ class PoseNet extends EventEmitter {
     newPose.keypoints.forEach((keypoint) => {
       newPose[keypoint.part] = {
         x: keypoint.position.x,
-        y: keypoint.position.x,
+        y: keypoint.position.y,
         confidence: keypoint.score,
       };
     });
@@ -77,7 +77,6 @@ class PoseNet extends EventEmitter {
   /* eslint max-len: ["error", { "code": 180 }] */
   async singlePose(inputOr) {
     let input;
-
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
       input = inputOr;
     } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
