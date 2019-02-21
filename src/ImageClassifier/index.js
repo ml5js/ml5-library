@@ -52,7 +52,7 @@ class ImageClassifier {
     return this;
   }
 
-  async predictInternal(imgToPredict, numberOfClasses) {
+  async classifyInternal(imgToPredict, numberOfClasses) {
     // Wait for the model to be ready
     await this.ready;
     await tf.nextFrame();
@@ -62,7 +62,9 @@ class ImageClassifier {
         this.video.onloadeddata = () => resolve();
       });
     }
-    return this.model.classify(imgToPredict, numberOfClasses);
+    return this.model
+      .classify(imgToPredict, numberOfClasses)
+      .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
   }
 
   async classify(inputNumOrCallback, numOrCallback = null, cb) {
@@ -102,7 +104,7 @@ class ImageClassifier {
       callback = cb;
     }
 
-    return callCallback(this.predictInternal(imgToPredict, numberOfClasses), callback);
+    return callCallback(this.classifyInternal(imgToPredict, numberOfClasses), callback);
   }
 
   async predict(inputNumOrCallback, numOrCallback, cb) {
