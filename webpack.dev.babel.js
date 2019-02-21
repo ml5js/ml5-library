@@ -3,6 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { existsSync } from 'fs';
 import { join } from 'path';
 import merge from 'webpack-merge';
 import common from './webpack.common.babel';
@@ -13,9 +14,9 @@ export default merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     watchContentBase: true,
-    contentBase: join(__dirname, './dist')
+    contentBase: [join(__dirname, './dist'), join(__dirname, './experiments')]
   },
-  plugins: [
+  plugins: existsSync(join(__dirname, './experiments/index.html')) ? [] : [
     new HtmlWebpackPlugin({
       title: 'ml5'
     })
