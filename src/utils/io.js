@@ -16,11 +16,15 @@ const saveBlob = async (data, name, type) => {
 const loadFile = async (path, callback) => fetch(path)
   .then(response => response.json())
   .then((json) => {
-    callback(null, json);
+    if (callback) {
+      callback(null, json);
+    }
     return json;
   })
   .catch((error) => {
-    callback(error);
+    if (callback) {
+      callback(error);
+    }
     console.error(`There has been a problem loading the file: ${error.message}`);
     throw error;
   });
