@@ -295,7 +295,7 @@ class Mobilenet {
     });
     const prediction = await predictedClass.data();
     predictedClass.dispose();
-    return prediction[0];
+    return { value: prediction[0] };
   }
 
   async load(filesOrPath = null, callback) {
