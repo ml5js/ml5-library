@@ -16,8 +16,10 @@ import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
 import SketchRNN from './SketchRNN';
+import uNet from './UNET';
 
 module.exports = {
+  uNet,
   imageClassifier,
   KNNClassifier,
   featureExtractor,
