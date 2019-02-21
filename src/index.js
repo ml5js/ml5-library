@@ -16,6 +16,7 @@ import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
 import SketchRNN from './SketchRNN';
+import { version } from '../package.json';
 
 module.exports = {
   imageClassifier,
@@ -31,5 +32,5 @@ module.exports = {
   SketchRNN,
   ...imageUtils,
   tf,
+  version,
 };
-
