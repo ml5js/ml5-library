@@ -14,8 +14,6 @@ import * as knnClassifier from '@tensorflow-models/knn-classifier';
 import * as io from '../utils/io';
 import callCallback from '../utils/callcallback';
 
-const loadData = Symbol('loadData');
-
 class KNN {
   constructor() {
     this.knnClassifier = knnClassifier.create();
@@ -164,17 +162,13 @@ class KNN {
     await io.saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
   }
 
-  load(pathOrData, callback) {
+  async load(pathOrData, callback) {
+    let data;
     if (typeof pathOrData === 'object') {
-      this[loadData](pathOrData, callback);
+      data = pathOrData;
     } else {
-      io.loadFile(pathOrData, (err, data) => {
-        this[loadData](data, callback);
-      });
+      data = await io.loadFile(pathOrData);
     }
-  }
-
-  [loadData](data, callback) {
     if (data) {
       const { dataset, tensors } = data;
       this.mapStringToIndex = Object.keys(dataset).map(key => dataset[key].label);
