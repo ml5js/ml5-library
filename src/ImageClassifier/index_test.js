@@ -48,35 +48,35 @@ describe('imageClassifier', () => {
     expect(classifier.ready).toBeTruthy();
   });
 
-  describe('predict', () => {
+  describe('classify', () => {
     it('Should classify an image of a Robin', async () => {
       const img = await getImage();
-      await classifier.predict(img)
-        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+      await classifier.classify(img)
+        .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
     });
 
     it('Should support p5 elements with an image on .elt', async () => {
       const img = await getImage();
-      await classifier.predict({ elt: img })
-        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+      await classifier.classify({ elt: img })
+        .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
     });
 
     it('Should support HTMLCanvasElement', async () => {
       const canvas = await getCanvas();
-      await classifier.predict(canvas)
-        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+      await classifier.classify(canvas)
+        .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
     });
 
     it('Should support p5 elements with canvas on .canvas', async () => {
       const canvas = await getCanvas();
-      await classifier.predict({ canvas })
-        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+      await classifier.classify({ canvas })
+        .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
     });
 
     it('Should support p5 elements with canvas on .elt', async () => {
       const canvas = await getCanvas();
-      await classifier.predict({ elt: canvas })
-        .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
+      await classifier.classify({ elt: canvas })
+        .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
     });
   });
 });
