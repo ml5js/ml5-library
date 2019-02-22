@@ -162,29 +162,33 @@ class KNN {
     await io.saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
   }
 
-  load(path, callback) {
-    io.loadFile(path, (err, data) => {
-      if (data) {
-        const { dataset, tensors } = data;
-        this.mapStringToIndex = Object.keys(dataset).map(key => dataset[key].label);
-        const tensorsData = tensors
-          .map((tensor, i) => {
-            if (tensor) {
-              const values = Object.keys(tensor).map(v => tensor[v]);
-              return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
-            }
-            return null;
-          })
-          .reduce((acc, cur, j) => {
-            acc[j] = cur;
-            return acc;
-          }, {});
-        this.knnClassifier.setClassifierDataset(tensorsData);
-        if (callback) {
-          callback();
-        }
+  async load(pathOrData, callback) {
+    let data;
+    if (typeof pathOrData === 'object') {
+      data = pathOrData;
+    } else {
+      data = await io.loadFile(pathOrData);
+    }
+    if (data) {
+      const { dataset, tensors } = data;
+      this.mapStringToIndex = Object.keys(dataset).map(key => dataset[key].label);
+      const tensorsData = tensors
+        .map((tensor, i) => {
+          if (tensor) {
+            const values = Object.keys(tensor).map(v => tensor[v]);
+            return tf.tensor(values, dataset[i].shape, dataset[i].dtype);
+          }
+          return null;
+        })
+        .reduce((acc, cur, j) => {
+          acc[j] = cur;
+          return acc;
+        }, {});
+      this.knnClassifier.setClassifierDataset(tensorsData);
+      if (callback) {
+        callback();
       }
-    });
+    }
   }
 }
 
