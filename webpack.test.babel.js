@@ -8,24 +8,24 @@ import { join } from 'path';
 import merge from 'webpack-merge';
 import common from './webpack.common.babel';
 
-// this is the function to initialize experiments folder when running `npm run start`
+// this is the function to initialize manual-test folder when running `npm run start`
 (function checkExperimentsFolder() {
-  const experimentsDir = join(__dirname, './experiments');
+  const experimentsDir = join(__dirname, './manual-test');
   const indexFile = join(experimentsDir, './index.html');
 
-  // create experiments dir if not exist, or check if it is a readable dir.
+  // create manual-test dir if not exist, or check if it is a readable dir.
   if (!existsSync(experimentsDir)) mkdirSync(experimentsDir);
   else {
-    assert(lstatSync(experimentsDir).isDirectory(), "./experiments should be a readable folder.");
+    assert(lstatSync(experimentsDir).isDirectory(), "./manual-test should be a readable folder.");
   }
 
-  // create index.html in experiments dir if not exist, or check if it is a readable file.
+  // create index.html in manual-test dir if not exist, or check if it is a readable file.
   if (!existsSync(indexFile)) {
     writeFileSync(indexFile, `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>ml5.js experiments</title>
+        <title>ml5.js manual test</title>
         <script src="http://localhost:8080/ml5.js"></script>
       </head>
       <body>
@@ -35,7 +35,7 @@ import common from './webpack.common.babel';
       </body>
       </html>`.replace(/      /g, '').trimLeft());
   } else {
-    assert(lstatSync(indexFile).isFile(), "./experiments/index.html should be a readable file.");
+    assert(lstatSync(indexFile).isFile(), "./manual-test/index.html should be a readable file.");
   }
 
 })();
@@ -45,7 +45,7 @@ export default merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     watchContentBase: true,
-    contentBase: [join(__dirname, './dist'), join(__dirname, './experiments')]
+    contentBase: [join(__dirname, './dist'), join(__dirname, './manual-test')]
   },
   plugins: []
 });
