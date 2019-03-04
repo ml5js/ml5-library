@@ -137,5 +137,4 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
   const instance = new ImageClassifier(model, video, options, callback);
   return callback ? instance : instance.ready;
 };
-
 export default imageClassifier;
