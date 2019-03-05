@@ -5,6 +5,7 @@
 
 import { existsSync, mkdirSync, writeFileSync, lstatSync } from 'fs';
 import { join } from 'path';
+import assert from 'assert';
 import merge from 'webpack-merge';
 import common from './webpack.common.babel';
 
