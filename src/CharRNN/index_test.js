@@ -29,7 +29,7 @@ describe('charRnn', () => {
   let rnn;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000; //setting to one minute for now, may want to increase even further since charRNN generation time is so variable
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000; //set extra long interval due to issues with CharRNN generation time
     rnn  = await charRNN(RNN_MODEL_URL, undefined);
   });
 
@@ -48,11 +48,13 @@ describe('charRnn', () => {
 
   describe('generate', () => {
     it('Should generate content that follows default options if given an empty object', async() => {
-      await rnn.generate({}).then(result => expect(result.sample.length).toBe(20))
+      const result = await rnn.generate({});
+      expect(result.sample.length).toBe(20);
     });
 
     it('generates content that follows the set options', async() => {
-      await rnn.generate(RNN_OPTIONS).then(result => expect(result.sample.length).toBe(500));
+      const result = await rnn.generate(RNN_OPTIONS);
+      expect(result.sample.length).toBe(500);
     });
 
   });
