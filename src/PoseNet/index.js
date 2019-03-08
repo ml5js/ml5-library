@@ -88,7 +88,6 @@ class PoseNet extends EventEmitter {
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const poseWithParts = this.mapParts(pose);
     const result = [{ poseWithParts, skeleton: this.skeleton(pose.keypoints) }];
-    
     this.emit('pose', result);
 
     if (this.video) {
