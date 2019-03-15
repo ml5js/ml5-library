@@ -24,7 +24,7 @@ const processVideo = (input, size, callback = () => {}) => {
 
 // Converts a tf to DOM img
 const array3DToImage = (tensor) => {
-  const [imgWidth, imgHeight] = tensor.shape;
+  const [imgHeight, imgWidth] = tensor.shape;
   const data = tensor.dataSync();
   const canvas = document.createElement('canvas');
   canvas.width = imgWidth;
