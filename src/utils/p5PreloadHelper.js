@@ -20,8 +20,20 @@ export default function registerPreload(obj) {
     const fn = obj[key];
 
     preloadFn[key] = function preloads(...args) {
-      return fn.apply(obj, [...args, function doingPreloads() {
+      let originCallback = null;
+      let argLen = args.length;
+      if (typeof args[argLen - 1] === 'function') {
+        // find callback function attached
+        originCallback = args[argLen - 1];
+        argLen -= 1;
+      }
+      return fn.apply(obj, [...args.slice(0, argLen), function doingPreloads() {
         const targetPreloadFn = '_decrementPreload';
+        try {
+          if (originCallback) originCallback();
+        } catch (err) {
+          console.error(err);
+        }
         if (window[targetPreloadFn]) return window[targetPreloadFn]();
         return null;
       }]);
