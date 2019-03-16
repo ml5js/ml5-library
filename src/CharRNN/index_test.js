@@ -56,6 +56,5 @@ describe('charRnn', () => {
       const result = await rnn.generate(RNN_OPTIONS);
       expect(result.sample.length).toBe(500);
     });
-
   });
 });
