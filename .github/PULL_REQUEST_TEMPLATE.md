@@ -1,4 +1,11 @@
 <!-- MANY MANY THANKS FOR YOUR CONTRIBUTION. ML5 ❤️S YOU! -->
+## → Submit changes to the relevant branch 🌲
+
+We have 2 branches you can submit to, **development** or **release**. You'd make us so happy 😊 if you submitted your pull request to the branch that is most relevant for your submission.
+
+- for pull requests related to **new features** 🆕 make sure to use the **development** branch
+- for pull requests related to bug 🐛fixes of the existing stable release, make sure your pull request  goes to the **release** branch.
+
 
 ## → Description 📝
 
