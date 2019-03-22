@@ -38,6 +38,6 @@ describe('YOLO', () => {
   it('detects a robin', async () => {
     const robin = await getRobin();
     const detection = await yolo.detect(robin);
-    expect(detection[0].className).toBe('bird');
+    expect(detection[0].label).toBe('bird');
   });
 });

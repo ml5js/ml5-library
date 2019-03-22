@@ -1,27 +1,23 @@
-## Nature of issue?
+## → Description 📝
 
-- [ ] Found a bug
-- [ ] Existing feature enhancement
-- [ ] New feature request
-- [ ] Other
+A clear and concise description of what the issue is about. Let us know if you:
 
-
-*** 
-## Details about the Bug:
-> Please describe the bug you've encountered. Make sure to include the following information below.
-
-### Web browser and version: (e.g. Firefox version 65, Chrome version 71.0)
-
-### Operating System: (e.g. MacOS, Windows, Ubuntu)
-
-### Steps to reproduce this bug:
-
-***
-## Existing Feature Enhancement details:
-> Please describe the feature enhancement you're hoping to see.
+- found a bug 🐛
+- want to suggest an update 💡
+- have an idea for a new feature 🆕 
 
 
-*** 
 
-## New feature details:
-> Please describe the new feature you're hoping to see. 
+## → Screenshots 🖼
+(Any relevant screenshots, sketches, or helpful concept diagrams)
+
+
+## → Helpful Information 🦄
+
+A list of relevant information for this issue. This will help people navigate the project and offer some clues of where to start. Depending on the nature of this issue, important and helpful information might include:
+
+- **Web browser and version** (e.g. Firefox version 65, Chrome version 71.0)
+- **Operating System** (e.g. MacOS, Windows, Ubuntu)
+- Steps to reproduce the issue
+- ml5 version you're using 
+- Links to example code in the [p5 web editor](https://editor.p5js.org) or other online shareable code editor
