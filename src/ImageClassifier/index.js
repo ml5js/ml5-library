@@ -58,7 +58,7 @@ class ImageClassifier {
     await tf.nextFrame();
 
     if (this.video && this.video.readyState === 0) {
-      await new Promise((resolve) => {
+      await new Promise(resolve => {
         this.video.onloadeddata = () => resolve();
       });
     }
@@ -81,17 +81,28 @@ class ImageClassifier {
       numberOfClasses = inputNumOrCallback;
     } else if (inputNumOrCallback instanceof HTMLImageElement) {
       imgToPredict = inputNumOrCallback;
-    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLImageElement) {
+    } else if (
+      typeof inputNumOrCallback === 'object' &&
+      inputNumOrCallback.elt instanceof HTMLImageElement
+    ) {
       imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
     } else if (inputNumOrCallback instanceof HTMLCanvasElement) {
       imgToPredict = inputNumOrCallback;
-    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.elt instanceof HTMLCanvasElement) {
+    } else if (
+      typeof inputNumOrCallback === 'object' &&
+      inputNumOrCallback.elt instanceof HTMLCanvasElement
+    ) {
       imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.canvas instanceof HTMLCanvasElement) {
+    } else if (
+      typeof inputNumOrCallback === 'object' &&
+      inputNumOrCallback.canvas instanceof HTMLCanvasElement
+    ) {
       imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
     } else if (!(this.video instanceof HTMLVideoElement)) {
       // Handle unsupported input
-      throw new Error('No input image provided. If you want to classify a video, pass the video element in the constructor. ');
+      throw new Error(
+        'No input image provided. If you want to classify a video, pass the video element in the constructor. ',
+      );
     }
 
     if (typeof numOrCallback === 'number') {
@@ -126,7 +137,10 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
 
   if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
     video = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
+  } else if (
+    typeof videoOrOptionsOrCallback === 'object' &&
+    videoOrOptionsOrCallback.elt instanceof HTMLVideoElement
+  ) {
     video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
   } else if (typeof videoOrOptionsOrCallback === 'object') {
     options = videoOrOptionsOrCallback;
