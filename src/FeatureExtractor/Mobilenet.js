@@ -247,18 +247,21 @@ class Mobilenet {
     }
     await tf.nextFrame();
     this.isPredicting = true;
-    const predictedClass = tf.tidy(() => {
+    const predictedClasses = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
       const activation = this.mobilenetFeatures.predict(processedImg);
       const predictions = this.customModel.predict(activation);
-      return predictions.as1D().argMax();
+      return Array.from(predictions.as1D().dataSync());
     });
-    let classId = (await predictedClass.data())[0];
-    if (this.mapStringToIndex.length > 0) {
-      classId = this.mapStringToIndex[classId];
-    }
-    return classId;
+    const results = await predictedClasses.map((confidence, index) => {
+      const label = (this.mapStringToIndex.length > 0 && this.mapStringToIndex[index]) ? this.mapStringToIndex[index] : index;
+      return {
+        label,
+        confidence,
+      };
+    }).sort((a, b) => b.confidence - a.confidence);
+    return results;
   }
 
   /* eslint max-len: ["error", { "code": 180 }] */
@@ -295,7 +298,7 @@ class Mobilenet {
     });
     const prediction = await predictedClass.data();
     predictedClass.dispose();
-    return prediction[0];
+    return { value: prediction[0] };
   }
 
   async load(filesOrPath = null, callback) {
