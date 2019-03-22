@@ -127,8 +127,8 @@ class YOLOBase extends Video {
       w = Math.min(imageSize, w) - x;
 
       const resultObj = {
-        className,
-        classProb,
+        label: className,
+        confidence: classProb,
         x: x / imageSize,
         y: y / imageSize,
         w: w / imageSize,
