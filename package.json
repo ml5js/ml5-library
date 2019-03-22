@@ -88,7 +88,7 @@
     ]
   },
   "dependencies": {
-    "@magenta/sketch": "^0.1.2",
+    "@magenta/sketch": "0.1.2",
     "@tensorflow-models/mobilenet": "0.2.2",
     "@tensorflow-models/posenet": "0.2.2",
     "@tensorflow-models/knn-classifier": "0.2.2",
