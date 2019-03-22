@@ -56,8 +56,18 @@ You can find a collection of standalone examples in this repository: [github.com
 
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 
+## Code of Conduct
+We believe in a friendly internet and community as much as we do in building friendly machine learning for the web. Please refer to our [CODE OF CONDUCT](CODE_OF_CONDUCT.md) for our rules for interacting with ml5 as a developer, contributor, or user.
+
 ## Contributing
+Want to be a **contributor 🏗 to the ml5.js library**? If yes and you're interested to submit new features, fix bugs, or help develop the ml5.js ecosystem, please go to our [CONTRIBUTING](CONTRIBUTING.md) documentation to get started.
 
-See [CONTRIBUTING](CONTRIBUTING.md)
+See [CONTRIBUTING](CONTRIBUTING.md) 🛠
 
-Thanks [BrowserStack](https://www.browserstack.com/) for providing testing support.
+## Acknowledgements
+
+ml5.js is supported by the time and dedication of open source developers from all over the world. Funding and support is generously provided by a [Google Education grant](https://edu.google.com/giving/?modal_active=none) via [Dan Shiffman](https://shiffman.net/) at NYU's ITP/IMA program.
+
+Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing support. 
+
+
