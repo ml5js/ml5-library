@@ -21,7 +21,7 @@ const RNN_DEFAULTS = {
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 500,
+  length: 100,
   temperature: 0.7
 }
 
