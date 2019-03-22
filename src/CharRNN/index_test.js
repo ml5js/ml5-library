@@ -54,7 +54,7 @@ describe('charRnn', () => {
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(500);
+      expect(result.sample.length).toBe(100);
     });
   });
 });
