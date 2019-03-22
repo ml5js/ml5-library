@@ -13,7 +13,7 @@ describe('word2vec', () => {
   let numTensorsBeforeAll;
   let numTensorsBeforeEach;
   beforeAll((done) => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
     numTensorsBeforeAll = tf.memory().numTensors;
     word2vecInstance = word2vec(W2V_MODEL_URL, done);
   });
