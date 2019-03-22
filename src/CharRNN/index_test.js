@@ -9,7 +9,7 @@ const RNN_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-mode
 
 const RNN_MODEL_DEFAULTS = {
   cellsAmount: 2,
-  vocabSize: 223
+  vocabSize: 64
 };
 
 const RNN_DEFAULTS = {
