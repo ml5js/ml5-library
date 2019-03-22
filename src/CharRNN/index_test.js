@@ -52,9 +52,9 @@ describe('charRnn', () => {
       expect(result.sample.length).toBe(20);
     });
 
-    it('generates content that follows the set options', async() => {
-      const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(100);
-    });
+  //   it('generates content that follows the set options', async() => {
+  //     const result = await rnn.generate(RNN_OPTIONS);
+  //     expect(result.sample.length).toBe(100);
+  //   });
   });
 });
