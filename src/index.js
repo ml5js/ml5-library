@@ -20,20 +20,20 @@ import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 
 const withPreload = {
+  charRNN,
+  featureExtractor,
   imageClassifier,
+  pitchDetection,
+  pix2pix,
+  poseNet,
+  SketchRNN,
+  styleTransfer,
+  word2vec,
+  YOLO,
 };
 
 module.exports = Object.assign({}, preloadRegister(withPreload), {
   KNNClassifier,
-  featureExtractor,
-  pitchDetection,
-  YOLO,
-  word2vec,
-  styleTransfer,
-  poseNet,
-  charRNN,
-  pix2pix,
-  SketchRNN,
   ...imageUtils,
   tf,
   version,
