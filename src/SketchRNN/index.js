@@ -85,7 +85,7 @@ class SketchRNN {
       callback = cb;
     }
 
-    const strokes = seedStrokes.map((s) => {
+    const strokes = seedStrokes.map(s => {
       const up = s.pen === 'up' ? 1 : 0;
       const down = s.pen === 'down' ? 1 : 0;
       const end = s.pen === 'end' ? 1 : 0;
@@ -102,6 +102,6 @@ class SketchRNN {
   }
 }
 
-const SketchRNNGenerator = (model, callback, large = true) => new SketchRNN(model, callback, large);
+const sketchRNN = (model, callback, large = true) => new SketchRNN(model, callback, large);
 
-export default SketchRNNGenerator;
+export default sketchRNN;
