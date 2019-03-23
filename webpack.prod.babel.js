@@ -1,5 +1,5 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -11,11 +11,11 @@ export default merge(common, {
   mode: 'production',
   devtool: 'source-map',
   output: {
-    filename: 'ml5.min.js'
+    filename: 'ml5.min.js',
   },
   plugins: [
     new UglifyJSPlugin({
-      sourceMap: true
-    })
-  ]
-})
+      sourceMap: true,
+    }),
+  ],
+});

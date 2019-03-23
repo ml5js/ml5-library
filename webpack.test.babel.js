@@ -1,5 +1,5 @@
 // Copyright (c) 2019 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -17,7 +17,7 @@ import common from './webpack.common.babel';
   // create manual-test dir if not exist, or check if it is a readable dir.
   if (!existsSync(experimentsDir)) mkdirSync(experimentsDir);
   else {
-    assert(lstatSync(experimentsDir).isDirectory(), "./manual-test should be a readable folder.");
+    assert(lstatSync(experimentsDir).isDirectory(), './manual-test should be a readable folder.');
   }
 
   // create index.html in manual-test dir if not exist, or check if it is a readable file.
@@ -34,19 +34,18 @@ import common from './webpack.common.babel';
           // Your scripts would be written here
         </script>
       </body>
-      </html>`.replace(/      /g, '').trimLeft());
+      </html>`.replace(/ {6}/g, '').trimLeft());
   } else {
-    assert(lstatSync(indexFile).isFile(), "./manual-test/index.html should be a readable file.");
+    assert(lstatSync(indexFile).isFile(), './manual-test/index.html should be a readable file.');
   }
-
-})();
+}());
 
 export default merge(common, {
   mode: 'development',
   devtool: 'inline-source-map',
   devServer: {
     watchContentBase: true,
-    contentBase: [join(__dirname, './dist'), join(__dirname, './manual-test')]
+    contentBase: [join(__dirname, './dist'), join(__dirname, './manual-test')],
   },
-  plugins: []
+  plugins: [],
 });
