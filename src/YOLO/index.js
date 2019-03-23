@@ -73,6 +73,7 @@ class YOLODetector {
 
   async loadModel() {
     this.model = await tf.loadModel(this.modelURL);
+    return this;
   }
   async cache() {
     const dummy = tf.zeros([this.modelSize, this.modelSize, 3]);

@@ -6,8 +6,7 @@
 const { YOLO } = ml5;
 
 const YOLO_DEFAULTS = {
-  filterBoxesThreshold: 0.01,
-  IOUThreshold: 0.4,
+  iouThreshold: 0.4,
   classProbThreshold: 0.4,
   modelSize: 416,
 };
@@ -25,7 +24,7 @@ describe('YOLO', () => {
 
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-    yolo = YOLO();
+    yolo = await YOLO();
   });
 
   it('instantiates the YOLO classifier with defaults', () => {
@@ -36,8 +35,7 @@ describe('YOLO', () => {
 
   it('detects a robin', async () => {
     const robin = await getRobin();
-    await yolo.loadModel();
-    const detection = await yolo.detectAsync(robin);
-    expect(detection[0].label).toBe('bird');
+    await yolo.detect(robin)
+      .then(detection => expect(detection[0].label).toBe('bird'));
   });
 });
