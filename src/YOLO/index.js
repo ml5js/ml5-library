@@ -67,12 +67,12 @@ class YOLODetector {
     this.modelReady = false;
     this.isPredicting = false;
 
-    // Load the model
     this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
     this.model = await tf.loadModel(this.modelURL);
+    this.modelReady = true;
     return this;
   }
   async cache() {
@@ -84,14 +84,16 @@ class YOLODetector {
   async detect(inputOrCallback, cb) {
     await this.ready;
     let imgToPredict;
-    let callback;
-    if (typeof inputOrCallback === 'function') {
+    let callback = cb;
+    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
+      imgToPredict = inputOrCallback;
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+      imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
+    } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
       callback = inputOrCallback;
-    } else {
-      imgToPredict = inputOrCallback;
-      callback = cb;
     }
+
     return callCallback(this.detectInternal(imgToPredict), callback);
   }
 
@@ -124,6 +126,9 @@ class YOLODetector {
    * ```
    */
   async detectInternal(image) {
+    await this.ready;
+    await tf.nextFrame();
+    this.isPredicting = true;
     const results = tf.tidy(() => {
       const [imgWidth, imgHeight, imageTensor] = this.preProcess(image, this.modelSize, this.preProcessingOptions);
       const preds = this.model.predict(imageTensor, { batchSize: 1 });
@@ -137,6 +142,7 @@ class YOLODetector {
     tf.dispose(filtered);
     const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr, this.iouThreshold);
     const detections = this.createDetectionArray(rawBoxes);
+    this.isPredicting = false;
     return detections;
   }
 
@@ -146,6 +152,7 @@ class YOLODetector {
   }
   async detectInternalSync(image) {
     return tf.tidy(() => {
+      this.isPredicting = true;
       const [imgWidth, imgHeight, imageTensor] = this.preProcess(image, this.modelSize, this.preProcessingOptions);
       const preds = this.model.predict(imageTensor, { batchSize: 1 });
       const [allBoxes, allScores] = this.postProcessRawPrediction(preds);
@@ -156,6 +163,7 @@ class YOLODetector {
       const classesArr = classes.dataSync();
       tf.dispose([boxes, scores, classes]);
       const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr, this.iouThreshold);
+      this.isPredicting = false;
       return this.createDetectionArray(rawBoxes);
     });
   }
@@ -483,7 +491,6 @@ class YOLODetector {
     return detections;
   }
 }
-
 const YOLO = (videoOr, optionsOr, cb) => {
   let video = null;
   let options = {};
@@ -504,12 +511,10 @@ const YOLO = (videoOr, optionsOr, cb) => {
   } else if (typeof optionsOr === 'function') {
     callback = optionsOr;
   }
-
   options = {
     ...DEFAULTS,
     ...options,
   };
-
 
   return new YOLODetector(video, options, callback);
 };
