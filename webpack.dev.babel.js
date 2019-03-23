@@ -1,5 +1,5 @@
 // Copyright (c) 2018 ml5
-// 
+//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -13,11 +13,11 @@ export default merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     watchContentBase: true,
-    contentBase: join(__dirname, './dist')
+    contentBase: join(__dirname, './dist'),
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'ml5'
-    })
-  ]
-})
+      title: 'ml5',
+    }),
+  ],
+});

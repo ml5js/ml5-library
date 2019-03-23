@@ -45,7 +45,7 @@ module.exports = (config) => {
     },
     browserStack: {
       username: process.env.BROWSERSTACK_USERNAME,
-      accessKey: process.env.BROWSERSTACK_ACCESS_KEY
+      accessKey: process.env.BROWSERSTACK_ACCESS_KEY,
     },
     captureTimeout: 120000,
     reportSlowerThan: 500,
@@ -56,7 +56,7 @@ module.exports = (config) => {
         browser: 'chrome',
         browser_version: 'latest',
         os: 'OS X',
-        os_version: 'High Sierra'
+        os_version: 'High Sierra',
       },
     },
     reporters: ['mocha'],
@@ -66,6 +66,6 @@ module.exports = (config) => {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
-    concurrency: Infinity
+    concurrency: Infinity,
   });
 };

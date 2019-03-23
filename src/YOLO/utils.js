@@ -5,27 +5,38 @@
 
 /* eslint max-len: ["error", { "code": 180 }] */
 
-const iou = (box1, box2) => {
-  /* Implement the intersection over union (IoU) between box1 and box2
-    Arguments:
-    box1 -- first box, list object with coordinates (x1, y1, x2, y2)
-    box2 -- second box, list object with coordinates (x1, y1, x2, y2)
-    */
+function map(num, inmin, inmax) {
+  return ((num - inmin) * 360) / (inmax - inmin);
+}
+function hsl(num, min, max) {
+  return `hsla(${map(num, min, max)}, 100%, 50%,1)`;
+}
+function drawObject(item, ctx, color) {
+  const txt = `${item.label} : ${(item.score * 100).toFixed(2)}%`;
+  ctx.strokeStyle = color;
+  ctx.beginPath();
+  ctx.rect(item.x, item.y, item.w, item.h);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  if (item.y - 25 >= 0) {
+    // text box on top
+    ctx.fillRect(item.x - 1.5, item.y - 1.5, 90, -15);
+    ctx.fillStyle = '#000000';
+    ctx.fillText(txt, item.x, item.y - 5);
+  } else {
+    // text box Inside
+    ctx.fillRect(item.x - 1.5, item.y - 1.5, 90, 20);
+    ctx.fillStyle = '#000000';
+    ctx.fillText(txt, item.x, item.y + 12);
+  }
+}
+function draw(detections, ctx, labelsLength) {
+  ctx.lineWidth = 1.5;
+  ctx.font = '13px Segoe UI';
+  detections.forEach((det) => {
+    const color = hsl(det.labelIndex, 0, labelsLength);
+    drawObject(det, ctx, color);
+  });
+}
 
-  // Calculate the (y1, x1, y2, x2) coordinates of the intersection of box1 and box2. Calculate its Area.
-  const xi1 = Math.max(box1[0], box2[0]);
-  const yi1 = Math.max(box1[1], box2[1]);
-  const xi2 = Math.min(box1[2], box2[2]);
-  const yi2 = Math.min(box1[3], box2[3]);
-  const interarea = (yi2 - yi1) * (xi2 - xi1);
-
-  // Calculate the Union area by using Formula: Union(A,B) = A + B - Inter(A,B)
-  const box1area = (box1[2] - box1[0]) * (box1[3] - box1[1]);
-  const box2area = (box2[2] - box2[0]) * (box2[3] - box2[1]);
-  const unionarea = (box1area + box2area) - interarea;
-
-  // compute the IoU
-  return interarea / unionarea;
-};
-
-export default iou;
+export default draw;

@@ -9,28 +9,28 @@ const RNN_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-mode
 
 const RNN_MODEL_DEFAULTS = {
   cellsAmount: 2,
-  vocabSize: 223
+  vocabSize: 223,
 };
 
 const RNN_DEFAULTS = {
   seed: 'a',
   length: 20,
   temperature: 0.5,
-  stateful: false
-}
+  stateful: false,
+};
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
   length: 500,
-  temperature: 0.7
-}
+  temperature: 0.7,
+};
 
 describe('charRnn', () => {
   let rnn;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000; //set extra long interval due to issues with CharRNN generation time
-    rnn  = await charRNN(RNN_MODEL_URL, undefined);
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000; // set extra long interval due to issues with CharRNN generation time
+    rnn = await charRNN(RNN_MODEL_URL, undefined);
   });
 
   it('instantiates an rnn with all the defaults', async () => {
@@ -47,12 +47,12 @@ describe('charRnn', () => {
   //  });
 
   describe('generate', () => {
-    it('Should generate content that follows default options if given an empty object', async() => {
+    it('Should generate content that follows default options if given an empty object', async () => {
       const result = await rnn.generate({});
       expect(result.sample.length).toBe(20);
     });
 
-    it('generates content that follows the set options', async() => {
+    it('generates content that follows the set options', async () => {
       const result = await rnn.generate(RNN_OPTIONS);
       expect(result.sample.length).toBe(500);
     });
