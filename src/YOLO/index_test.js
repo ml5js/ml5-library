@@ -6,7 +6,7 @@
 const { YOLO } = ml5;
 
 const YOLO_DEFAULTS = {
-  IOUThreshold: 0.5,
+  iouThreshold: 0.5,
   classProbThreshold: 0.5,
   modelSize: 416,
 };
@@ -28,7 +28,7 @@ describe('YOLO', () => {
   });
 
   it('instantiates the YOLO classifier with defaults', () => {
-    expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
+    expect(yolo.iouThreshold).toBe(YOLO_DEFAULTS.iouThreshold);
     expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
     expect(yolo.modelSize).toBe(YOLO_DEFAULTS.modelSize);
   });
