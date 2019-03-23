@@ -1,5 +1,5 @@
 {
-    "extends": "airbnb-base",
+    "extends": ["airbnb-base", "prettier"],
     "globals": {
         "fetch": false,
         "document": true
