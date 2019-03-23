@@ -16,20 +16,25 @@ import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
 import SketchRNN from './SketchRNN';
+import preloadRegister from './utils/p5PreloadHelper';
+import { version } from '../package.json';
 
-module.exports = {
-  imageClassifier,
-  KNNClassifier,
-  featureExtractor,
-  pitchDetection,
-  YOLO,
-  word2vec,
-  styleTransfer,
-  poseNet,
+const withPreload = {
   charRNN,
+  featureExtractor,
+  imageClassifier,
+  pitchDetection,
   pix2pix,
+  poseNet,
   SketchRNN,
-  ...imageUtils,
-  tf,
+  styleTransfer,
+  word2vec,
+  YOLO,
 };
 
+module.exports = Object.assign({}, preloadRegister(withPreload), {
+  KNNClassifier,
+  ...imageUtils,
+  tf,
+  version,
+});

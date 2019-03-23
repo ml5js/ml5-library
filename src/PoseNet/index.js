@@ -61,10 +61,22 @@ class PoseNet extends EventEmitter {
     return posenet.getAdjacentKeyPoints(keypoints, confidence);
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  mapParts(pose) {
+    const newPose = JSON.parse(JSON.stringify(pose));
+    newPose.keypoints.forEach((keypoint) => {
+      newPose[keypoint.part] = {
+        x: keypoint.position.x,
+        y: keypoint.position.y,
+        confidence: keypoint.score,
+      };
+    });
+    return newPose;
+  }
+
   /* eslint max-len: ["error", { "code": 180 }] */
   async singlePose(inputOr, cb) {
     let input;
-
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
       input = inputOr;
     } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
@@ -74,8 +86,8 @@ class PoseNet extends EventEmitter {
     }
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
-
-    const result = [{ pose, skeleton: this.skeleton(pose.keypoints) }];
+    const poseWithParts = this.mapParts(pose);
+    const result = [{ poseWithParts, skeleton: this.skeleton(pose.keypoints) }];
     this.emit('pose', result);
 
     if (this.video) {
@@ -101,7 +113,8 @@ class PoseNet extends EventEmitter {
     }
 
     const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
-    const result = poses.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
+    const posesWithParts = poses.map(pose => (this.mapParts(pose)));
+    const result = posesWithParts.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
     this.emit('pose', result);
     if (this.video) {
       return tf.nextFrame().then(() => this.multiPose());
