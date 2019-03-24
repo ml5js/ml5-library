@@ -90,10 +90,13 @@ class YOLODetector {
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
     } else if (typeof inputOrCallback === 'function') {
+      if (!(this.video instanceof HTMLVideoElement)) {
+        // Handle unsupported input
+        throw new Error('No input image provided. If you want to classify a video, pass the video element in the constructor. ',);
+      }
       imgToPredict = this.video;
       callback = inputOrCallback;
     }
-
     return callCallback(this.detectInternal(imgToPredict), callback);
   }
 
@@ -113,7 +116,7 @@ class YOLODetector {
    * @param image the input image;
    *
    * @return a `Detection[]` that contains:
-   *``` javascript
+   *```javascript
    *      {
    *         label:string;
    *         labelIndex:number;
@@ -144,28 +147,6 @@ class YOLODetector {
     const detections = this.createDetectionArray(rawBoxes);
     this.isPredicting = false;
     return detections;
-  }
-
-  // these are just synchronous version of the above methods
-  async detectSync(image) {
-    return this.detectInternalSync(image);
-  }
-  async detectInternalSync(image) {
-    return tf.tidy(() => {
-      this.isPredicting = true;
-      const [imgWidth, imgHeight, imageTensor] = this.preProcess(image, this.modelSize, this.preProcessingOptions);
-      const preds = this.model.predict(imageTensor, { batchSize: 1 });
-      const [allBoxes, allScores] = this.postProcessRawPrediction(preds);
-      const scaledBoxes = this.rescaleBoxes(allBoxes, imgWidth, imgHeight);
-      const [boxes, scores, classes] = this.filterBoxes(scaledBoxes, allScores, this.classProbThreshold);
-      const boxArr = boxes.dataSync();
-      const scoresArr = scores.dataSync();
-      const classesArr = classes.dataSync();
-      tf.dispose([boxes, scores, classes]);
-      const rawBoxes = this.NonMaxSuppression(boxArr, scoresArr, classesArr, this.iouThreshold);
-      this.isPredicting = false;
-      return this.createDetectionArray(rawBoxes);
-    });
   }
 
   /**
@@ -328,31 +309,6 @@ class YOLODetector {
     // this for x y w h (ie when you don't use this.boxesToCorners())
     // const ImageDims = tf.stack([Width, Height, Width, Height]).reshape([1, 4]);
     return boxes.mul(imageDims);
-  }
-
-  /**
-   * filters boxes synchronously by a `classProbThresh` Threshold
-   * @param boxes a 2D box `tf.Tensor` with the shape of `[numBoxes,4]`
-   * @param scores a 2D scores  `tf.Tensor`  with the shape of `[numBoxes,labelsLength]`
-   * @param classProbThresh  a number indecating the score threshold defaults to .5
-   *
-   * @return a  `tf.Tensor[]` constaining `[filtredBoxes, filtredScores, filtredClasses]`
-   *
-   * normaly this would be inside a tf.tidy
-   * so i skipped on the memory managment
-   */
-  filterBoxes(boxes, scores, classProbThresh = 0.5) {
-    const boxScore = tf.max(scores, -1);
-    const boxClasses = tf.argMax(scores, -1);
-    // score filter mask
-    const filterThresh = tf.scalar(classProbThresh);
-    const filterMask = tf.greaterEqual(boxScore, filterThresh);
-    // this is somewhat a replacment for tf.boolean_mask
-    const indicesTensor = tf.linspace(0, boxes.shape[0] - 1, boxes.shape[0]).toInt();
-    const negativeIndicesTensor = tf.fill([boxes.shape[0]], -1, 'int32');
-    const indices = tf.where(filterMask, indicesTensor, negativeIndicesTensor);
-    const filteredIndicesTensor = tf.tensor1d(indices.dataSync().filter(i => i >= 0), 'int32');
-    return [boxes.gather(filteredIndicesTensor), boxScore.gather(filteredIndicesTensor), boxClasses.gather(filteredIndicesTensor)];
   }
 
   /**
