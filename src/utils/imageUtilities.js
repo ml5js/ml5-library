@@ -64,7 +64,7 @@ const cropImage = (img) => {
 // Static Method: image to tf tensor
 function imgToTensor(input, size = null) {
   return tf.tidy(() => {
-    let img = tf.fromPixels(input);
+    let img = tf.browser.fromPixels(input);
     if (size) {
       img = tf.image.resizeBilinear(img, size);
     }

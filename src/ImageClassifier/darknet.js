@@ -45,9 +45,9 @@ function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
     if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
-      image = tf.fromPixels(img);
+      image = tf.browser.fromPixels(img);
     } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement)) {
-      image = tf.fromPixels(img.elt); // Handle p5.js image and video.
+      image = tf.browser.fromPixels(img.elt); // Handle p5.js image and video.
     }
   } else {
     image = img;
@@ -80,10 +80,10 @@ export class Darknet {
   async load() {
     switch (this.version) {
       case 'reference':
-        this.model = await tf.loadGraphModel(DEFAULTS.DARKNET_URL);
+        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_URL);
         break;
       case 'tiny':
-        this.model = await tf.loadGraphModel(DEFAULTS.DARKNET_TINY_URL);
+        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_TINY_URL);
         break;
       default:
         break;

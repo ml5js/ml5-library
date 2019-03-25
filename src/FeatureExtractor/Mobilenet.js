@@ -317,12 +317,12 @@ class Mobilenet {
           weights = file;
         }
       });
-      this.customModel = await tf.loadGraphModel(tf.io.browserFiles([model, weights]));
+      this.customModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
         .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
-      this.customModel = await tf.loadGraphModel(filesOrPath);
+      this.customModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
       }

@@ -22,7 +22,7 @@ class PitchDetection {
   }
 
   async loadModel(model) {
-    this.model = await tf.loadGraphModel(`${model}/model.json`);
+    this.model = await tf.loadLayersModel(`${model}/model.json`);
     if (this.audioContext) {
       await this.processStream();
     } else {
