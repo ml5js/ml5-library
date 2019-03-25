@@ -80,10 +80,10 @@ export class Darknet {
   async load() {
     switch (this.version) {
       case 'reference':
-        this.model = await tf.loadModel(DEFAULTS.DARKNET_URL);
+        this.model = await tf.loadGraphModel(DEFAULTS.DARKNET_URL);
         break;
       case 'tiny':
-        this.model = await tf.loadModel(DEFAULTS.DARKNET_TINY_URL);
+        this.model = await tf.loadGraphModel(DEFAULTS.DARKNET_TINY_URL);
         break;
       default:
         break;
