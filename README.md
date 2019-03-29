@@ -19,24 +19,28 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 There are several ways you can use the ml5.js library:
 
-* You can use the latest online version by adding it to the head section of your HTML document:
+* You can use the latest version (0.2.2) by adding it to the head section of your HTML document:
+
+**v0.2.2**
+```javascript
+<script src="https://unpkg.com/ml5@0.2.2/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+* If you need to use an earlier version for any reason, you can change the version number.
+
+**v0.1.3**
+
+```javascript
+<script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+* You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
 
 ```javascript
 <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
-* Or you can use an specific version of the library:
-**v0.2.1**
-```javascript
-<script src="https://unpkg.com/ml5@0.2.1/dist/ml5.min.js" type="text/javascript"></script>
-```
-
-**v0.1.3**
-```javascript
-<script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
-```
-
-* Or you can download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) and include the file:
+* Finally, you can download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) and include the file:
 
 ```javascript
 <script src="ml5.min.js" type="text/javascript"></script>
@@ -66,7 +70,7 @@ See [CONTRIBUTING](CONTRIBUTING.md) 🛠
 
 ## Acknowledgements
 
-ml5.js is supported by the time and dedication of open source developers from all over the world. Funding and support is generously provided by a [Google Education grant](https://edu.google.com/giving/?modal_active=none) via [Dan Shiffman](https://shiffman.net/) at NYU's ITP/IMA program.
+ml5.js is supported by the time and dedication of open source developers from all over the world. Funding and support is generously provided by a [Google Education grant](https://edu.google.com/giving/?modal_active=none) at NYU's ITP/IMA program.
 
 Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing support. 
 
