@@ -62,7 +62,13 @@ If you want to help develop this library, here are the steps to get started:
 
 4. Develop!
 
-  Create a new folder called `/experiments` in the project's root folder. Create an `index.html` file inside `/experiments` and add the following:
+	Run this command from the root of the project:
+
+  ```bash
+  npm run manual-test
+  ```
+
+  This creates a new folder called `/manual-test` in the project's root folder. Create an `index.html` file inside `/manual-test` and add the following:
 
   ```html
   <!DOCTYPE html>
