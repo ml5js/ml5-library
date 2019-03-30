@@ -8,7 +8,6 @@ A class that extract features from Mobilenet
 */
 
 import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
 
 import Video from './../utils/Video';
 
@@ -17,6 +16,7 @@ import { saveBlob } from '../utils/io';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 224;
+const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
   version: 1,
   alpha: 0.25,
@@ -31,7 +31,7 @@ const DEFAULTS = {
 
 class Mobilenet {
   constructor(options, callback) {
-    this.mobilenet = mobilenet;
+    this.mobilenet = null;
     this.topKPredictions = 10;
     this.hasAnyTrainedClass = false;
     this.customModel = null;
@@ -50,9 +50,9 @@ class Mobilenet {
   }
 
   async loadModel() {
-    this.mobilenet = await this.mobilenet.load(this.version, this.alpha);
-    const layer = this.mobilenet.model.getLayer(this.layer);
-    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.model.inputs, outputs: layer.output });
+    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.version}_${this.alpha}_${IMAGE_SIZE}/model.json`);
+    const layer = this.mobilenet.getLayer(this.layer);
+    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
     if (this.video) {
       await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
     }
