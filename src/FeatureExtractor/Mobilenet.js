@@ -97,9 +97,12 @@ class Mobilenet {
     let label;
     let callback = cb;
 
-    if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement) {
+    if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement || inputOrLabel instanceof ImageData) {
       imgToAdd = inputOrLabel;
-    } else if (typeof inputOrLabel === 'object' && (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrLabel === 'object' 
+            && (inputOrLabel.elt instanceof HTMLImageElement 
+                || inputOrLabel.elt instanceof HTMLVideoElement 
+                || inputOrLabel.elt instanceof ImageData )) {
       imgToAdd = inputOrLabel.elt;
     } else if (typeof inputOrLabel === 'string' || typeof inputOrLabel === 'number') {
       imgToAdd = this.video;
