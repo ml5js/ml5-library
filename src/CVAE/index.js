@@ -13,7 +13,6 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
 class Cvae {
-  // labels should be a set of string represent each labels like labels = ["shirt", "shoes", "bag"]
   constructor(modelPath, callback) {
     this.ready = false;
     this.model = {};
@@ -120,7 +119,7 @@ class Cvae {
   }
 }
 
-const CVAE = (model, labels, callback) => new Cvae(model, labels, callback);
+const CVAE = (model, callback) => new Cvae(model, callback);
 
 
 export default CVAE;
