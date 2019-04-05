@@ -17,27 +17,20 @@ class Cvae {
   constructor(modelPath, callback) {
     this.ready = false;
     this.model = {};
-    this.std = 1;
-    this.mean = 0;
+    this.latentDim = Array(16).fill(0);
     // get an array full of zero with the length of labels [0, 0, 0 ...]
     this.modelPath = modelPath;
     this.jsonLoader().then(val => {
       this.ready = callCallback(this.loadCVAEModel(val.model), callback);
       this.labels = val.labels;
-      this.labelVector = Array(...{ length: this.labels.length }).map(Function.call, () => 0);
+      this.labelVector = Array(...{ length: this.labels.length+1 }).map(Function.call, () => 0);
     });
     
   }
 
-  setBoth(mean, std) {
-    if (typeof mean === 'number' && typeof std === 'number' && std >= 0) {
-      this.mean = mean; 
-      this.std = std;
-    }
-    else throw new Error("Please check if your input is a number and the std number should be greater then zero.");
+  setLatentDim(index, value) {
+    for (let i = index; i < this.latentDim.length; i+=2) this.latentDim[i] = value;
   }
-
-  
 
   // load tfjs model that is converted by tensorflowjs with graph and weights
   async loadCVAEModel(modelPath) {
@@ -47,7 +40,7 @@ class Cvae {
 
   // label should be a string that you input before at the labels
   async generate(label, callback) {
-    return callCallback(this.generateInternal(label, this.std, this.mean), callback);
+    return callCallback(this.generateInternal(label), callback);
   }
 
   getBlob(inputCanvas) {
@@ -66,11 +59,10 @@ class Cvae {
     return false;
   }
 
-  async generateInternal(label, std, mean) {
+  async generateInternal(label) {
     const res = tf.tidy(() => {
-      const params = tf.zeros([1, 16]); // 16 latent dims
-      params[0] = std;
-      params[1] = mean
+      console.log(this.latentDim)
+      const params = tf.tensor([this.latentDim]); // 16 latent dims
       const cursor = this.labels.indexOf(label);
       if (cursor < 0) {
         console.log('Wrong input of the label!');
@@ -78,7 +70,7 @@ class Cvae {
       }
 
       this.labelVector = this.labelVector.map(() => 0); // clear vector
-      this.labelVector[cursor] = 1;
+      this.labelVector[cursor+1] = 1;
 
       const input = tf.tensor([this.labelVector]);
 
