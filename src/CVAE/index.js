@@ -17,7 +17,7 @@ class Cvae {
   constructor(modelPath, callback) {
     this.ready = false;
     this.model = {};
-    this.latentDim = Array(16).fill(0);
+    this.latentDim = tf.randomUniform([1, 16]);
     // get an array full of zero with the length of labels [0, 0, 0 ...]
     this.modelPath = modelPath;
     this.jsonLoader().then(val => {
@@ -25,13 +25,8 @@ class Cvae {
       this.labels = val.labels;
       this.labelVector = Array(...{ length: this.labels.length+1 }).map(Function.call, () => 0);
     });
-    
   }
-
-  setLatentDim(index, value) {
-    for (let i = index; i < this.latentDim.length; i+=2) this.latentDim[i] = value;
-  }
-
+  
   // load tfjs model that is converted by tensorflowjs with graph and weights
   async loadCVAEModel(modelPath) {
     this.model = await tf.loadModel(modelPath);
@@ -61,8 +56,8 @@ class Cvae {
 
   async generateInternal(label) {
     const res = tf.tidy(() => {
+      this.latentDim = tf.randomUniform([1, 16]);
       console.log(this.latentDim)
-      const params = tf.tensor([this.latentDim]); // 16 latent dims
       const cursor = this.labels.indexOf(label);
       if (cursor < 0) {
         console.log('Wrong input of the label!');
@@ -74,7 +69,7 @@ class Cvae {
 
       const input = tf.tensor([this.labelVector]);
 
-      const temp = this.model.predict([params, input]);
+      const temp = this.model.predict([this.latentDim, input]);
       return temp.reshape([temp.shape[1], temp.shape[2], temp.shape[3]]);
     });
 
