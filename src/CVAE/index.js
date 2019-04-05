@@ -18,12 +18,15 @@ class Cvae {
     this.ready = false;
     this.model = {};
     this.latentDim = tf.randomUniform([1, 16]);
-    // get an array full of zero with the length of labels [0, 0, 0 ...]
     this.modelPath = modelPath;
+    this.modelPathPrefix = '';
+
     this.jsonLoader().then(val => {
-      this.ready = callCallback(this.loadCVAEModel(val.model), callback);
+      this.modelPathPrefix = this.modelPath.split('manifest.json')[0]
+      this.ready = callCallback(this.loadCVAEModel(this.modelPathPrefix+val.model), callback);
       this.labels = val.labels;
-      this.labelVector = Array(...{ length: this.labels.length+1 }).map(Function.call, () => 0);
+      // get an array full of zero with the length of labels [0, 0, 0 ...]
+      this.labelVector = Array(this.labels.length+1).fill(0);
     });
   }
   
@@ -37,6 +40,15 @@ class Cvae {
   async generate(label, callback) {
     return callCallback(this.generateInternal(label), callback);
   }
+
+  loadAsync(url){
+    return new Promise((resolve, reject) => {
+        if(!this.ready) reject();
+        loadImage(url, (img) => {
+            resolve(img);
+        });
+    });
+  };
 
   getBlob(inputCanvas) {
     return new Promise((resolve, reject) => {
@@ -57,7 +69,6 @@ class Cvae {
   async generateInternal(label) {
     const res = tf.tidy(() => {
       this.latentDim = tf.randomUniform([1, 16]);
-      console.log(this.latentDim)
       const cursor = this.labels.indexOf(label);
       if (cursor < 0) {
         console.log('Wrong input of the label!');
@@ -73,11 +84,13 @@ class Cvae {
       return temp.reshape([temp.shape[1], temp.shape[2], temp.shape[3]]);
     });
 
-    const raws = await tf.toPixels(res); // pixel bytes 1.0.2
+    const raws = await tf.toPixels(res); // pixel bytes will need to update to io.browser.toPixels in tfjs 1.0+
 
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement('canvas'); // consider using offScreneCanvas
     const ctx = canvas.getContext('2d');
     const [x, y] = res.shape;
+    canvas.width = x;
+    canvas.height = y;
     const imgData = ctx.createImageData(x, y);
     const data = imgData.data;
     for (let i = 0; i < x * y * 4; i += 1) data[i] = raws[i];
@@ -85,7 +98,8 @@ class Cvae {
 
     const src = URL.createObjectURL(await this.getBlob(canvas));
     let image;
-    if (this.checkP5()) image = window.p5.loadImage(src); 
+    /* global loadImage */
+    if (this.checkP5()) image = await this.loadAsync(src); 
     return { src, raws, image };
   }
 
