@@ -36,23 +36,28 @@ function padSequences(sequences, maxLen, padding = 'pre', truncating = 'pre', va
 }
 
 class Sentiment {
-  constructor(callback) {
-    // console.log('constructor');
-    this.ready = callCallback(this.init(), callback);
+  constructor(modelName, callback) {
+    console.log('constructor');
+    this.ready = callCallback(this.loadModel(modelName), callback);
   }
+
   /**
   * Initializes the Sentiment demo.
   */
-  async init() {
-    const HOSTED_URLS = {
+
+  async loadModel(modelName) {
+
+    if (modelName.toLowerCase() === 'moviereviews') {
+
+    const movieReviews = {
       model:
         'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json',
       metadata:
         'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
     };
 
-    this.model = await tf.loadModel(HOSTED_URLS.model);
-    const metadataJson = await fetch(HOSTED_URLS.metadata);
+    this.model = await tf.loadModel(movieReviews.model);
+    const metadataJson = await fetch(movieReviews.metadata);
     const sentimentMetadata = await metadataJson.json();
 
     this.indexFrom = sentimentMetadata.index_from;
@@ -60,6 +65,11 @@ class Sentiment {
 
     this.wordIndex = sentimentMetadata.word_index;
     this.vocabularySize = sentimentMetadata.vocabulary_size;
+
+    } else {
+      console.error('problem loading model')
+    }
+    return this;
   }
 
   predict(text) {
@@ -79,17 +89,19 @@ class Sentiment {
     // Perform truncation and padding.
     const paddedSequence = padSequences([sequence], this.maxLen);
     const input = tf.tensor2d(paddedSequence, [1, this.maxLen]);
-    const beginMs = performance.now();
     const predictOut = this.model.predict(input);
     const score = predictOut.dataSync()[0];
     predictOut.dispose();
-    const endMs = performance.now();
 
-    return { score, elapsed: (endMs - beginMs) };
+    return { score };
   }
 }
 
-const sentiment = callback => new Sentiment(callback);
+const sentiment = (modelName, callback) => new Sentiment( modelName, callback ) ;
 
 export default sentiment;
+
+
+
+
 
