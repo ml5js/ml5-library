@@ -21,7 +21,7 @@ const RNN_DEFAULTS = {
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 500,
+  length: 30,
   temperature: 0.7
 }
 
@@ -29,7 +29,7 @@ describe('charRnn', () => {
   let rnn;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000; //set extra long interval due to issues with CharRNN generation time
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; //set extra long interval due to issues with CharRNN generation time
     rnn  = await charRNN(RNN_MODEL_URL, undefined);
   });
 
@@ -54,7 +54,7 @@ describe('charRnn', () => {
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(500);
+      expect(result.sample.length).toBe(30);
     });
   });
 });
