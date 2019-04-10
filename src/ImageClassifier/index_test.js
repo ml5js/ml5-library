@@ -86,7 +86,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = 'http://localhost:3000/docs/assets/img/stork.mp4';
+    video.src = 'http://localhost:3000/docs/assets/img/pelican.mp4';
     video.width = 400;
     video.height = 400;
     return video;
@@ -100,6 +100,7 @@ describe('videoClassifier', () => {
   });
 
   it('Should create a classifier with all the defaults', async () => {
+    console.log('classifier: ', classifier)
     expect(classifier.version).toBe(DEFAULTS.version);
     expect(classifier.alpha).toBe(DEFAULTS.alpha);
     expect(classifier.topk).toBe(DEFAULTS.topk);
@@ -112,6 +113,7 @@ describe('videoClassifier', () => {
       await classifier.predict()
         .then((results) => {
           console.log('results: ', results);
+          expect(results[0].label).toBe('pelican');
         })
     });
   });
