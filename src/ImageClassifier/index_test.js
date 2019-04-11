@@ -36,6 +36,7 @@ describe('imageClassifier', () => {
     return canvas;
   }
 
+
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     classifier = await imageClassifier('MobileNet', undefined, {});
@@ -77,6 +78,41 @@ describe('imageClassifier', () => {
       const canvas = await getCanvas();
       await classifier.classify({ elt: canvas })
         .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
+    });
+  });
+});
+
+describe('videoClassifier', () => {
+  let classifier;
+  async function getVideo() {
+    const video = document.createElement('video');
+    video.crossOrigin = true;
+    video.src = 'http://ml5js.org/docs/assets/img/pelican.mp4';
+    video.width = 400;
+    video.height = 400;
+    return video;
+  }
+
+  beforeEach(async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    let video = await getVideo();
+    //FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
+    classifier = await imageClassifier('MobileNet', video, {});
+  });
+
+  it('Should create a classifier with all the defaults', async () => {
+    expect(classifier.version).toBe(DEFAULTS.version);
+    expect(classifier.alpha).toBe(DEFAULTS.alpha);
+    expect(classifier.topk).toBe(DEFAULTS.topk);
+    expect(classifier.ready).toBeTruthy();
+  });
+
+  describe('predict', () => {
+    it('Should support video', async () => {
+      await classifier.predict()
+        .then((results) => {
+          expect(results[0].label).toBe('pelican');
+        })
     });
   });
 });
