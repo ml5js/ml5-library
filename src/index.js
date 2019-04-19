@@ -19,6 +19,7 @@ import sketchRNN from './SketchRNN';
 import uNet from './UNET';
 import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
+import sentiment from './Sentiment';
 
 const withPreload = {
   charRNN,
@@ -39,4 +40,5 @@ module.exports = Object.assign({}, preloadRegister(withPreload), {
   ...imageUtils,
   tf,
   version,
+  sentiment,
 });
