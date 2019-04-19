@@ -99,7 +99,7 @@ class UNET extends Video {
     let image;
 
     if (UNET.checkP5()) {
-      image = window.p5.loadImage(dom.src);
+      image = window.loadImage(dom.src);
     }
 
     return {
