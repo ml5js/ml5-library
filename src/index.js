@@ -31,10 +31,10 @@ const withPreload = {
   styleTransfer,
   word2vec,
   YOLO,
+  uNet,
 };
 
 module.exports = Object.assign({}, preloadRegister(withPreload), {
-  uNet,
   KNNClassifier,
   ...imageUtils,
   tf,
