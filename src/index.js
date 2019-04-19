@@ -15,7 +15,8 @@ import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
-import SketchRNN from './SketchRNN';
+import sketchRNN from './SketchRNN';
+import uNet from './UNET';
 import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 
@@ -26,13 +27,14 @@ const withPreload = {
   pitchDetection,
   pix2pix,
   poseNet,
-  SketchRNN,
+  sketchRNN,
   styleTransfer,
   word2vec,
   YOLO,
 };
 
 module.exports = Object.assign({}, preloadRegister(withPreload), {
+  uNet,
   KNNClassifier,
   ...imageUtils,
   tf,
