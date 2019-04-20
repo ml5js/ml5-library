@@ -330,23 +330,26 @@ class Mobilenet {
     return this.customModel;
   }
 
-  async save(callback) {
+  async save(callback, name) {
     if (!this.customModel) {
       throw new Error('No model found.');
     }
     this.customModel.save(tf.io.withSaveHandler(async (data) => {
+      let modelName = 'model';
+      if(name) modelName = name;
+
       this.weightsManifest = {
         modelTopology: data.modelTopology,
         weightsManifest: [{
-          paths: ['./model.weights.bin'],
+          paths: [`./${modelName}.weights.bin`],
           weights: data.weightSpecs,
         }],
         ml5Specs: {
           mapStringToIndex: this.mapStringToIndex,
         },
       };
-      await saveBlob(data.weightData, 'model.weights.bin', 'application/octet-stream');
-      await saveBlob(JSON.stringify(this.weightsManifest), 'model.json', 'text/plain');
+      await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
+      await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
       if (callback) {
         callback();
       }
