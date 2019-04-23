@@ -10,87 +10,87 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import {checkP5} from '../utils/p5Util';
-import {rawToBlob} from '../utils/p5Util';
-import {blobToP5Image} from '../utils/p5Util';
-import {getBlob} from '../utils/p5Util';
-import {loadAsync} from '../utils/p5Util';
+import * as p5Utils from '../utils/p5Utils';
 
-let all_model_info = {
+const allModelInfo = {
     face: {
         description: 'DCGAN, human faces, 64x64',
-        model_url: "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
-        model_size: 64,
-        model_latent_dim: 128
+        modelUrl: "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+        modelSize: 64,
+        modelLatentDim: 128
     }
 };
 
-class DCGAN{
-    constructor(model_name, ready_cb){
-        this.model_cache = {};
-        this.model_name = model_name;
+class DCGANBase{
+    constructor(modelName, readyCb){
+        this.modelCache = {};
+        this.modelName = modelName;
         this.model = null;
-        this.ready = callCallback(this.loadModel(), ready_cb);
+        this.ready = callCallback(this.loadModel(), readyCb);
     }
 
     async loadModel() {
-        let model_name = this.model_name;
-        let model_info = all_model_info[model_name];
-        let model_url = model_info.model_url;
+        const {modelName} = this;
+        const modelInfo = allModelInfo[modelName];
+        const {modelUrl} = modelInfo;
 
-        if (model_name in this.model_cache) {
-            this.model = this.model_cache[model_name];
-            return this;
-        } else {
-            this.model = await tf.loadLayersModel(model_url);
-            this.model_cache[model_name] = this.model;
+        if (modelName in this.modelCache) {
+            this.model = this.modelCache[modelName];
             return this;
         }
+
+        this.model = await tf.loadLayersModel(modelUrl);
+        this.modelCache[modelName] = this.model;
+        return this;
     }
 
     async generate(cb){
-        return callCallback(this.generate_internal(), cb);
+        return callCallback(this.generateInternal(), cb);
     }
 
-    async generate_internal() {
-        let model_info = all_model_info[this.model_name];
-        let model_latent_dim = model_info.model_latent_dim;
-        let model = await this.model;
-        let image_tensor = await this.compute(model, model_latent_dim);
+    async generateInternal() {
+        const modelInfo = allModelInfo[this.modelName];
+        const {modelLatentDim} = modelInfo;
+        const {model} = await this;
+        const imageTensor = await this.compute(model, modelLatentDim);
 
-        //get the raw data from tensor
-        let raw = await tf.browser.toPixels(image_tensor);
+        // get the raw data from tensor
+        const raw = await tf.browser.toPixels(imageTensor);
 
-        //get the blob from raw
-        const [imgHeight, imgWidth] = image_tensor.shape;
-        let blob = await rawToBlob(raw, imgWidth, imgHeight);
+        // get the blob from raw
+        const [imgHeight, imgWidth] = imageTensor.shape;
+        const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
 
-        //get the p5.Image object
+        // get the p5.Image object
         let p5Image;
-        if(checkP5()){
-            p5Image = await blobToP5Image(blob);
+        if(p5Utils.checkP5()){
+            p5Image = await p5Utils.blobToP5Image(blob);
         }
 
-        //wrap up the final js result object
-        let result =  {};
-        result["blob"] = blob;
-        result["raw"] = raw;
-        result["tensor"] = image_tensor;
+        // wrap up the final js result object
+        const result =  {};
+        result.blob = blob;
+        result.raw = raw;
+        result.tensor = imageTensor;
 
-        if(checkP5()){
-            result["image"] = p5Image;
+        if(p5Utils.checkP5()){
+            result.image = p5Image;
         }
 
         return result;
     }
 
-    async compute(model, latent_dim) {
+    static async compute(model, latentDim) {
         const y = tf.tidy(() => {
-            const z = tf.randomNormal([1, latent_dim]);
-            const y = model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
-            return y;
+            const z = tf.randomNormal([1, latentDim]);
+            const yDim = model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
+            return yDim;
         });
 
         return y;
     }
 }
+
+const DCGAN = (modelName, callback) => new DCGANBase( modelName, callback ) ;
+
+export default DCGAN;
