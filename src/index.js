@@ -25,6 +25,7 @@ import sentiment from './Sentiment';
 
 const withPreload = {
   charRNN,
+  CVAE,
   featureExtractor,
   imageClassifier,
   pitchDetection,
@@ -40,7 +41,6 @@ const withPreload = {
 module.exports = Object.assign({}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
-  CVAE,
   DCGAN,
   tf,
   version,
