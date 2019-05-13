@@ -48,11 +48,11 @@ class DCGANBase{
         return callCallback(this.generateInternal(), callback);
     }
     
-    async compute(model, latentDim) {
-        console.log(this) // TODO: remove - the linter complains if this is not called in the function
+    async compute(latentDim) {
         const y = tf.tidy(() => {
             const z = tf.randomNormal([1, latentDim]);
-            const yDim = model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
+            // TBD: should model be a parameter to compute or is it ok to reference this.model here?
+            const yDim = this.model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
             return yDim;
         });
 
@@ -62,8 +62,7 @@ class DCGANBase{
     async generateInternal() {
         const modelInfo = allModelInfo[this.modelName];
         const {modelLatentDim} = modelInfo;
-        const {model} = await this;
-        const imageTensor = await this.compute(model, modelLatentDim);
+        const imageTensor = await this.compute(modelLatentDim);
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
