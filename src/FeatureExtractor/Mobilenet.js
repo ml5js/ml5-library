@@ -80,8 +80,6 @@ class Mobilenet {
   }
 
   async loadModel() {
-
-
     this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.version}_${this.alpha}_${IMAGE_SIZE}/model.json`);
     this.model = await tf.loadGraphModel(this.url, {fromTFHub: true});
 
