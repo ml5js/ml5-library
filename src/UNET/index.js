@@ -27,7 +27,7 @@ class UNET extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadModel(URL);
+    this.model = await tf.loadLayersModel(URL);
     this.modelReady = true;
     return this;
   }
@@ -76,7 +76,7 @@ class UNET extends Video {
 
     const tensor = tf.tidy(() => {
       // preprocess
-      const tfImage = tf.fromPixels(imgToPredict).toFloat();
+      const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [imageSize, imageSize]);
       const normTensor = resizedImg.div(tf.scalar(255));
 
@@ -95,7 +95,7 @@ class UNET extends Video {
     this.isPredicting = false;
     const dom = array3DToImage(tensor);
     const blob = UNET.dataURLtoBlob(dom.src);
-    const raw = await tf.toPixels(tensor);
+    const raw = await tf.browser.toPixels(tensor);
     let image;
 
     if (UNET.checkP5()) {
