@@ -32,6 +32,8 @@ const loadAsync = (url) => {
 
 // Convert a bytes-array to a Blob Object
 const rawToBlob = async (raws, x, y) => {
+    // console.log(raws, x, y)
+    const arr = Array.from(raws)
     const canvas = document.createElement('canvas'); // Consider using offScreenCanvas when it is ready?
     const ctx = canvas.getContext('2d');
 
@@ -39,9 +41,9 @@ const rawToBlob = async (raws, x, y) => {
     canvas.height = y;
 
     const imgData = ctx.createImageData(x, y);
-    const [ data ] = imgData;
+    const { data } = imgData;
 
-    for (let i = 0; i < x * y * 4; i += 1 ) data[i] = raws[i];
+    for (let i = 0; i < x * y * 4; i += 1 ) data[i] = arr[i];
     ctx.putImageData(imgData, 0, 0);
 
     const blob = await getBlob(canvas);
