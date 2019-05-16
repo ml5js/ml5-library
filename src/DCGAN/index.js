@@ -66,6 +66,7 @@ class DCGANBase{
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
+      
         // get the blob from raw
         const [imgHeight, imgWidth] = imageTensor.shape;
         const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
