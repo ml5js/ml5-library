@@ -15,7 +15,7 @@ import * as p5Utils from '../utils/p5Utils';
 const allModelInfo = {
     face: {
         description: 'DCGAN, human faces, 64x64',
-        modelUrl: "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+        modelUrl: "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
         modelSize: 64,
         modelLatentDim: 128
     }
@@ -44,19 +44,29 @@ class DCGANBase{
         return this;
     }
 
-    async generate(cb){
-        return callCallback(this.generateInternal(), cb);
+    async generate(callback){
+        return callCallback(this.generateInternal(), callback);
+    }
+    
+    async compute(latentDim) {
+        const y = tf.tidy(() => {
+            const z = tf.randomNormal([1, latentDim]);
+            // TBD: should model be a parameter to compute or is it ok to reference this.model here?
+            const yDim = this.model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
+            return yDim;
+        });
+
+        return y;
     }
 
     async generateInternal() {
         const modelInfo = allModelInfo[this.modelName];
         const {modelLatentDim} = modelInfo;
-        const {model} = await this;
-        const imageTensor = await this.compute(model, modelLatentDim);
+        const imageTensor = await this.compute(modelLatentDim);
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
-
+      
         // get the blob from raw
         const [imgHeight, imgWidth] = imageTensor.shape;
         const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
@@ -78,17 +88,9 @@ class DCGANBase{
         }
 
         return result;
+
     }
 
-    static async compute(model, latentDim) {
-        const y = tf.tidy(() => {
-            const z = tf.randomNormal([1, latentDim]);
-            const yDim = model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
-            return yDim;
-        });
-
-        return y;
-    }
 }
 
 const DCGAN = (modelName, callback) => new DCGANBase( modelName, callback ) ;
