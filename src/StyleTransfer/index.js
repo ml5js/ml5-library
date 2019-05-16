@@ -104,7 +104,7 @@ class StyleTransfer extends Video {
   }
 
   async transferInternal(input) {
-    const image = tf.fromPixels(input);
+    const image = tf.browser.fromPixels(input);
     const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
