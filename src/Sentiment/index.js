@@ -56,7 +56,7 @@ class Sentiment {
         'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
     };
 
-    this.model = await tf.loadModel(movieReviews.model);
+    this.model = await tf.loadLayersModel(movieReviews.model);
     const metadataJson = await fetch(movieReviews.metadata);
     const sentimentMetadata = await metadataJson.json();
 
