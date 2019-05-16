@@ -8,7 +8,6 @@ A class that extract features from Mobilenet
 */
 
 import * as tf from '@tensorflow/tfjs';
-import * as mobilenet from '@tensorflow-models/mobilenet';
 
 import Video from './../utils/Video';
 
@@ -17,6 +16,7 @@ import { saveBlob } from '../utils/io';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 224;
+const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
   version: 1,
   alpha: 0.25,
@@ -28,10 +28,35 @@ const DEFAULTS = {
   batchSize: 0.4,
   layer: 'conv_pw_13_relu',
 };
+const MODEL_INFO = {
+  1: {
+    0.25:
+        'https://tfhub.dev/google/imagenet/mobilenet_v1_025_224/classification/1',
+    0.50:
+        'https://tfhub.dev/google/imagenet/mobilenet_v1_050_224/classification/1',
+    0.75:
+        'https://tfhub.dev/google/imagenet/mobilenet_v1_075_224/classification/1',
+    1.00:
+        'https://tfhub.dev/google/imagenet/mobilenet_v1_100_224/classification/1'
+  },
+  2: {
+    0.50:
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/2',
+    0.75:
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/2',
+    1.00:
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/2'
+  }
+};
+
+const EMBEDDING_NODES = {
+  1: 'module_apply_default/MobilenetV1/Logits/global_pool',
+  2: 'module_apply_default/MobilenetV2/Logits/AvgPool'
+};
 
 class Mobilenet {
   constructor(options, callback) {
-    this.mobilenet = mobilenet;
+    this.mobilenet = null;
     this.topKPredictions = 10;
     this.hasAnyTrainedClass = false;
     this.customModel = null;
@@ -47,15 +72,23 @@ class Mobilenet {
     this.mapStringToIndex = [];
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
+
+    // for graph model
+    this.model = null;
+    this.url = MODEL_INFO[this.version][this.alpha];
+    this.normalizationOffset = tf.scalar(127.5);
   }
 
   async loadModel() {
-    this.mobilenet = await this.mobilenet.load(this.version, this.alpha);
-    const layer = this.mobilenet.model.getLayer(this.layer);
-    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.model.inputs, outputs: layer.output });
-    if (this.video) {
-      await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
-    }
+    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.version}_${this.alpha}_${IMAGE_SIZE}/model.json`);
+    this.model = await tf.loadGraphModel(this.url, {fromTFHub: true});
+
+
+    const layer = this.mobilenet.getLayer(this.layer);
+    this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
+    // if (this.video) {
+    //   await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
+    // }
     return this;
   }
 
@@ -317,12 +350,12 @@ class Mobilenet {
           weights = file;
         }
       });
-      this.customModel = await tf.loadModel(tf.io.browserFiles([model, weights]));
+      this.customModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
         .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
-      this.customModel = await tf.loadModel(filesOrPath);
+      this.customModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
       }
@@ -356,6 +389,44 @@ class Mobilenet {
     }));
   }
 
+  mobilenetInfer(input, embedding=false) {
+    let img = input;
+    if (img instanceof tf.Tensor || img instanceof ImageData || 
+        img instanceof HTMLImageElement || img instanceof HTMLCanvasElement 
+        || img instanceof HTMLVideoElement ) {
+          return tf.tidy(() => {
+              if (!(img instanceof tf.Tensor)) {
+                  img = tf.browser.fromPixels(img);
+                }
+              const normalized = img.toFloat().sub(this.normalizationOffset)
+                                    .div(this.normalizationOffset);
+
+              // Resize the image to
+              let resized = normalized;
+              if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
+                const alignCorners = true;
+                resized = tf.image.resizeBilinear(
+                    normalized, [IMAGE_SIZE, IMAGE_SIZE], alignCorners);
+              }
+
+              // Reshape so we can pass it to predict.
+              const batched = resized.reshape([-1, IMAGE_SIZE, IMAGE_SIZE, 3]);
+              let result;
+              if (embedding) {
+                const embeddingName = EMBEDDING_NODES[this.version];
+                const internal = this.model.execute(batched, embeddingName);
+                result = internal.squeeze([1, 2]);
+              } else {
+                const logits1001 = this.model.predict(batched);
+                result = logits1001.slice([0, 1], [-1, 1000]);
+              }
+              return result;
+            }
+          );
+        }
+      return null;
+  }
+
   infer(input, endpoint) {
     let imgToPredict;
     let endpointToPredict;
@@ -371,7 +442,7 @@ class Mobilenet {
     } else {
       endpointToPredict = 'conv_preds';
     }
-    return this.mobilenet.infer(imgToPredict, endpointToPredict);
+    return this.mobilenetInfer(imgToPredict, endpointToPredict);
   }
 }
 

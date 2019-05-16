@@ -128,7 +128,7 @@ class CharRNN {
     let probabilitiesNormalized = []; // will contain final probabilities (normalized)
 
     for (let i = 0; i < userInput.length + length + -1; i += 1) {
-      const onehotBuffer = tf.buffer([1, this.vocabSize]);
+      const onehotBuffer = await tf.buffer([1, this.vocabSize]);
       onehotBuffer.set(1.0, 0, input);
       const onehot = onehotBuffer.toTensor();
       let output;
@@ -223,7 +223,7 @@ class CharRNN {
 
     let input = encodedInput[0];
     for (let i = 0; i < seed.length; i += 1) {
-      const onehotBuffer = tf.buffer([1, this.vocabSize]);
+      const onehotBuffer = await tf.buffer([1, this.vocabSize]);
       onehotBuffer.set(1.0, 0, input);
       const onehot = onehotBuffer.toTensor();
       let output;
