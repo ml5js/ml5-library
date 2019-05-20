@@ -22,9 +22,15 @@ class Video {
   }
 
   async loadVideo() {
+    let stream;
     return new Promise((resolve) => {
       this.video = document.createElement('video');
-      const stream = this.videoElt.captureStream();
+      const sUsrAg = navigator.userAgent;
+      if (sUsrAg.indexOf('Firefox') > -1) {
+        stream = this.videoElt.mozCaptureStream();
+      } else {
+        stream = this.videoElt.captureStream();
+      }
       this.video.srcObject = stream;
       this.video.width = this.size;
       this.video.height = this.size;
