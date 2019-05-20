@@ -51,7 +51,7 @@ class YOLOBase extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadModel(URL);
+    this.model = await tf.loadLayersModel(URL);
     this.modelReady = true;
     return this;
   }
