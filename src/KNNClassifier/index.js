@@ -30,7 +30,7 @@ class KNN {
       } else {
         classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
       }
-    } else if (classIndexOrLabel === 'number') {
+    } else if (typeof classIndexOrLabel === 'number') {
       classIndex = classIndexOrLabel;
     }
 
@@ -93,7 +93,7 @@ class KNN {
       if (this.mapStringToIndex.includes(labelIndex)) {
         classIndex = this.mapStringToIndex.indexOf(labelIndex);
       }
-    } else {
+    } else if (typeof labelIndex === 'number') {
       classIndex = labelIndex;
     }
     this.knnClassifier.clearClass(classIndex);
