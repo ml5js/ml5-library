@@ -24,7 +24,7 @@ const DEFAULTS = {
   learningRate: 0.0001,
   hiddenUnits: 100,
   epochs: 20,
-  numClasses: 2,
+  numLabels: 2,
   batchSize: 0.4,
   layer: 'conv_pw_13_relu',
 };
@@ -63,7 +63,7 @@ class Mobilenet {
     this.epochs = options.epochs || DEFAULTS.epochs;
     this.version = options.version || DEFAULTS.version;
     this.hiddenUnits = options.hiddenUnits || DEFAULTS.hiddenUnits;
-    this.numClasses = options.numClasses || DEFAULTS.numClasses;
+    this.numLabels = options.numLabels || DEFAULTS.numLabels;
     this.learningRate = options.learningRate || DEFAULTS.learningRate;
     this.batchSize = options.batchSize || DEFAULTS.batchSize;
     this.layer = options.layer || DEFAULTS.layer;
@@ -169,7 +169,7 @@ class Mobilenet {
       const prediction = this.mobilenetFeatures.predict(processedImg);
       let y;
       if (this.usageType === 'classifier') {
-        y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
+        y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numLabels));
       } else if (this.usageType === 'regressor') {
         y = tf.tensor2d([[label]]);
       }
@@ -210,7 +210,7 @@ class Mobilenet {
             useBias: true,
           }),
           tf.layers.dense({
-            units: this.numClasses,
+            units: this.numLabels,
             kernelInitializer: 'varianceScaling',
             useBias: false,
             activation: 'softmax',
