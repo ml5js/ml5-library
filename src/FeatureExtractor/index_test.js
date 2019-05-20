@@ -9,7 +9,7 @@ const FEATURE_EXTRACTOR_DEFAULTS = {
   learningRate: 0.0001,
   hiddenUnits: 100,
   epochs: 20,
-  numClasses: 2,
+  numLabels: 2,
   batchSize: 0.4,
 };
 
@@ -25,7 +25,7 @@ describe('featureExtractor with Mobilenet', () => {
     expect(classifier.learningRate).toBe(FEATURE_EXTRACTOR_DEFAULTS.learningRate);
     expect(classifier.hiddenUnits).toBe(FEATURE_EXTRACTOR_DEFAULTS.hiddenUnits);
     expect(classifier.epochs).toBe(FEATURE_EXTRACTOR_DEFAULTS.epochs);
-    expect(classifier.numClasses).toBe(FEATURE_EXTRACTOR_DEFAULTS.numClasses);
+    expect(classifier.numLabels).toBe(FEATURE_EXTRACTOR_DEFAULTS.numLabels);
     expect(classifier.batchSize).toBe(FEATURE_EXTRACTOR_DEFAULTS.batchSize);
   });
 
