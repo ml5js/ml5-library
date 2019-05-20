@@ -130,9 +130,10 @@ class Mobilenet {
     let label;
     let callback = cb;
 
-    if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement) {
+    if (inputOrLabel instanceof HTMLImageElement || inputOrLabel instanceof HTMLVideoElement || inputOrLabel instanceof HTMLCanvasElement) {
       imgToAdd = inputOrLabel;
-    } else if (typeof inputOrLabel === 'object' && (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrLabel === 'object' &&
+      (inputOrLabel.elt instanceof HTMLImageElement || inputOrLabel.elt instanceof HTMLVideoElement || inputOrLabel.elt instanceof HTMLCanvasElement)) {
       imgToAdd = inputOrLabel.elt;
     } else if (typeof inputOrLabel === 'string' || typeof inputOrLabel === 'number') {
       imgToAdd = this.video;
@@ -258,9 +259,10 @@ class Mobilenet {
     let imgToPredict;
     let callback;
 
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
+    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLCanvasElement) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrCallback === 'object' &&
+      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLCanvasElement)) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
@@ -301,9 +303,10 @@ class Mobilenet {
   async predict(inputOrCallback, cb) {
     let imgToPredict;
     let callback;
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
+    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLCanvasElement) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrCallback === 'object' &&
+      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLCanvasElement)) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
