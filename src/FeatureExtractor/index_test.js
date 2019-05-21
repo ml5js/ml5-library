@@ -22,11 +22,11 @@ describe('featureExtractor with Mobilenet', () => {
   });
 
   it('Should create a featureExtractor with all the defaults', async () => {
-    expect(classifier.learningRate).toBe(FEATURE_EXTRACTOR_DEFAULTS.learningRate);
-    expect(classifier.hiddenUnits).toBe(FEATURE_EXTRACTOR_DEFAULTS.hiddenUnits);
-    expect(classifier.epochs).toBe(FEATURE_EXTRACTOR_DEFAULTS.epochs);
-    expect(classifier.numLabels).toBe(FEATURE_EXTRACTOR_DEFAULTS.numLabels);
-    expect(classifier.batchSize).toBe(FEATURE_EXTRACTOR_DEFAULTS.batchSize);
+    expect(classifier.config.learningRate).toBe(FEATURE_EXTRACTOR_DEFAULTS.learningRate);
+    expect(classifier.config.hiddenUnits).toBe(FEATURE_EXTRACTOR_DEFAULTS.hiddenUnits);
+    expect(classifier.config.epochs).toBe(FEATURE_EXTRACTOR_DEFAULTS.epochs);
+    expect(classifier.config.numLabels).toBe(FEATURE_EXTRACTOR_DEFAULTS.numLabels);
+    expect(classifier.config.batchSize).toBe(FEATURE_EXTRACTOR_DEFAULTS.batchSize);
   });
 
   // describe('predict', () => {
