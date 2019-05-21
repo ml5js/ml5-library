@@ -92,15 +92,16 @@ class Mobilenet {
     return this;
   }
 
-  classification(video, numOrCallback = null, callback) {
+  classification(video, objOrCallback = null, callback) {
     let cb;
     
     this.usageType = 'classifier';
 
-    if (typeof numOrCallback === 'number') {
-      this.numLabels = numOrCallback;
-    } else if (typeof numOrCallback === 'function') {
-      cb = numOrCallback;
+    if (typeof objOrCallback === 'object') {      
+      Object.assign(this, objOrCallback);
+
+    } else if (typeof objOrCallback === 'function') {
+      cb = objOrCallback;
     }
 
     if (typeof callback === 'function') {
