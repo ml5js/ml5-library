@@ -24,7 +24,7 @@ const DEFAULTS = {
   learningRate: 0.0001,
   hiddenUnits: 100,
   epochs: 20,
-  numClasses: 2,
+  numLabels: 2,
   batchSize: 0.4,
   layer: 'conv_pw_13_relu',
 };
@@ -60,14 +60,16 @@ class Mobilenet {
     this.topKPredictions = 10;
     this.hasAnyTrainedClass = false;
     this.customModel = null;
-    this.epochs = options.epochs || DEFAULTS.epochs;
-    this.version = options.version || DEFAULTS.version;
-    this.hiddenUnits = options.hiddenUnits || DEFAULTS.hiddenUnits;
-    this.numClasses = options.numClasses || DEFAULTS.numClasses;
-    this.learningRate = options.learningRate || DEFAULTS.learningRate;
-    this.batchSize = options.batchSize || DEFAULTS.batchSize;
-    this.layer = options.layer || DEFAULTS.layer;
-    this.alpha = options.alpha || DEFAULTS.alpha;
+    this.config = {
+      epochs: options.epochs || DEFAULTS.epochs,
+      version: options.version || DEFAULTS.version,
+      hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
+      numLabels: options.numLabels || DEFAULTS.numLabels,
+      learningRate: options.learningRate || DEFAULTS.learningRate,
+      batchSize: options.batchSize || DEFAULTS.batchSize,
+      layer: options.layer || DEFAULTS.layer,
+      alpha: options.alpha || DEFAULTS.alpha
+    }
     this.isPredicting = false;
     this.mapStringToIndex = [];
     this.usageType = null;
@@ -75,16 +77,16 @@ class Mobilenet {
 
     // for graph model
     this.model = null;
-    this.url = MODEL_INFO[this.version][this.alpha];
+    this.url = MODEL_INFO[this.config.version][this.config.alpha];
     this.normalizationOffset = tf.scalar(127.5);
   }
 
   async loadModel() {
-    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.version}_${this.alpha}_${IMAGE_SIZE}/model.json`);
+    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.config.version}_${this.config.alpha}_${IMAGE_SIZE}/model.json`);
     this.model = await tf.loadGraphModel(this.url, {fromTFHub: true});
 
 
-    const layer = this.mobilenet.getLayer(this.layer);
+    const layer = this.mobilenet.getLayer(this.config.layer);
     this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
     // if (this.video) {
     //   await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
@@ -92,11 +94,26 @@ class Mobilenet {
     return this;
   }
 
-  classification(video, callback) {
+  classification(video, objOrCallback = null, callback) {
+    let cb;
+    
     this.usageType = 'classifier';
-    if (video) {
-      callCallback(this.loadVideo(video), callback);
+
+    if (typeof objOrCallback === 'object') {      
+      Object.assign(this.config, objOrCallback);
+
+    } else if (typeof objOrCallback === 'function') {
+      cb = objOrCallback;
     }
+
+    if (typeof callback === 'function') {
+      cb = callback;
+    }
+
+    if (video) {
+      callCallback(this.loadVideo(video), cb);
+    }
+
     return this;
   }
 
@@ -169,7 +186,7 @@ class Mobilenet {
       const prediction = this.mobilenetFeatures.predict(processedImg);
       let y;
       if (this.usageType === 'classifier') {
-        y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.numClasses));
+        y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.config.numLabels));
       } else if (this.usageType === 'regressor') {
         y = tf.tensor2d([[label]]);
       }
@@ -204,13 +221,13 @@ class Mobilenet {
         layers: [
           tf.layers.flatten({ inputShape: [7, 7, 256] }),
           tf.layers.dense({
-            units: this.hiddenUnits,
+            units: this.config.hiddenUnits,
             activation: 'relu',
             kernelInitializer: 'varianceScaling',
             useBias: true,
           }),
           tf.layers.dense({
-            units: this.numClasses,
+            units: this.config.numLabels,
             kernelInitializer: 'varianceScaling',
             useBias: false,
             activation: 'softmax',
@@ -223,7 +240,7 @@ class Mobilenet {
         layers: [
           tf.layers.flatten({ inputShape: [7, 7, 256] }),
           tf.layers.dense({
-            units: this.hiddenUnits,
+            units: this.config.hiddenUnits,
             activation: 'relu',
             kernelInitializer: 'varianceScaling',
             useBias: true,
@@ -238,16 +255,16 @@ class Mobilenet {
       });
     }
 
-    const optimizer = tf.train.adam(this.learningRate);
+    const optimizer = tf.train.adam(this.config.learningRate);
     this.customModel.compile({ optimizer, loss: this.loss });
-    const batchSize = Math.floor(this.xs.shape[0] * this.batchSize);
+    const batchSize = Math.floor(this.xs.shape[0] * this.config.batchSize);
     if (!(batchSize > 0)) {
       throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
     }
 
     return this.customModel.fit(this.xs, this.ys, {
       batchSize,
-      epochs: this.epochs,
+      epochs: this.config.epochs,
       callbacks: {
         onBatchEnd: async (batch, logs) => {
           onProgress(logs.loss.toFixed(5));
@@ -420,7 +437,7 @@ class Mobilenet {
               const batched = resized.reshape([-1, IMAGE_SIZE, IMAGE_SIZE, 3]);
               let result;
               if (embedding) {
-                const embeddingName = EMBEDDING_NODES[this.version];
+                const embeddingName = EMBEDDING_NODES[this.config.version];
                 const internal = this.model.execute(batched, embeddingName);
                 result = internal.squeeze([1, 2]);
               } else {
