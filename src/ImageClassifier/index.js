@@ -21,6 +21,13 @@ const DEFAULTS = {
 };
 
 class ImageClassifier {
+  /**
+   * Create an ImageClassifier.
+   * @param {modelName} modelName - The name of the model to use. Current options are: 'mobilenet', 'darknet', and 'darknet-tiny'.
+   * @param {HTMLVideoElement} video - An HTMLVideoElement.
+   * @param {object} options - An object with options.
+   * @param {function} callback - A callback to be called when the model is ready.
+   */
   constructor(modelName, video, options, callback) {
     this.modelName = modelName;
     this.video = video;
@@ -47,11 +54,21 @@ class ImageClassifier {
     this.ready = callCallback(this.loadModel(), callback);
   }
 
+  /**
+   * Load the model and set it to this.model
+   * @return {this} The ImageClassifier.
+   */
   async loadModel() {
     this.model = await this.modelToUse.load(this.version, this.alpha);
     return this;
   }
 
+  /**
+   * Classifies the given input and returns an object with labels and confidence
+   * @param {HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} imgToPredict - takes an image to run the classification on.
+   * @param {number} numberOfClasses - a number of labels to return for the image classification.
+   * @return {object} an object with {label, confidence}.
+   */
   async classifyInternal(imgToPredict, numberOfClasses) {
     // Wait for the model to be ready
     await this.ready;
@@ -67,6 +84,13 @@ class ImageClassifier {
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
   }
 
+  /**
+   * Classifies the given input and takes a callback to handle the results
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} inputNumOrCallback - takes any of the following params
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} numOrCallback - takes any of the following params
+   * @param {function} cb - a callback function that handles the results of the function.
+   * @return {function} a promise or the results of a given callback, cb.
+   */
   async classify(inputNumOrCallback, numOrCallback = null, cb) {
     let imgToPredict = this.video;
     let numberOfClasses = this.topk;
@@ -118,6 +142,13 @@ class ImageClassifier {
     return callCallback(this.classifyInternal(imgToPredict, numberOfClasses), callback);
   }
 
+  /**
+   * Will be deprecated soon in favor of ".classify()" - does the same as .classify()
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} inputNumOrCallback - takes any of the following params
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} numOrCallback - takes any of the following params
+   * @param {function} cb - a callback function that handles the results of the function.
+   * @return {function} a promise or the results of a given callback, cb.
+   */
   async predict(inputNumOrCallback, numOrCallback, cb) {
     return this.classify(inputNumOrCallback, numOrCallback || null, cb);
   }
