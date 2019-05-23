@@ -13,7 +13,17 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
 class Cvae {
+  /**
+   * Create a Conditional Variational Autoencoder (CVAE).
+   * @param {String} modelPath - Required. The url path to your model.
+   * @param {function} callback - Required. A function to run once the model has been loaded.
+   */
   constructor(modelPath, callback) {
+    /**
+     * Boolean value that specifies if the model has loaded.
+     * @type {boolean}
+     * @public
+     */
     this.ready = false;
     this.model = {};
     this.latentDim = tf.randomUniform([1, 16]);
@@ -35,7 +45,12 @@ class Cvae {
     return this;
   }
 
-  // label should be a string that you input before at the labels
+  /**
+   * Generate a random result.
+   * @param {String} label  - A label of the feature your want to generate
+   * @param {function} callback  - A function to handle the results of ".generate()". Likely a function to do something with the generated image data.
+   * @return {raw: ImageData, src: Blob, image: p5.Image}
+   */
   async generate(label, callback) {
     return callCallback(this.generateInternal(label), callback);
   }
@@ -83,7 +98,7 @@ class Cvae {
       return temp.reshape([temp.shape[1], temp.shape[2], temp.shape[3]]);
     });
 
-    const raws = await tf.browser.toPixels(res); // pixel bytes will need to update to io.browser.toPixels in tfjs 1.0+
+    const raws = await tf.browser.toPixels(res);
 
     const canvas = document.createElement('canvas'); // consider using offScreneCanvas
     const ctx = canvas.getContext('2d');
