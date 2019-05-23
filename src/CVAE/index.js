@@ -31,7 +31,7 @@ class Cvae {
   
   // load tfjs model that is converted by tensorflowjs with graph and weights
   async loadCVAEModel(modelPath) {
-    this.model = await tf.loadModel(modelPath);
+    this.model = await tf.loadLayersModel(modelPath);
     return this;
   }
 
@@ -83,7 +83,7 @@ class Cvae {
       return temp.reshape([temp.shape[1], temp.shape[2], temp.shape[3]]);
     });
 
-    const raws = await tf.toPixels(res); // pixel bytes will need to update to io.browser.toPixels in tfjs 1.0+
+    const raws = await tf.browser.toPixels(res); // pixel bytes will need to update to io.browser.toPixels in tfjs 1.0+
 
     const canvas = document.createElement('canvas'); // consider using offScreneCanvas
     const ctx = canvas.getContext('2d');

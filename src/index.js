@@ -18,12 +18,14 @@ import pix2pix from './Pix2pix/';
 import sketchRNN from './SketchRNN';
 import uNet from './UNET';
 import CVAE from './CVAE';
+import DCGAN from './DCGAN';
 import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
 
 const withPreload = {
   charRNN,
+  CVAE,
   featureExtractor,
   imageClassifier,
   pitchDetection,
@@ -39,7 +41,7 @@ const withPreload = {
 module.exports = Object.assign({}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
-  CVAE,
+  DCGAN,
   tf,
   version,
   sentiment,
