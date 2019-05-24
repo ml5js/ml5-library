@@ -23,7 +23,8 @@ const DEFAULTS = {
 class ImageClassifier {
   /**
    * Create an ImageClassifier.
-   * @param {modelName} modelName - The name of the model to use. Current options are: 'mobilenet', 'darknet', and 'darknet-tiny'.
+   * @param {modelName} modelName - The name of the model to use. Current options 
+   *    are: 'mobilenet', 'darknet', and 'darknet-tiny'.
    * @param {HTMLVideoElement} video - An HTMLVideoElement.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
@@ -65,8 +66,10 @@ class ImageClassifier {
 
   /**
    * Classifies the given input and returns an object with labels and confidence
-   * @param {HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} imgToPredict - takes an image to run the classification on.
-   * @param {number} numberOfClasses - a number of labels to return for the image classification.
+   * @param {HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} imgToPredict - 
+   *    takes an image to run the classification on.
+   * @param {number} numberOfClasses - a number of labels to return for the image 
+   *    classification.
    * @return {object} an object with {label, confidence}.
    */
   async classifyInternal(imgToPredict, numberOfClasses) {
@@ -86,8 +89,10 @@ class ImageClassifier {
 
   /**
    * Classifies the given input and takes a callback to handle the results
-   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} inputNumOrCallback - takes any of the following params
-   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} numOrCallback - takes any of the following params
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} inputNumOrCallback - 
+   *    takes any of the following params
+   * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} numOrCallback - 
+   *    takes any of the following params
    * @param {function} cb - a callback function that handles the results of the function.
    * @return {function} a promise or the results of a given callback, cb.
    */

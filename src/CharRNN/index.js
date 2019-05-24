@@ -22,7 +22,9 @@ class CharRNN {
   /**
    * Create a CharRNN.
    * @param {String} modelPath - The path to the trained charRNN model.
-   * @param {function} callback  - Optional. A callback to be called once the model has loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   * @param {function} callback  - Optional. A callback to be called once 
+   *    the model has loaded. If no callback is provided, it will return a 
+   *    promise that will be resolved once the model has loaded.
    */
   constructor(modelPath, callback) {
     /**
@@ -211,9 +213,15 @@ class CharRNN {
 
   // stateless
   /**
-   * Generates content in a stateless manner, based on some initial text (known as a "seed"). Returns a string.
-   * @param {options} options - An object specifying the input parameters of seed, length and temperature. Default length is 20, temperature is 0.5 and seed is a random character from the model. The object should look like this:
-   * @param {function} callback - Optional. A function to be called when the model has generated content. If no callback is provided, it will return a promise that will be resolved once the model has generated new content.
+   * Generates content in a stateless manner, based on some initial text 
+   *    (known as a "seed"). Returns a string.
+   * @param {options} options - An object specifying the input parameters of 
+   *    seed, length and temperature. Default length is 20, temperature is 0.5 
+   *    and seed is a random character from the model. The object should look like 
+   *    this:
+   * @param {function} callback - Optional. A function to be called when the model 
+   *    has generated content. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has generated new content.
    */
   async generate(options, callback) {
     this.reset();
@@ -224,7 +232,9 @@ class CharRNN {
   /**
    * Predict the next character based on the model's current state.
    * @param {number} temp 
-   * @param {function} callback - Optional. A function to be called when the model finished adding the seed. If no callback is provided, it will return a promise that will be resolved once the prediction has been generated.
+   * @param {function} callback - Optional. A function to be called when the 
+   *    model finished adding the seed. If no callback is provided, it will 
+   *    return a promise that will be resolved once the prediction has been generated.
    */
   async predict(temp, callback) {
     let probabilitiesNormalized = [];
@@ -256,7 +266,9 @@ class CharRNN {
   /**
    * Feed a string of characters to the model state.
    * @param {String} inputSeed - A string to feed the charRNN model state.
-   * @param {function} callback  - Optional. A function to be called when the model finished adding the seed. If no callback is provided, it will return a promise that will be resolved once seed has been fed.
+   * @param {function} callback  - Optional. A function to be called when 
+   *    the model finished adding the seed. If no callback is provided, it 
+   *    will return a promise that will be resolved once seed has been fed.
    */
   async feed(inputSeed, callback) {
     await this.ready;

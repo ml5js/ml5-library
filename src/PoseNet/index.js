@@ -43,7 +43,9 @@ class PoseNet extends EventEmitter {
    * @param {HTMLVideoElement || p5.Video} video  - Optional. A HTML video element or a p5 video element.
    * @param {options} options - Optional. An object describing a model accuracy and performance.
    * @param {String} detectionType - Optional. A String value to run 'single' or 'multiple' estimation.
-   * @param {function} callback  Optional. A function to run once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   * @param {function} callback  Optional. A function to run once the model has been loaded. 
+   *    If no callback is provided, it will return a promise that will be resolved once the 
+   *    model has loaded.
    */
   constructor(video, options, detectionType, callback) {
     super();
@@ -99,7 +101,8 @@ class PoseNet extends EventEmitter {
   }
 
   /**
-   * Given an image or video, returns an array of objects containing pose estimations using single or multi-pose detection.
+   * Given an image or video, returns an array of objects containing pose estimations 
+   *    using single or multi-pose detection.
    * @param {HTMLVideoElement || p5.Video || function} inputOr 
    * @param {function} cb 
    */
@@ -131,7 +134,8 @@ class PoseNet extends EventEmitter {
   }
   
   /**
-   * Given an image or video, returns an array of objects containing pose estimations using single or multi-pose detection.
+   * Given an image or video, returns an array of objects containing pose 
+   *    estimations using single or multi-pose detection.
    * @param {HTMLVideoElement || p5.Video || function} inputOr 
    * @param {function} cb 
    */

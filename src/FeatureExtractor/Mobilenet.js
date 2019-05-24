@@ -83,7 +83,8 @@ class Mobilenet {
     this.isPredicting = false;
     this.mapStringToIndex = [];
     /**
-     * String that specifies how is the Extractor being used. Possible values are 'regressor' and 'classifier'
+     * String that specifies how is the Extractor being used. 
+     *    Possible values are 'regressor' and 'classifier'
      * @type {String}
      * @public
      */
@@ -111,9 +112,13 @@ class Mobilenet {
 
   /**
    * Use the features of MobileNet as a classifier.
-   * @param {HTMLVideoElement || p5.Video} video  - Optional. An HTML video element or a p5.js video element.
-   * @param {Object || function} objOrCallback - Optional. Callback function or config object.
-   * @param {function} callback  - Optional. A function to be called once the video is ready. If no callback is provided, it will return a promise that will be resolved once the video element has loaded.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. 
+   *    An HTML video element or a p5.js video element.
+   * @param {Object || function} objOrCallback - Optional. 
+   *    Callback function or config object.
+   * @param {function} callback  - Optional. A function to be called once 
+   *    the video is ready. If no callback is provided, it will return a 
+   *    promise that will be resolved once the video element has loaded.
    */
   classification(video, objOrCallback = null, callback) {
     let cb;
@@ -140,8 +145,11 @@ class Mobilenet {
 
   /**
    * Use the features of MobileNet as a regressor.
-   * @param {HTMLVideoElement || p5.Video} video  - Optional. An HTML video element or a p5.js video element.
-   * @param {function} callback - Optional. A function to be called once the video is ready. If no callback is provided, it will return a promise that will be resolved once the video element has loaded.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. 
+   *    An HTML video element or a p5.js video element.
+   * @param {function} callback - Optional. A function to be called once 
+   *    the video is ready. If no callback is provided, it will return a 
+   *    promise that will be resolved once the video element has loaded.
    */
   regression(video, callback) {
     this.usageType = 'regressor';
@@ -241,8 +249,10 @@ class Mobilenet {
   }
 
   /**
-   * Retrain the model with the provided images and labels using the models original features as starting point.
-   * @param {function} onProgress  - A function to be called to follow the progress of the training.
+   * Retrain the model with the provided images and labels using the 
+   *    models original features as starting point.
+   * @param {function} onProgress  - A function to be called to follow 
+   *    the progress of the training.
    */
   async train(onProgress) {
     if (!this.hasAnyTrainedClass) {
@@ -312,7 +322,8 @@ class Mobilenet {
   }
 
   /**
-   * Classifies an an image based on a new retrained model. .classification() needs to be used with this.
+   * Classifies an an image based on a new retrained model. 
+   *    .classification() needs to be used with this.
    * @param {HTMLVideoElement || p5.Video || function} inputOrCallback 
    * @param {function} cb 
    */
@@ -362,7 +373,8 @@ class Mobilenet {
   }
 
   /**
-   * Predicts a continues values based on a new retrained model. .regression() needs to be used with this.
+   * Predicts a continues values based on a new retrained model. 
+   *    .regression() needs to be used with this.
    * @param {HTMLVideoElement || p5.Video || function} inputOrCallback 
    * @param {function} cb 
    */
