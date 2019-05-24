@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
@@ -88,11 +88,11 @@
     ]
   },
   "dependencies": {
-    "@magenta/sketch": "0.1.2",
-    "@tensorflow-models/mobilenet": "0.2.2",
-    "@tensorflow-models/posenet": "0.2.2",
-    "@tensorflow-models/knn-classifier": "0.2.2",
-    "@tensorflow/tfjs": "0.13.0",
+    "@magenta/sketch": "0.2.0",
+    "@tensorflow-models/knn-classifier": "1.0.0",
+    "@tensorflow-models/mobilenet": "1.0.0",
+    "@tensorflow-models/posenet": "1.0.0",
+    "@tensorflow/tfjs": "1.1.2",
     "events": "^3.0.0"
   }
 }
