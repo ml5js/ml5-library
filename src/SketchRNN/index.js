@@ -18,6 +18,13 @@ const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketch
 const PATH_END = '.gen.json';
 
 class SketchRNN {
+  /**
+   * Create SketchRNN. 
+   * @param {String} model - The name of the sketch model to be loaded.
+   *    The names can be found in the models.js file
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has loaded.
+   */
   constructor(model, callback, large = true) {
     let checkpointUrl = model;
     if (modelPaths.has(checkpointUrl)) {

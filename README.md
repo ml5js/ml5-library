@@ -19,14 +19,19 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 There are several ways you can use the ml5.js library:
 
-* You can use the latest version (0.2.3) by adding it to the head section of your HTML document:
+* You can use the latest version (0.3.0) by adding it to the head section of your HTML document:
+
+**v0.3.0**
+```javascript
+<script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+```
+
+* If you need to use an earlier version for any reason, you can change the version number.
 
 **v0.2.3**
 ```javascript
 <script src="https://unpkg.com/ml5@0.2.3/dist/ml5.min.js" type="text/javascript"></script>
 ```
-
-* If you need to use an earlier version for any reason, you can change the version number.
 
 **v0.1.3**
 
