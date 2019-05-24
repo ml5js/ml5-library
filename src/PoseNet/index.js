@@ -26,9 +26,33 @@ const DEFAULTS = {
 };
 
 class PoseNet extends EventEmitter {
+  /**
+   * @typedef {Object} options
+   * @property {number} imageScaleFactor - default 0.3
+   * @property {number} outputStride - default 16
+   * @property {boolean} flipHorizontal - default false
+   * @property {number} minConfidence - default 0.5
+   * @property {number} maxPoseDetections - default 5
+   * @property {number} scoreThreshold - default 0.5
+   * @property {number} nmsRadius - default 20
+   * @property {String} detectionType - default single
+   * @property {multiplier} nmsRadius - default 0.75
+   */
+  /**
+   * Create a PoseNet model.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. A HTML video element or a p5 video element.
+   * @param {options} options - Optional. An object describing a model accuracy and performance.
+   * @param {String} detectionType - Optional. A String value to run 'single' or 'multiple' estimation.
+   * @param {function} callback  Optional. A function to run once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   */
   constructor(video, options, detectionType, callback) {
     super();
     this.video = video;
+    /**
+     * The type of detection. 'single' or 'multiple'
+     * @type {String}
+     * @public
+     */
     this.detectionType = detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
@@ -74,6 +98,11 @@ class PoseNet extends EventEmitter {
     return newPose;
   }
 
+  /**
+   * Given an image or video, returns an array of objects containing pose estimations using single or multi-pose detection.
+   * @param {HTMLVideoElement || p5.Video || function} inputOr 
+   * @param {function} cb 
+   */
   /* eslint max-len: ["error", { "code": 180 }] */
   async singlePose(inputOr, cb) {
     let input;
@@ -100,7 +129,12 @@ class PoseNet extends EventEmitter {
 
     return result;
   }
-
+  
+  /**
+   * Given an image or video, returns an array of objects containing pose estimations using single or multi-pose detection.
+   * @param {HTMLVideoElement || p5.Video || function} inputOr 
+   * @param {function} cb 
+   */
   async multiPose(inputOr, cb) {
     let input;
 
