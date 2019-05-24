@@ -22,6 +22,11 @@ const allModelInfo = {
 };
 
 class DCGANBase{
+    /**
+     * Create an DCGAN.
+     * @param {modelName} modelName - The name of the model to use.
+     * @param {function} readyCb - A callback to be called when the model is ready.
+     */
     constructor(modelName, readyCb){
         this.modelCache = {};
         this.modelName = modelName;
@@ -29,6 +34,10 @@ class DCGANBase{
         this.ready = callCallback(this.loadModel(), readyCb);
     }
 
+    /**
+     * Load the model and set it to this.model
+     * @return {this} the dcgan.
+     */
     async loadModel() {
         const {modelName} = this;
         const modelInfo = allModelInfo[modelName];
@@ -44,10 +53,20 @@ class DCGANBase{
         return this;
     }
 
+    /**
+     * Generates a new image
+     * @param {function} callback - a callback function handle the results of generate
+     * @return {object} a promise or the result of the callback function.
+     */
     async generate(callback){
         return callCallback(this.generateInternal(), callback);
     }
     
+    /**
+     * Computes what will become the image tensor
+     * @param {number} latentDim - the number of latent dimensions to pass through
+     * @return {object} a tensor
+     */
     async compute(latentDim) {
         const y = tf.tidy(() => {
             const z = tf.randomNormal([1, latentDim]);
@@ -59,6 +78,10 @@ class DCGANBase{
         return y;
     }
 
+    /**
+     * Takes the tensor from compute() and returns an object of the generate image data
+     * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
+     */
     async generateInternal() {
         const modelInfo = allModelInfo[this.modelName];
         const {modelLatentDim} = modelInfo;
