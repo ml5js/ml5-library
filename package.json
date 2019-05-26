@@ -92,7 +92,6 @@
     "@tensorflow-models/knn-classifier": "1.0.0",
     "@tensorflow-models/mobilenet": "1.0.0",
     "@tensorflow-models/posenet": "1.0.0",
-    "@tensorflow-models/speech-commands": "0.3.8",
     "@tensorflow/tfjs": "1.1.2",
     "events": "^3.0.0"
   }

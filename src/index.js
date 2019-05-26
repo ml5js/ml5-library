@@ -6,7 +6,6 @@
 import * as tf from '@tensorflow/tfjs';
 import pitchDetection from './PitchDetection/';
 import imageClassifier from './ImageClassifier/';
-import soundClassifier from './SoundClassifier/';
 import KNNClassifier from './KNNClassifier/';
 import featureExtractor from './FeatureExtractor/';
 import word2vec from './Word2vec/';
@@ -29,7 +28,6 @@ const withPreload = {
   CVAE,
   featureExtractor,
   imageClassifier,
-  soundClassifier,
   pitchDetection,
   pix2pix,
   poseNet,
