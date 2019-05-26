@@ -16,7 +16,17 @@ import { array3DToImage } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 class Pix2pix {
+  /**
+   * Create a Pix2pix model.
+   * @param {model} model - The path for a valid model.
+   * @param {function} callback  - Optional. A function to run once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   */
   constructor(model, callback) {
+    /**
+     * Boolean to check if the model has loaded
+     * @type {boolean}
+     * @public
+     */
     this.ready = callCallback(this.loadCheckpoints(model), callback);
   }
 
@@ -26,6 +36,11 @@ class Pix2pix {
     return this;
   }
 
+  /**
+   * Given an canvas element, applies image-to-image translation using the provided model. Returns an image.
+   * @param {HTMLCanvasElement} inputElement 
+   * @param {function} cb - A function to run once the model has made the transfer. If no callback is provided, it will return a promise that will be resolved once the model has made the transfer.
+   */
   async transfer(inputElement, cb) {
     return callCallback(this.transferInternal(inputElement), cb);
   }
