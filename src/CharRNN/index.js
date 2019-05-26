@@ -19,12 +19,35 @@ const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
 class CharRNN {
+  /**
+   * Create a CharRNN.
+   * @param {String} modelPath - The path to the trained charRNN model.
+   * @param {function} callback  - Optional. A callback to be called once 
+   *    the model has loaded. If no callback is provided, it will return a 
+   *    promise that will be resolved once the model has loaded.
+   */
   constructor(modelPath, callback) {
+    /**
+     * Boolean value that specifies if the model has loaded.
+     * @type {boolean}
+     * @public
+     */
     this.ready = false;
+
+    /**
+     * The pre-trained charRNN model.
+     * @type {model}
+     * @public
+     */
     this.model = {};
     this.cellsAmount = 0;
     this.cells = [];
     this.zeroState = { c: [], h: [] };
+    /**
+     * The vocabulary size (or total number of possible characters).
+     * @type {c: Array, h: Array}
+     * @public
+     */
     this.state = { c: [], h: [] };
     this.vocab = {};
     this.vocabSize = 0;
@@ -174,17 +197,45 @@ class CharRNN {
     };
   }
 
+  /**
+   * Reset the model state.
+   */
   reset() {
     this.state = this.zeroState;
   }
 
+ /**
+ * @typedef {Object} options
+ * @property {String} seed
+ * @property {number} length
+ * @property {number} temperature
+ */
+
   // stateless
+  /**
+   * Generates content in a stateless manner, based on some initial text 
+   *    (known as a "seed"). Returns a string.
+   * @param {options} options - An object specifying the input parameters of 
+   *    seed, length and temperature. Default length is 20, temperature is 0.5 
+   *    and seed is a random character from the model. The object should look like 
+   *    this:
+   * @param {function} callback - Optional. A function to be called when the model 
+   *    has generated content. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has generated new content.
+   */
   async generate(options, callback) {
     this.reset();
     return callCallback(this.generateInternal(options), callback);
   }
 
   // stateful
+  /**
+   * Predict the next character based on the model's current state.
+   * @param {number} temp 
+   * @param {function} callback - Optional. A function to be called when the 
+   *    model finished adding the seed. If no callback is provided, it will 
+   *    return a promise that will be resolved once the prediction has been generated.
+   */
   async predict(temp, callback) {
     let probabilitiesNormalized = [];
     const temperature = temp > 0 ? temp : 0.1;
@@ -212,6 +263,13 @@ class CharRNN {
     };
   }
 
+  /**
+   * Feed a string of characters to the model state.
+   * @param {String} inputSeed - A string to feed the charRNN model state.
+   * @param {function} callback  - Optional. A function to be called when 
+   *    the model finished adding the seed. If no callback is provided, it 
+   *    will return a promise that will be resolved once seed has been fed.
+   */
   async feed(inputSeed, callback) {
     await this.ready;
     const seed = Array.from(inputSeed);

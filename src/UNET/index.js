@@ -16,6 +16,13 @@ const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/
 const imageSize = 128;
 
 class UNET extends Video {
+  /**
+   * Create UNET class. 
+   * @param {HTMLVideoElement | HTMLImageElement} video - The video or image to be used for segmentation.
+   * @param {Object} options - Optional. A set of options.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has loaded.
+   */
   constructor(video, options, callback) {
     super(video, imageSize);
     this.modelReady = false;
