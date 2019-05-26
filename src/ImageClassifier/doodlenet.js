@@ -28,8 +28,9 @@ function preProcess(img, size) {
   if (normalized.shape[0] !== size || normalized.shape[1] !== size) {
     resized = tf.image.resizeBilinear(normalized, [size, size]);
   }
-  const r = tf.split(resized, 3, 2)[0];
-  const batched = r.reshape([1, size, size, 1]);
+  const [r, g, b] = tf.split(resized, 3, 2);
+  const gray = (r.add(g).add(b)).div(tf.scalar(3)).round();
+  const batched = gray.reshape([1, size, size, 1]);
   return batched;
 }
 
