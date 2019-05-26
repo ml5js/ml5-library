@@ -25,7 +25,7 @@ class ImageClassifier {
   /**
    * Create an ImageClassifier.
    * @param {modelName} modelName - The name of the model to use. Current options 
-   *    are: 'mobilenet', 'darknet', and 'darknet-tiny'.
+   *    are: 'mobilenet', 'darknet', 'darknet-tiny', and 'doodlenet'.
    * @param {HTMLVideoElement} video - An HTMLVideoElement.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
