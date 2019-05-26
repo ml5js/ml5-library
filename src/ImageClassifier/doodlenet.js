@@ -18,7 +18,7 @@ function preProcess(img, size) {
     if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement || img instanceof HTMLCanvasElement) {
       image = tf.browser.fromPixels(img);
     } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement || img.elt instanceof HTMLCanvasElement)) {
-      image = tf.browser.fromPixels(img.elt); // Handle p5.js image and video.
+      image = tf.browser.fromPixels(img.elt); // Handle p5.js image, video and canvas.
     }
   } else {
     image = img;
@@ -29,7 +29,7 @@ function preProcess(img, size) {
     resized = tf.image.resizeBilinear(normalized, [size, size]);
   }
   const [r, g, b] = tf.split(resized, 3, 2);
-  const gray = (r.add(g).add(b)).div(tf.scalar(3)).round();
+  const gray = (r.add(g).add(b)).div(tf.scalar(3)).round(); // Get average r,g,b color value and round to 0 or 1
   const batched = gray.reshape([1, size, size, 1]);
   return batched;
 }
@@ -41,6 +41,11 @@ export class Doodlenet {
 
   async load() {
     this.model = await tf.loadLayersModel(DEFAULTS.DOODLENET_URL);
+
+    // Warmup the model.
+    const result = tf.tidy(() => this.model.predict(tf.zeros([1, this.imgSize, this.imgSize, 1])));
+    await result.data();
+    result.dispose();
   }
 
   async classify(img, topk = 10) {
