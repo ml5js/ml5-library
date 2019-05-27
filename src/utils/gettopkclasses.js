@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-export async function getTopKClassesFromArray(values, topK, CLASSES) {
+export function getTopKClassesFromArray(values, topK, CLASSES) {
   const valuesAndIndices = [];
   for (let i = 0; i < values.length; i += 1) {
     valuesAndIndices.push({
@@ -23,8 +23,8 @@ export async function getTopKClassesFromArray(values, topK, CLASSES) {
   const topClassesAndProbs = [];
   for (let i = 0; i < topkIndices.length; i += 1) {
     topClassesAndProbs.push({
-      label: CLASSES[topkIndices[i]],
-      confidence: topkValues[i],
+      className: CLASSES[topkIndices[i]],
+      probability: topkValues[i],
     });
   }
   return topClassesAndProbs;

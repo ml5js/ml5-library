@@ -87,7 +87,8 @@ class ImageClassifier {
       });
     }
     return this.model
-      .classify(imgToPredict, numberOfClasses);
+      .classify(imgToPredict, numberOfClasses)
+      .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
   }
 
   /**

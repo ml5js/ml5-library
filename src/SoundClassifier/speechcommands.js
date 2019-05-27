@@ -17,10 +17,11 @@ export class SpeechCommands {
     this.allLabels = this.model.wordLabels();
   }
 
-  async classify(topk = this.allLabels.length, cb) {
-    return this.model.listen(async result => {
+  classify(topk = this.allLabels.length, cb) {
+    return this.model.listen(result => {
       if (result.scores) {
-        const classes = await getTopKClassesFromArray(result.scores, topk, this.allLabels);
+        const classes = getTopKClassesFromArray(result.scores, topk, this.allLabels)
+          .map(c => ({ label: c.className, confidence: c.probability }));
         return cb(null, classes);
       }
       return cb(`ERROR: Cannot find scores in result: ${result}`);
