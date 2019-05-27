@@ -10,6 +10,7 @@ Image Classifier using pre-trained networks
 import * as tf from '@tensorflow/tfjs';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as darknet from './darknet';
+import * as doodlenet from './doodlenet';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
@@ -24,7 +25,7 @@ class ImageClassifier {
   /**
    * Create an ImageClassifier.
    * @param {modelName} modelName - The name of the model to use. Current options 
-   *    are: 'mobilenet', 'darknet', and 'darknet-tiny'.
+   *    are: 'mobilenet', 'darknet', 'darknet-tiny', and 'doodlenet'.
    * @param {HTMLVideoElement} video - An HTMLVideoElement.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
@@ -47,6 +48,9 @@ class ImageClassifier {
       case 'darknet-tiny':
         this.version = 'tiny'; // this a 4mb model
         this.modelToUse = darknet;
+        break;
+      case 'doodlenet':
+        this.modelToUse = doodlenet;
         break;
       default:
         this.modelToUse = null;

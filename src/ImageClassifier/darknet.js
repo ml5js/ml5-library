@@ -4,49 +4,22 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import getTopKClasses from '../utils/gettopkclasses';
 import IMAGENET_CLASSES_DARKNET from '../utils/IMAGENET_CLASSES_DARKNET';
 
 const DEFAULTS = {
-  DARKNET_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknetreference/model.json',
-  DARKNET_TINY_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknettiny/model.json',
+  DARKNET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json',
+  DARKNET_TINY_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json',
   IMAGE_SIZE_DARKNET: 256,
   IMAGE_SIZE_DARKNET_TINY: 224,
 };
 
-async function getTopKClasses(logits, topK) {
-  const values = await logits.data();
-  const valuesAndIndices = [];
-  for (let i = 0; i < values.length; i += 1) {
-    valuesAndIndices.push({
-      value: values[i],
-      index: i,
-    });
-  }
-  valuesAndIndices.sort((a, b) => b.value - a.value);
-
-  const topkValues = new Float32Array(topK);
-  const topkIndices = new Int32Array(topK);
-  for (let i = 0; i < topK; i += 1) {
-    topkValues[i] = valuesAndIndices[i].value;
-    topkIndices[i] = valuesAndIndices[i].index;
-  }
-
-  const topClassesAndProbs = [];
-  for (let i = 0; i < topkIndices.length; i += 1) {
-    topClassesAndProbs.push({
-      className: IMAGENET_CLASSES_DARKNET[topkIndices[i]],
-      probability: topkValues[i],
-    });
-  }
-  return topClassesAndProbs;
-}
-
 function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement) {
+    if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement || img instanceof HTMLCanvasElement) {
       image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement)) {
+    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement || img.elt instanceof HTMLCanvasElement)) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image and video.
     }
   } else {
@@ -101,7 +74,7 @@ export class Darknet {
       const predictions = this.model.predict(imgData);
       return tf.softmax(predictions);
     });
-    const classes = await getTopKClasses(logits, topk);
+    const classes = await getTopKClasses(logits, topk, IMAGENET_CLASSES_DARKNET);
     logits.dispose();
     return classes;
   }
