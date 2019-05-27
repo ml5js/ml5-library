@@ -8,8 +8,8 @@ import getTopKClasses from '../utils/gettopkclasses';
 import IMAGENET_CLASSES_DARKNET from '../utils/IMAGENET_CLASSES_DARKNET';
 
 const DEFAULTS = {
-  DARKNET_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknetreference/model.json',
-  DARKNET_TINY_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknettiny/model.json',
+  DARKNET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json',
+  DARKNET_TINY_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json',
   IMAGE_SIZE_DARKNET: 256,
   IMAGE_SIZE_DARKNET_TINY: 224,
 };
