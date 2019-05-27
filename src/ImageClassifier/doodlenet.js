@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import getTopKClasses from '../utils/gettopkclasses';
+import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
 import DOODLENET_CLASSES from '../utils/DOODLENET_CLASSES';
 
 const DEFAULTS = {
@@ -54,7 +54,7 @@ export class Doodlenet {
       const predictions = this.model.predict(imgData);
       return predictions;
     });
-    const classes = await getTopKClasses(logits, topk, DOODLENET_CLASSES);
+    const classes = await getTopKClassesFromTensor(logits, topk, DOODLENET_CLASSES);
     logits.dispose();
     return classes;
   }

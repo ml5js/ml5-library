@@ -30,5 +30,8 @@ export default {
         include,
       },
     ],
+  },
+  node: {
+    fs: "empty"
   }
 };
