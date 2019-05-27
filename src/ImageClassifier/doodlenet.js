@@ -8,7 +8,7 @@ import getTopKClasses from '../utils/gettopkclasses';
 import DOODLENET_CLASSES from '../utils/DOODLENET_CLASSES';
 
 const DEFAULTS = {
-  DOODLENET_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/doodlenet/model.json',
+  DOODLENET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/doodlenet/model.json',
   IMAGE_SIZE_DOODLENET: 28,
 };
 
