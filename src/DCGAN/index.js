@@ -14,12 +14,12 @@ import * as p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
 
-const DEFAULT = {
-    "description": "DCGAN, human faces, 64x64",
-    "model": "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/dcgan/face/model.json",
-    "modelSize": 64,
-    "modelLatentDim": 128
-}
+// const DEFAULT = {
+//     "description": "DCGAN, human faces, 64x64",
+//     "model": "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/dcgan/face/model.json",
+//     "modelSize": 64,
+//     "modelLatentDim": 128
+// }
 
 class DCGANBase {
     /**
@@ -33,34 +33,22 @@ class DCGANBase {
         this.modelInfo = {};
         this.modelPathPrefix = '';
         this.modelReady = false;
-
-        console.log('1')
-        this.modelInfo = DEFAULT;
-        this.ready = callCallback(this.loadModel(this.modelInfo.model), callback);
-        
-        // this.jsonLoader().then(val => {
-        //     this.modelInfo = val;
-
-        //     [this.modelPathPrefix] = this.modelPath.split('manifest.json');
-        //     const modelJsonPath = this.isValidURL(this.modelInfo.model) ?  val.model : this.modelPathPrefix+val.model;
-
-        //     this.ready = callCallback(this.loadModel(modelJsonPath), callback);
-        // })
-        
+        this.ready = callCallback(this.loadModel(), callback);
     }
-
-    /* eslint class-methods-use-this: "off" */
-    isValidURL(str) {
-        const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
-        return !!pattern.test(str);
-    }
-
 
     /**
      * Load the model and set it to this.model
      * @return {this} the dcgan.
      */
-    async loadModel(modelJsonPath) {
+    async loadModel() {
+        const modelInfo = await fetch(this.modelPath);
+        const modelInfoJson = await modelInfo.json();
+
+        this.modelInfo = modelInfoJson
+        
+        const [modelUrl] = this.modelPath.split('manifest.json')
+        const modelJsonPath = this.isAbsoluteURL(modelUrl) ? this.modelInfo.model : this.modelPathPrefix + this.modelInfo.model
+
         this.model = await tf.loadLayersModel(modelJsonPath);
         this.modelReady = true;
         return this;
@@ -129,26 +117,12 @@ class DCGANBase {
 
     }
 
-
-    async jsonLoader() {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-
-            xhr.open('GET', this.modelPath);
-
-            xhr.onload = () => {
-                const json = JSON.parse(xhr.responseText);
-                resolve(json);
-            };
-            xhr.onerror = (error) => {
-                reject(error);
-            };
-            xhr.send();
-
-        });
+    
+    /* eslint class-methods-use-this: "off" */
+    isAbsoluteURL(str) {
+        const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
+        return !!pattern.test(str);
     }
-
-
 
 }
 
