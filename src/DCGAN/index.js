@@ -31,6 +31,7 @@ class DCGANBase {
         this.modelInfo = {};
         this.modelPath = modelPath;
         this.modelPathPrefix = '';
+        this.modelReady = false;
 
         this.jsonLoader().then(val => {
             this.modelInfo = val;
@@ -55,6 +56,7 @@ class DCGANBase {
      */
     async loadModel(modelPath) {
         this.model = await tf.loadLayersModel(modelPath);
+        this.modelReady = true;
         return this;
     }
 
