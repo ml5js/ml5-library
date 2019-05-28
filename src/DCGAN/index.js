@@ -41,7 +41,6 @@ class DCGANBase {
             this.ready = callCallback(this.loadModel(modelJsonPath), callback);
         })
         
-
     }
 
     /* eslint class-methods-use-this: "off" */
