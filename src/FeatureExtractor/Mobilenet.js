@@ -65,6 +65,7 @@ class Mobilenet {
      */
     this.hasAnyTrainedClass = false;
     this.customModel = null;
+    this.jointModel = null;
     this.config = {
       epochs: options.epochs || DEFAULTS.epochs,
       version: options.version || DEFAULTS.version,
@@ -104,9 +105,9 @@ class Mobilenet {
 
     const layer = this.mobilenet.getLayer(this.config.layer);
     this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-    // if (this.video) {
-    //   await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
-    // }
+    if (this.video) {
+      await this.mobilenetFeatures.predict(imgToTensor(this.video)); // Warm up
+    }
     return this;
   }
 
@@ -223,7 +224,6 @@ class Mobilenet {
     tf.tidy(() => {
       const imageResize = (imgToAdd === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToAdd, imageResize);
-      const prediction = this.mobilenetFeatures.predict(processedImg);
       let y;
       if (this.usageType === 'classifier') {
         y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.config.numLabels));
@@ -232,12 +232,12 @@ class Mobilenet {
       }
 
       if (this.xs == null) {
-        this.xs = tf.keep(prediction);
+        this.xs = tf.keep(processedImg);
         this.ys = tf.keep(y);
         this.hasAnyTrainedClass = true;
       } else {
         const oldX = this.xs;
-        this.xs = tf.keep(oldX.concat(prediction, 0));
+        this.xs = tf.keep(oldX.concat(processedImg, 0));
         const oldY = this.ys;
         this.ys = tf.keep(oldY.concat(y, 0));
         oldX.dispose();
@@ -300,15 +300,18 @@ class Mobilenet {
         ],
       });
     }
+    this.jointModel = tf.sequential(); 
+    this.jointModel.add(this.mobilenetFeatures); // mobilenet
+    this.jointModel.add(this.customModel); // transfer layer
 
     const optimizer = tf.train.adam(this.config.learningRate);
-    this.customModel.compile({ optimizer, loss: this.loss });
+    this.jointModel.compile({ optimizer, loss: this.loss });
     const batchSize = Math.floor(this.xs.shape[0] * this.config.batchSize);
     if (!(batchSize > 0)) {
       throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
     }
 
-    return this.customModel.fit(this.xs, this.ys, {
+    return this.jointModel.fit(this.xs, this.ys, {
       batchSize,
       epochs: this.config.epochs,
       callbacks: {
@@ -358,8 +361,7 @@ class Mobilenet {
     const predictedClasses = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      // const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(processedImg);
+      const predictions = this.jointModel.predict(processedImg);
       return Array.from(predictions.as1D().dataSync());
     });
     const results = await predictedClasses.map((confidence, index) => {
@@ -407,8 +409,7 @@ class Mobilenet {
     const predictedClass = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      const predictions = this.jointModel.predict(processedImg);
       return predictions.as1D();
     });
     const prediction = await predictedClass.data();
@@ -434,7 +435,7 @@ class Mobilenet {
           weights = file;
         }
       });
-      this.customModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+      this.jointModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
@@ -443,19 +444,19 @@ class Mobilenet {
             this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
           }
         });
-      this.customModel = await tf.loadLayersModel(filesOrPath);
+      this.jointModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
       }
     }
-    return this.customModel;
+    return this.jointModel;
   }
 
   async save(callback, name) {
-    if (!this.customModel) {
+    if (!this.jointModel) {
       throw new Error('No model found.');
     }
-    this.customModel.save(tf.io.withSaveHandler(async (data) => {
+    this.jointModel.save(tf.io.withSaveHandler(async (data) => {
       let modelName = 'model';
       if(name) modelName = name;
 
