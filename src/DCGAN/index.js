@@ -41,10 +41,8 @@ class DCGANBase{
             
             // if the val.model is an absolute URL, then loadModel without modelPathPrefix
             if(this.isValidURL(val.model)){
-                console.log('an absolute url')
                 this.ready = callCallback(this.loadModel(val.model), readyCb);
             } else {
-                console.log('a relative url')
                 this.ready = callCallback(this.loadModel(this.modelPathPrefix+val.model), readyCb);
             }
             
