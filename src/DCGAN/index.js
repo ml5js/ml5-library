@@ -32,20 +32,16 @@ class DCGANBase {
         this.modelPath = modelPath;
         this.modelPathPrefix = '';
 
+        this.jsonLoader().then(val => {
+            this.modelInfo = val;
 
-        this.ready = callCallback(this.loadModel(this.modelPath), callback);
+            [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+            const modelJsonPath = this.isValidURL(this.modelInfo.model) ?  val.model : this.modelPathPrefix+val.model;
 
-        // this.jsonLoader().then(val => {
-        //     this.modelInfo = val;
-        //     [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+            this.ready = callCallback(this.loadModel(modelJsonPath), callback);
+        })
+        
 
-        //     // if the val.model is an absolute URL, then loadModel without modelPathPrefix
-        //     if (this.isValidURL(val.model)) {
-        //         this.ready = callCallback(this.loadModel(val.model), readyCb);
-        //     } else {
-        //         this.ready = callCallback(this.loadModel(this.modelPathPrefix + val.model), readyCb);
-        //     }
-        // });
     }
 
     /* eslint class-methods-use-this: "off" */
@@ -59,20 +55,7 @@ class DCGANBase {
      * @return {this} the dcgan.
      */
     async loadModel(modelPath) {
-        const modelJSON = await fetch(modelPath);
-        const modelInfo = await modelJSON.json();
-        
-        this.modelInfo = modelInfo;
-        [this.modelPathPrefix] = this.modelPath.split('manifest.json');
-        
-        if (this.isValidURL(modelInfo.model)) {
-            this.model = await tf.loadLayersModel(this.modelInfo.model);
-        } else {
-            this.model = await tf.loadLayersModel(this.modelPathPrefix + this.modelInfo.model);
-        }
-
-        console.log('----------', this.model)
-
+        this.model = await tf.loadLayersModel(modelPath);
         return this;
     }
 
@@ -139,37 +122,30 @@ class DCGANBase {
     }
 
 
-    // async jsonLoader() {
-    //     return new Promise((resolve, reject) => {
-    //         const xhr = new XMLHttpRequest();
+    async jsonLoader() {
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
 
-    //         // if the path is null or undefined, resolve the DEFAULT defined above
-    //         if (this.modelPath === null || this.modelPath === undefined) {
-    //             this.modelPath = ''
-    //             resolve(DEFAULT)
-    //         } else {
-    //             xhr.open('GET', this.modelPath);
+            xhr.open('GET', this.modelPath);
 
-    //             xhr.onload = () => {
-    //                 const json = JSON.parse(xhr.responseText);
-    //                 resolve(json);
-    //             };
-    //             xhr.onerror = (error) => {
-    //                 reject(error);
-    //             };
-    //             xhr.send();
+            xhr.onload = () => {
+                const json = JSON.parse(xhr.responseText);
+                resolve(json);
+            };
+            xhr.onerror = (error) => {
+                reject(error);
+            };
+            xhr.send();
 
-    //         }
-
-    //     });
-    // }
+        });
+    }
 
 
 
 }
 
 const DCGAN = (modelPath, cb) => {
-   
+
 
     if (typeof modelPath !== 'string') {
         throw new Error(`Please specify a path to a "manifest.json" file: \n
@@ -185,7 +161,6 @@ const DCGAN = (modelPath, cb) => {
     }
 
     const instance = new DCGANBase(modelPath, cb);
-    console.log(cb)
     return cb ? instance : instance.ready;
 }
 
