@@ -13,12 +13,13 @@ import callCallback from '../utils/callcallback';
 import * as p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
-// const DEFAULT = {
-//     "description": "DCGAN, human faces, 64x64",
-//     "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
-//     "modelSize": 64,
-//     "modelLatentDim": 128
-// }
+
+const DEFAULT = {
+    "description": "DCGAN, human faces, 64x64",
+    "model": "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/dcgan/face/model.json",
+    "modelSize": 64,
+    "modelLatentDim": 128
+}
 
 class DCGANBase {
     /**
@@ -28,19 +29,23 @@ class DCGANBase {
      */
     constructor(modelPath, callback) {
         this.model = {};
-        this.modelInfo = {};
         this.modelPath = modelPath;
+        this.modelInfo = {};
         this.modelPathPrefix = '';
         this.modelReady = false;
 
-        this.jsonLoader().then(val => {
-            this.modelInfo = val;
+        console.log('1')
+        this.modelInfo = DEFAULT;
+        this.ready = callCallback(this.loadModel(this.modelInfo.model), callback);
+        
+        // this.jsonLoader().then(val => {
+        //     this.modelInfo = val;
 
-            [this.modelPathPrefix] = this.modelPath.split('manifest.json');
-            const modelJsonPath = this.isValidURL(this.modelInfo.model) ?  val.model : this.modelPathPrefix+val.model;
+        //     [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+        //     const modelJsonPath = this.isValidURL(this.modelInfo.model) ?  val.model : this.modelPathPrefix+val.model;
 
-            this.ready = callCallback(this.loadModel(modelJsonPath), callback);
-        })
+        //     this.ready = callCallback(this.loadModel(modelJsonPath), callback);
+        // })
         
     }
 
@@ -50,12 +55,13 @@ class DCGANBase {
         return !!pattern.test(str);
     }
 
+
     /**
      * Load the model and set it to this.model
      * @return {this} the dcgan.
      */
-    async loadModel(modelPath) {
-        this.model = await tf.loadLayersModel(modelPath);
+    async loadModel(modelJsonPath) {
+        this.model = await tf.loadLayersModel(modelJsonPath);
         this.modelReady = true;
         return this;
     }
@@ -66,6 +72,7 @@ class DCGANBase {
      * @return {object} a promise or the result of the callback function.
      */
     async generate(callback) {
+        await this.ready;
         return callCallback(this.generateInternal(), callback);
     }
 
@@ -147,7 +154,6 @@ class DCGANBase {
 
 const DCGAN = (modelPath, cb) => {
 
-
     if (typeof modelPath !== 'string') {
         throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
@@ -160,9 +166,11 @@ const DCGAN = (modelPath, cb) => {
          }
          `);
     }
+    
 
     const instance = new DCGANBase(modelPath, cb);
     return cb ? instance : instance.ready;
+    
 }
 
 export default DCGAN;
