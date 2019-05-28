@@ -12,15 +12,13 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import * as p5Utils from '../utils/p5Utils';
 
-
-// const DEFAULT = {
-//     face: {
-//         description: 'DCGAN, human faces, 64x64',
-//         model: "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
-//         modelSize: 64,
-//         modelLatentDim: 128
-//     }
-// }
+// Default pre-trained face model
+const DEFAULT = {
+    "description": "DCGAN, human faces, 64x64",
+    "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+    "modelSize": 64,
+    "modelLatentDim": 128
+}
 
 class DCGANBase{
     /**
@@ -128,16 +126,25 @@ class DCGANBase{
     async jsonLoader() {
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.open('GET', this.modelPath);
+
+          // if the path is null or undefined, resolve the DEFAULT defined above
+          if(this.modelPath === null || this.modelPath === undefined) {
+            this.modelPath = ''
+            resolve(DEFAULT)
+          } else {
+            xhr.open('GET', this.modelPath);
           
-          xhr.onload = () => {
-            const json = JSON.parse(xhr.responseText);
-            resolve(json);
-          };
-          xhr.onerror = (error) => {
-            reject(error);
-          };
-          xhr.send();
+            xhr.onload = () => {
+                const json = JSON.parse(xhr.responseText);
+                resolve(json);
+            };
+            xhr.onerror = (error) => {
+                reject(error);
+            };
+            xhr.send();
+
+          }
+                
         });
       }
 
