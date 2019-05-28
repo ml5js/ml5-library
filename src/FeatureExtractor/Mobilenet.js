@@ -358,8 +358,8 @@ class Mobilenet {
     const predictedClasses = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      // const activation = this.mobilenetFeatures.predict(processedImg);
+      const predictions = this.customModel.predict(processedImg);
       return Array.from(predictions.as1D().dataSync());
     });
     const results = await predictedClasses.map((confidence, index) => {
@@ -425,7 +425,9 @@ class Mobilenet {
           model = file;
           const fr = new FileReader();
           fr.onload = (d) => {
-            this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            if (JSON.parse(d.target.result).ml5Specs) {
+              this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            }
           };
           fr.readAsText(file);
         } else if (file.name.includes('.bin')) {
@@ -436,7 +438,11 @@ class Mobilenet {
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
-        .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
+        .then((r) => {
+          if (r.ml5Specs) {
+            this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
+          }
+        });
       this.customModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
