@@ -13,52 +13,66 @@ import callCallback from '../utils/callcallback';
 import * as p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
-const DEFAULT = {
-    "description": "DCGAN, human faces, 64x64",
-    "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
-    "modelSize": 64,
-    "modelLatentDim": 128
-}
+// const DEFAULT = {
+//     "description": "DCGAN, human faces, 64x64",
+//     "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+//     "modelSize": 64,
+//     "modelLatentDim": 128
+// }
 
-class DCGANBase{
+class DCGANBase {
     /**
      * Create an DCGAN.
      * @param {modelName} modelName - The name of the model to use.
      * @param {function} readyCb - A callback to be called when the model is ready.
      */
-    constructor(modelPath, readyCb){
-        this.ready = false;
+    constructor(modelPath, callback) {
         this.model = {};
         this.modelInfo = {};
         this.modelPath = modelPath;
         this.modelPathPrefix = '';
-        
-        this.jsonLoader().then(val => {
-            this.modelInfo = val;
-            [this.modelPathPrefix] = this.modelPath.split('manifest.json');
-            
-            // if the val.model is an absolute URL, then loadModel without modelPathPrefix
-            if(this.isValidURL(val.model)){
-                this.ready = callCallback(this.loadModel(val.model), readyCb);
-            } else {
-                this.ready = callCallback(this.loadModel(this.modelPathPrefix+val.model), readyCb);
-            }
-            
-        });
+
+
+        this.ready = callCallback(this.loadModel(this.modelPath), callback);
+
+        // this.jsonLoader().then(val => {
+        //     this.modelInfo = val;
+        //     [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+
+        //     // if the val.model is an absolute URL, then loadModel without modelPathPrefix
+        //     if (this.isValidURL(val.model)) {
+        //         this.ready = callCallback(this.loadModel(val.model), readyCb);
+        //     } else {
+        //         this.ready = callCallback(this.loadModel(this.modelPathPrefix + val.model), readyCb);
+        //     }
+        // });
     }
-    
+
+    /* eslint class-methods-use-this: "off" */
     isValidURL(str) {
-        console.log(this)
         const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
         return !!pattern.test(str);
-      }
+    }
 
     /**
      * Load the model and set it to this.model
      * @return {this} the dcgan.
      */
     async loadModel(modelPath) {
-        this.model = await tf.loadLayersModel(modelPath);
+        const modelJSON = await fetch(modelPath);
+        const modelInfo = await modelJSON.json();
+        
+        this.modelInfo = modelInfo;
+        [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+        
+        if (this.isValidURL(modelInfo.model)) {
+            this.model = await tf.loadLayersModel(this.modelInfo.model);
+        } else {
+            this.model = await tf.loadLayersModel(this.modelPathPrefix + this.modelInfo.model);
+        }
+
+        console.log('----------', this.model)
+
         return this;
     }
 
@@ -67,10 +81,10 @@ class DCGANBase{
      * @param {function} callback - a callback function handle the results of generate
      * @return {object} a promise or the result of the callback function.
      */
-    async generate(callback){
+    async generate(callback) {
         return callCallback(this.generateInternal(), callback);
     }
-    
+
     /**
      * Computes what will become the image tensor
      * @param {number} latentDim - the number of latent dimensions to pass through
@@ -92,29 +106,31 @@ class DCGANBase{
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
     async generateInternal() {
-        const {modelLatentDim} = this.modelInfo;
+        const {
+            modelLatentDim
+        } = this.modelInfo;
         const imageTensor = await this.compute(modelLatentDim);
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
-      
+
         // get the blob from raw
         const [imgHeight, imgWidth] = imageTensor.shape;
         const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
 
         // get the p5.Image object
         let p5Image;
-        if(p5Utils.checkP5()){
+        if (p5Utils.checkP5()) {
             p5Image = await p5Utils.blobToP5Image(blob);
         }
 
         // wrap up the final js result object
-        const result =  {};
+        const result = {};
         result.blob = blob;
         result.raw = raw;
         result.tensor = imageTensor;
 
-        if(p5Utils.checkP5()){
+        if (p5Utils.checkP5()) {
             result.image = p5Image;
         }
 
@@ -123,33 +139,54 @@ class DCGANBase{
     }
 
 
-    async jsonLoader() {
-        return new Promise((resolve, reject) => {
-          const xhr = new XMLHttpRequest();
+    // async jsonLoader() {
+    //     return new Promise((resolve, reject) => {
+    //         const xhr = new XMLHttpRequest();
 
-          // if the path is null or undefined, resolve the DEFAULT defined above
-          if(this.modelPath === null || this.modelPath === undefined) {
-            this.modelPath = ''
-            resolve(DEFAULT)
-          } else {
-            xhr.open('GET', this.modelPath);
-          
-            xhr.onload = () => {
-                const json = JSON.parse(xhr.responseText);
-                resolve(json);
-            };
-            xhr.onerror = (error) => {
-                reject(error);
-            };
-            xhr.send();
+    //         // if the path is null or undefined, resolve the DEFAULT defined above
+    //         if (this.modelPath === null || this.modelPath === undefined) {
+    //             this.modelPath = ''
+    //             resolve(DEFAULT)
+    //         } else {
+    //             xhr.open('GET', this.modelPath);
 
-          }
-                
-        });
-      }
+    //             xhr.onload = () => {
+    //                 const json = JSON.parse(xhr.responseText);
+    //                 resolve(json);
+    //             };
+    //             xhr.onerror = (error) => {
+    //                 reject(error);
+    //             };
+    //             xhr.send();
+
+    //         }
+
+    //     });
+    // }
+
+
 
 }
 
-const DCGAN = (modelPath, callback) => new DCGANBase( modelPath, callback ) ;
+const DCGAN = (modelPath, cb) => {
+   
+
+    if (typeof modelPath !== 'string') {
+        throw new Error(`Please specify a path to a "manifest.json" file: \n
+         "models/face/manifest.json" \n\n
+         This "manifest.json" file should include:\n
+         {
+            "description": "DCGAN, human faces, 64x64",
+            "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+            "modelSize": 64,
+            "modelLatentDim": 128 
+         }
+         `);
+    }
+
+    const instance = new DCGANBase(modelPath, cb);
+    console.log(cb)
+    return cb ? instance : instance.ready;
+}
 
 export default DCGAN;
