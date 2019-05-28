@@ -38,9 +38,24 @@ class DCGANBase{
         this.jsonLoader().then(val => {
             this.modelInfo = val;
             [this.modelPathPrefix] = this.modelPath.split('manifest.json');
-            this.ready = callCallback(this.loadModel(this.modelPathPrefix+val.model), readyCb);
+            
+            // if the val.model is an absolute URL, then loadModel without modelPathPrefix
+            if(this.isValidURL(val.model)){
+                console.log('an absolute url')
+                this.ready = callCallback(this.loadModel(val.model), readyCb);
+            } else {
+                console.log('a relative url')
+                this.ready = callCallback(this.loadModel(this.modelPathPrefix+val.model), readyCb);
+            }
+            
         });
     }
+    
+    isValidURL(str) {
+        console.log(this)
+        const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
+        return !!pattern.test(str);
+      }
 
     /**
      * Load the model and set it to this.model
@@ -110,6 +125,7 @@ class DCGANBase{
         return result;
 
     }
+
 
     async jsonLoader() {
         return new Promise((resolve, reject) => {
