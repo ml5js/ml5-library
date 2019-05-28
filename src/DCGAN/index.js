@@ -12,14 +12,15 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import * as p5Utils from '../utils/p5Utils';
 
-const allModelInfo = {
-    face: {
-        description: 'DCGAN, human faces, 64x64',
-        modelUrl: "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
-        modelSize: 64,
-        modelLatentDim: 128
-    }
-};
+
+// const DEFAULT = {
+//     face: {
+//         description: 'DCGAN, human faces, 64x64',
+//         model: "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+//         modelSize: 64,
+//         modelLatentDim: 128
+//     }
+// }
 
 class DCGANBase{
     /**
@@ -27,29 +28,26 @@ class DCGANBase{
      * @param {modelName} modelName - The name of the model to use.
      * @param {function} readyCb - A callback to be called when the model is ready.
      */
-    constructor(modelName, readyCb){
-        this.modelCache = {};
-        this.modelName = modelName;
-        this.model = null;
-        this.ready = callCallback(this.loadModel(), readyCb);
+    constructor(modelPath, readyCb){
+        this.ready = false;
+        this.model = {};
+        this.modelInfo = {};
+        this.modelPath = modelPath;
+        this.modelPathPrefix = '';
+        
+        this.jsonLoader().then(val => {
+            this.modelInfo = val;
+            [this.modelPathPrefix] = this.modelPath.split('manifest.json');
+            this.ready = callCallback(this.loadModel(this.modelPathPrefix+val.model), readyCb);
+        });
     }
 
     /**
      * Load the model and set it to this.model
      * @return {this} the dcgan.
      */
-    async loadModel() {
-        const {modelName} = this;
-        const modelInfo = allModelInfo[modelName];
-        const {modelUrl} = modelInfo;
-
-        if (modelName in this.modelCache) {
-            this.model = this.modelCache[modelName];
-            return this;
-        }
-
-        this.model = await tf.loadLayersModel(modelUrl);
-        this.modelCache[modelName] = this.model;
+    async loadModel(modelPath) {
+        this.model = await tf.loadLayersModel(modelPath);
         return this;
     }
 
@@ -83,8 +81,7 @@ class DCGANBase{
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
     async generateInternal() {
-        const modelInfo = allModelInfo[this.modelName];
-        const {modelLatentDim} = modelInfo;
+        const {modelLatentDim} = this.modelInfo;
         const imageTensor = await this.compute(modelLatentDim);
 
         // get the raw data from tensor
@@ -114,8 +111,24 @@ class DCGANBase{
 
     }
 
+    async jsonLoader() {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', this.modelPath);
+          
+          xhr.onload = () => {
+            const json = JSON.parse(xhr.responseText);
+            resolve(json);
+          };
+          xhr.onerror = (error) => {
+            reject(error);
+          };
+          xhr.send();
+        });
+      }
+
 }
 
-const DCGAN = (modelName, callback) => new DCGANBase( modelName, callback ) ;
+const DCGAN = (modelPath, callback) => new DCGANBase( modelPath, callback ) ;
 
 export default DCGAN;
