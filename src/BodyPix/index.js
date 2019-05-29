@@ -55,24 +55,28 @@ class BodyPix {
 
         const segmentation = await this.model.estimatePersonSegmentation(imgToSegment)
 
-        // scale the value 
-        segmentation.data = segmentation.data.map(pixel => pixel * 100);
+    
+        // // get the p5.Image object
+        // let p5Image;
+        // if (p5Utils.checkP5()) {
+        //     p5Image = await p5Utils.blobToP5Image(blob);
+        // }
 
-        const blob = await p5Utils.rawToBlob(segmentation.data, segmentation.width, segmentation.height);
-
-        // get the p5.Image object
-        let p5Image;
-        if (p5Utils.checkP5()) {
-            p5Image = await p5Utils.blobToP5Image(blob);
-        }
-
-        // wrap up the final js result object
+        // // wrap up the final js result object
         const result = {};
-        result.blob = blob;
-        result.raw = segmentation.data;
+        result.maskBackground = bp.toMaskImageData(segmentation, true);
+        result.maskPerson = bp.toMaskImageData(segmentation, false);
+
+        
 
         if (p5Utils.checkP5()) {
-            result.image = p5Image;
+            const blob1 = await p5Utils.rawToBlob(result.maskBackground.data, segmentation.width, segmentation.height);
+            const blob2 = await p5Utils.rawToBlob(result.maskPerson.data, segmentation.width, segmentation.height);
+            const p5Image1 = await p5Utils.blobToP5Image(blob1);
+            const p5Image2 = await p5Utils.blobToP5Image(blob2);
+
+            result.maskBackground = p5Image1;
+            result.maskPerson = p5Image2;
         }
 
         return result;
