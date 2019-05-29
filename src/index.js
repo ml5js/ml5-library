@@ -23,6 +23,7 @@ import DCGAN from './DCGAN';
 import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
+import bodyPix from './BodyPix';
 
 const withPreload = {
   charRNN,
@@ -47,4 +48,5 @@ module.exports = Object.assign({}, preloadRegister(withPreload), {
   tf,
   version,
   sentiment,
+  bodyPix,
 });
