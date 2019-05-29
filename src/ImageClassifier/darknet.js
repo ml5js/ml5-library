@@ -4,12 +4,12 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import getTopKClasses from '../utils/gettopkclasses';
+import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
 import IMAGENET_CLASSES_DARKNET from '../utils/IMAGENET_CLASSES_DARKNET';
 
 const DEFAULTS = {
-  DARKNET_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknetreference/model.json',
-  DARKNET_TINY_URL: 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/darknetclassifier/darknettiny/model.json',
+  DARKNET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json',
+  DARKNET_TINY_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json',
   IMAGE_SIZE_DARKNET: 256,
   IMAGE_SIZE_DARKNET_TINY: 224,
 };
@@ -74,7 +74,7 @@ export class Darknet {
       const predictions = this.model.predict(imgData);
       return tf.softmax(predictions);
     });
-    const classes = await getTopKClasses(logits, topk, IMAGENET_CLASSES_DARKNET);
+    const classes = await getTopKClassesFromTensor(logits, topk, IMAGENET_CLASSES_DARKNET);
     logits.dispose();
     return classes;
   }

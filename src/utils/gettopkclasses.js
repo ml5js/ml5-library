@@ -3,8 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-export default async function getTopKClasses(logits, topK, CLASSES) {
-  const values = await logits.data();
+export function getTopKClassesFromArray(values, topK, CLASSES) {
   const valuesAndIndices = [];
   for (let i = 0; i < values.length; i += 1) {
     valuesAndIndices.push({
@@ -30,3 +29,10 @@ export default async function getTopKClasses(logits, topK, CLASSES) {
   }
   return topClassesAndProbs;
 }
+
+export async function getTopKClassesFromTensor(logits, topK, CLASSES) {
+  const values = await logits.data();
+  return getTopKClassesFromArray(values, topK, CLASSES);
+}
+
+export default { getTopKClassesFromArray, getTopKClassesFromTensor }
