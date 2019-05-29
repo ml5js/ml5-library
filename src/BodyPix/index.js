@@ -10,12 +10,13 @@ BodyPix
 */
 
 
-import * as tf from '@tensorflow/tfjs';
-// import * as bp from '@tensorflow-models/body-pix';
+// import * as tf from '@tensorflow/tfjs';
+import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
 // import Video from '../utils/Video';
 
 const DEFAULTS = {
+    "multiplier": 0.75,
     "outputStride": 16,
     "segmentationThreshold": 0.5
 }
@@ -27,6 +28,7 @@ class BodyPix {
         this.modelReady = false;
         this.modelPath = ''
         this.config = {
+            multiplier: options.multiplier || DEFAULTS.multiplier,
             outputStride: options.outputStride || DEFAULTS.outputStride,
             segmentationThreshold: options.segmentationThreshold || DEFAULTS.segmentationThreshold,
         }
@@ -35,7 +37,7 @@ class BodyPix {
     }
 
     async loadModel(){
-        this.model = await tf.loadLayersModel(this.modelPath);
+        this.model = await bp.load(this.config.multiplier);
         return this;
     }
 }
