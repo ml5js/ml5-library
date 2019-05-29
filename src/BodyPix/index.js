@@ -81,8 +81,6 @@ class BodyPix {
             // result.maskPerson = p5Image2;
         }
 
-        console.log(result)
-
         return result;
 
     }
