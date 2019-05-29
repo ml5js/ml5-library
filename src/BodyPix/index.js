@@ -13,6 +13,7 @@ BodyPix
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
+import * as p5Utils from '../utils/p5Utils';
 // import Video from '../utils/Video';
 
 const DEFAULTS = {
@@ -42,21 +43,42 @@ class BodyPix {
         return this;
     }
 
-    async segmentInternal(imgToSegment){
+    async segmentInternal(imgToSegment) {
         await this.ready;
         await tf.nextFrame();
 
         if (this.video && this.video.readyState === 0) {
             await new Promise(resolve => {
-              this.video.onloadeddata = () => resolve();
+                this.video.onloadeddata = () => resolve();
             });
-          }
-        
-          return this.model
-          .estimatePersonSegmentation(imgToSegment)
-          .then(result => result);
+        }
+
+        const segmentation = await this.model.estimatePersonSegmentation(imgToSegment)
+
+        // scale the value 
+        segmentation.data = segmentation.data.map(pixel => pixel * 100);
+
+        const blob = await p5Utils.rawToBlob(segmentation.data, segmentation.width, segmentation.height);
+
+        // get the p5.Image object
+        let p5Image;
+        if (p5Utils.checkP5()) {
+            p5Image = await p5Utils.blobToP5Image(blob);
+        }
+
+        // wrap up the final js result object
+        const result = {};
+        result.blob = blob;
+        result.raw = segmentation.data;
+
+        if (p5Utils.checkP5()) {
+            result.image = p5Image;
+        }
+
+        return result;
 
     }
+
 
     async segment(optionsOrCallback, cb) {
         let imgToSegment = this.video;
@@ -99,6 +121,7 @@ class BodyPix {
 
         return callCallback(this.segmentInternal(imgToSegment), callback);
     }
+
 
 
 }
