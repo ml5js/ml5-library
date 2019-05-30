@@ -224,6 +224,7 @@ class Mobilenet {
     tf.tidy(() => {
       const imageResize = (imgToAdd === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToAdd, imageResize);
+      const prediction = this.mobilenetFeatures.predict(processedImg);
       let y;
       if (this.usageType === 'classifier') {
         y = tf.tidy(() => tf.oneHot(tf.tensor1d([label], 'int32'), this.config.numLabels));
@@ -232,12 +233,12 @@ class Mobilenet {
       }
 
       if (this.xs == null) {
-        this.xs = tf.keep(processedImg);
+        this.xs = tf.keep(prediction);
         this.ys = tf.keep(y);
         this.hasAnyTrainedClass = true;
       } else {
         const oldX = this.xs;
-        this.xs = tf.keep(oldX.concat(processedImg, 0));
+        this.xs = tf.keep(oldX.concat(prediction, 0));
         const oldY = this.ys;
         this.ys = tf.keep(oldY.concat(y, 0));
         oldX.dispose();
@@ -305,13 +306,13 @@ class Mobilenet {
     this.jointModel.add(this.customModel); // transfer layer
 
     const optimizer = tf.train.adam(this.config.learningRate);
-    this.jointModel.compile({ optimizer, loss: this.loss });
+    this.customModel.compile({ optimizer, loss: this.loss });
     const batchSize = Math.floor(this.xs.shape[0] * this.config.batchSize);
     if (!(batchSize > 0)) {
       throw new Error('Batch size is 0 or NaN. Please choose a non-zero fraction.');
     }
 
-    return this.jointModel.fit(this.xs, this.ys, {
+    return this.customModel.fit(this.xs, this.ys, {
       batchSize,
       epochs: this.config.epochs,
       callbacks: {
