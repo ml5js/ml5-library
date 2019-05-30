@@ -69,6 +69,7 @@ class BodyPix {
         // // wrap up the final js result object
         const result = {};
         result.image = bp.toColoredPartImageData(segmentation, rainbow)
+        result.raw = segmentation;
         // result.maskPerson = bp.toColoredPartImageData(segmentation, rainbow)
 
         if (p5Utils.checkP5()) {
@@ -144,7 +145,7 @@ class BodyPix {
         const result = {};
         result.maskBackground = bp.toMaskImageData(segmentation, true);
         result.maskPerson = bp.toMaskImageData(segmentation, false);
-
+        result.raw = segmentation;
 
         if (p5Utils.checkP5()) {
             const blob1 = await p5Utils.rawToBlob(result.maskBackground.data, segmentation.width, segmentation.height);
