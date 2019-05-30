@@ -43,6 +43,40 @@ class BodyPix {
         return this;
     }
 
+    /* eslint class-methods-use-this: "off" */
+    bodyPartsSpec(colorOptions){
+        const result = {};
+        
+        const DEFAULT_COLOR = [
+            [110, 64, 170], [106, 72, 183], [100, 81, 196], [92, 91, 206],
+            [84, 101, 214], [75, 113, 221], [66, 125, 224], [56, 138, 226],
+            [48, 150, 224], [40, 163, 220], [33, 176, 214], [29, 188, 205],
+            [26, 199, 194], [26, 210, 182], [28, 219, 169], [33, 227, 155],
+            [41, 234, 141], [51, 240, 128], [64, 243, 116], [79, 246, 105],
+            [96, 247, 97],  [115, 246, 91], [134, 245, 88], [155, 243, 88]
+          ];
+        
+        const bodyPartsIds = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+        const bodyPartsName = [
+            "none","leftFace","rightFace","rightUpperLegFront","rightLowerLegBack",
+            "rightUpperLegBack","leftLowerLegFront","leftUpperLegFront","leftUpperLegBack","leftLowerLegBack",
+            "rightFeet","rightLowerLegFront","leftFeet","torsoFront","torsoBack","rightUpperArmFront","rightUpperArmBack",
+            "rightLowerArmBack","leftLowerArmFront","leftUpperArmFront","leftUpperArmBack","leftLowerArmBack","rightHand",
+            "rightLowerArmFront","leftHand"
+        ];
+
+        // TODO: allow for adding custom palettes
+        const palette = colorOptions !== undefined ? colorOptions : DEFAULT_COLOR;
+        // Add DEFAULT_COLOR as result.palette;
+        result.palette = palette;
+        // Iterate over the bodyPartsName
+        bodyPartsName.forEach( (part, idx) => {
+            result[part] = {id: bodyPartsIds[idx], color: DEFAULT_COLOR[idx]}
+        })
+
+        return result;
+    }
+
     async segmentWithPartsInternal(imgToSegment){
         // estimatePartSegmentation
         await this.ready;
@@ -54,22 +88,16 @@ class BodyPix {
             });
         }
 
-        const rainbow = [
-            [110, 64, 170], [106, 72, 183], [100, 81, 196], [92, 91, 206],
-            [84, 101, 214], [75, 113, 221], [66, 125, 224], [56, 138, 226],
-            [48, 150, 224], [40, 163, 220], [33, 176, 214], [29, 188, 205],
-            [26, 199, 194], [26, 210, 182], [28, 219, 169], [33, 227, 155],
-            [41, 234, 141], [51, 240, 128], [64, 243, 116], [79, 246, 105],
-            [96, 247, 97],  [115, 246, 91], [134, 245, 88], [155, 243, 88]
-          ];
-          
+        
+        const bodyPartsMeta = this.bodyPartsSpec();
 
-        const segmentation = await this.model.estimatePartSegmentation(imgToSegment)
+        const segmentation = await this.model.estimatePartSegmentation(imgToSegment);
         
         // // wrap up the final js result object
         const result = {};
-        result.image = bp.toColoredPartImageData(segmentation, rainbow)
+        result.image = bp.toColoredPartImageData(segmentation, bodyPartsMeta.palette);
         result.raw = segmentation;
+        result.bodyParts = bodyPartsMeta;
         // result.maskPerson = bp.toColoredPartImageData(segmentation, rainbow)
 
         if (p5Utils.checkP5()) {
