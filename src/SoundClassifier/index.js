@@ -15,7 +15,7 @@ class SoundClassifier {
   /**
    * Create an SoundClassifier.
    * @param {modelName} modelName - The name of the model to use. Current options 
-   *    are: 'speech-commands'.
+   *    are: 'SpeechCommands18w'.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
    */
@@ -24,7 +24,7 @@ class SoundClassifier {
     this.model = null;
     this.options = options;
     switch (this.modelName) {
-      case 'speech-commands':
+      case 'speechcommands18w':
         this.modelToUse = speechCommands;
         break;
       default:
@@ -79,7 +79,7 @@ const soundClassifier = (modelName, optionsOrCallback, cb) => {
   if (typeof modelName === 'string') {
     model = modelName.toLowerCase();
   } else {
-    throw new Error('Please specify a model to use. E.g: "speech-commands"');
+    throw new Error('Please specify a model to use. E.g: "SpeechCommands18w"');
   }
 
   if (typeof optionsOrCallback === 'object') {
