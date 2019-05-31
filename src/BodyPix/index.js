@@ -99,12 +99,12 @@ class BodyPix {
             "rightLowerArmFront", "leftHand"
         ];
 
-        
+
         // Check if we're getting p5 colors and return rgb
-        if(p5Utils.checkP5() && colors !== undefined && colors.length >= 24){
+        if (p5Utils.checkP5() && colors !== undefined && colors.length >= 24) {
             const isP5Color = colors.every((color) => color instanceof window.p5.Color);
-            if(isP5Color === true){
-                colors = colors.map( (color) => {
+            if (isP5Color === true) {
+                colors = colors.map((color) => {
                     const regExp = /\(([^)]+)\)/;
                     const match = regExp.exec(color.toString('rgb'));
                     const [r, g, b] = match[1].split(',')
