@@ -88,6 +88,7 @@ class BodyPix {
         // Add DEFAULT_COLOR as result.palette;
         result.palette = palette;
         // Iterate over the bodyPartsName
+        // {"leftFace": {id: 0, color:[r, g, b]}, "rightFace": {id: 1, color:[r, g, b]}, ...}
         bodyPartsName.forEach((part, idx) => {
             result[part] = {
                 id: bodyPartsIds[idx],
