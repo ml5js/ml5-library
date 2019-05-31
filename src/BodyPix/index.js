@@ -19,7 +19,15 @@ import * as p5Utils from '../utils/p5Utils';
 const DEFAULTS = {
     "multiplier": 0.75,
     "outputStride": 16,
-    "segmentationThreshold": 0.5
+    "segmentationThreshold": 0.5,
+    "palette": [
+        [110, 64, 170], [106, 72, 183], [100, 81, 196], [92, 91, 206],
+        [84, 101, 214], [75, 113, 221], [66, 125, 224], [56, 138, 226],
+        [48, 150, 224], [40, 163, 220], [33, 176, 214], [29, 188, 205],
+        [26, 199, 194], [26, 210, 182], [28, 219, 169], [33, 227, 155],
+        [41, 234, 141], [51, 240, 128], [64, 243, 116], [79, 246, 105],
+        [96, 247, 97],  [115, 246, 91], [134, 245, 88], [155, 243, 88]
+      ]
 }
 
 class BodyPix {
@@ -32,6 +40,7 @@ class BodyPix {
             multiplier: options.multiplier || DEFAULTS.multiplier,
             outputStride: options.outputStride || DEFAULTS.outputStride,
             segmentationThreshold: options.segmentationThreshold || DEFAULTS.segmentationThreshold,
+            palette: options.palette || DEFAULTS.palette
         }
 
         this.ready = callCallback(this.loadModel(), callback);
@@ -47,15 +56,6 @@ class BodyPix {
     bodyPartsSpec(colorOptions){
         const result = {};
         
-        const DEFAULT_COLOR = [
-            [110, 64, 170], [106, 72, 183], [100, 81, 196], [92, 91, 206],
-            [84, 101, 214], [75, 113, 221], [66, 125, 224], [56, 138, 226],
-            [48, 150, 224], [40, 163, 220], [33, 176, 214], [29, 188, 205],
-            [26, 199, 194], [26, 210, 182], [28, 219, 169], [33, 227, 155],
-            [41, 234, 141], [51, 240, 128], [64, 243, 116], [79, 246, 105],
-            [96, 247, 97],  [115, 246, 91], [134, 245, 88], [155, 243, 88]
-          ];
-        
         const bodyPartsIds = [-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
         const bodyPartsName = [
             "none","leftFace","rightFace","rightUpperLegFront","rightLowerLegBack",
@@ -66,18 +66,18 @@ class BodyPix {
         ];
 
         // TODO: allow for adding custom palettes
-        const palette = colorOptions !== undefined ? colorOptions : DEFAULT_COLOR;
+        const palette = colorOptions !== undefined ? colorOptions : this.config.palette;
         // Add DEFAULT_COLOR as result.palette;
         result.palette = palette;
         // Iterate over the bodyPartsName
         bodyPartsName.forEach( (part, idx) => {
-            result[part] = {id: bodyPartsIds[idx], color: DEFAULT_COLOR[idx]}
+            result[part] = {id: bodyPartsIds[idx], color: palette[idx]}
         })
 
         return result;
     }
 
-    async segmentWithPartsInternal(imgToSegment){
+    async segmentWithPartsInternal(imgToSegment, segmentationOptions){
         // estimatePartSegmentation
         await this.ready;
         await tf.nextFrame();
@@ -88,10 +88,12 @@ class BodyPix {
             });
         }
 
-        
-        const bodyPartsMeta = this.bodyPartsSpec();
+        this.config.palette =  segmentationOptions.palette || this.config.palette;
+        this.config.outputStride =  segmentationOptions.outputStride || this.config.outputStride;
+        this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-        const segmentation = await this.model.estimatePartSegmentation(imgToSegment);
+        const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
+        const segmentation = await this.model.estimatePartSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold);
         
         // // wrap up the final js result object
         const result = {};
@@ -114,9 +116,10 @@ class BodyPix {
 
     }
 
-    async segmentWithParts(optionsOrCallback, cb){
+    async segmentWithParts(optionsOrCallback, configOrCallback, cb){
         let imgToSegment = this.video;
         let callback;
+        let segmentationOptions = this.config; 
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -149,15 +152,21 @@ class BodyPix {
             );
         }
 
+        if (typeof configOrCallback === 'object') {
+            segmentationOptions = configOrCallback;
+          } else if (typeof configOrCallback === 'function') {
+            callback = configOrCallback;
+          }
+
         if (typeof cb === 'function') {
             callback = cb;
         }
 
-        return callCallback(this.segmentWithPartsInternal(imgToSegment), callback);
+        return callCallback(this.segmentWithPartsInternal(imgToSegment, segmentationOptions), callback);
 
     }
 
-    async segmentInternal(imgToSegment) {
+    async segmentInternal(imgToSegment, segmentationOptions) {
         await this.ready;
         await tf.nextFrame();
 
@@ -167,7 +176,10 @@ class BodyPix {
             });
         }
 
-        const segmentation = await this.model.estimatePersonSegmentation(imgToSegment)
+        this.config.outputStride =  segmentationOptions.outputStride || this.config.outputStride;
+        this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
+
+        const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
 
         // // wrap up the final js result object
         const result = {};
@@ -190,9 +202,10 @@ class BodyPix {
     }
 
 
-    async segment(optionsOrCallback, cb) {
+    async segment(optionsOrCallback, configOrCallback,  cb) {
         let imgToSegment = this.video;
         let callback;
+        let segmentationOptions = this.config;
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -225,11 +238,17 @@ class BodyPix {
             );
         }
 
+        if (typeof configOrCallback === 'object') {
+            segmentationOptions = configOrCallback;
+          } else if (typeof configOrCallback === 'function') {
+            callback = configOrCallback;
+          }
+
         if (typeof cb === 'function') {
             callback = cb;
         }
 
-        return callCallback(this.segmentInternal(imgToSegment), callback);
+        return callCallback(this.segmentInternal(imgToSegment, segmentationOptions), callback);
     }
 
 
