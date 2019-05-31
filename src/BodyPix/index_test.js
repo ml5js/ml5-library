@@ -5,7 +5,7 @@
 
 const { bodyPix } = ml5;
 
-const DEFAULTS = {
+const BODYPIX_DEFAULTS = {
     "multiplier": 0.75,
     "outputStride": 16,
     "segmentationThreshold": 0.5
@@ -37,9 +37,9 @@ describe('bodyPix', () => {
   });
 
   it('Should create bodyPix with all the defaults', async () => {
-    expect(bp.config.multiplier).toBe(DEFAULTS.multiplier);
-    expect(bp.config.outputStride).toBe(DEFAULTS.outputStride);
-    expect(bp.config.segmentationThreshold).toBe(DEFAULTS.segmentationThreshold);
+    expect(bp.config.multiplier).toBe(BODYPIX_DEFAULTS.multiplier);
+    expect(bp.config.outputStride).toBe(BODYPIX_DEFAULTS.outputStride);
+    expect(bp.config.segmentationThreshold).toBe(BODYPIX_DEFAULTS.segmentationThreshold);
   });
 
   describe('segmentation', () => {
