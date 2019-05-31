@@ -88,6 +88,7 @@ class BodyPix {
     /* eslint class-methods-use-this: "off" */
     bodyPartsSpec(colorOptions) {
         const result = {};
+        let colors = colorOptions;
 
         const bodyPartsIds = [-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
         const bodyPartsName = [
@@ -98,8 +99,22 @@ class BodyPix {
             "rightLowerArmFront", "leftHand"
         ];
 
-        // TODO: allow for p5.Color objects
-        const palette = colorOptions !== undefined ? colorOptions : this.config.palette;
+        
+        // Check if we're getting p5 colors and return rgb
+        if(p5Utils.checkP5() && colors !== undefined && colors.length >= 24){
+            const isP5Color = colors.every((color) => color instanceof window.p5.Color);
+            if(isP5Color === true){
+                colors = colors.map( (color) => {
+                    const regExp = /\(([^)]+)\)/;
+                    const match = regExp.exec(color.toString('rgb'));
+                    const [r, g, b] = match[1].split(',')
+                    return [r, g, b]
+                })
+            }
+        }
+
+        const palette = colors !== undefined || colors.length >= 24 ? colors : this.config.palette;
+
         // Add DEFAULT_COLOR as result.palette;
         result.palette = palette;
         // Iterate over the bodyPartsName
