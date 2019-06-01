@@ -12,6 +12,7 @@ import * as mobilenet from '@tensorflow-models/mobilenet';
 import * as darknet from './darknet';
 import * as doodlenet from './doodlenet';
 import callCallback from '../utils/callcallback';
+import { imgToTensor } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   mobilenet: {
@@ -20,40 +21,47 @@ const DEFAULTS = {
     topk: 3,
   },
 };
+const IMAGE_SIZE = 224;
+const MODEL_OPTIONS = ['mobilenet', 'darknet', 'darknet-tiny', 'doodlenet'];
 
 class ImageClassifier {
   /**
    * Create an ImageClassifier.
-   * @param {modelName} modelName - The name of the model to use. Current options 
+   * @param {modelNameOrUrl} modelNameOrUrl - The name or the URL of the model to use. Current model name options 
    *    are: 'mobilenet', 'darknet', 'darknet-tiny', and 'doodlenet'.
    * @param {HTMLVideoElement} video - An HTMLVideoElement.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
    */
-  constructor(modelName, video, options, callback) {
-    this.modelName = modelName;
+  constructor(modelNameOrUrl, video, options, callback) {
     this.video = video;
     this.model = null;
-    switch (this.modelName) {
-      case 'mobilenet':
-        this.modelToUse = mobilenet;
-        this.version = options.version || DEFAULTS.mobilenet.version;
-        this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
-        this.topk = options.topk || DEFAULTS.mobilenet.topk;
-        break;
-      case 'darknet':
-        this.version = 'reference'; // this a 28mb model
-        this.modelToUse = darknet;
-        break;
-      case 'darknet-tiny':
-        this.version = 'tiny'; // this a 4mb model
-        this.modelToUse = darknet;
-        break;
-      case 'doodlenet':
-        this.modelToUse = doodlenet;
-        break;
-      default:
-        this.modelToUse = null;
+    this.mapStringToIndex = [];
+    if (MODEL_OPTIONS.includes(modelNameOrUrl)) {
+      this.modelName = modelNameOrUrl;
+      switch (this.modelName) {
+        case 'mobilenet':
+          this.modelToUse = mobilenet;
+          this.version = options.version || DEFAULTS.mobilenet.version;
+          this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
+          this.topk = options.topk || DEFAULTS.mobilenet.topk;
+          break;
+        case 'darknet':
+          this.version = 'reference'; // this a 28mb model
+          this.modelToUse = darknet;
+          break;
+        case 'darknet-tiny':
+          this.version = 'tiny'; // this a 4mb model
+          this.modelToUse = darknet;
+          break;
+        case 'doodlenet':
+          this.modelToUse = doodlenet;
+          break;
+        default:
+          this.modelToUse = null;
+      }
+    } else {
+      this.modelFilesOrPath = modelNameOrUrl;
     }
     // Load the model
     this.ready = callCallback(this.loadModel(), callback);
@@ -64,8 +72,41 @@ class ImageClassifier {
    * @return {this} The ImageClassifier.
    */
   async loadModel() {
-    this.model = await this.modelToUse.load(this.version, this.alpha);
+    if (this.modelFilesOrPath) this.model = await this.loadModelFrom(this.modelFilesOrPath);
+    else this.model = await this.modelToUse.load(this.version, this.alpha);
     return this;
+  }
+
+  async loadModelFrom(filesOrPath = null) {
+    if (typeof filesOrPath !== 'string') {
+      let model = null;
+      let weights = null;
+      Array.from(filesOrPath).forEach((file) => {
+        if (file.name.includes('.json')) {
+          model = file;
+          const fr = new FileReader();
+          fr.onload = (d) => {
+            if (JSON.parse(d.target.result).ml5Specs) {
+              this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            }
+          };
+          fr.readAsText(file);
+        } else if (file.name.includes('.bin')) {
+          weights = file;
+        }
+      });
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+    } else {
+      fetch(filesOrPath)
+        .then(r => r.json())
+        .then((r) => {
+          if (r.ml5Specs) {
+            this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
+          }
+        });
+      this.model = await tf.loadLayersModel(filesOrPath);
+    }
+    return this.model;
   }
 
   /**
@@ -85,6 +126,23 @@ class ImageClassifier {
       await new Promise(resolve => {
         this.video.onloadeddata = () => resolve();
       });
+    }
+    if (this.modelFilesOrPath) {
+      await tf.nextFrame();
+      const predictedClasses = tf.tidy(() => {
+        const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
+        const processedImg = imgToTensor(imgToPredict, imageResize);
+        const predictions = this.model.predict(processedImg);
+        return Array.from(predictions.as1D().dataSync());
+      });
+      const results = await predictedClasses.map((confidence, index) => {
+        const label = (this.mapStringToIndex.length > 0 && this.mapStringToIndex[index]) ? this.mapStringToIndex[index] : index;
+        return {
+          label,
+          confidence,
+        };
+      }).sort((a, b) => b.confidence - a.confidence);
+      return results;
     }
     return this.model
       .classify(imgToPredict, numberOfClasses)
