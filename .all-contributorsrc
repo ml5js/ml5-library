@@ -165,6 +165,18 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "garym140",
+      "name": "garym140",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/30574513?v=4",
+      "profile": "https://github.com/garym140",
+      "contributions": [
+        "content",
+        "blog",
+        "ideas",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
