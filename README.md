@@ -28,7 +28,6 @@ There are several ways you can use the ml5.js library:
 <script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
-
 * If you need to use an earlier version for any reason, you can change the version number.
 
 **v0.3.0**
