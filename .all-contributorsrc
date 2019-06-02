@@ -188,6 +188,17 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "hhayley",
+      "name": "Hayley Hwang",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/22086451?v=4",
+      "profile": "http://hhayeon.com",
+      "contributions": [
+        "code",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
