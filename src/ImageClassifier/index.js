@@ -37,75 +37,58 @@ class ImageClassifier {
     this.video = video;
     this.model = null;
     this.mapStringToIndex = [];
-    if (MODEL_OPTIONS.includes(modelNameOrUrl)) {
-      this.modelName = modelNameOrUrl;
-      switch (this.modelName) {
-        case 'mobilenet':
-          this.modelToUse = mobilenet;
-          this.version = options.version || DEFAULTS.mobilenet.version;
-          this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
-          this.topk = options.topk || DEFAULTS.mobilenet.topk;
-          break;
-        case 'darknet':
-          this.version = 'reference'; // this a 28mb model
-          this.modelToUse = darknet;
-          break;
-        case 'darknet-tiny':
-          this.version = 'tiny'; // this a 4mb model
-          this.modelToUse = darknet;
-          break;
-        case 'doodlenet':
-          this.modelToUse = doodlenet;
-          break;
-        default:
-          this.modelToUse = null;
+    if (typeof modelNameOrUrl === 'string') {
+      if (MODEL_OPTIONS.includes(modelNameOrUrl)) {
+        this.modelName = modelNameOrUrl;
+        this.modelUrl = null;
+        switch (this.modelName) {
+          case 'mobilenet':
+            this.modelToUse = mobilenet;
+            this.version = options.version || DEFAULTS.mobilenet.version;
+            this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
+            this.topk = options.topk || DEFAULTS.mobilenet.topk;
+            break;
+          case 'darknet':
+            this.version = 'reference'; // this a 28mb model
+            this.modelToUse = darknet;
+            break;
+          case 'darknet-tiny':
+            this.version = 'tiny'; // this a 4mb model
+            this.modelToUse = darknet;
+            break;
+          case 'doodlenet':
+            this.modelToUse = doodlenet;
+            break;
+          default:
+            this.modelToUse = null;
+        }
+      } else {
+        this.modelUrl = modelNameOrUrl;
       }
-    } else {
-      this.modelFilesOrPath = modelNameOrUrl;
     }
     // Load the model
-    this.ready = callCallback(this.loadModel(), callback);
+    this.ready = callCallback(this.loadModel(this.modelUrl), callback);
   }
 
   /**
    * Load the model and set it to this.model
    * @return {this} The ImageClassifier.
    */
-  async loadModel() {
-    if (this.modelFilesOrPath) this.model = await this.loadModelFrom(this.modelFilesOrPath);
+  async loadModel(modelUrl) {
+    if (modelUrl) this.model = await this.loadModelFrom(modelUrl);
     else this.model = await this.modelToUse.load(this.version, this.alpha);
     return this;
   }
 
-  async loadModelFrom(filesOrPath = null) {
-    if (typeof filesOrPath !== 'string') {
-      let model = null;
-      let weights = null;
-      Array.from(filesOrPath).forEach((file) => {
-        if (file.name.includes('.json')) {
-          model = file;
-          const fr = new FileReader();
-          fr.onload = (d) => {
-            if (JSON.parse(d.target.result).ml5Specs) {
-              this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
-            }
-          };
-          fr.readAsText(file);
-        } else if (file.name.includes('.bin')) {
-          weights = file;
-        }
-      });
-      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
-    } else {
-      fetch(filesOrPath)
-        .then(r => r.json())
-        .then((r) => {
-          if (r.ml5Specs) {
-            this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
-          }
-        });
-      this.model = await tf.loadLayersModel(filesOrPath);
-    }
+  async loadModelFrom(path = null) {
+    fetch(path)
+    .then(r => r.json())
+    .then((r) => {
+      if (r.ml5Specs) {
+        this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
+      }
+    });
+    this.model = await tf.loadLayersModel(path);
     return this.model;
   }
 
@@ -127,7 +110,7 @@ class ImageClassifier {
         this.video.onloadeddata = () => resolve();
       });
     }
-    if (this.modelFilesOrPath) {
+    if (this.modelUrl) {
       await tf.nextFrame();
       const predictedClasses = tf.tidy(() => {
         const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
