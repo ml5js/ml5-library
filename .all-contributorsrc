@@ -342,6 +342,17 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "AlcaDesign",
+      "name": "Jacob Foster",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/7132646?v=4",
+      "profile": "https://alca.tv",
+      "contributions": [
+        "code",
+        "example",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
