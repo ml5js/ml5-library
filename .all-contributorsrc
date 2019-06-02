@@ -220,6 +220,16 @@
         "content",
         "blog"
       ]
+    },
+    {
+      "login": "mayaman",
+      "name": "Maya Man",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8224678?v=4",
+      "profile": "http://mayaontheinter.net",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
