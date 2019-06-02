@@ -481,6 +481,15 @@
         "maintenance",
         "code"
       ]
+    },
+    {
+      "login": "micuat",
+      "name": "Naoto HIÉDA",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1835081?v=4",
+      "profile": "http://naotohieda.com",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
