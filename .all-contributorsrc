@@ -177,6 +177,17 @@
         "ideas",
         "userTesting"
       ]
+    },
+    {
+      "login": "genekogan",
+      "name": "Gene Kogan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1335251?v=4",
+      "profile": "http://genekogan.com",
+      "contributions": [
+        "code",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
