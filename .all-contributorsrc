@@ -385,6 +385,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "marshalhayes",
+      "name": "Marshal Hayes",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/17213165?v=4",
+      "profile": "https://marshalhayes.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
