@@ -429,6 +429,17 @@
         "maintenance",
         "ideas"
       ]
+    },
+    {
+      "login": "vndrewlee",
+      "name": "Andrew Lee",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/6391516?v=4",
+      "profile": "http://www.vndrewlee.com/",
+      "contributions": [
+        "code",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
