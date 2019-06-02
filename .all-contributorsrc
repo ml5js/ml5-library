@@ -123,6 +123,16 @@
         "content",
         "userTesting"
       ]
+    },
+    {
+      "login": "AidanNelson",
+      "name": "Aidan Nelson",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6486359?v=4",
+      "profile": "http://www.aidanjnelson.com/",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
