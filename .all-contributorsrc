@@ -155,6 +155,16 @@
         "ideas",
         "question"
       ]
+    },
+    {
+      "login": "Derek-Wds",
+      "name": "Dingsu Wang",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/26081991?v=4",
+      "profile": "https://wangdingsu.com",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
