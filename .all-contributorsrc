@@ -363,6 +363,18 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "TheHidden1",
+      "name": "Mohamed Amine",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31354864?v=4",
+      "profile": "https://thehidden1.github.io/",
+      "contributions": [
+        "code",
+        "example",
+        "ideas",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
