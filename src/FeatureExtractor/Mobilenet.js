@@ -65,6 +65,7 @@ class Mobilenet {
      */
     this.hasAnyTrainedClass = false;
     this.customModel = null;
+    this.jointModel = null;
     this.config = {
       epochs: options.epochs || DEFAULTS.epochs,
       version: options.version || DEFAULTS.version,
@@ -104,9 +105,9 @@ class Mobilenet {
 
     const layer = this.mobilenet.getLayer(this.config.layer);
     this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-    // if (this.video) {
-    //   await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
-    // }
+    if (this.video) {
+      await this.mobilenetFeatures.predict(imgToTensor(this.video)); // Warm up
+    }
     return this;
   }
 
@@ -300,6 +301,9 @@ class Mobilenet {
         ],
       });
     }
+    this.jointModel = tf.sequential(); 
+    this.jointModel.add(this.mobilenetFeatures); // mobilenet
+    this.jointModel.add(this.customModel); // transfer layer
 
     const optimizer = tf.train.adam(this.config.learningRate);
     this.customModel.compile({ optimizer, loss: this.loss });
@@ -358,8 +362,7 @@ class Mobilenet {
     const predictedClasses = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      const predictions = this.jointModel.predict(processedImg);
       return Array.from(predictions.as1D().dataSync());
     });
     const results = await predictedClasses.map((confidence, index) => {
@@ -407,8 +410,7 @@ class Mobilenet {
     const predictedClass = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      const predictions = this.jointModel.predict(processedImg);
       return predictions.as1D();
     });
     const prediction = await predictedClass.data();
@@ -425,31 +427,37 @@ class Mobilenet {
           model = file;
           const fr = new FileReader();
           fr.onload = (d) => {
-            this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            if (JSON.parse(d.target.result).ml5Specs) {
+              this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            }
           };
           fr.readAsText(file);
         } else if (file.name.includes('.bin')) {
           weights = file;
         }
       });
-      this.customModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+      this.jointModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
-        .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
-      this.customModel = await tf.loadLayersModel(filesOrPath);
+        .then((r) => {
+          if (r.ml5Specs) {
+            this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
+          }
+        });
+      this.jointModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
       }
     }
-    return this.customModel;
+    return this.jointModel;
   }
 
   async save(callback, name) {
-    if (!this.customModel) {
+    if (!this.jointModel) {
       throw new Error('No model found.');
     }
-    this.customModel.save(tf.io.withSaveHandler(async (data) => {
+    this.jointModel.save(tf.io.withSaveHandler(async (data) => {
       let modelName = 'model';
       if(name) modelName = name;
 
