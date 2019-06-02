@@ -199,6 +199,16 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "lisajamhoury",
+      "name": "Lisa Jamhoury",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7552772?v=4",
+      "profile": "http://lisajamhoury.com",
+      "contributions": [
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
