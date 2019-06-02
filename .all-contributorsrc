@@ -330,6 +330,18 @@
         "test",
         "example"
       ]
+    },
+    {
+      "login": "zaidalyafeai",
+      "name": "Zaid Alyafeai",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15667714?v=4",
+      "profile": "https://twitter.com/zaidalyafeai",
+      "contributions": [
+        "code",
+        "example",
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
