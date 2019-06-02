@@ -440,6 +440,15 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "fjcamillo",
+      "name": "Jerhone",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/12166244?v=4",
+      "profile": "https://medium.com/@fjcamillo.dev",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
