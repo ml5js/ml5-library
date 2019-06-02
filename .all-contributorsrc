@@ -310,6 +310,15 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "Jonarod",
+      "name": "Jonarod",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/6122703?v=4",
+      "profile": "https://github.com/Jonarod",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
