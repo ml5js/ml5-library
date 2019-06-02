@@ -5,6 +5,37 @@
   "imageSize": 100,
   "commit": false,
   "contributors": [
+  {
+        "login": "cvalenzuela",
+      "name": "Cristóbal Valenzuela",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10605821?v=4",
+      "profile": "https://cvalenzuelab.com/",
+      "contributions": [
+        "bug",
+        "business",
+        "code",
+        "content",
+        "doc",
+        "design",
+        "example",
+        "fundingFinding",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "review",
+        "tool",
+        "test",
+        "tutorial",
+        "talk",
+        "userTesting",
+        "video",
+        "question",
+        "blog"
+      ]
+  },
     {
       "login": "shiffman",
       "name": "Daniel Shiffman",
