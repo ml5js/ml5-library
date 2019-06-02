@@ -449,6 +449,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "achimkoh",
+      "name": "achimkoh",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3594463?v=4",
+      "profile": "https://scalarvectortensor.net/",
+      "contributions": [
+        "code",
+        "example",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
