@@ -405,6 +405,18 @@
         "test",
         "example"
       ]
+    },
+    {
+      "login": "nsthorat",
+      "name": "Nikhil Thorat",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1100749?v=4",
+      "profile": "https://deeplearnjs.org/",
+      "contributions": [
+        "code",
+        "example",
+        "ideas",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
