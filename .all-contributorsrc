@@ -5,66 +5,68 @@
   "imageSize": 100,
   "commit": false,
   "contributors": [
-  {
-        "login": "cvalenzuela",
-      "name": "Cristóbal Valenzuela",
-      "avatar_url": "https://avatars0.githubusercontent.com/u/10605821?v=4",
-      "profile": "https://cvalenzuelab.com/",
-      "contributions": [
-        "bug",
-        "business",
-        "code",
-        "content",
-        "doc",
-        "design",
-        "example",
-        "fundingFinding",
-        "ideas",
-        "infra",
-        "maintenance",
-        "platform",
-        "plugin",
-        "projectManagement",
-        "review",
-        "tool",
-        "test",
-        "tutorial",
-        "talk",
-        "userTesting",
-        "video",
-        "question",
-        "blog"
-      ]
-  },
     {
       "login": "shiffman",
       "name": "Daniel Shiffman",
       "avatar_url": "https://avatars0.githubusercontent.com/u/191758?v=4",
       "profile": "http://www.shiffman.net",
       "contributions": [
-        "bug",
-        "business",
         "code",
-        "content",
-        "doc",
-        "design",
         "example",
-        "fundingFinding",
-        "ideas",
-        "infra",
-        "maintenance",
-        "platform",
-        "plugin",
         "projectManagement",
+        "review",
+        "test",
+        "video"
+      ]
+    },
+    {
+      "login": "cvalenzuela",
+      "name": "Cristóbal Valenzuela",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10605821?v=4",
+      "profile": "https://cvalenzuelab.com/",
+      "contributions": [
+        "code",
+        "example",
+        "review",
+        "tool",
+        "test"
+      ]
+    },
+    {
+      "login": "yining1023",
+      "name": "Yining Shi",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8662372?v=4",
+      "profile": "https://1023.io",
+      "contributions": [
+        "code",
+        "example",
         "review",
         "tool",
         "test",
-        "tutorial",
-        "talk",
-        "userTesting",
-        "video",
-        "question",
-        "blog"
+        "bug"
+      ]
+    },
+    {
+      "login": "handav",
+      "name": "Hannah Davis",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1385308?v=4",
+      "profile": "http://www.hannahishere.com",
+      "contributions": [
+        "code",
+        "example"
+      ]
+    },
+    {
+      "login": "joeyklee",
+      "name": "Joey Lee",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3622055?v=4",
+      "profile": "https://jk-lee.com/",
+      "contributions": [
+        "code",
+        "example",
+        "review",
+        "content",
+        "test"
       ]
     }
   ],
