@@ -209,6 +209,17 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "matamalaortiz",
+      "name": "Alejandro Matamala Ortiz",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/5123955?v=4",
+      "profile": "https://www.matamala.info",
+      "contributions": [
+        "design",
+        "content",
+        "blog"
+      ]
     }
   ],
   "contributorsPerLine": 7,
