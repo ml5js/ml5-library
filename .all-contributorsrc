@@ -277,6 +277,17 @@
         "blog",
         "design"
       ]
+    },
+    {
+      "login": "viztopia",
+      "name": "YG Zhang",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/37890050?v=4",
+      "profile": "https://github.com/viztopia",
+      "contributions": [
+        "code",
+        "example",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
