@@ -11,31 +11,41 @@ import * as tf from '@tensorflow/tfjs';
 import * as speechCommands from './speechcommands';
 import callCallback from '../utils/callcallback';
 
+const MODEL_OPTIONS = ['speechcommands18w'];
 class SoundClassifier {
   /**
    * Create an SoundClassifier.
-   * @param {modelName} modelName - The name of the model to use. Current options 
+   * @param {modelNameOrUrl} modelNameOrUrl - The name or the URL of the model to use. Current name options
    *    are: 'SpeechCommands18w'.
    * @param {object} options - An object with options.
    * @param {function} callback - A callback to be called when the model is ready.
    */
-  constructor(modelName, options, callback) {
-    this.modelName = modelName;
+  constructor(modelNameOrUrl, options, callback) {
     this.model = null;
     this.options = options;
-    switch (this.modelName) {
-      case 'speechcommands18w':
+    if (typeof modelNameOrUrl === 'string') {
+      if (MODEL_OPTIONS.includes(modelNameOrUrl)) {
+        this.modelName = modelNameOrUrl;
+        this.modelUrl = null;
+        switch (this.modelName) {
+          case 'speechcommands18w':
+            this.modelToUse = speechCommands;
+            break;
+          default:
+            this.modelToUse = null;
+        }
+      } else {
+        // Default to speechCommands for now
         this.modelToUse = speechCommands;
-        break;
-      default:
-        this.modelToUse = null;
+        this.modelUrl = modelNameOrUrl;
+      }
     }
     // Load the model
-    this.ready = callCallback(this.loadModel(options), callback);
+    this.ready = callCallback(this.loadModel(options, this.modelUrl), callback);
   }
 
   async loadModel(options) {
-    this.model = await this.modelToUse.load(options);
+    this.model = await this.modelToUse.load(options, this.modelUrl);
     return this;
   }
 
