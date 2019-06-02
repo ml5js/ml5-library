@@ -31,6 +31,20 @@
         "tool",
         "test"
       ]
+    },
+    {
+      "login": "yining1023",
+      "name": "Yining Shi",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8662372?v=4",
+      "profile": "https://1023.io",
+      "contributions": [
+        "code",
+        "example",
+        "review",
+        "tool",
+        "test",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
