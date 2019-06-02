@@ -55,6 +55,19 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "joeyklee",
+      "name": "Joey Lee",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/3622055?v=4",
+      "profile": "https://jk-lee.com/",
+      "contributions": [
+        "code",
+        "example",
+        "review",
+        "content",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
