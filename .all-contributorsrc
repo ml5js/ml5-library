@@ -133,6 +133,18 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "WenheLI",
+      "name": "WenheLI",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23213772?v=4",
+      "profile": "http://portfolio.steins.live",
+      "contributions": [
+        "code",
+        "example",
+        "maintenance",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
