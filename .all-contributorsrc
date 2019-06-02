@@ -510,6 +510,15 @@
         "code",
         "infra"
       ]
+    },
+    {
+      "login": "adityaas26",
+      "name": "Aditya Sharma",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/24931529?v=4",
+      "profile": "http://adityasharma.me",
+      "contributions": [
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
