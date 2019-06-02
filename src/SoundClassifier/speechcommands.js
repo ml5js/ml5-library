@@ -11,8 +11,13 @@ export class SpeechCommands {
     this.options = options;
   }
 
-  async load() {
-    this.model = tfjsSpeechCommands.create('BROWSER_FFT');
+  async load(url) {
+    if (url) {
+      const split = url.split("/");
+      const prefix = split.slice(0, split.length - 1).join("/");
+      const metadataJson = `${prefix}/metadata.json`;
+      this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, url, metadataJson);
+    } else this.model = tfjsSpeechCommands.create('BROWSER_FFT');
     await this.model.ensureModelLoaded();
     this.allLabels = this.model.wordLabels();
   }
@@ -32,8 +37,8 @@ export class SpeechCommands {
   }
 }
 
-export async function load(options) {
+export async function load(options, url) {
   const speechCommandsModel = new SpeechCommands(options);
-  await speechCommandsModel.load();
+  await speechCommandsModel.load(url);
   return speechCommandsModel;
 }
