@@ -1,0 +1,43 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "yining1023",
+      "name": "Yining Shi",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8662372?v=4",
+      "profile": "https://1023.io",
+      "contributions": [
+        "bug",
+        "code",
+        "content",
+        "doc",
+        "design",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "review",
+        "tool",
+        "test",
+        "tutorial",
+        "talk",
+        "userTesting",
+        "video",
+        "question",
+        "blog"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ml5-library",
+  "projectOwner": "ml5js",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
