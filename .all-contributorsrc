@@ -299,6 +299,17 @@
         "example",
         "infra"
       ]
+    },
+    {
+      "login": "brondle",
+      "name": "Brent Bailey",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/12499678?v=4",
+      "profile": "http://brentlbailey.com",
+      "contributions": [
+        "test",
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
