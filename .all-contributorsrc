@@ -145,6 +145,16 @@
         "maintenance",
         "ideas"
       ]
+    },
+    {
+      "login": "dariusk",
+      "name": "Darius Kazemi",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/266454?v=4",
+      "profile": "https://tinysubversions.com",
+      "contributions": [
+        "ideas",
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7,
