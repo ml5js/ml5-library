@@ -102,6 +102,17 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "nikitahuggins",
+      "name": "Nikita Huggins",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/18563958?v=4",
+      "profile": "http://nikitahuggins.com",
+      "contributions": [
+        "blog",
+        "content",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
