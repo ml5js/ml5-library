@@ -92,6 +92,16 @@
         "ideas",
         "tutorial"
       ]
+    },
+    {
+      "login": "itayniv",
+      "name": "Itay Niv",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5209486?v=4",
+      "profile": "http://www.itayniv.com",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
