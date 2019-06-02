@@ -375,6 +375,16 @@
         "ideas",
         "test"
       ]
+    },
+    {
+      "login": "meiamsome",
+      "name": "Oliver Wright",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/1187491?v=4",
+      "profile": "http://meiamso.me",
+      "contributions": [
+        "code",
+        "test"
+      ]
     }
   ],
   "contributorsPerLine": 7,
