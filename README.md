@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors)
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors)
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -87,7 +87,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore -->
-<table><tr><td align="center"><a href="http://www.shiffman.net"><img src="https://avatars0.githubusercontent.com/u/191758?v=4" width="100px;" alt="Daniel Shiffman"/><br /><sub><b>Daniel Shiffman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Code">💻</a> <a href="#example-shiffman" title="Examples">💡</a> <a href="#projectManagement-shiffman" title="Project Management">📆</a> <a href="#review-shiffman" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Tests">⚠️</a> <a href="#video-shiffman" title="Videos">📹</a></td></tr></table>
+<table><tr><td align="center"><a href="http://www.shiffman.net"><img src="https://avatars0.githubusercontent.com/u/191758?v=4" width="100px;" alt="Daniel Shiffman"/><br /><sub><b>Daniel Shiffman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Code">💻</a> <a href="#example-shiffman" title="Examples">💡</a> <a href="#projectManagement-shiffman" title="Project Management">📆</a> <a href="#review-shiffman" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Tests">⚠️</a> <a href="#video-shiffman" title="Videos">📹</a></td><td align="center"><a href="https://cvalenzuelab.com/"><img src="https://avatars0.githubusercontent.com/u/10605821?v=4" width="100px;" alt="Cristóbal Valenzuela"/><br /><sub><b>Cristóbal Valenzuela</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Code">💻</a> <a href="#example-cvalenzuela" title="Examples">💡</a> <a href="#review-cvalenzuela" title="Reviewed Pull Requests">👀</a> <a href="#tool-cvalenzuela" title="Tools">🔧</a> <a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Tests">⚠️</a></td></tr></table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
