@@ -1,0 +1,28 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "shiffman",
+      "name": "Daniel Shiffman",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/191758?v=4",
+      "profile": "http://www.shiffman.net",
+      "contributions": [
+        "code",
+        "example",
+        "projectManagement",
+        "review",
+        "test",
+        "video"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ml5-library",
+  "projectOwner": "ml5js",
+  "repoType": "github",
+  "repoHost": "https://github.com"
+}
