@@ -12,7 +12,9 @@ export class SpeechCommands {
   }
 
   async load() {
-    this.model = tfjsSpeechCommands.create('BROWSER_FFT');
+    const { modelJson, metadataJson } = this.options;
+    if (modelJson && metadataJson) this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, modelJson, metadataJson);
+    else this.model = tfjsSpeechCommands.create('BROWSER_FFT');
     await this.model.ensureModelLoaded();
     this.allLabels = this.model.wordLabels();
   }
