@@ -241,6 +241,17 @@
         "content",
         "review"
       ]
+    },
+    {
+      "login": "NHibiki",
+      "name": "Yuuno, Hibiki",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/18514672?v=4",
+      "profile": "https://i.yuuno.cc/",
+      "contributions": [
+        "code",
+        "example",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
