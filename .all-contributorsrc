@@ -417,6 +417,18 @@
         "ideas",
         "infra"
       ]
+    },
+    {
+      "login": "irealva",
+      "name": "Irene Alvarado",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8978670?v=4",
+      "profile": "http://www.irenealvarado.com",
+      "contributions": [
+        "code",
+        "example",
+        "maintenance",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
