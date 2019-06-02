@@ -288,6 +288,17 @@
         "example",
         "ideas"
       ]
+    },
+    {
+      "login": "wenqili",
+      "name": "Wenqi Li",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/22087042?v=4",
+      "profile": "https://www.wenqi.li",
+      "contributions": [
+        "code",
+        "example",
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 7,
