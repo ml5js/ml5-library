@@ -105,11 +105,20 @@ class ImageClassifier {
     await this.ready;
     await tf.nextFrame();
 
+    if (imgToPredict instanceof HTMLVideoElement && imgToPredict.readyState === 0) {
+      const video = imgToPredict;
+      // Wait for the video to be ready
+      await new Promise(resolve => {
+        video.onloadeddata = () => resolve();
+      });
+    }
+
     if (this.video && this.video.readyState === 0) {
       await new Promise(resolve => {
         this.video.onloadeddata = () => resolve();
       });
     }
+
     if (this.modelUrl) {
       await tf.nextFrame();
       const predictedClasses = tf.tidy(() => {
@@ -172,6 +181,13 @@ class ImageClassifier {
       inputNumOrCallback.canvas instanceof HTMLCanvasElement
     ) {
       imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
+    } else if (inputNumOrCallback instanceof HTMLVideoElement) {
+      imgToPredict = inputNumOrCallback;
+    } else if (
+      typeof inputNumOrCallback === 'object' &&
+      inputNumOrCallback.elt instanceof HTMLVideoElement
+    ) {
+      imgToPredict = inputNumOrCallback.elt; // Handle p5.js video
     } else if (!(this.video instanceof HTMLVideoElement)) {
       // Handle unsupported input
       throw new Error(
