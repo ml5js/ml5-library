@@ -143,7 +143,10 @@
         "code",
         "example",
         "maintenance",
-        "ideas"
+        "ideas",
+        "content",
+        "test",
+        "infra"
       ]
     },
     {
