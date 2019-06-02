@@ -490,6 +490,16 @@
       "contributions": [
         "maintenance"
       ]
+    },
+    {
+      "login": "montoyamoraga",
+      "name": "aarón montoya-moraga",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/3926350?v=4",
+      "profile": "http://montoyamoraga.io",
+      "contributions": [
+        "maintenance",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
