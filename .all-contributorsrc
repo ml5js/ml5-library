@@ -537,6 +537,17 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "nicoleflloyd",
+      "name": "nicoleflloyd",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/35693567?v=4",
+      "profile": "https://github.com/nicoleflloyd",
+      "contributions": [
+        "content",
+        "design",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
