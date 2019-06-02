@@ -460,6 +460,16 @@
         "example",
         "test"
       ]
+    },
+    {
+      "login": "champierre",
+      "name": "Junya Ishihara",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10215?v=4",
+      "profile": "https://github.com/champierre/resume",
+      "contributions": [
+        "maintenance",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
