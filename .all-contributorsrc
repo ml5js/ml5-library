@@ -113,6 +113,16 @@
         "content",
         "ideas"
       ]
+    },
+    {
+      "login": "AbolTaabol",
+      "name": "Arnab Chakravarty",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/19427655?v=4",
+      "profile": "http://www.arnabchakravarty.com",
+      "contributions": [
+        "content",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
