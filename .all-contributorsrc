@@ -35,6 +35,35 @@
         "question",
         "blog"
       ]
+    },
+    {
+      "login": "handav",
+      "name": "Hannah Davis",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1385308?v=4",
+      "profile": "http://www.hannahishere.com",
+      "contributions": [
+        "bug",
+        "code",
+        "content",
+        "doc",
+        "design",
+        "example",
+        "ideas",
+        "infra",
+        "maintenance",
+        "platform",
+        "plugin",
+        "projectManagement",
+        "review",
+        "tool",
+        "test",
+        "tutorial",
+        "talk",
+        "userTesting",
+        "video",
+        "question",
+        "blog"
+      ]
     }
   ],
   "contributorsPerLine": 7,
