@@ -264,6 +264,19 @@
         "question",
         "ideas"
       ]
+    },
+    {
+      "login": "stephkoltun",
+      "name": "Stephanie Koltun",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/7053425?v=4",
+      "profile": "http://anothersideproject.co",
+      "contributions": [
+        "code",
+        "example",
+        "content",
+        "blog",
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
