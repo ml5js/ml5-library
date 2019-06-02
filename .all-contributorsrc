@@ -353,6 +353,16 @@
         "example",
         "test"
       ]
+    },
+    {
+      "login": "memo",
+      "name": "Memo Akten",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/144230?v=4",
+      "profile": "http://www.memo.tv",
+      "contributions": [
+        "code",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
