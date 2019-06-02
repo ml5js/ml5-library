@@ -68,6 +68,18 @@
         "content",
         "test"
       ]
+    },
+    {
+      "login": "AshleyJaneLewis",
+      "name": "AshleyJaneLewis",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/43127855?v=4",
+      "profile": "https://github.com/AshleyJaneLewis",
+      "contributions": [
+        "blog",
+        "design",
+        "eventOrganizing",
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
