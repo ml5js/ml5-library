@@ -252,6 +252,18 @@
         "example",
         "maintenance"
       ]
+    },
+    {
+      "login": "oveddan",
+      "name": "Dan Oved",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/891755?v=4",
+      "profile": "http://www.danioved.com/",
+      "contributions": [
+        "code",
+        "example",
+        "question",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
