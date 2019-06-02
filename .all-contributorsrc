@@ -394,6 +394,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "reiinakano",
+      "name": "Reiichiro Nakano",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/18363734?v=4",
+      "profile": "https://reiinakano.github.io",
+      "contributions": [
+        "code",
+        "test",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
