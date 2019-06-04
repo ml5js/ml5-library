@@ -3,7 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-
 // This function will check if the p5 is in the environment
 const checkP5 = () => {
     if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
@@ -23,8 +22,8 @@ const getBlob = (inputCanvas) => {
 // Load Image Async
 const loadAsync = (url) => {
     return new Promise((resolve) => {
-
-        window.p5.prototype.loadImage(url, (img) => {
+        /* global loadImage */
+        loadImage(url, (img) => {
             resolve(img);
         });
     });
