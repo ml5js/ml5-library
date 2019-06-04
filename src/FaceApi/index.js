@@ -7,8 +7,8 @@
 /* eslint no-await-in-loop: "off" */
 
 /*
- * BodyPix: Real-time Person Segmentation in the Browser
- * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/body-pix
+ * FaceApi: real-time face recognition, expressions, and landmark detection
+ * Ported and integrated from all the hard work by: https://github.com/justadudewhohacks/face-api.js?files=1
  */
 
 import * as tf from '@tensorflow/tfjs';
@@ -52,7 +52,7 @@ class FaceApiBase {
         return this;
     }
 
-    async classifyExpressionsInternal(imgToClassify){
+    async classifyExpressionsMultipleInternal(imgToClassify){
         await this.ready;
         await tf.nextFrame();
 
@@ -62,11 +62,11 @@ class FaceApiBase {
             });
         }
 
-        const expression = await this.model.detectAllFaces(imgToClassify).withFaceExpressions()
+        const expression = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors()
         return expression
     }
 
-    async classifyExpressions(optionsOrCallback, configOrCallback, cb){
+    async classifyExpressionsMultiple(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
         // let segmentationOptions = this.config;
@@ -114,7 +114,73 @@ class FaceApiBase {
             callback = cb;
         }
 
-        return callCallback(this.classifyExpressionsInternal(imgToClassify), callback);
+        return callCallback(this.classifyExpressionsMultipleInternal(imgToClassify), callback);
+
+    }
+
+    async classifyExpressionsSingleInternal(imgToClassify){
+        await this.ready;
+        await tf.nextFrame();
+
+        if (this.video && this.video.readyState === 0) {
+            await new Promise(resolve => {
+                this.video.onloadeddata = () => resolve();
+            });
+        }
+
+        const expression = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor()
+        return expression
+    }
+
+    async classifyExpressionsSingle(optionsOrCallback, configOrCallback, cb){
+        let imgToClassify = this.video;
+        let callback;
+        // let segmentationOptions = this.config;
+
+        // Handle the image to predict
+        if (typeof optionsOrCallback === 'function') {
+            imgToClassify = this.video;
+            callback = optionsOrCallback;
+            // clean the following conditional statement up!
+        } else if (optionsOrCallback instanceof HTMLImageElement) {
+            imgToClassify = optionsOrCallback;
+        } else if (
+            typeof optionsOrCallback === 'object' &&
+            optionsOrCallback.elt instanceof HTMLImageElement
+        ) {
+            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
+        } else if (optionsOrCallback instanceof HTMLCanvasElement) {
+            imgToClassify = optionsOrCallback;
+        } else if (
+            typeof optionsOrCallback === 'object' &&
+            optionsOrCallback.elt instanceof HTMLCanvasElement
+        ) {
+            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
+        } else if (
+            typeof optionsOrCallback === 'object' &&
+            optionsOrCallback.canvas instanceof HTMLCanvasElement
+        ) {
+            imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
+        } else if (!(this.video instanceof HTMLVideoElement)) {
+            // Handle unsupported input
+            throw new Error(
+                'No input image provided. If you want to classify a video, pass the video element in the constructor. ',
+            );
+        }
+
+        // if (typeof configOrCallback === 'object') {
+        //     segmentationOptions = configOrCallback;
+        // } else 
+        
+        if (typeof configOrCallback === 'function') {
+            callback = configOrCallback;
+        }
+
+        if (typeof cb === 'function') {
+            callback = cb;
+        }
+
+        return callCallback(this.classifyExpressionsSingleInternal(imgToClassify), callback);
 
     }
 
