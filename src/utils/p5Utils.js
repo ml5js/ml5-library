@@ -23,8 +23,8 @@ const getBlob = (inputCanvas) => {
 // Load Image Async
 const loadAsync = (url) => {
     return new Promise((resolve) => {
-        /* global loadImage */
-        loadImage(url, (img) => {
+
+        window.p5.prototype.loadImage(url, (img) => {
             resolve(img);
         });
     });
