@@ -13,9 +13,31 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
 class PitchDetection {
+  /**
+   * Create a pitchDetection.
+   * @param {Object} model - The path to the trained model. Only CREPE is available for now. Case insensitive.
+   * @param {AudioContext} audioContext - The browser audioContext to use.
+   * @param {MediaStream} stream  - The media stream to use.
+   * @param {function} callback  - Optional. A callback to be called once the model has loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   */
   constructor(model, audioContext, stream, callback) {
+    /**
+     * The pitch detection model.
+     * @type {model}
+     * @public
+     */
     this.model = model;
+    /**
+     * The AudioContext instance. Contains sampleRate, currentTime, state, baseLatency.
+     * @type {AudioContext}
+     * @public
+     */
     this.audioContext = audioContext;
+    /**
+     * The MediaStream instance. Contains an id and a boolean active value.
+     * @type {MediaStream}
+     * @public
+     */
     this.stream = stream;
     this.frequency = null;
     this.ready = callCallback(this.loadModel(model), callback);
@@ -55,10 +77,20 @@ class PitchDetection {
 
   async processMicrophoneBuffer(event) {
     await tf.nextFrame();
+    /**
+     * The current pitch prediction results from the classification model.
+     * @type {Object}
+     * @public
+     */
     this.results = {};
     const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
     PitchDetection.resample(event.inputBuffer, (resampled) => {
       tf.tidy(() => {
+        /**
+         * A boolean value stating whether the model instance is running or not.
+         * @type {boolean}
+         * @public
+         */
         this.running = true;
         const frame = tf.tensor(resampled.slice(0, 1024));
         const zeromean = tf.sub(frame, tf.mean(frame));
@@ -87,6 +119,11 @@ class PitchDetection {
     });
   }
 
+  /**
+   * Returns the pitch from the model attempting to predict the pitch.
+   * @param {function} callback - Optional. A function to be called when the model has generated content. If no callback is provided, it will return a promise that will be resolved once the model has predicted the pitch.
+   * @returns {number}
+   */
   async getPitch(callback) {
     await this.ready;
     await tf.nextFrame();

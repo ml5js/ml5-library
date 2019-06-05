@@ -58,8 +58,14 @@ class Mobilenet {
   constructor(options, callback) {
     this.mobilenet = null;
     this.topKPredictions = 10;
+    /**
+     * Boolean value that specifies if new data has been added to the model
+     * @type {boolean}
+     * @public
+     */
     this.hasAnyTrainedClass = false;
     this.customModel = null;
+    this.jointModel = null;
     this.config = {
       epochs: options.epochs || DEFAULTS.epochs,
       version: options.version || DEFAULTS.version,
@@ -70,8 +76,19 @@ class Mobilenet {
       layer: options.layer || DEFAULTS.layer,
       alpha: options.alpha || DEFAULTS.alpha
     }
+    /**
+     * Boolean value to check if the model is predicting.
+     * @public
+     * @type {boolean}
+     */
     this.isPredicting = false;
     this.mapStringToIndex = [];
+    /**
+     * String that specifies how is the Extractor being used. 
+     *    Possible values are 'regressor' and 'classifier'
+     * @type {String}
+     * @public
+     */
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
 
@@ -88,12 +105,22 @@ class Mobilenet {
 
     const layer = this.mobilenet.getLayer(this.config.layer);
     this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
-    // if (this.video) {
-    //   await this.mobilenet.classify(imgToTensor(this.video)); // Warm up
-    // }
+    if (this.video) {
+      await this.mobilenetFeatures.predict(imgToTensor(this.video)); // Warm up
+    }
     return this;
   }
 
+  /**
+   * Use the features of MobileNet as a classifier.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. 
+   *    An HTML video element or a p5.js video element.
+   * @param {Object || function} objOrCallback - Optional. 
+   *    Callback function or config object.
+   * @param {function} callback  - Optional. A function to be called once 
+   *    the video is ready. If no callback is provided, it will return a 
+   *    promise that will be resolved once the video element has loaded.
+   */
   classification(video, objOrCallback = null, callback) {
     let cb;
     
@@ -117,6 +144,14 @@ class Mobilenet {
     return this;
   }
 
+  /**
+   * Use the features of MobileNet as a regressor.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. 
+   *    An HTML video element or a p5.js video element.
+   * @param {function} callback - Optional. A function to be called once 
+   *    the video is ready. If no callback is provided, it will return a 
+   *    promise that will be resolved once the video element has loaded.
+   */
   regression(video, callback) {
     this.usageType = 'regressor';
     if (video) {
@@ -142,6 +177,12 @@ class Mobilenet {
     return this;
   }
 
+  /**
+   * Adds a new image element to  Mobilenet
+   * @param {HTMLVideoElement || p5.Video || String} inputOrLabel 
+   * @param {String || function} labelOrCallback 
+   * @param {function} cb 
+   */
   async addImage(inputOrLabel, labelOrCallback, cb) {
     let imgToAdd;
     let label;
@@ -208,6 +249,12 @@ class Mobilenet {
     return this;
   }
 
+  /**
+   * Retrain the model with the provided images and labels using the 
+   *    models original features as starting point.
+   * @param {function} onProgress  - A function to be called to follow 
+   *    the progress of the training.
+   */
   async train(onProgress) {
     if (!this.hasAnyTrainedClass) {
       throw new Error('Add some examples before training!');
@@ -254,6 +301,9 @@ class Mobilenet {
         ],
       });
     }
+    this.jointModel = tf.sequential(); 
+    this.jointModel.add(this.mobilenetFeatures); // mobilenet
+    this.jointModel.add(this.customModel); // transfer layer
 
     const optimizer = tf.train.adam(this.config.learningRate);
     this.customModel.compile({ optimizer, loss: this.loss });
@@ -275,6 +325,12 @@ class Mobilenet {
     });
   }
 
+  /**
+   * Classifies an an image based on a new retrained model. 
+   *    .classification() needs to be used with this.
+   * @param {HTMLVideoElement || p5.Video || function} inputOrCallback 
+   * @param {function} cb 
+   */
   /* eslint max-len: ["error", { "code": 180 }] */
   async classify(inputOrCallback, cb) {
     let imgToPredict;
@@ -306,8 +362,7 @@ class Mobilenet {
     const predictedClasses = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      const predictions = this.jointModel.predict(processedImg);
       return Array.from(predictions.as1D().dataSync());
     });
     const results = await predictedClasses.map((confidence, index) => {
@@ -320,6 +375,12 @@ class Mobilenet {
     return results;
   }
 
+  /**
+   * Predicts a continues values based on a new retrained model. 
+   *    .regression() needs to be used with this.
+   * @param {HTMLVideoElement || p5.Video || function} inputOrCallback 
+   * @param {function} cb 
+   */
   /* eslint max-len: ["error", { "code": 180 }] */
   async predict(inputOrCallback, cb) {
     let imgToPredict;
@@ -349,8 +410,7 @@ class Mobilenet {
     const predictedClass = tf.tidy(() => {
       const imageResize = (imgToPredict === this.video) ? null : [IMAGE_SIZE, IMAGE_SIZE];
       const processedImg = imgToTensor(imgToPredict, imageResize);
-      const activation = this.mobilenetFeatures.predict(processedImg);
-      const predictions = this.customModel.predict(activation);
+      const predictions = this.jointModel.predict(processedImg);
       return predictions.as1D();
     });
     const prediction = await predictedClass.data();
@@ -367,31 +427,37 @@ class Mobilenet {
           model = file;
           const fr = new FileReader();
           fr.onload = (d) => {
-            this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            if (JSON.parse(d.target.result).ml5Specs) {
+              this.mapStringToIndex = JSON.parse(d.target.result).ml5Specs.mapStringToIndex;
+            }
           };
           fr.readAsText(file);
         } else if (file.name.includes('.bin')) {
           weights = file;
         }
       });
-      this.customModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+      this.jointModel = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else {
       fetch(filesOrPath)
         .then(r => r.json())
-        .then((r) => { this.mapStringToIndex = r.ml5Specs.mapStringToIndex; });
-      this.customModel = await tf.loadLayersModel(filesOrPath);
+        .then((r) => {
+          if (r.ml5Specs) {
+            this.mapStringToIndex = r.ml5Specs.mapStringToIndex;
+          }
+        });
+      this.jointModel = await tf.loadLayersModel(filesOrPath);
       if (callback) {
         callback();
       }
     }
-    return this.customModel;
+    return this.jointModel;
   }
 
   async save(callback, name) {
-    if (!this.customModel) {
+    if (!this.jointModel) {
       throw new Error('No model found.');
     }
-    this.customModel.save(tf.io.withSaveHandler(async (data) => {
+    this.jointModel.save(tf.io.withSaveHandler(async (data) => {
       let modelName = 'model';
       if(name) modelName = name;
 

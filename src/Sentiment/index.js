@@ -36,8 +36,18 @@ function padSequences(sequences, maxLen, padding = 'pre', truncating = 'pre', va
 }
 
 class Sentiment {
+  /**
+   * Create Sentiment model. Currently the supported model name is 'moviereviews'. ml5 may support different models in the future.
+   * @param {String} modelName - A string to the path of the JSON model.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   */
   constructor(modelName, callback) {
     console.log('constructor');
+    /**
+     * Boolean value that specifies if the model has loaded.
+     * @type {boolean}
+     * @public
+     */
     this.ready = callCallback(this.loadModel(modelName), callback);
   }
 
@@ -56,6 +66,11 @@ class Sentiment {
         'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
     };
 
+    /**
+     * The model being used.
+     * @type {model}
+     * @public
+     */
     this.model = await tf.loadLayersModel(movieReviews.model);
     const metadataJson = await fetch(movieReviews.metadata);
     const sentimentMetadata = await metadataJson.json();
@@ -72,6 +87,11 @@ class Sentiment {
     return this;
   }
 
+  /**
+   * Scores the sentiment of given text with a value between 0 ("negative") and 1 ("positive").
+   * @param {String} text - string of text to predict.
+   * @returns {{score: Number}}
+   */
   predict(text) {
     // Convert to lower case and remove all punctuations.
     const inputText =
