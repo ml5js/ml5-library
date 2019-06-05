@@ -38,16 +38,21 @@ class FaceApiBase {
         this.modelReady = false;
         this.config = {
             MODEL_URLS: {
-                Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
-                FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
-                FaceLandmark68TinyNet: options.FaceLandmark68TinyNet || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
-                FaceRecognitionModel: options.FaceRecognitionModel || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
-                FaceExpressionModel: options.FaceExpressionModel || DEFAULTS.MODEL_URLS.FaceExpressionModel,
+                Mobilenetv1Model: this.getModelPath(options.Mobilenetv1Model) || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
+                FaceLandmarkModel: this.getModelPath(options.FaceLandmarkModel) || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
+                FaceLandmark68TinyNet: this.getModelPath(options.FaceLandmark68TinyNet) || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
+                FaceRecognitionModel: this.getModelPath(options.FaceRecognitionModel) || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
+                FaceExpressionModel: this.getModelPath(options.FaceExpressionModel) || DEFAULTS.MODEL_URLS.FaceExpressionModel,
             }
         }
 
         this.ready = callCallback(this.loadModel(), callback);
     }
+
+    getModelPath(absoluteOrRelativeUrl ){
+        const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl) ? absoluteOrRelativeUrl : window.location.pathname + absoluteOrRelativeUrl
+        return modelJsonPath;
+    }   
 
     /**
      * Load the model and set it to this.model
@@ -196,6 +201,12 @@ class FaceApiBase {
 
         return callCallback(this.classifyExpressionsSingleInternal(imgToClassify), callback);
 
+    }
+
+    /* eslint class-methods-use-this: "off" */
+    isAbsoluteURL(str) {
+        const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
+        return !!pattern.test(str);
     }
 
 }
