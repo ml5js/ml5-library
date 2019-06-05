@@ -14,11 +14,15 @@
 import * as tf from '@tensorflow/tfjs';
 import * as faceapi from 'face-api.js';
 import callCallback from '../utils/callcallback';
-// import * as p5Utils from '../utils/p5Utils';
 
-// const DEFAULTS = {
-//     MODEL_URL: ''
-// }
+const DEFAULTS = {
+    MODEL_URLS: {
+        Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
+        FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
+        FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
+        FaceExpressionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_expression_model-weights_manifest.json'
+    }
+}
 
 class FaceApiBase {
     /**
@@ -27,12 +31,18 @@ class FaceApiBase {
      * @param {object} options - An object with options.
      * @param {function} callback - A callback to be called when the model is ready.
      */
-    constructor(modelPath, video, options, callback) {
+    constructor(video, options, callback) {
         this.video = video;
         this.model = null;
         this.modelReady = false;
-        this.modelPath = modelPath;
-        this.config = {}
+        this.config = {
+            MODEL_URLS: {
+                Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
+                FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
+                FaceRecognitionModel: options.FaceRecognitionModel || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
+                FaceExpressionModel: options.FaceExpressionModel || DEFAULTS.MODEL_URLS.FaceExpressionModel,
+            }
+        }
 
         this.ready = callCallback(this.loadModel(), callback);
     }
@@ -42,12 +52,13 @@ class FaceApiBase {
      * @return {this} the BodyPix model.
      */
     async loadModel() {
+        const {Mobilenetv1Model, FaceLandmarkModel, FaceRecognitionModel, FaceExpressionModel} = this.config.MODEL_URLS;
+        
         this.model = faceapi;
-        await this.model.loadSsdMobilenetv1Model(this.modelPath)
-        await this.model.loadFaceLandmarkModel(this.modelPath)
-        await this.model.loadFaceRecognitionModel(this.modelPath)
-        await this.model.loadFaceExpressionModel(this.modelPath)
-        console.log('done!')
+        await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
+        await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
+        await this.model.loadFaceRecognitionModel(FaceRecognitionModel)
+        await this.model.loadFaceExpressionModel(FaceExpressionModel)
         this.modelReady = true;
         return this;
     }
@@ -69,7 +80,7 @@ class FaceApiBase {
     async classifyExpressionsMultiple(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
-        // let segmentationOptions = this.config;
+        // let faceApiOptions = this.config;
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -102,8 +113,8 @@ class FaceApiBase {
             );
         }
 
-        // if (typeof configOrCallback === 'object') {
-        //     segmentationOptions = configOrCallback;
+         // if (typeof configOrCallback === 'object') {
+        //     faceApiOptions = configOrCallback;
         // } else 
         
         if (typeof configOrCallback === 'function') {
@@ -135,7 +146,7 @@ class FaceApiBase {
     async classifyExpressionsSingle(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
-        // let segmentationOptions = this.config;
+        // let faceApiOptions = this.config;
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -169,7 +180,7 @@ class FaceApiBase {
         }
 
         // if (typeof configOrCallback === 'object') {
-        //     segmentationOptions = configOrCallback;
+        //     faceApiOptions = configOrCallback;
         // } else 
         
         if (typeof configOrCallback === 'function') {
@@ -186,16 +197,16 @@ class FaceApiBase {
 
 }
 
-const faceApi = (modelPath, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
+const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     let video;
     let options = {};
     let callback = cb;
 
-    if (typeof modelPath !== 'string') {
-        throw new Error('Please specify a relative path to your model to use. E.g: "/models/"');
-    }
+//     if (typeof modelPath !== 'string') {
+//         throw new Error('Please specify a relative path to your model to use. E.g: "/models/"');
+//     }
 
-   const model = modelPath;
+//    const model = modelPath;
 
     if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
         video = videoOrOptionsOrCallback;
@@ -216,7 +227,7 @@ const faceApi = (modelPath, videoOrOptionsOrCallback, optionsOrCallback, cb) => 
         callback = optionsOrCallback;
     }
 
-    const instance = new FaceApiBase(model, video, options, callback);
+    const instance = new FaceApiBase(video, options, callback);
     return callback ? instance : instance.ready;
 }
 
