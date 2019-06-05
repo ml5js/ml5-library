@@ -38,11 +38,11 @@ class FaceApiBase {
         this.modelReady = false;
         this.config = {
             MODEL_URLS: {
-                Mobilenetv1Model: this.getModelPath(options.Mobilenetv1Model) || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
-                FaceLandmarkModel: this.getModelPath(options.FaceLandmarkModel) || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
-                FaceLandmark68TinyNet: this.getModelPath(options.FaceLandmark68TinyNet) || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
-                FaceRecognitionModel: this.getModelPath(options.FaceRecognitionModel) || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
-                FaceExpressionModel: this.getModelPath(options.FaceExpressionModel) || DEFAULTS.MODEL_URLS.FaceExpressionModel,
+                Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
+                FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
+                FaceLandmark68TinyNet: options.FaceLandmark68TinyNet || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
+                FaceRecognitionModel: options.FaceRecognitionModel || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
+                FaceExpressionModel: options.FaceExpressionModel || DEFAULTS.MODEL_URLS.FaceExpressionModel,
             }
         }
 
@@ -59,7 +59,22 @@ class FaceApiBase {
      * @return {this} the BodyPix model.
      */
     async loadModel() {
+        const modelOptions = [
+            "Mobilenetv1Model",
+            "FaceLandmarkModel",
+            "FaceLandmark68TinyNet",
+            "FaceRecognitionModel",
+            "FaceExpressionModel",
+        ];
+
+        Object.keys(this.config.MODEL_URLS).forEach(item => {
+            if(modelOptions.includes(item)){
+                this.config.MODEL_URLS[item] = this.getModelPath(this.config.MODEL_URLS[item]);
+            }
+        });
+
         const {Mobilenetv1Model, FaceLandmarkModel, FaceRecognitionModel, FaceExpressionModel} = this.config.MODEL_URLS;
+
         
         this.model = faceapi;
         await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
