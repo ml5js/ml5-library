@@ -19,6 +19,7 @@ const DEFAULTS = {
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
+        FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
         FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
         FaceExpressionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_expression_model-weights_manifest.json'
     }
@@ -39,6 +40,7 @@ class FaceApiBase {
             MODEL_URLS: {
                 Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
                 FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
+                FaceLandmark68TinyNet: options.FaceLandmark68TinyNet || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
                 FaceRecognitionModel: options.FaceRecognitionModel || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
                 FaceExpressionModel: options.FaceExpressionModel || DEFAULTS.MODEL_URLS.FaceExpressionModel,
             }
@@ -57,6 +59,7 @@ class FaceApiBase {
         this.model = faceapi;
         await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
         await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
+        // await this.model.loadFaceLandmarkTinyModel(FaceLandmark68TinyNet) 
         await this.model.loadFaceRecognitionModel(FaceRecognitionModel)
         await this.model.loadFaceExpressionModel(FaceExpressionModel)
         this.modelReady = true;
