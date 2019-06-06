@@ -95,6 +95,13 @@ class FaceApiBase {
         return this;
     }
 
+
+    /**
+     * detect multiple
+     * @param {*} optionsOrCallback 
+     * @param {*} configOrCallback 
+     * @param {*} cb 
+     */
     async detect(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
@@ -145,7 +152,7 @@ class FaceApiBase {
     }
 
     /**
-     * Detects multiple
+     * Detects multiple internal function
      * @param {HTMLImageElement || HTMLVideoElement} imgToClassify 
      * @param {Object} faceApiOptions 
      */
@@ -181,9 +188,19 @@ class FaceApiBase {
             result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
         }
         
+        // always resize the results to the input image size
+        result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
+
         return result
     }
 
+
+    /**
+     * detect single
+     * @param {*} optionsOrCallback 
+     * @param {*} configOrCallback 
+     * @param {*} cb 
+     */
     async detectSingle(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
@@ -256,9 +273,9 @@ class FaceApiBase {
 
 
         let result;
-
         if(withFaceLandmarks){
             if (withFaceExpressions && withFaceDescriptors) {
+                
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
             } else if(withFaceExpressions){
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
@@ -270,8 +287,23 @@ class FaceApiBase {
         } else {
             result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
         }
+
+        // always resize the results to the input image size
+        result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
         
         return result
+    }
+
+
+    /**
+     * 
+     * @param {*} str 
+     */
+    resizeResults(detections, width, height){
+        if(width === undefined || height === undefined){
+            throw new Error('width and height must be defined')
+        }
+        return this.model.resizeResults(detections, {"width": width, "height": height})
     }
 
     /* eslint class-methods-use-this: "off" */
@@ -279,6 +311,10 @@ class FaceApiBase {
         const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
         return !!pattern.test(str);
     }
+
+
+
+
 
 }
 
