@@ -86,7 +86,7 @@ class FaceApiBase {
         return this;
     }
 
-    async classifyExpressionsMultipleInternal(imgToClassify){
+    async classifyMultipleInternal(imgToClassify){
         await this.ready;
         await tf.nextFrame();
 
@@ -100,7 +100,7 @@ class FaceApiBase {
         return expression
     }
 
-    async classifyExpressionsMultiple(optionsOrCallback, configOrCallback, cb){
+    async classifyMultiple(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
         // let faceApiOptions = this.config;
@@ -148,11 +148,11 @@ class FaceApiBase {
             callback = cb;
         }
 
-        return callCallback(this.classifyExpressionsMultipleInternal(imgToClassify), callback);
+        return callCallback(this.classifyMultipleInternal(imgToClassify), callback);
 
     }
 
-    async classifyExpressionsSingleInternal(imgToClassify){
+    async classifySingleInternal(imgToClassify){
         await this.ready;
         await tf.nextFrame();
 
@@ -166,7 +166,7 @@ class FaceApiBase {
         return expression
     }
 
-    async classifyExpressionsSingle(optionsOrCallback, configOrCallback, cb){
+    async classifySingle(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
         // let faceApiOptions = this.config;
@@ -214,7 +214,7 @@ class FaceApiBase {
             callback = cb;
         }
 
-        return callCallback(this.classifyExpressionsSingleInternal(imgToClassify), callback);
+        return callCallback(this.classifySingleInternal(imgToClassify), callback);
 
     }
 
