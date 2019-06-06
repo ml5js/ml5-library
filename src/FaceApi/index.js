@@ -51,18 +51,18 @@ class FaceApiBase {
                 FaceExpressionModel: this.checkUndefined(options.FaceExpressionModel, DEFAULTS.MODEL_URLS.FaceExpressionModel),
             }
         }
-        
+
         this.ready = callCallback(this.loadModel(), callback);
     }
 
-    checkUndefined(_param, _default){
+    checkUndefined(_param, _default) {
         return _param !== undefined ? _param : _default;
     }
 
-    getModelPath(absoluteOrRelativeUrl ){
+    getModelPath(absoluteOrRelativeUrl) {
         const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl) ? absoluteOrRelativeUrl : window.location.pathname + absoluteOrRelativeUrl
         return modelJsonPath;
-    }   
+    }
 
     /**
      * Load the model and set it to this.model
@@ -78,13 +78,18 @@ class FaceApiBase {
         ];
 
         Object.keys(this.config.MODEL_URLS).forEach(item => {
-            if(modelOptions.includes(item)){
+            if (modelOptions.includes(item)) {
                 this.config.MODEL_URLS[item] = this.getModelPath(this.config.MODEL_URLS[item]);
             }
         });
 
-        const {Mobilenetv1Model, FaceLandmarkModel, FaceRecognitionModel, FaceExpressionModel} = this.config.MODEL_URLS;
-        
+        const {
+            Mobilenetv1Model,
+            FaceLandmarkModel,
+            FaceRecognitionModel,
+            FaceExpressionModel
+        } = this.config.MODEL_URLS;
+
         this.model = faceapi;
         await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
         await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
@@ -102,7 +107,7 @@ class FaceApiBase {
      * @param {*} configOrCallback 
      * @param {*} cb 
      */
-    async detect(optionsOrCallback, configOrCallback, cb){
+    async detect(optionsOrCallback, configOrCallback, cb) {
         let imgToClassify = this.video;
         let callback;
         let faceApiOptions = this.config;
@@ -138,7 +143,7 @@ class FaceApiBase {
             );
         }
 
-         if (typeof configOrCallback === 'object') {
+        if (typeof configOrCallback === 'object') {
             faceApiOptions = configOrCallback;
         } else if (typeof configOrCallback === 'function') {
             callback = configOrCallback;
@@ -156,7 +161,7 @@ class FaceApiBase {
      * @param {HTMLImageElement || HTMLVideoElement} imgToClassify 
      * @param {Object} faceApiOptions 
      */
-    async detectInternal(imgToClassify, faceApiOptions){
+    async detectInternal(imgToClassify, faceApiOptions) {
         await this.ready;
         await tf.nextFrame();
 
@@ -166,18 +171,22 @@ class FaceApiBase {
             });
         }
 
-        this.config.withFaceLandmarks =  faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
-        this.config.withFaceExpressions =   faceApiOptions.withFaceExpressions !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
-        this.config.withFaceDescriptors =   faceApiOptions.withFaceDescriptors !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+        this.config.withFaceLandmarks = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
+        this.config.withFaceExpressions = faceApiOptions.withFaceExpressions !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
+        this.config.withFaceDescriptors = faceApiOptions.withFaceDescriptors !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
 
-        const {withFaceLandmarks, withFaceExpressions, withFaceDescriptors} = this.config
+        const {
+            withFaceLandmarks,
+            withFaceExpressions,
+            withFaceDescriptors
+        } = this.config
 
         let result;
 
-        if(withFaceLandmarks){
+        if (withFaceLandmarks) {
             if (withFaceExpressions && withFaceDescriptors) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
-            } else if(withFaceExpressions){
+            } else if (withFaceExpressions) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions();
             } else {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
@@ -187,7 +196,7 @@ class FaceApiBase {
         } else {
             result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
         }
-        
+
         // always resize the results to the input image size
         result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
 
@@ -201,7 +210,7 @@ class FaceApiBase {
      * @param {*} configOrCallback 
      * @param {*} cb 
      */
-    async detectSingle(optionsOrCallback, configOrCallback, cb){
+    async detectSingle(optionsOrCallback, configOrCallback, cb) {
         let imgToClassify = this.video;
         let callback;
         let faceApiOptions = this.config;
@@ -237,7 +246,7 @@ class FaceApiBase {
             );
         }
 
-         if (typeof configOrCallback === 'object') {
+        if (typeof configOrCallback === 'object') {
             faceApiOptions = configOrCallback;
         } else if (typeof configOrCallback === 'function') {
             callback = configOrCallback;
@@ -255,7 +264,7 @@ class FaceApiBase {
      * @param {HTMLImageElement || HTMLVideoElement} imgToClassify 
      * @param {Object} faceApiOptions 
      */
-    async detectSingleInternal(imgToClassify, faceApiOptions){
+    async detectSingleInternal(imgToClassify, faceApiOptions) {
         await this.ready;
         await tf.nextFrame();
 
@@ -265,19 +274,22 @@ class FaceApiBase {
             });
         }
 
-        this.config.withFaceLandmarks =  faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
-        this.config.withFaceExpressions =   faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
-        this.config.withFaceDescriptors =   faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+        this.config.withFaceLandmarks = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
+        this.config.withFaceExpressions = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
+        this.config.withFaceDescriptors = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
 
-        const {withFaceLandmarks, withFaceExpressions, withFaceDescriptors} = this.config
+        const {
+            withFaceLandmarks,
+            withFaceExpressions,
+            withFaceDescriptors
+        } = this.config
 
 
         let result;
-        if(withFaceLandmarks){
+        if (withFaceLandmarks) {
             if (withFaceExpressions && withFaceDescriptors) {
-                
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
-            } else if(withFaceExpressions){
+            } else if (withFaceExpressions) {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
             } else {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
@@ -290,20 +302,23 @@ class FaceApiBase {
 
         // always resize the results to the input image size
         result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
-        
+
         return result
     }
 
 
     /**
-     * 
+     * Resize results to size of input image
      * @param {*} str 
      */
-    resizeResults(detections, width, height){
-        if(width === undefined || height === undefined){
+    resizeResults(detections, width, height) {
+        if (width === undefined || height === undefined) {
             throw new Error('width and height must be defined')
         }
-        return this.model.resizeResults(detections, {"width": width, "height": height})
+        return this.model.resizeResults(detections, {
+            "width": width,
+            "height": height
+        })
     }
 
     /* eslint class-methods-use-this: "off" */
@@ -311,10 +326,6 @@ class FaceApiBase {
         const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
         return !!pattern.test(str);
     }
-
-
-
-
 
 }
 
@@ -337,7 +348,7 @@ const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     }
 
     if (typeof optionsOrCallback === 'object') {
-        
+
         options = optionsOrCallback;
         console.log(options)
     } else if (typeof optionsOrCallback === 'function') {
