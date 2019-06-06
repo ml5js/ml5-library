@@ -40,19 +40,23 @@ class FaceApiBase {
         this.model = null;
         this.modelReady = false;
         this.config = {
-            withFaceLandmarks: options.withFaceLandmarks || DEFAULTS.withFaceLandmarks,
-            withFaceExpressions: options.withFaceExpressions || DEFAULTS.withFaceExpressions,
-            withFaceDescriptors: options.withFaceDescriptors || DEFAULTS.withFaceDescriptors,
+            withFaceLandmarks: this.checkUndefined(options.withFaceLandmarks, DEFAULTS.withFaceLandmarks),
+            withFaceExpressions: this.checkUndefined(options.withFaceExpressions, DEFAULTS.withFaceExpressions),
+            withFaceDescriptors: this.checkUndefined(options.withFaceDescriptors, DEFAULTS.withFaceDescriptors),
             MODEL_URLS: {
-                Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
-                FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
-                FaceLandmark68TinyNet: options.FaceLandmark68TinyNet || DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
-                FaceRecognitionModel: options.FaceRecognitionModel || DEFAULTS.MODEL_URLS.FaceRecognitionModel,
-                FaceExpressionModel: options.FaceExpressionModel || DEFAULTS.MODEL_URLS.FaceExpressionModel,
+                Mobilenetv1Model: this.checkUndefined(options.Mobilenetv1Model, DEFAULTS.MODEL_URLS.Mobilenetv1Model),
+                FaceLandmarkModel: this.checkUndefined(options.FaceLandmarkModel, DEFAULTS.MODEL_URLS.FaceLandmarkModel),
+                FaceLandmark68TinyNet: this.checkUndefined(options.FaceLandmark68TinyNet, DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet),
+                FaceRecognitionModel: this.checkUndefined(options.FaceRecognitionModel, DEFAULTS.MODEL_URLS.FaceRecognitionModel),
+                FaceExpressionModel: this.checkUndefined(options.FaceExpressionModel, DEFAULTS.MODEL_URLS.FaceExpressionModel),
             }
         }
-
+        
         this.ready = callCallback(this.loadModel(), callback);
+    }
+
+    checkUndefined(_param, _default){
+        return _param !== undefined ? _param : _default;
     }
 
     getModelPath(absoluteOrRelativeUrl ){
@@ -80,7 +84,6 @@ class FaceApiBase {
         });
 
         const {Mobilenetv1Model, FaceLandmarkModel, FaceRecognitionModel, FaceExpressionModel} = this.config.MODEL_URLS;
-
         
         this.model = faceapi;
         await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
@@ -141,6 +144,11 @@ class FaceApiBase {
         return callCallback(this.detectInternal(imgToClassify, faceApiOptions), callback);
     }
 
+    /**
+     * Detects multiple
+     * @param {HTMLImageElement || HTMLVideoElement} imgToClassify 
+     * @param {Object} faceApiOptions 
+     */
     async detectInternal(imgToClassify, faceApiOptions){
         await this.ready;
         await tf.nextFrame();
@@ -156,7 +164,6 @@ class FaceApiBase {
         this.config.withFaceDescriptors =   faceApiOptions.withFaceDescriptors !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
 
         const {withFaceLandmarks, withFaceExpressions, withFaceDescriptors} = this.config
-
 
         let result;
 
@@ -226,6 +233,11 @@ class FaceApiBase {
         return callCallback(this.detectSingleInternal(imgToClassify, faceApiOptions), callback);
     }
 
+    /**
+     * Detects only a single feature
+     * @param {HTMLImageElement || HTMLVideoElement} imgToClassify 
+     * @param {Object} faceApiOptions 
+     */
     async detectSingleInternal(imgToClassify, faceApiOptions){
         await this.ready;
         await tf.nextFrame();
@@ -275,12 +287,6 @@ const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     let options = {};
     let callback = cb;
 
-//     if (typeof modelPath !== 'string') {
-//         throw new Error('Please specify a relative path to your model to use. E.g: "/models/"');
-//     }
-
-//    const model = modelPath;
-
     if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
         video = videoOrOptionsOrCallback;
     } else if (
@@ -295,7 +301,9 @@ const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     }
 
     if (typeof optionsOrCallback === 'object') {
+        
         options = optionsOrCallback;
+        console.log(options)
     } else if (typeof optionsOrCallback === 'function') {
         callback = optionsOrCallback;
     }
