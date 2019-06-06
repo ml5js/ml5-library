@@ -16,6 +16,9 @@ import * as faceapi from 'face-api.js';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
+    withFaceLandmarks: true,
+    withFaceExpressions: true,
+    withFaceDescriptors: true,
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
@@ -37,6 +40,9 @@ class FaceApiBase {
         this.model = null;
         this.modelReady = false;
         this.config = {
+            withFaceLandmarks: options.withFaceLandmarks || DEFAULTS.withFaceLandmarks,
+            withFaceExpressions: options.withFaceExpressions || DEFAULTS.withFaceExpressions,
+            withFaceDescriptors: options.withFaceDescriptors || DEFAULTS.withFaceDescriptors,
             MODEL_URLS: {
                 Mobilenetv1Model: options.Mobilenetv1Model || DEFAULTS.MODEL_URLS.Mobilenetv1Model,
                 FaceLandmarkModel: options.FaceLandmarkModel || DEFAULTS.MODEL_URLS.FaceLandmarkModel,
@@ -86,24 +92,10 @@ class FaceApiBase {
         return this;
     }
 
-    async classifyMultipleInternal(imgToClassify){
-        await this.ready;
-        await tf.nextFrame();
-
-        if (this.video && this.video.readyState === 0) {
-            await new Promise(resolve => {
-                this.video.onloadeddata = () => resolve();
-            });
-        }
-
-        const expression = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors()
-        return expression
-    }
-
-    async classifyMultiple(optionsOrCallback, configOrCallback, cb){
+    async detect(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
-        // let faceApiOptions = this.config;
+        let faceApiOptions = this.config;
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -136,11 +128,9 @@ class FaceApiBase {
             );
         }
 
-         // if (typeof configOrCallback === 'object') {
-        //     faceApiOptions = configOrCallback;
-        // } else 
-        
-        if (typeof configOrCallback === 'function') {
+         if (typeof configOrCallback === 'object') {
+            faceApiOptions = configOrCallback;
+        } else if (typeof configOrCallback === 'function') {
             callback = configOrCallback;
         }
 
@@ -148,11 +138,10 @@ class FaceApiBase {
             callback = cb;
         }
 
-        return callCallback(this.classifyMultipleInternal(imgToClassify), callback);
-
+        return callCallback(this.detectInternal(imgToClassify, faceApiOptions), callback);
     }
 
-    async classifySingleInternal(imgToClassify){
+    async detectInternal(imgToClassify, faceApiOptions){
         await this.ready;
         await tf.nextFrame();
 
@@ -162,14 +151,36 @@ class FaceApiBase {
             });
         }
 
-        const expression = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor()
-        return expression
+        this.config.withFaceLandmarks =  faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
+        this.config.withFaceExpressions =   faceApiOptions.withFaceExpressions !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
+        this.config.withFaceDescriptors =   faceApiOptions.withFaceDescriptors !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+
+        const {withFaceLandmarks, withFaceExpressions, withFaceDescriptors} = this.config
+
+
+        let result;
+
+        if(withFaceLandmarks){
+            if (withFaceExpressions && withFaceDescriptors) {
+                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
+            } else if(withFaceExpressions){
+                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions();
+            } else {
+                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
+            }
+        } else if (withFaceLandmarks === false) {
+            result = await this.model.detectAllFaces(imgToClassify).withFaceExpressions()
+        } else {
+            result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
+        }
+        
+        return result
     }
 
-    async classifySingle(optionsOrCallback, configOrCallback, cb){
+    async detectSingle(optionsOrCallback, configOrCallback, cb){
         let imgToClassify = this.video;
         let callback;
-        // let faceApiOptions = this.config;
+        let faceApiOptions = this.config;
 
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
@@ -202,11 +213,9 @@ class FaceApiBase {
             );
         }
 
-        // if (typeof configOrCallback === 'object') {
-        //     faceApiOptions = configOrCallback;
-        // } else 
-        
-        if (typeof configOrCallback === 'function') {
+         if (typeof configOrCallback === 'object') {
+            faceApiOptions = configOrCallback;
+        } else if (typeof configOrCallback === 'function') {
             callback = configOrCallback;
         }
 
@@ -214,8 +223,43 @@ class FaceApiBase {
             callback = cb;
         }
 
-        return callCallback(this.classifySingleInternal(imgToClassify), callback);
+        return callCallback(this.detectSingleInternal(imgToClassify, faceApiOptions), callback);
+    }
 
+    async detectSingleInternal(imgToClassify, faceApiOptions){
+        await this.ready;
+        await tf.nextFrame();
+
+        if (this.video && this.video.readyState === 0) {
+            await new Promise(resolve => {
+                this.video.onloadeddata = () => resolve();
+            });
+        }
+
+        this.config.withFaceLandmarks =  faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
+        this.config.withFaceExpressions =   faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
+        this.config.withFaceDescriptors =   faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+
+        const {withFaceLandmarks, withFaceExpressions, withFaceDescriptors} = this.config
+
+
+        let result;
+
+        if(withFaceLandmarks){
+            if (withFaceExpressions && withFaceDescriptors) {
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
+            } else if(withFaceExpressions){
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
+            } else {
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
+            }
+        } else if (withFaceLandmarks === false) {
+            result = await this.model.detectSingleFace(imgToClassify).withFaceExpressions()
+        } else {
+            result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
+        }
+        
+        return result
     }
 
     /* eslint class-methods-use-this: "off" */
