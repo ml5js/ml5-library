@@ -191,16 +191,77 @@ class FaceApiBase {
             } else {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
             }
+
         } else if (withFaceLandmarks === false) {
             result = await this.model.detectAllFaces(imgToClassify).withFaceExpressions()
         } else {
             result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
         }
 
+        
         // always resize the results to the input image size
         result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
+        // assign the {parts} object after resizing
+        result = this.landmarkParts(result);
 
         return result
+    }
+
+    landmarkParts(result){
+        let output;
+        // multiple detections is an array
+        if(Array.isArray(result) === true){
+            output = result.map( item => {
+                // if landmarks exist return parts
+                const newItem = Object.assign({}, item);
+                if(newItem.landmarks){
+                    const {landmarks} = newItem;
+                    newItem.parts = {
+                        mouth:landmarks.getMouth(),
+                        nose:landmarks.getNose(),
+                        leftEye:landmarks.getLeftEye(),
+                        leftEyeBrow:landmarks.getLeftEyeBrow(),
+                        rightEye:landmarks.getRightEye(),
+                        rightEyeBrow:landmarks.getRightEyeBrow()
+                    }
+                } else{
+                    newItem.parts = {
+                        mouth: [],
+                        nose: [],
+                        leftEye: [],
+                        leftEyeBrow: [],
+                        rightEye: [],
+                        rightEyeBrow: []
+                    }
+                }
+                return newItem;
+            })
+        // single detection is an object
+        } else {
+            output = Object.assign({}, result);
+            if(output.landmarks){
+                const {landmarks} = result;
+                output.parts = {
+                    mouth:landmarks.getMouth(),
+                    nose:landmarks.getNose(),
+                    leftEye:landmarks.getLeftEye(),
+                    leftEyeBrow:landmarks.getLeftEyeBrow(),
+                    rightEye:landmarks.getRightEye(),
+                    rightEyeBrow:landmarks.getRightEyeBrow()
+                }
+            } else{
+                output.parts = {
+                    mouth: [],
+                    nose: [],
+                    leftEye: [],
+                    leftEyeBrow: [],
+                    rightEye: [],
+                    rightEyeBrow: []
+                }
+            }
+        }
+
+        return output;
     }
 
 
@@ -294,6 +355,7 @@ class FaceApiBase {
             } else {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
             }
+
         } else if (withFaceLandmarks === false) {
             result = await this.model.detectSingleFace(imgToClassify).withFaceExpressions()
         } else {
@@ -302,6 +364,9 @@ class FaceApiBase {
 
         // always resize the results to the input image size
         result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
+
+        // assign the {parts} object after resizing
+        result = this.landmarkParts(result);
 
         return result
     }
