@@ -207,64 +207,6 @@ class FaceApiBase {
         return result
     }
 
-    landmarkParts(result){
-        let output;
-        // multiple detections is an array
-        if(Array.isArray(result) === true){
-            output = result.map( item => {
-                // if landmarks exist return parts
-                const newItem = Object.assign({}, item);
-                if(newItem.landmarks){
-                    const {landmarks} = newItem;
-                    newItem.parts = {
-                        mouth:landmarks.getMouth(),
-                        nose:landmarks.getNose(),
-                        leftEye:landmarks.getLeftEye(),
-                        leftEyeBrow:landmarks.getLeftEyeBrow(),
-                        rightEye:landmarks.getRightEye(),
-                        rightEyeBrow:landmarks.getRightEyeBrow()
-                    }
-                } else{
-                    newItem.parts = {
-                        mouth: [],
-                        nose: [],
-                        leftEye: [],
-                        leftEyeBrow: [],
-                        rightEye: [],
-                        rightEyeBrow: []
-                    }
-                }
-                return newItem;
-            })
-        // single detection is an object
-        } else {
-            output = Object.assign({}, result);
-            if(output.landmarks){
-                const {landmarks} = result;
-                output.parts = {
-                    mouth:landmarks.getMouth(),
-                    nose:landmarks.getNose(),
-                    leftEye:landmarks.getLeftEye(),
-                    leftEyeBrow:landmarks.getLeftEyeBrow(),
-                    rightEye:landmarks.getRightEye(),
-                    rightEyeBrow:landmarks.getRightEyeBrow()
-                }
-            } else{
-                output.parts = {
-                    mouth: [],
-                    nose: [],
-                    leftEye: [],
-                    leftEyeBrow: [],
-                    rightEye: [],
-                    rightEyeBrow: []
-                }
-            }
-        }
-
-        return output;
-    }
-
-
     /**
      * detect single
      * @param {*} optionsOrCallback 
@@ -390,6 +332,67 @@ class FaceApiBase {
     isAbsoluteURL(str) {
         const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
         return !!pattern.test(str);
+    }
+
+    /**
+     * get parts from landmarks
+     * @param {*} result 
+     */
+    landmarkParts(result){
+        let output;
+        // multiple detections is an array
+        if(Array.isArray(result) === true){
+            output = result.map( item => {
+                // if landmarks exist return parts
+                const newItem = Object.assign({}, item);
+                if(newItem.landmarks){
+                    const {landmarks} = newItem;
+                    newItem.parts = {
+                        mouth:landmarks.getMouth(),
+                        nose:landmarks.getNose(),
+                        leftEye:landmarks.getLeftEye(),
+                        leftEyeBrow:landmarks.getLeftEyeBrow(),
+                        rightEye:landmarks.getRightEye(),
+                        rightEyeBrow:landmarks.getRightEyeBrow()
+                    }
+                } else{
+                    newItem.parts = {
+                        mouth: [],
+                        nose: [],
+                        leftEye: [],
+                        leftEyeBrow: [],
+                        rightEye: [],
+                        rightEyeBrow: []
+                    }
+                }
+                return newItem;
+            })
+        // single detection is an object
+        } else {
+            output = Object.assign({}, result);
+            if(output.landmarks){
+                const {landmarks} = result;
+                output.parts = {
+                    mouth:landmarks.getMouth(),
+                    nose:landmarks.getNose(),
+                    leftEye:landmarks.getLeftEye(),
+                    leftEyeBrow:landmarks.getLeftEyeBrow(),
+                    rightEye:landmarks.getRightEye(),
+                    rightEyeBrow:landmarks.getRightEyeBrow()
+                }
+            } else{
+                output.parts = {
+                    mouth: [],
+                    nose: [],
+                    leftEye: [],
+                    leftEyeBrow: [],
+                    rightEye: [],
+                    rightEyeBrow: []
+                }
+            }
+        }
+
+        return output;
     }
 
 }
