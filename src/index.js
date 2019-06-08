@@ -24,6 +24,7 @@ import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
+import neuralNetwork from './NeuralNetwork';
 
 const withPreload = {
   charRNN,
@@ -49,4 +50,5 @@ module.exports = Object.assign({}, preloadRegister(withPreload), {
   version,
   sentiment,
   bodyPix,
+  neuralNetwork,
 });
