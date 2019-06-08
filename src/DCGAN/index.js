@@ -59,9 +59,9 @@ class DCGANBase {
      * @param {function} callback - a callback function handle the results of generate
      * @return {object} a promise or the result of the callback function.
      */
-    async generate(callback) {
+    async generate(callback, val) {
         await this.ready;
-        return callCallback(this.generateInternal(), callback);
+        return callCallback(this.generateInternal(val), callback);
     }
 
     /**
@@ -69,9 +69,15 @@ class DCGANBase {
      * @param {number} latentDim - the number of latent dimensions to pass through
      * @return {object} a tensor
      */
-    async compute(latentDim) {
+    async compute(latentDim,val) {
         const y = tf.tidy(() => {
-            const z = tf.randomNormal([1, latentDim]);
+            const buffer = tf.buffer([1, latentDim]);
+            for(let count = 0; count < latentDim; count+=1) {
+                buffer.set(val[count], 0, count);
+            }
+            const z = buffer.toTensor();
+            z.print();
+            console.log(latentDim)
             // TBD: should model be a parameter to compute or is it ok to reference this.model here?
             const yDim = this.model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
             return yDim;
@@ -84,11 +90,11 @@ class DCGANBase {
      * Takes the tensor from compute() and returns an object of the generate image data
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
-    async generateInternal() {
+    async generateInternal(val) {
         const {
             modelLatentDim
         } = this.modelInfo;
-        const imageTensor = await this.compute(modelLatentDim);
+        const imageTensor = await this.compute(modelLatentDim, val);
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
