@@ -102,7 +102,7 @@ class FaceApiBase {
 
 
     /**
-     * detect multiple
+     * .detect() - classifies multiple features by default
      * @param {*} optionsOrCallback 
      * @param {*} configOrCallback 
      * @param {*} cb 
@@ -171,9 +171,7 @@ class FaceApiBase {
             });
         }
 
-        this.config.withLandmarks = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withLandmarks : this.config.withLandmarks;
-        this.config.withExpressions = faceApiOptions.withExpressions !== undefined ? faceApiOptions.withExpressions : this.config.withExpressions;
-        this.config.withDescriptors = faceApiOptions.withDescriptors !== undefined ? faceApiOptions.withDescriptors : this.config.withDescriptors;
+        this.config = this.setReturnOptions(faceApiOptions);
 
         const {
             withLandmarks,
@@ -208,7 +206,7 @@ class FaceApiBase {
     }
 
     /**
-     * detect single
+     * .detecSinglet() - classifies a single feature with higher accuracy
      * @param {*} optionsOrCallback 
      * @param {*} configOrCallback 
      * @param {*} cb 
@@ -277,9 +275,7 @@ class FaceApiBase {
             });
         }
 
-        this.config.withLandmarks = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withLandmarks : this.config.withLandmarks;
-        this.config.withExpressions = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withExpressions : this.config.withExpressions;
-        this.config.withDescriptors = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withDescriptors : this.config.withDescriptors;
+        this.config = this.setReturnOptions(faceApiOptions);
 
         const {
             withLandmarks,
@@ -311,6 +307,22 @@ class FaceApiBase {
         result = this.landmarkParts(result);
 
         return result
+    }
+
+    
+    setReturnOptions(faceApiOptions){
+        const output = Object.assign({}, this.config);
+        const options = ["withLandmarks", "withLandmarks", "withDescriptors"];
+
+        options.forEach(prop => {
+            if(faceApiOptions[prop] !== undefined){
+                this.config[prop] = faceApiOptions[prop]
+            } else {
+                output[prop] = this.config[prop];
+            }
+        })
+
+        return output;
     }
 
 
