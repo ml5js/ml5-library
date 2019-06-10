@@ -8,9 +8,9 @@ const {
 } = ml5;
 
 const FACEAPI_DEFAULTS = {
-    withFaceLandmarks: true,
-    withFaceExpressions: true,
-    withFaceDescriptors: true,
+    withLandmarks: true,
+    withExpressions: true,
+    withDescriptors: true,
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
@@ -49,9 +49,9 @@ describe('faceApi', () => {
     });
 
     it('Should create faceApi with all the defaults', async () => {
-        expect(faceapi.config.withFaceLandmarks).toBe(FACEAPI_DEFAULTS.withFaceLandmarks);
-        expect(faceapi.config.withFaceExpressions).toBe(FACEAPI_DEFAULTS.withFaceExpressions);
-        expect(faceapi.config.withFaceDescriptors).toBe(FACEAPI_DEFAULTS.withFaceDescriptors);
+        expect(faceapi.config.withLandmarks).toBe(FACEAPI_DEFAULTS.withLandmarks);
+        expect(faceapi.config.withExpressions).toBe(FACEAPI_DEFAULTS.withExpressions);
+        expect(faceapi.config.withDescriptors).toBe(FACEAPI_DEFAULTS.withDescriptors);
     });
 
     describe('expressions', () => {

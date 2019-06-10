@@ -16,9 +16,9 @@ import * as faceapi from 'face-api.js';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
-    withFaceLandmarks: true,
-    withFaceExpressions: true,
-    withFaceDescriptors: true,
+    withLandmarks: true,
+    withExpressions: true,
+    withDescriptors: true,
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
@@ -40,9 +40,9 @@ class FaceApiBase {
         this.model = null;
         this.modelReady = false;
         this.config = {
-            withFaceLandmarks: this.checkUndefined(options.withFaceLandmarks, DEFAULTS.withFaceLandmarks),
-            withFaceExpressions: this.checkUndefined(options.withFaceExpressions, DEFAULTS.withFaceExpressions),
-            withFaceDescriptors: this.checkUndefined(options.withFaceDescriptors, DEFAULTS.withFaceDescriptors),
+            withLandmarks: this.checkUndefined(options.withLandmarks, DEFAULTS.withLandmarks),
+            withExpressions: this.checkUndefined(options.withExpressions, DEFAULTS.withExpressions),
+            withDescriptors: this.checkUndefined(options.withDescriptors, DEFAULTS.withDescriptors),
             MODEL_URLS: {
                 Mobilenetv1Model: this.checkUndefined(options.Mobilenetv1Model, DEFAULTS.MODEL_URLS.Mobilenetv1Model),
                 FaceLandmarkModel: this.checkUndefined(options.FaceLandmarkModel, DEFAULTS.MODEL_URLS.FaceLandmarkModel),
@@ -171,28 +171,28 @@ class FaceApiBase {
             });
         }
 
-        this.config.withFaceLandmarks = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
-        this.config.withFaceExpressions = faceApiOptions.withFaceExpressions !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
-        this.config.withFaceDescriptors = faceApiOptions.withFaceDescriptors !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+        this.config.withLandmarks = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withLandmarks : this.config.withLandmarks;
+        this.config.withExpressions = faceApiOptions.withExpressions !== undefined ? faceApiOptions.withExpressions : this.config.withExpressions;
+        this.config.withDescriptors = faceApiOptions.withDescriptors !== undefined ? faceApiOptions.withDescriptors : this.config.withDescriptors;
 
         const {
-            withFaceLandmarks,
-            withFaceExpressions,
-            withFaceDescriptors
+            withLandmarks,
+            withExpressions,
+            withDescriptors
         } = this.config
 
         let result;
 
-        if (withFaceLandmarks) {
-            if (withFaceExpressions && withFaceDescriptors) {
+        if (withLandmarks) {
+            if (withExpressions && withDescriptors) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
-            } else if (withFaceExpressions) {
+            } else if (withExpressions) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions();
             } else {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
             }
 
-        } else if (withFaceLandmarks === false) {
+        } else if (withLandmarks === false) {
             result = await this.model.detectAllFaces(imgToClassify).withFaceExpressions()
         } else {
             result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
@@ -277,28 +277,28 @@ class FaceApiBase {
             });
         }
 
-        this.config.withFaceLandmarks = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceLandmarks : this.config.withFaceLandmarks;
-        this.config.withFaceExpressions = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceExpressions : this.config.withFaceExpressions;
-        this.config.withFaceDescriptors = faceApiOptions.withFaceLandmarks !== undefined ? faceApiOptions.withFaceDescriptors : this.config.withFaceDescriptors;
+        this.config.withLandmarks = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withLandmarks : this.config.withLandmarks;
+        this.config.withExpressions = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withExpressions : this.config.withExpressions;
+        this.config.withDescriptors = faceApiOptions.withLandmarks !== undefined ? faceApiOptions.withDescriptors : this.config.withDescriptors;
 
         const {
-            withFaceLandmarks,
-            withFaceExpressions,
-            withFaceDescriptors
+            withLandmarks,
+            withExpressions,
+            withDescriptors
         } = this.config
 
 
         let result;
-        if (withFaceLandmarks) {
-            if (withFaceExpressions && withFaceDescriptors) {
+        if (withLandmarks) {
+            if (withExpressions && withDescriptors) {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
-            } else if (withFaceExpressions) {
+            } else if (withExpressions) {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
             } else {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
             }
 
-        } else if (withFaceLandmarks === false) {
+        } else if (withLandmarks === false) {
             result = await this.model.detectSingleFace(imgToClassify).withFaceExpressions()
         } else {
             result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
