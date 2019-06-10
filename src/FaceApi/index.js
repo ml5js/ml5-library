@@ -55,15 +55,6 @@ class FaceApiBase {
         this.ready = callCallback(this.loadModel(), callback);
     }
 
-    checkUndefined(_param, _default) {
-        return _param !== undefined ? _param : _default;
-    }
-
-    getModelPath(absoluteOrRelativeUrl) {
-        const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl) ? absoluteOrRelativeUrl : window.location.pathname + absoluteOrRelativeUrl
-        return modelJsonPath;
-    }
-
     /**
      * Load the model and set it to this.model
      * @return {this} the BodyPix model.
@@ -171,6 +162,7 @@ class FaceApiBase {
             });
         }
 
+        // sets the return options if any are passed in during .detect() or .detectSingle()
         this.config = this.setReturnOptions(faceApiOptions);
 
         const {
@@ -196,7 +188,7 @@ class FaceApiBase {
             result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
         }
 
-        
+
         // always resize the results to the input image size
         result = this.resizeResults(result, imgToClassify.width, imgToClassify.height)
         // assign the {parts} object after resizing
@@ -275,6 +267,7 @@ class FaceApiBase {
             });
         }
 
+        // sets the return options if any are passed in during .detect() or .detectSingle()
         this.config = this.setReturnOptions(faceApiOptions);
 
         const {
@@ -282,7 +275,6 @@ class FaceApiBase {
             withExpressions,
             withDescriptors
         } = this.config
-
 
         let result;
         if (withLandmarks) {
@@ -309,13 +301,35 @@ class FaceApiBase {
         return result
     }
 
-    
-    setReturnOptions(faceApiOptions){
+    /**
+     * Check if the given _param is undefined, otherwise return the _default
+     * @param {*} _param 
+     * @param {*} _default 
+     */
+    checkUndefined(_param, _default) {
+        return _param !== undefined ? _param : _default;
+    }
+
+    /**
+     * Checks if the given string is an absolute or relative path and returns 
+     *      the path to the modelJson 
+     * @param {String} absoluteOrRelativeUrl 
+     */
+    getModelPath(absoluteOrRelativeUrl) {
+        const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl) ? absoluteOrRelativeUrl : window.location.pathname + absoluteOrRelativeUrl
+        return modelJsonPath;
+    }
+
+    /**
+     * Sets the return options for .detect() or .detectSingle() in case any are given
+     * @param {Object} faceApiOptions 
+     */
+    setReturnOptions(faceApiOptions) {
         const output = Object.assign({}, this.config);
         const options = ["withLandmarks", "withLandmarks", "withDescriptors"];
 
         options.forEach(prop => {
-            if(faceApiOptions[prop] !== undefined){
+            if (faceApiOptions[prop] !== undefined) {
                 this.config[prop] = faceApiOptions[prop]
             } else {
                 output[prop] = this.config[prop];
@@ -324,7 +338,6 @@ class FaceApiBase {
 
         return output;
     }
-
 
     /**
      * Resize results to size of input image
@@ -350,24 +363,26 @@ class FaceApiBase {
      * get parts from landmarks
      * @param {*} result 
      */
-    landmarkParts(result){
+    landmarkParts(result) {
         let output;
         // multiple detections is an array
-        if(Array.isArray(result) === true){
-            output = result.map( item => {
+        if (Array.isArray(result) === true) {
+            output = result.map(item => {
                 // if landmarks exist return parts
                 const newItem = Object.assign({}, item);
-                if(newItem.landmarks){
-                    const {landmarks} = newItem;
+                if (newItem.landmarks) {
+                    const {
+                        landmarks
+                    } = newItem;
                     newItem.parts = {
-                        mouth:landmarks.getMouth(),
-                        nose:landmarks.getNose(),
-                        leftEye:landmarks.getLeftEye(),
-                        leftEyeBrow:landmarks.getLeftEyeBrow(),
-                        rightEye:landmarks.getRightEye(),
-                        rightEyeBrow:landmarks.getRightEyeBrow()
+                        mouth: landmarks.getMouth(),
+                        nose: landmarks.getNose(),
+                        leftEye: landmarks.getLeftEye(),
+                        leftEyeBrow: landmarks.getLeftEyeBrow(),
+                        rightEye: landmarks.getRightEye(),
+                        rightEyeBrow: landmarks.getRightEyeBrow()
                     }
-                } else{
+                } else {
                     newItem.parts = {
                         mouth: [],
                         nose: [],
@@ -379,20 +394,22 @@ class FaceApiBase {
                 }
                 return newItem;
             })
-        // single detection is an object
+            // single detection is an object
         } else {
             output = Object.assign({}, result);
-            if(output.landmarks){
-                const {landmarks} = result;
+            if (output.landmarks) {
+                const {
+                    landmarks
+                } = result;
                 output.parts = {
-                    mouth:landmarks.getMouth(),
-                    nose:landmarks.getNose(),
-                    leftEye:landmarks.getLeftEye(),
-                    leftEyeBrow:landmarks.getLeftEyeBrow(),
-                    rightEye:landmarks.getRightEye(),
-                    rightEyeBrow:landmarks.getRightEyeBrow()
+                    mouth: landmarks.getMouth(),
+                    nose: landmarks.getNose(),
+                    leftEye: landmarks.getLeftEye(),
+                    leftEyeBrow: landmarks.getLeftEyeBrow(),
+                    rightEye: landmarks.getRightEye(),
+                    rightEyeBrow: landmarks.getRightEyeBrow()
                 }
-            } else{
+            } else {
                 output.parts = {
                     mouth: [],
                     nose: [],
