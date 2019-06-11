@@ -178,6 +178,8 @@ class FaceApiBase {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
             } else if (withExpressions) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions();
+            } else if (withDescriptors) {
+                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceDescriptors();
             } else {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
             }
@@ -282,6 +284,8 @@ class FaceApiBase {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
             } else if (withExpressions) {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
+            } else if (withDescriptors) {
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceDescriptor();
             } else {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
             }
@@ -380,7 +384,8 @@ class FaceApiBase {
                         leftEye: landmarks.getLeftEye(),
                         leftEyeBrow: landmarks.getLeftEyeBrow(),
                         rightEye: landmarks.getRightEye(),
-                        rightEyeBrow: landmarks.getRightEyeBrow()
+                        rightEyeBrow: landmarks.getRightEyeBrow(),
+                        jawOutline: landmarks.getJawOutline(),
                     }
                 } else {
                     newItem.parts = {
@@ -389,7 +394,8 @@ class FaceApiBase {
                         leftEye: [],
                         leftEyeBrow: [],
                         rightEye: [],
-                        rightEyeBrow: []
+                        rightEyeBrow: [],
+                        jawOutline: [],
                     }
                 }
                 return newItem;
