@@ -548,6 +548,16 @@
         "design",
         "userTesting"
       ]
+    },
+    {
+      "login": "jepster-dk",
+      "name": "jepster-dk",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7010555?v=4",
+      "profile": "http://jepster.dk",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
