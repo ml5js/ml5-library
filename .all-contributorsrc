@@ -548,6 +548,36 @@
         "design",
         "userTesting"
       ]
+    },
+    {
+      "login": "jepster-dk",
+      "name": "jepster-dk",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/7010555?v=4",
+      "profile": "http://jepster.dk",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "xanderjakeq",
+      "name": "Xander Jake de los Santos",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/13279523?v=4",
+      "profile": "https://xanderjakeq.page/",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "catarak",
+      "name": "Cassie Tarakajian",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6063380?v=4",
+      "profile": "https://github.com/catarak",
+      "contributions": [
+        "bug",
+        "infra",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
