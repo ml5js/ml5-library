@@ -25,6 +25,7 @@ import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
 import faceApi from './FaceApi';
+import p5Utils from './utils/p5Utils';
 
 const withPreload = {
   charRNN,
@@ -43,7 +44,7 @@ const withPreload = {
   uNet,
 };
 
-module.exports = Object.assign({}, preloadRegister(withPreload), {
+module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
   tf,
