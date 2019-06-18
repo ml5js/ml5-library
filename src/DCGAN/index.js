@@ -74,7 +74,7 @@ class DCGANBase {
     async compute(latentDim, latentVector) {
         const y = tf.tidy(() => {
             let z;
-            if(latentVector == undefined) {
+            if(Array.isArray(latentVector) === false) {
                 z = tf.randomNormal([1, latentDim]);
             }
             else {
