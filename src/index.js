@@ -25,6 +25,7 @@ import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
 import neuralNetwork from './NeuralNetwork';
+import faceApi from './FaceApi';
 
 const withPreload = {
   charRNN,
@@ -51,4 +52,5 @@ module.exports = Object.assign({}, preloadRegister(withPreload), {
   sentiment,
   bodyPix,
   neuralNetwork,
+  faceApi,
 });
