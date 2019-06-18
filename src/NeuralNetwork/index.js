@@ -8,6 +8,7 @@ Generic NeuralNetwork class
 */
 
 import * as tf from '@tensorflow/tfjs';
+import callCallback from '../utils/callcallback';
 
 class NeuralNetwork {
   /**
@@ -84,6 +85,10 @@ class NeuralNetwork {
   }
 
   async predict(input, callback) {
+    return callCallback(this.predictInternal(input), callback);
+  }
+
+  async predictInternal(input) {
     const xs = tf.tensor2d([input]);
     const ys = this.model.predict(xs);
     const results = {
@@ -91,7 +96,7 @@ class NeuralNetwork {
       tensor: ys,
     };
     xs.dispose();
-    callback(null, results);
+    return results;
   }
 }
 
