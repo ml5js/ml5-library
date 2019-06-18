@@ -21,16 +21,17 @@ class NeuralNetwork {
     const inputUnits = options.input || 2;
     const hiddenUnits = Math.floor(inputUnits / 2) + 1;
     const outputUnits = options.output || 1;
+    const activation = options.activation || 'sigmoid';
 
     this.model = tf.sequential();
     const hidden = tf.layers.dense({
       units: hiddenUnits,
       inputShape: [inputUnits],
-      activation: 'sigmoid',
+      activation,
     });
     const output = tf.layers.dense({
       units: outputUnits,
-      activation: 'sigmoid',
+      activation,
     });
     this.model.add(hidden);
     this.model.add(output);
