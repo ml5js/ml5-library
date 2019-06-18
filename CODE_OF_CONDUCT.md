@@ -45,7 +45,7 @@ Our community is always looking for enthusiasts to help in all different ways.
 -  **Document**. Everyone loves documentation. Help is needed porting examples, and adding documentation, and creating tutorials.
 -  **Teach**. Teach a workshop, a class, a friend, a collaborator! Tag [@ml5js on Twitter](https://twitter.com/ml5js?lang=en) and we will do our best to share what you're doing.
 -  **Create**. ml5.js is looking for designers, artists, coders, programmers to bring your creative and amazing work to show and inspire other people. Submit your work to info@ml5js.org.
--  **Donate**. ml5.js is a free and open source and made by artists. While ml5.js is not currently accepting donations, you can help support the development of ml5.js through a donation to other adjacent open source projects and endeavors such as the [Processing Foundation](https://processingfoundation.org/support) and [The Coding Train](https://www.patreon.com/codingtrain).
+-  **Donate**. ml5.js is a free and open source and made by artists. While ml5.js is not currently accepting donations, you can help support the development of ml5.js through a donation to other adjacent open source projects and endeavors such as the [Processing Foundation](https://processingfoundation.org/support).
 
 
 ## Contributor Covenant Code of Conduct
