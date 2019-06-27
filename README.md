@@ -54,11 +54,11 @@ There are several ways you can use the ml5.js library:
 
 ## Resources
 
-- [Getting Started](https://ml5js.org/docs/getting-started)
-- [API Reference](https://ml5js.org/docs/ImageClassifier)
-- [Examples](https://ml5js.org/docs/quick-start)
-- [Learn](https://ml5js.org/docs/glossary-machine-learning)
-- [Experiments](https://ml5js.org/en/experiments)
+- [Getting Started](https://ml5js.org/getting-started/)
+- [API Reference](https://ml5js.org/reference/)
+- [Examples](https://github.com/ml5js/ml5-examples)
+- [Community](https://ml5js.org/community)
+- [FAQ](https://ml5js.org/getting-started/faq/)
 
 ## Standalone Examples
 
