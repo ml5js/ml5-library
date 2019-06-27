@@ -11,7 +11,7 @@
 
 ## Friendly machine learning for the web!
 
-ml5.js aims to make machine learning approachable for a broad audience of artists, creative coders, and students. The library provides access to machine learning algorithms and models in the browser, building on top of [TensorFlow.js](https://js.tensorflow.org/) with no other external dependencies.
+ml5.js aims to make machine learning approachable for a broad audience of artists, creative coders, and students. The library provides access to machine learning algorithms and models in the browser, building on top of [TensorFlow.js](https://js.tensorflow.org/).
 
 The library is supported by code examples, tutorials, and sample data sets with an emphasis on ethical computing. Bias in data, stereotypical harms, and responsible crowdsourcing are part of the documentation around data collection and usage.
 
@@ -52,19 +52,13 @@ There are several ways you can use the ml5.js library:
 <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
-* Finally, you can download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) and include the file:
-
-```javascript
-<script src="ml5.min.js" type="text/javascript"></script>
-```
-
 ## Resources
 
-- [Getting Started](https://ml5js.org/docs/getting-started)
-- [API Reference](https://ml5js.org/docs/ImageClassifier)
-- [Examples](https://ml5js.org/docs/quick-start)
-- [Learn](https://ml5js.org/docs/glossary-machine-learning)
-- [Experiments](https://ml5js.org/en/experiments)
+- [Getting Started](https://ml5js.org/getting-started/)
+- [API Reference](https://ml5js.org/reference/)
+- [Examples](https://github.com/ml5js/ml5-examples)
+- [Community](https://ml5js.org/community)
+- [FAQ](https://ml5js.org/getting-started/faq/)
 
 ## Standalone Examples
 
