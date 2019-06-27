@@ -52,12 +52,6 @@ There are several ways you can use the ml5.js library:
 <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
-* Finally, you can download the [minified](https://raw.githubusercontent.com/ml5js/ml5-library/master/dist/ml5.min.js) and include the file:
-
-```javascript
-<script src="ml5.min.js" type="text/javascript"></script>
-```
-
 ## Resources
 
 - [Getting Started](https://ml5js.org/docs/getting-started)
