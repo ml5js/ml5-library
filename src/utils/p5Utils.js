@@ -91,6 +91,6 @@ class P5Util {
 
 }
 
-const p5Util = new P5Util();
+const p5Utils = new P5Util();
 
-export default p5Util;
+export default p5Utils;

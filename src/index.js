@@ -16,7 +16,7 @@ import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
-import sketchRNN from './SketchRNN';
+// import sketchRNN from './SketchRNN';
 import uNet from './UNET';
 import CVAE from './CVAE';
 import DCGAN from './DCGAN';
@@ -24,7 +24,7 @@ import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
-import faceApi from './FaceApi';
+// import faceApi from './FaceApi';
 import p5Utils from './utils/p5Utils';
 
 const withPreload = {
@@ -37,7 +37,7 @@ const withPreload = {
   pitchDetection,
   pix2pix,
   poseNet,
-  sketchRNN,
+  // sketchRNN,
   styleTransfer,
   word2vec,
   YOLO,
@@ -51,5 +51,5 @@ module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   version,
   sentiment,
   bodyPix,
-  faceApi,
+  // faceApi,
 });
