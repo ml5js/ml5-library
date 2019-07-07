@@ -25,10 +25,12 @@ import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
 import faceApi from './FaceApi';
+import cartoon from './CartoonGan';
 
 const withPreload = {
   charRNN,
   CVAE,
+  cartoon,
   DCGAN,
   featureExtractor,
   imageClassifier,
