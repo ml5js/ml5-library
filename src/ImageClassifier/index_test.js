@@ -87,7 +87,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = 'http://ml5js.org/docs/assets/img/pelican.mp4';
+    video.src = 'http://localhost:9876/assets/img/pelican.mp4' /* TODO add univeral url */;
     video.width = 400;
     video.height = 400;
     return video;
@@ -95,8 +95,8 @@ describe('videoClassifier', () => {
 
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-    let video = await getVideo();
-    //FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
+    const video = await getVideo();
+    // FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
     classifier = await imageClassifier('MobileNet', video, {});
   });
 
