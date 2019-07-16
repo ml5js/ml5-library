@@ -22,7 +22,7 @@ describe('imageClassifier', () => {
   async function getImage() {
     const img = new Image();
     img.crossOrigin = true;
-    img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
+    img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/bird.jpg';
     await new Promise((resolve) => { img.onload = resolve; });
     return img;
   }

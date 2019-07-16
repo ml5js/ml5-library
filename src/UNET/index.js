@@ -16,6 +16,13 @@ const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/
 const imageSize = 128;
 
 class UNET extends Video {
+  /**
+   * Create UNET class. 
+   * @param {HTMLVideoElement | HTMLImageElement} video - The video or image to be used for segmentation.
+   * @param {Object} options - Optional. A set of options.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has loaded.
+   */
   constructor(video, options, callback) {
     super(video, imageSize);
     this.modelReady = false;
@@ -27,7 +34,7 @@ class UNET extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadModel(URL);
+    this.model = await tf.loadLayersModel(URL);
     this.modelReady = true;
     return this;
   }
@@ -76,7 +83,7 @@ class UNET extends Video {
 
     const tensor = tf.tidy(() => {
       // preprocess
-      const tfImage = tf.fromPixels(imgToPredict).toFloat();
+      const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [imageSize, imageSize]);
       const normTensor = resizedImg.div(tf.scalar(255));
 
@@ -95,11 +102,11 @@ class UNET extends Video {
     this.isPredicting = false;
     const dom = array3DToImage(tensor);
     const blob = UNET.dataURLtoBlob(dom.src);
-    const raw = await tf.toPixels(tensor);
+    const raw = await tf.browser.toPixels(tensor);
     let image;
 
     if (UNET.checkP5()) {
-      image = window.p5.loadImage(dom.src);
+      image = window.loadImage(dom.src);
     }
 
     return {

@@ -20,8 +20,19 @@ import callCallback from '../utils/callcallback';
 const IMAGE_SIZE = 200;
 
 class StyleTransfer extends Video {
+  /**
+   * Create a new Style Transfer Instance。
+   * @param {model} model - The path to Style Transfer model.
+   * @param {HTMLVideoElement || p5.Video} video  - Optional. A HTML video element or a p5 video element.
+   * @param {funciton} callback - Optional. A function to be called once the model is loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
+   */
   constructor(model, video, callback) {
     super(video, IMAGE_SIZE);
+    /**
+     * Boolean value that specifies if the model has loaded.
+     * @type {boolean}
+     * @public
+     */
     this.ready = false;
     this.variableDictionary = {};
     this.timesScalar = tf.scalar(150);
@@ -85,6 +96,11 @@ class StyleTransfer extends Video {
     return y3;
   }
 
+  /**
+   * 
+   * @param {Image || p5.Image || HTMLVideoElement || p5.Video} input  - A HTML video or image element or a p5 image or video element. If no input is provided, the default is to use the video element given in the constructor.
+   * @param {funciton} callback - Optional. A function to run once the model has made the transfer. If no callback is provided, it will return a promise that will be resolved once the model has made the transfer.
+   */
   async transfer(inputOrCallback, cb) {
     let input;
     let callback = cb;
@@ -104,7 +120,7 @@ class StyleTransfer extends Video {
   }
 
   async transferInternal(input) {
-    const image = tf.fromPixels(input);
+    const image = tf.browser.fromPixels(input);
     const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);

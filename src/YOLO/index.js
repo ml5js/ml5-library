@@ -35,6 +35,19 @@ const DEFAULTS = {
 const imageSize = 416;
 
 class YOLOBase extends Video {
+  /**
+   * @typedef {Object} options
+   * @property {number} filterBoxesThreshold - default 0.01
+   * @property {number} IOUThreshold - default 0.4
+   * @property {number} classProbThreshold - default 0.4
+   */
+  /**
+   * Create YOLO model. Works on video and images. 
+   * @param {HTMLVideoElement} video - Optional. The video to be used for object detection and classification.
+   * @param {Object} options - Optional. A set of options.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has loaded.
+   */
   constructor(video, options, callback) {
     super(video, imageSize);
 
@@ -51,7 +64,7 @@ class YOLOBase extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadModel(URL);
+    this.model = await tf.loadLayersModel(URL);
     this.modelReady = true;
     return this;
   }

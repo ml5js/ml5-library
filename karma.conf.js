@@ -38,6 +38,9 @@ module.exports = (config) => {
       optimization: {
         minimize: false,
       },
+      node: {
+        fs: "empty"
+      }
     },
     webpackMiddleware: {
       noInfo: true,
