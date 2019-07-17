@@ -1,9 +1,13 @@
+
 module.exports = (config) => {
   config.set({
+    client: {
+      model: config.model
+    },
     frameworks: ['jasmine'],
     files: [
       'src/index.js',
-      'src/**/*_test.js',
+      `src/${config.model ? config.model : '**'}/*_test.js`,
     ],
     preprocessors: {
       'src/index.js': ['webpack'],
