@@ -111,11 +111,16 @@ class PoseNet extends EventEmitter {
     let input;
     if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
       input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
-      input = inputOr.elt; // Handle p5.js image and video
+    } else if (typeof inputOr === "object") {
+      if (!inputOr.pixels.length) {
+        inputOr.loadPixels();
+      }
+      // Handle p5.js image
+      input = inputOr.imageData;
     } else {
       input = this.video;
     }
+    
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const poseWithParts = this.mapParts(pose);
