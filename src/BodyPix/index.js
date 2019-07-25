@@ -255,25 +255,19 @@ class BodyPix {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement) {
-            imgToSegment = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLImageElement
-        ) {
-            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-        } else if (optionsOrCallback instanceof HTMLCanvasElement) {
-            imgToSegment = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLCanvasElement
-        ) {
-            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.canvas instanceof HTMLCanvasElement
-        ) {
-            imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+        } else if (optionsOrCallback instanceof HTMLImageElement 
+            || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof ImageData) {
+                imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
+            || optionsOrCallback.elt instanceof HTMLCanvasElement 
+            || optionsOrCallback.elt instanceof ImageData)){
+                
+                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
+                    imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+                } else {
+                    imgToSegment = optionsOrCallback.elt; // Handle p5.js image
+                }
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(
@@ -356,25 +350,19 @@ class BodyPix {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement) {
-            imgToSegment = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLImageElement
-        ) {
-            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-        } else if (optionsOrCallback instanceof HTMLCanvasElement) {
-            imgToSegment = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLCanvasElement
-        ) {
-            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.canvas instanceof HTMLCanvasElement
-        ) {
-            imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+        } else if (optionsOrCallback instanceof HTMLImageElement 
+            || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof ImageData) {
+                imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
+            || optionsOrCallback.elt instanceof HTMLCanvasElement 
+            || optionsOrCallback.elt instanceof ImageData)){
+                
+                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
+                    imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+                } else {
+                    imgToSegment = optionsOrCallback.elt; // Handle p5.js image
+                }
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(
