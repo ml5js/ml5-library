@@ -109,7 +109,9 @@ class StyleTransfer extends Video {
         inputOrCallback instanceof HTMLImageElement ||
         inputOrCallback instanceof ImageData) {
       input = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLImageElement)) {
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement 
+      || inputOrCallback.elt instanceof HTMLImageElement
+      || inputOrCallback.elt instanceof ImageData)) {
       input = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       input = this.video;
