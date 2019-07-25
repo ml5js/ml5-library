@@ -51,9 +51,12 @@ class UNET extends Video {
     let callback = cb;
 
     if (inputOrCallback instanceof HTMLImageElement
-      || inputOrCallback instanceof HTMLVideoElement) {
+      || inputOrCallback instanceof HTMLVideoElement
+      || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
+      || inputOrCallback.elt instanceof HTMLVideoElement
+      || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
