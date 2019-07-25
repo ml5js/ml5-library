@@ -23,6 +23,22 @@ describe('YOLO', () => {
     return img;
   }
 
+  async function getImageData() {
+    const arr = new Uint8ClampedArray(40000);
+
+    // Iterate through every pixel
+    for (let i = 0; i < arr.length; i += 4) {
+      arr[i + 0] = 0;    // R value
+      arr[i + 1] = 190;  // G value
+      arr[i + 2] = 0;    // B value
+      arr[i + 3] = 255;  // A value
+    }
+
+    // Initialize a new ImageData object
+    const img = new ImageData(arr, 200);
+    return img;
+  }
+
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
     yolo = await YOLO();
@@ -39,5 +55,11 @@ describe('YOLO', () => {
     const robin = await getRobin();
     const detection = await yolo.detect(robin);
     expect(detection[0].label).toBe('bird');
+  });
+
+  it('detects takes ImageData', async () => {
+    const img = await getImageData();
+    const detection = await yolo.detect(img);
+    expect(detection).toEqual([]);
   });
 });
