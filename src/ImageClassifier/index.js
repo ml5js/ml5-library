@@ -174,11 +174,9 @@ class ImageClassifier {
         || inputNumOrCallback.elt instanceof HTMLCanvasElement
         || inputNumOrCallback.elt instanceof ImageData)
     ) {
-      if(inputNumOrCallback.canvas instanceof HTMLCanvasElement){
-        imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
-      } else {
         imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-      }
+    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.canvas instanceof HTMLCanvasElement) {
+      imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
     } else if (!(this.video instanceof HTMLVideoElement)) {
       // Handle unsupported input
       throw new Error(

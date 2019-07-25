@@ -344,7 +344,7 @@ class BodyPix {
         let imgToSegment = this.video;
         let callback;
         let segmentationOptions = this.config;
-
+        
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
             imgToSegment = this.video;
@@ -357,12 +357,9 @@ class BodyPix {
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
             || optionsOrCallback.elt instanceof HTMLCanvasElement 
             || optionsOrCallback.elt instanceof ImageData)){
-                
-                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
-                    imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
-                } else {
-                    imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-                }
+            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
+            imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(

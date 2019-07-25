@@ -115,12 +115,9 @@ class FaceApiBase {
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
             || optionsOrCallback.elt instanceof HTMLCanvasElement 
             || optionsOrCallback.elt instanceof ImageData)){
-                
-                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
-                    imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
-                } else {
-                    imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-                }
+            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
+            imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(
@@ -216,12 +213,9 @@ class FaceApiBase {
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
             || optionsOrCallback.elt instanceof HTMLCanvasElement 
             || optionsOrCallback.elt instanceof ImageData)){
-                
-                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
-                    imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
-                } else {
-                    imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-                }
+            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
+            imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(
