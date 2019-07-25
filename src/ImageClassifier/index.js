@@ -162,32 +162,23 @@ class ImageClassifier {
     } else if (typeof inputNumOrCallback === 'number') {
       imgToPredict = this.video;
       numberOfClasses = inputNumOrCallback;
-    } else if (inputNumOrCallback instanceof HTMLImageElement) {
+    } else if (inputNumOrCallback instanceof HTMLVideoElement
+      || inputNumOrCallback instanceof HTMLImageElement
+      || inputNumOrCallback instanceof HTMLCanvasElement
+      || inputNumOrCallback instanceof ImageData) {
       imgToPredict = inputNumOrCallback;
     } else if (
       typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLImageElement
+      (inputNumOrCallback.elt instanceof HTMLVideoElement
+        || inputNumOrCallback.elt instanceof HTMLImageElement
+        || inputNumOrCallback.elt instanceof HTMLCanvasElement
+        || inputNumOrCallback.elt instanceof ImageData)
     ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (inputNumOrCallback instanceof HTMLCanvasElement) {
-      imgToPredict = inputNumOrCallback;
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLCanvasElement
-    ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.canvas instanceof HTMLCanvasElement
-    ) {
-      imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
-    } else if (inputNumOrCallback instanceof HTMLVideoElement) {
-      imgToPredict = inputNumOrCallback;
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLVideoElement
-    ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js video
+      if(inputNumOrCallback.canvas instanceof HTMLCanvasElement){
+        imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
+      } else {
+        imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
+      }
     } else if (!(this.video instanceof HTMLVideoElement)) {
       // Handle unsupported input
       throw new Error(
