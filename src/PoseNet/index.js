@@ -109,9 +109,13 @@ class PoseNet extends EventEmitter {
   /* eslint max-len: ["error", { "code": 180 }] */
   async singlePose(inputOr, cb) {
     let input;
-    if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
+    if (inputOr instanceof HTMLImageElement 
+      || inputOr instanceof HTMLVideoElement
+      || inputOr instanceof ImageData) {
       input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement 
+      || inputOr.elt instanceof HTMLVideoElement
+      || inputOr.elt instanceof ImageData)) {
       input = inputOr.elt; // Handle p5.js image and video
     } else {
       input = this.video;
@@ -142,9 +146,13 @@ class PoseNet extends EventEmitter {
   async multiPose(inputOr, cb) {
     let input;
 
-    if (inputOr instanceof HTMLImageElement || inputOr instanceof HTMLVideoElement) {
+    if (inputOr instanceof HTMLImageElement 
+      || inputOr instanceof HTMLVideoElement
+      || inputOr instanceof ImageData) {
       input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement || inputOr.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement 
+      || inputOr.elt instanceof HTMLVideoElement
+      || inputOr.elt instanceof ImageData)) {
       input = inputOr.elt; // Handle p5.js image and video
     } else {
       input = this.video;
