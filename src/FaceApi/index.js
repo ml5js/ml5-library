@@ -103,29 +103,20 @@ class FaceApiBase {
         let callback;
         let faceApiOptions = this.config;
 
-        // Handle the image to predict
-        if (typeof optionsOrCallback === 'function') {
+         // Handle the image to predict
+         if (typeof optionsOrCallback === 'function') {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement) {
-            imgToClassify = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLImageElement
-        ) {
+        } else if (optionsOrCallback instanceof HTMLImageElement 
+            || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof ImageData) {
+                imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
+            || optionsOrCallback.elt instanceof HTMLCanvasElement 
+            || optionsOrCallback.elt instanceof ImageData)){
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-        } else if (optionsOrCallback instanceof HTMLCanvasElement) {
-            imgToClassify = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLCanvasElement
-        ) {
-            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.canvas instanceof HTMLCanvasElement
-        ) {
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
@@ -215,24 +206,15 @@ class FaceApiBase {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement) {
-            imgToClassify = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLImageElement
-        ) {
+        } else if (optionsOrCallback instanceof HTMLImageElement 
+            || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof ImageData) {
+                imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
+            || optionsOrCallback.elt instanceof HTMLCanvasElement 
+            || optionsOrCallback.elt instanceof ImageData)){
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-        } else if (optionsOrCallback instanceof HTMLCanvasElement) {
-            imgToClassify = optionsOrCallback;
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.elt instanceof HTMLCanvasElement
-        ) {
-            imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-        } else if (
-            typeof optionsOrCallback === 'object' &&
-            optionsOrCallback.canvas instanceof HTMLCanvasElement
-        ) {
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
