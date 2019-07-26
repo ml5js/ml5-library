@@ -74,9 +74,13 @@ class YOLOBase extends Video {
     let imgToPredict;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement) {
+    if (inputOrCallback instanceof HTMLImageElement 
+      || inputOrCallback instanceof HTMLVideoElement
+      || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
+      || inputOrCallback.elt instanceof HTMLVideoElement
+      || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
