@@ -55,10 +55,11 @@ class PoseNet extends EventEmitter {
      * @type {String}
      * @public
      */
-    this.detectionType = detectionType || DEFAULTS.detectionType;
+    this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
+    this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.ready = callCallback(this.load(), callback);
@@ -76,9 +77,11 @@ class PoseNet extends EventEmitter {
       }
       if (this.detectionType === 'single') {
         this.singlePose();
+      } else {
+        this.multiPose();
       }
 
-      this.multiPose();
+      
     }
     return this;
   }
@@ -100,16 +103,8 @@ class PoseNet extends EventEmitter {
     return newPose;
   }
 
-  /**
-   * Given an image or video, returns an array of objects containing pose estimations 
-   *    using single or multi-pose detection.
-   * @param {HTMLVideoElement || p5.Video || function} inputOr 
-   * @param {function} cb 
-   */
-  /* eslint max-len: ["error", { "code": 180 }] */
-  async singlePose(inputOr, cb) {
+  getInput(inputOr){
     let input;
-
     if (inputOr instanceof HTMLImageElement 
       || inputOr instanceof HTMLVideoElement
       || inputOr instanceof HTMLCanvasElement
@@ -124,6 +119,19 @@ class PoseNet extends EventEmitter {
     } else {
       input = this.video;
     }
+
+    return input;
+  }
+
+  /**
+   * Given an image or video, returns an array of objects containing pose estimations 
+   *    using single or multi-pose detection.
+   * @param {HTMLVideoElement || p5.Video || function} inputOr 
+   * @param {function} cb 
+   */
+  /* eslint max-len: ["error", { "code": 180 }] */
+  async singlePose(inputOr, cb) {
+    const input = this.getInput(inputOr);
 
     const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const poseWithParts = this.mapParts(pose);
@@ -148,22 +156,7 @@ class PoseNet extends EventEmitter {
    * @param {function} cb 
    */
   async multiPose(inputOr, cb) {
-    let input;
-
-    if (inputOr instanceof HTMLImageElement 
-      || inputOr instanceof HTMLVideoElement
-      || inputOr instanceof HTMLCanvasElement
-      || inputOr instanceof ImageData) {
-      input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement 
-      || inputOr.elt instanceof HTMLVideoElement
-      || inputOr.elt instanceof ImageData)) {
-      input = inputOr.elt; // Handle p5.js image and video
-    } else if (typeof inputOr === 'object' && inputOr.canvas instanceof HTMLCanvasElement) {
-      input = inputOr.canvas; // Handle p5.js image
-    } else {
-      input = this.video;
-    }
+    const input = this.getInput(inputOr);
 
     const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
     const posesWithParts = poses.map(pose => (this.mapParts(pose)));
@@ -199,11 +192,14 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
 
   if (typeof optionsOrCallback === 'object') {
     options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
   } else if (typeof optionsOrCallback === 'string') {
     detectionType = optionsOrCallback;
   }
+  
+  if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  } 
+
 
   return new PoseNet(video, options, detectionType, callback);
 };
