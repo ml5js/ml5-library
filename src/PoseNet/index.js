@@ -76,9 +76,11 @@ class PoseNet extends EventEmitter {
       }
       if (this.detectionType === 'single') {
         this.singlePose();
+      } else {
+        this.multiPose();
       }
 
-      this.multiPose();
+      
     }
     return this;
   }
