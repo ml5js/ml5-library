@@ -25,9 +25,11 @@ import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
 import faceApi from './FaceApi';
+import kmeans from './KMeans';
 
 const withPreload = {
   charRNN,
+  kmeans,
   CVAE,
   DCGAN,
   featureExtractor,

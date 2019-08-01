@@ -37,4 +37,19 @@ const randomGaussian = (mean = 0, sd = 1) => {
   return (y1 * sd) + mean;
 };
 
-export { randomFloat, randomInt, randomGaussian };
+// Returns a random sample (either with or without replacement) from an array
+const randomSample = (arr, k, withReplacement = false) => {
+  let sample;
+  if (withReplacement === true) {  // sample with replacement
+    sample = Array.from({length: k}, () => arr[Math.floor(Math.random() * arr.length)]);
+  } else { // sample without replacement
+    if (k > arr.length) {
+      throw new RangeError('Sample size must be less than or equal to array length when sampling without replacement.')
+    }
+    sample = arr.map(a => [a, Math.random()]).sort((a, b) => {
+      return a[1] < b[1] ? -1 : 1;}).slice(0, k).map(a => a[0]); 
+    };
+  return sample;
+};
+
+export { randomFloat, randomInt, randomGaussian, randomSample };
