@@ -55,10 +55,11 @@ class PoseNet extends EventEmitter {
      * @type {String}
      * @public
      */
-    this.detectionType = detectionType || DEFAULTS.detectionType;
+    this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
+    this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.ready = callCallback(this.load(), callback);
@@ -76,9 +77,11 @@ class PoseNet extends EventEmitter {
       }
       if (this.detectionType === 'single') {
         this.singlePose();
+      } else {
+        this.multiPose();
       }
 
-      this.multiPose();
+      
     }
     return this;
   }
@@ -189,11 +192,14 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
 
   if (typeof optionsOrCallback === 'object') {
     options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
   } else if (typeof optionsOrCallback === 'string') {
     detectionType = optionsOrCallback;
   }
+  
+  if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  } 
+
 
   return new PoseNet(video, options, detectionType, callback);
 };
