@@ -14,8 +14,8 @@ import { randomSample } from '../utils/random';
 
 const DEFAULTS = {
   'k': 3,
-	'maxIter': 5,
-	'threshold': 0.5,
+  'maxIter': 5,
+  'threshold': 0.5,
 };
 
 /**
@@ -23,9 +23,9 @@ const DEFAULTS = {
  * @param {string} path 
  */
 async function readCsv(path) {
-	const myCsv = tf.data.csv(path);
-	const loadedData = await myCsv.toArray();
-	return loadedData;
+  const myCsv = tf.data.csv(path);
+  const loadedData = await myCsv.toArray();
+  return loadedData;
 }
 
 /**
@@ -34,16 +34,16 @@ async function readCsv(path) {
  * @param {string || array || object} inputData 
  */
 async function loadDataset(inputData) {
-	let data;
-	if (typeof inputData === 'string') {
-		data = await readCsv(inputData);
-	} else {
-		data = inputData;
-	}
-	const dataFlat = data.map((d) => {
-		return Object.values(d)
-	});
-	return dataFlat;
+  let data;
+  if (typeof inputData === 'string') {
+    data = await readCsv(inputData);
+  } else {
+    data = inputData;
+  }
+  const dataFlat = data.map((d) => {
+    return Object.values(d)
+  });
+  return dataFlat;
 }
 
 
@@ -59,11 +59,11 @@ class KMeans {
   *    the model has loaded. If no callback is provided, it will return a 
   *    promise that will be resolved once the model has loaded.
   */
-	constructor(dataset, options, callback) {
+  constructor(dataset, options, callback) {
     this.k = options.k;
     this.maxIter = options.maxIter || DEFAULTS.maxIter;
     this.threshold = options.threshold || DEFAULTS.threshold;
-		this.ready = callCallback(this.load(dataset), callback);
+    this.ready = callCallback(this.load(dataset), callback);
   }
 
   /**
@@ -71,15 +71,15 @@ class KMeans {
   * @param {string || array || object} dataset 
   */
   async load(dataset) {
-		this.dataset = await loadDataset(dataset);
-	  this.dataTensor = tf.tensor2d(this.dataset);
-	  this.dataset.forEach(d => {
-	  	const tensors = tf.tensor1d(Object.values(d));
-	  	d.tensor = tensors;
-	  });
-	  this.centroids = tf.tensor2d(randomSample(this.dataset, this.k, false));
-	  this.fit();
-	  return this;
+    this.dataset = await loadDataset(dataset);
+    this.dataTensor = tf.tensor2d(this.dataset);
+    this.dataset.forEach(d => {
+      const tensors = tf.tensor1d(Object.values(d));
+      d.tensor = tensors;
+    });
+    this.centroids = tf.tensor2d(randomSample(this.dataset, this.k, false));
+    this.fit();
+    return this;
   }
 
   /**
@@ -115,7 +115,7 @@ class KMeans {
  * @param {string || array || object} inputData 
  */
   closestCentroid(dataTensor) {
-  	const dist = this.centroids.squaredDifference(dataTensor).sum(1).sqrt();
+    const dist = this.centroids.squaredDifference(dataTensor).sum(1).sqrt();
     const minCentroid = dist.argMin().arraySync();
     return minCentroid;
   }
@@ -125,8 +125,8 @@ class KMeans {
   * @param {array || object} value 
   */
   classify(value) {
-  	// input must be array or object
-  	const valueTensor = tf.tensor1d(Object.values(value));
+    // input must be array or object
+    const valueTensor = tf.tensor1d(Object.values(value));
     const minCentroid = this.closestCentroid(valueTensor);
     return minCentroid;
   }
