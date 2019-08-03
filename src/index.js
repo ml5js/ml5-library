@@ -29,11 +29,11 @@ import kmeans from './KMeans';
 
 const withPreload = {
   charRNN,
-  kmeans,
   CVAE,
   DCGAN,
   featureExtractor,
   imageClassifier,
+  kmeans,
   soundClassifier,
   pitchDetection,
   pix2pix,
