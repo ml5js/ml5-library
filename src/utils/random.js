@@ -37,7 +37,7 @@ const randomGaussian = (mean = 0, sd = 1) => {
   return (y1 * sd) + mean;
 };
 
-// Returns a random sample (either with or without replacement) from an array
+// Returns a random sample (either with or without replacement) of size k from an array
 const randomSample = (arr, k, withReplacement = false) => {
   let sample;
   if (withReplacement === true) {  // sample with replacement

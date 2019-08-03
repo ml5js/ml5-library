@@ -3,13 +3,9 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-/* eslint class-methods-use-this: ["error", { "exceptMethods": ["getInitialCentroids"] }] */
 /* eslint "no-param-reassign": [2, { "props": false }] */
 /*
-KMeans
-This class provides the following unsupervised clustering methods:
-- K-Means
-More will be added.
+K-Means Algorithm (with Euclidian distance).
 */
 
 import * as tf from '@tensorflow/tfjs';
@@ -17,16 +13,26 @@ import callCallback from '../utils/callcallback';
 import { randomSample } from '../utils/random';
 
 const DEFAULTS = {
+  'k': 3,
 	'maxIter': 5,
 	'threshold': 0.5,
 };
 
-async function readCsv(url) {
-	const myCsv = tf.data.csv(url);
+/**
+ * Read in a csv file from a path to its location.
+ * @param {string} path 
+ */
+async function readCsv(path) {
+	const myCsv = tf.data.csv(path);
 	const loadedData = await myCsv.toArray();
 	return loadedData;
 }
 
+/**
+ * Load and flatten an array of arrays, an array of objects, or a string
+ *   path to a csv.
+ * @param {string || array || object} inputData 
+ */
 async function loadDataset(inputData) {
 	let data;
 	if (typeof inputData === 'string') {
@@ -42,14 +48,28 @@ async function loadDataset(inputData) {
 
 
 class KMeans {
-
+  /**
+  * Create a K-Means.
+  * @param {String || array || object} dataset - The dataset to cluster.
+  * @param {options} options - Optional. An object describing a model's parameters:
+  *    - k: number of clusters
+  *    - maxIter: Max number of iterations to try before forcing convergence.
+  *    - threshold: Threshold for updated centriod distance before declaring convergence.
+  * @param {function} callback  - Optional. A callback to be called once 
+  *    the model has loaded. If no callback is provided, it will return a 
+  *    promise that will be resolved once the model has loaded.
+  */
 	constructor(dataset, options, callback) {
-	    this.k = options.k;
-	    this.maxIter = options.maxIter || DEFAULTS.maxIter;
-	    this.threshold = options.threshold || DEFAULTS.threshold;
-			this.ready = callCallback(this.load(dataset), callback);
+    this.k = options.k;
+    this.maxIter = options.maxIter || DEFAULTS.maxIter;
+    this.threshold = options.threshold || DEFAULTS.threshold;
+		this.ready = callCallback(this.load(dataset), callback);
   }
 
+  /**
+  * Load dataset, find initial centroids, and run model.
+  * @param {string || array || object} dataset 
+  */
   async load(dataset) {
 		this.dataset = await loadDataset(dataset);
 	  this.dataTensor = tf.tensor2d(this.dataset);
@@ -59,27 +79,28 @@ class KMeans {
 	  });
 	  this.centroids = tf.tensor2d(randomSample(this.dataset, this.k, false));
 	  this.fit();
-	  console.log('final centroids:')
-	  this.centroids.print()
 	  return this;
   }
 
+  /**
+  * Run K-Means algorithm.
+  */
   fit() {
     this.getClosestCentroids()
     this.recenterCentroids();
     let centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
-    console.log(centroidDistance);
     let iteration = 0;
     while(centroidDistance > this.threshold &&  iteration < this.maxIter) {
       this.getClosestCentroids();
       this.recenterCentroids();
       centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
       iteration += 1;
-      console.log('iteration: ', iteration)
-      console.log('centroidDistance: ', centroidDistance)
     }
   }
 
+  /**
+  * Find closest centroids to each observation and store as attribute.
+  */
   getClosestCentroids() {
     // find closest initial tensor
     this.dataset.forEach(d => {
@@ -88,19 +109,31 @@ class KMeans {
     })
   }
 
+  /**
+ * Load and flatten an array of arrays, an array of objects, or a string
+ *   path to a csv.
+ * @param {string || array || object} inputData 
+ */
   closestCentroid(dataTensor) {
   	const dist = this.centroids.squaredDifference(dataTensor).sum(1).sqrt();
     const minCentroid = dist.argMin().arraySync();
     return minCentroid;
   }
 
+  /**
+  * Assing `value` to a cluster.
+  * @param {array || object} value 
+  */
   classify(value) {
   	// input must be array or object
   	const valueTensor = tf.tensor1d(Object.values(value));
     const minCentroid = this.closestCentroid(valueTensor);
     return minCentroid;
   }
-
+  
+  /**
+  * Recenter each centroid.
+  */
   recenterCentroids() {
     // store previous run's centroids for convergence
     this.centroidsOld = this.centroids;
@@ -121,15 +154,19 @@ class KMeans {
     }))
   }
 
-  static getEuclidianDistance(arr1, arr2) {
+  /**
+  * Calculate the Euclidian distance between two tensors.
+  * @param {tf.tensor} tensor1 
+  * @param {tf.tensor} tensor2
+  */
+  static getEuclidianDistance(tensor1, tensor2) {
     // calculate euclidian distance between two arrays
     const distTensor = tf.tidy(() => {
-      const distance = tf.squaredDifference(arr1, arr2).sum().sqrt();
+      const distance = tf.squaredDifference(tensor1, tensor2).sum().sqrt();
       return distance.dataSync()
     })
     return distTensor[0];
   }
-
 }
 
 const kmeans = (dataset, options, callback) => new KMeans(dataset, options, callback);
