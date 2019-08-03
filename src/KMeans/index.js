@@ -19,9 +19,9 @@ const DEFAULTS = {
 };
 
 /**
- * Read in a csv file from a path to its location.
- * @param {string} path 
- */
+* Read in a csv file from a path to its location.
+* @param {string} path 
+*/
 async function readCsv(path) {
   const myCsv = tf.data.csv(path);
   const loadedData = await myCsv.toArray();
@@ -29,10 +29,10 @@ async function readCsv(path) {
 }
 
 /**
- * Load and flatten an array of arrays, an array of objects, or a string
- *   path to a csv.
- * @param {string || array || object} inputData 
- */
+* Load and flatten an array of arrays, an array of objects, or a string
+*   path to a csv.
+* @param {string || array || object} inputData 
+*/
 async function loadDataset(inputData) {
   let data;
   if (typeof inputData === 'string') {
