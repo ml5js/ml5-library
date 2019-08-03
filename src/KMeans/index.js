@@ -51,7 +51,7 @@ class KMeans {
   /**
   * Create a K-Means.
   * @param {String || array || object} dataset - The dataset to cluster.
-  * @param {options} options - Optional. An object describing a model's parameters:
+  * @param {options} options - An object describing a model's parameters:
   *    - k: number of clusters
   *    - maxIter: Max number of iterations to try before forcing convergence.
   *    - threshold: Threshold for updated centriod distance before declaring convergence.
@@ -60,7 +60,7 @@ class KMeans {
   *    promise that will be resolved once the model has loaded.
   */
   constructor(dataset, options, callback) {
-    this.k = options.k;
+    this.k = options.k || DEFAULTS.k;
     this.maxIter = options.maxIter || DEFAULTS.maxIter;
     this.threshold = options.threshold || DEFAULTS.threshold;
     this.ready = callCallback(this.load(dataset), callback);
