@@ -60,9 +60,11 @@ class KMeans {
   *    promise that will be resolved once the model has loaded.
   */
   constructor(dataset, options, callback) {
-    this.k = options.k || DEFAULTS.k;
-    this.maxIter = options.maxIter || DEFAULTS.maxIter;
-    this.threshold = options.threshold || DEFAULTS.threshold;
+    this.config = {
+      k: options.k || DEFAULTS.k,
+      maxIter: options.maxIter || DEFAULTS.maxIter,
+      threshold: options.threshold || DEFAULTS.threshold
+     };
     this.ready = callCallback(this.load(dataset), callback);
   }
 
@@ -77,7 +79,7 @@ class KMeans {
       const tensors = tf.tensor1d(Object.values(d));
       d.tensor = tensors;
     });
-    this.centroids = tf.tensor2d(randomSample(this.dataset, this.k, false));
+    this.centroids = tf.tensor2d(randomSample(this.dataset, this.config.k, false));
     this.fit();
     return this;
   }
@@ -90,7 +92,7 @@ class KMeans {
     this.recenterCentroids();
     let centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
     let iteration = 0;
-    while(centroidDistance > this.threshold &&  iteration < this.maxIter) {
+    while(centroidDistance > this.config.threshold &&  iteration < this.congif.maxIter) {
       this.getClosestCentroids();
       this.recenterCentroids();
       centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
