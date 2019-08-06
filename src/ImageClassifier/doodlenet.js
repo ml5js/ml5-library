@@ -15,9 +15,15 @@ const DEFAULTS = {
 function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement || img instanceof HTMLCanvasElement) {
+    if (img instanceof HTMLImageElement 
+      || img instanceof HTMLVideoElement 
+      || img instanceof HTMLCanvasElement
+      || img instanceof ImageData) {
       image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement || img.elt instanceof HTMLCanvasElement)) {
+    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement 
+      || img.elt instanceof HTMLVideoElement 
+      || img.elt instanceof HTMLCanvasElement
+      || img.elt instanceof ImageData)) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image, video and canvas.
     }
   } else {
