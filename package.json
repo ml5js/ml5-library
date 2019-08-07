@@ -18,7 +18,7 @@
     "test-travis": "./scripts/test-travis.sh",
     "release:new": "node ./scripts/release.js && npm run release:push",
     "release:push": "npm install && npm run build && git checkout -b v$npm_package_version && git add . && git commit -m 'bumps version' && git push origin v$npm_package_version",
-    "release:publish": "npm install && npm run build && npm publish"
+    "release:publish": "npm install && npm run build && git tag v$npm_package_version && git push --tags && npm publish"
   },
   "repository": {
     "type": "git",
