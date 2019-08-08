@@ -92,7 +92,7 @@ class KMeans {
     this.recenterCentroids();
     let centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
     let iteration = 0;
-    while(centroidDistance > this.config.threshold &&  iteration < this.congif.maxIter) {
+    while(centroidDistance > this.config.threshold &&  iteration < this.config.maxIter) {
       this.getClosestCentroids();
       this.recenterCentroids();
       centroidDistance = KMeans.getEuclidianDistance(this.centroids, this.centroidsOld);
