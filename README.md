@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-56-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-57-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -167,6 +167,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://davebsoft.com"><img src="https://avatars0.githubusercontent.com/u/55099?v=4" width="100px;" alt="Dave Briccetti"/><br /><sub><b>Dave Briccetti</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Adcbriccetti" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/Sblob1"><img src="https://avatars0.githubusercontent.com/u/38335473?v=4" width="100px;" alt="Sblob1"/><br /><sub><b>Sblob1</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3ASblob1" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://www.jwilber.me/"><img src="https://avatars2.githubusercontent.com/u/8595819?v=4" width="100px;" alt="Jared Wilber"/><br /><sub><b>Jared Wilber</b></sub></a><br /><a href="#example-jwilber" title="Examples">💡</a> <a href="#ideas-jwilber" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ml5js/ml5-library/commits?author=jwilber" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/tezzutezzu"><img src="https://avatars2.githubusercontent.com/u/135866?v=4" width="100px;" alt="danilo"/><br /><sub><b>danilo</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=tezzutezzu" title="Code">💻</a> <a href="#ideas-tezzutezzu" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
