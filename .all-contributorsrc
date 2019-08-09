@@ -596,6 +596,17 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "jwilber",
+      "name": "Jared Wilber",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8595819?v=4",
+      "profile": "https://www.jwilber.me/",
+      "contributions": [
+        "example",
+        "ideas",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
