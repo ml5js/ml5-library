@@ -253,6 +253,82 @@ We’re still rolling out all of our unit tests, but if you want to contribute t
 
 This last one is case sensitive!
 
+
+## Making Releases (For the ml5 core team)
+
+Work in progress - we are working on making a few scripts to make it easier to make releases and deployments. For now, to address the long-winded process noted in https://github.com/ml5js/ml5-library/issues/387, we are experimenting with some devOps scripts.
+
+In the instance you're ready to make a new release from `development` to `release`:
+
+Steps:
+
+1. `npm run release:new`
+  
+  ```
+  version=0.3.2 npm run release:new
+  ```
+
+2. Go to Github and wait for tests to pass, then `squash and merge` the newly created `v0.3.2` branch to `development`
+3. Go back to your terminal:
+
+  ```
+  git checkout development
+  git fetch
+  git pull
+  ```
+
+4. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
+5. Go back to your terminal:
+
+  ```
+  git checkout release
+  git fetch
+  git pull
+  ```
+
+6. Now run our special publish script:
+
+  ```
+  npm run release:publish
+  ```
+
+7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+8. Your new npm version should be released! 
+
+Now what is important is that you: 
+
+1. go to Github and document that new release with `release notes`.
+2. go to `ml5-examples` and make sure you have the latest development branch stuff:
+
+  ```
+  git checkout development
+  git fetch
+  git pull
+  ```
+
+3. then make a new branch for deployment e.g. `new-release-v0.3.2` and update the ml5 references on all examples:
+
+  ```
+  git checkout -b new-release-v0.3.2
+  npm run update-ml5 0.3.2
+  git add .
+  git commit -m "update examples to v0.3.2"
+  ```
+
+4. Fix any merge conflicts if necessary
+
+  ```
+  git push origin new-release-v0.3.2
+  git tag v0.3.2
+  git push --tags
+  ```
+
+5. Merge `new-release-v0.3.2` with `release`
+6. Add release notes to the latest release
+7. Merge `release` with `master` (for the github pages & website)
+
+
+
 ## Additional Resources
 
 - [How to Contribute to an Open Source Project on GitHub](https://egghead.io/courses/how-to-contribute-to-an-open-source-project-on-github)
