@@ -16,7 +16,7 @@ import { imgToTensor } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   mobilenet: {
-    version: 1,
+    version: 2,
     alpha: 1.0,
     topk: 3,
   },
@@ -76,7 +76,8 @@ class ImageClassifier {
    */
   async loadModel(modelUrl) {
     if (modelUrl) this.model = await this.loadModelFrom(modelUrl);
-    else this.model = await this.modelToUse.load(this.version, this.alpha);
+    else this.model = await this.modelToUse.load({version: this.version, alpha: this.alpha});
+    
     return this;
   }
 
