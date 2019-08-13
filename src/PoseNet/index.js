@@ -14,6 +14,7 @@ import * as posenet from '@tensorflow-models/posenet';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
+  architecture: 'MobileNetV1',
   imageScaleFactor: 0.3,
   outputStride: 16,
   flipHorizontal: false,
@@ -22,12 +23,15 @@ const DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'multiple',
+  inputResolution: 257,
   multiplier: 0.75,
 };
 
 class PoseNet extends EventEmitter {
   /**
    * @typedef {Object} options
+   * @property {string} architecture - default 'MobileNetV1',
+   * @property {number} inputResolution - default 257,
    * @property {number} imageScaleFactor - default 0.3
    * @property {number} outputStride - default 16
    * @property {boolean} flipHorizontal - default false
@@ -55,6 +59,7 @@ class PoseNet extends EventEmitter {
      * @type {String}
      * @public
      */
+    this.architecture = options.architecture || DEFAULTS.architecture;
     this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
@@ -62,12 +67,13 @@ class PoseNet extends EventEmitter {
     this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
+    this.inputResolution = options.inputResolution || DEFAULTS.inputResolution;
     this.ready = callCallback(this.load(), callback);
     // this.then = this.ready.then;
   }
 
   async load() {
-    this.net = await posenet.load(this.multiplier);
+    this.net = await posenet.load();
 
     if (this.video) {
       if (this.video.readyState === 0) {
