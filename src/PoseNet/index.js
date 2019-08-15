@@ -23,8 +23,9 @@ const DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'multiple',
-  inputResolution: 257,
+  inputResolution: 513,
   multiplier: 0.75,
+  quantBytes: 2
 };
 
 class PoseNet extends EventEmitter {
@@ -40,7 +41,8 @@ class PoseNet extends EventEmitter {
    * @property {number} scoreThreshold - default 0.5
    * @property {number} nmsRadius - default 20
    * @property {String} detectionType - default single
-   * @property {multiplier} nmsRadius - default 0.75
+   * @property {multiplier} nmsRadius - default 0.75,
+   * @property {multiplier} quantBytes - default 2,
    */
   /**
    * Create a PoseNet model.
@@ -68,12 +70,31 @@ class PoseNet extends EventEmitter {
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.inputResolution = options.inputResolution || DEFAULTS.inputResolution;
+    this.quantBytes = options.quantBytes || DEFAULTS.quantBytes;
     this.ready = callCallback(this.load(), callback);
     // this.then = this.ready.then;
   }
 
   async load() {
-    this.net = await posenet.load();
+    let modelJson;
+    if(this.architecture.toLowerCase() === 'mobilenetv1'){
+      modelJson = {
+        architecture: this.architecture,
+        outputStride: this.outputStride,
+        inputResolution: this.inputResolution,
+        multiplier: this.multiplier,
+        quantBytes: this.quantBytes
+      }
+    } else {
+      modelJson = {
+        architecture: this.architecture,
+        outputStride: this.outputStride,
+        inputResolution: this.inputResolution,
+        quantBytes: this.quantBytes
+      }
+    }
+
+    this.net = await posenet.load(modelJson);
 
     if (this.video) {
       if (this.video.readyState === 0) {
@@ -139,7 +160,7 @@ class PoseNet extends EventEmitter {
   async singlePose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
-    const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    const pose = await this.net.estimateSinglePose(input, {flipHorizontal: this.flipHorizontal});
     const poseWithParts = this.mapParts(pose);
     const result = [{ pose:poseWithParts, skeleton: this.skeleton(pose.keypoints) }];
     this.emit('pose', result);
@@ -164,7 +185,13 @@ class PoseNet extends EventEmitter {
   async multiPose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
-    const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    const poses = await this.net.estimateMultiplePoses(input, {
+      flipHorizontal: this.flipHorizontal,
+      maxDetections: this.maxPoseDetections,
+      scoreThreshold: this.scoreThreshold,
+      nmsRadius: this.nmsRadius
+    });
+
     const posesWithParts = poses.map(pose => (this.mapParts(pose)));
     const result = posesWithParts.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
     this.emit('pose', result);
