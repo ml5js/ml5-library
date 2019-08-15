@@ -68,9 +68,11 @@ class PoseNet extends EventEmitter {
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
+    this.maxPoseDetections = options.maxPoseDetections || DEFAULTS.maxPoseDetections;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
     this.inputResolution = options.inputResolution || DEFAULTS.inputResolution;
     this.quantBytes = options.quantBytes || DEFAULTS.quantBytes;
+    this.nmsRadius = options.nmsRadius || DEFAULTS.nmsRadius;
     this.ready = callCallback(this.load(), callback);
     // this.then = this.ready.then;
   }
