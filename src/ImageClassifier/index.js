@@ -120,11 +120,13 @@ class ImageClassifier {
       });
     }
 
+    // Process the images
+    const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
+    const processedImg = imgToTensor(imgToPredict, imageResize);
+
     if (this.modelUrl) {
       await tf.nextFrame();
       const predictedClasses = tf.tidy(() => {
-        const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
-        const processedImg = imgToTensor(imgToPredict, imageResize);
         const predictions = this.model.predict(processedImg);
         return Array.from(predictions.as1D().dataSync());
       });
@@ -137,8 +139,9 @@ class ImageClassifier {
       }).sort((a, b) => b.confidence - a.confidence);
       return results;
     }
+
     return this.model
-      .classify(imgToPredict, numberOfClasses)
+      .classify(processedImg, numberOfClasses)
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
   }
 
