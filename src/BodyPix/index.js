@@ -14,7 +14,7 @@
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
-import * as p5Utils from '../utils/p5Utils';
+import p5Utils from '../utils/p5Utils';
 
 const DEFAULTS = {
     "multiplier": 0.75,
@@ -298,6 +298,7 @@ class BodyPix {
      * @return {Object} a result object with maskBackground, maskPerson, raw
      */
     async segmentInternal(imgToSegment, segmentationOptions) {
+
         await this.ready;
         await tf.nextFrame();
 
