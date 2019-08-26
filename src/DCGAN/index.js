@@ -10,7 +10,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import * as p5Utils from '../utils/p5Utils';
+import  p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
 
@@ -139,7 +139,6 @@ class DCGANBase {
 }
 
 const DCGAN = (modelPath, cb) => {
-
     if (typeof modelPath !== 'string') {
         throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
