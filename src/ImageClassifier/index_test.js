@@ -13,7 +13,7 @@ const DEFAULTS = {
   batchSize: 0.4,
   topk: 3,
   alpha: 1,
-  version: 1,
+  version: 2,
 };
 
 describe('imageClassifier', () => {

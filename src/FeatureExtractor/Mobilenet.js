@@ -18,7 +18,7 @@ import callCallback from '../utils/callcallback';
 const IMAGE_SIZE = 224;
 const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
-  version: 1,
+  version: 2,
   alpha: 0.25,
   topk: 3,
   learningRate: 0.0001,
@@ -41,11 +41,11 @@ const MODEL_INFO = {
   },
   2: {
     0.50:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/2',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/3',
     0.75:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/2',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/3',
     1.00:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/2'
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/3'
   }
 };
 
@@ -336,10 +336,16 @@ class Mobilenet {
     let imgToPredict;
     let callback;
 
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLCanvasElement) {
+    if (inputOrCallback instanceof HTMLImageElement 
+      || inputOrCallback instanceof HTMLVideoElement 
+      || inputOrCallback instanceof HTMLCanvasElement
+      || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' &&
-      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLCanvasElement)) {
+      (inputOrCallback.elt instanceof HTMLImageElement 
+        || inputOrCallback.elt instanceof HTMLVideoElement 
+        || inputOrCallback.elt instanceof HTMLCanvasElement
+        || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
@@ -385,10 +391,16 @@ class Mobilenet {
   async predict(inputOrCallback, cb) {
     let imgToPredict;
     let callback;
-    if (inputOrCallback instanceof HTMLImageElement || inputOrCallback instanceof HTMLVideoElement || inputOrCallback instanceof HTMLCanvasElement) {
+    if (inputOrCallback instanceof HTMLImageElement 
+      || inputOrCallback instanceof HTMLVideoElement 
+      || inputOrCallback instanceof HTMLCanvasElement
+      || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' &&
-      (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement || inputOrCallback.elt instanceof HTMLCanvasElement)) {
+      (inputOrCallback.elt instanceof HTMLImageElement 
+        || inputOrCallback.elt instanceof HTMLVideoElement 
+        || inputOrCallback.elt instanceof HTMLCanvasElement
+        || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
@@ -520,9 +532,15 @@ class Mobilenet {
   infer(input, endpoint) {
     let imgToPredict;
     let endpointToPredict;
-    if (input instanceof HTMLImageElement || input instanceof HTMLVideoElement || input instanceof HTMLCanvasElement || input instanceof ImageData) {
+    if (input instanceof HTMLImageElement 
+      || input instanceof HTMLVideoElement 
+      || input instanceof HTMLCanvasElement 
+      || input instanceof ImageData) {
       imgToPredict = input;
-    } else if (typeof input === 'object' && (input.elt instanceof HTMLImageElement || input.elt instanceof HTMLVideoElement || input.elt instanceof HTMLCanvasElement)) {
+    } else if (typeof input === 'object' && (input.elt instanceof HTMLImageElement 
+      || input.elt instanceof HTMLVideoElement 
+      || input.elt instanceof HTMLCanvasElement
+      || input.elt instanceof ImageData)) {
       imgToPredict = input.elt; // p5.js image/canvas/video element
     } else {
       throw new Error('No input image found.');

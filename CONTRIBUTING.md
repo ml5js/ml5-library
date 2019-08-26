@@ -13,17 +13,17 @@ ml5.js is comprised a number of sister repositories which you can find at the [m
   + [ml5-examples](https://github.com/ml5js/ml5-examples)
     * the ml5-examples repo showcases the functionality of the ml5-library. When submitting new features or updates to the ml5 library, you should also make a pull request to the ml5-examples repo to showcase how your new feature works. Usually examples are submitted in a simple p5.js sketch, but they can also be in vanilla javascript.
   + [ml5-website](https://github.com/ml5js/ml5-website)
-    * the ml5-website is what you see here: https://ml5js.org/. As we make changes to the ml5 API and examples, the website also needs to be updated. For now, we're working with a manual process to updating changes, but we're working on development processes to help sync all these efforts. For now, make sure to update the ml5-examples and ml5-website when making changes to ml5-library and vice-versa. 
+    * the ml5-website is what you see here: https://ml5js.org/. As we make changes to the ml5 API and examples, the website also needs to be updated. For now, we're working with a manual process to updating changes, but we're working on development processes to help sync all these efforts. For now, make sure to update the ml5-examples and ml5-website when making changes to ml5-library and vice-versa.
 - **Data and models**:
   + [ml5-data-and-models](https://github.com/ml5js/ml5-data-and-models)
     * This repository stores data sets and pre-trained models you can use in ml5.js.
   + [pix2pix_models](https://github.com/ml5js/pix2pix_models):
-    * A collection of pix2pix models 
+    * A collection of pix2pix models
 + **Training your own models**:
   + [training-lstm](https://github.com/ml5js/training-lstm)
     * Multi-layer Recurrent Neural Networks (LSTM, RNN) for character-level language models in Python using Tensorflow and modified to work with tensorflow.js and ml5js
   + [training-word2vec](https://github.com/ml5js/training-word2vec)
-    * How to train your own word2vec model for use with ml5.js 
+    * How to train your own word2vec model for use with ml5.js
   + [training-styletransfer](https://github.com/ml5js/training-styletransfer)
     * This repository contains a slightly modified version of Fast Style Transfer in TensorFlow. It trains a neural network on the style of any image you provide it and outputs a model you can use in ml5.js with the ml5.styleTransfer() method.
   + [training-pix2pix](https://github.com/ml5js/training-pix2pix)
@@ -61,7 +61,7 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 If you want to help develop this library, here are the steps to get started:
 
 
-### Setup 
+### Setup
 
 We use node.js as our development environment for bundling code, running tests, and more. If you've never used node.js before, here's the steps to get node up and running on your machine. Installation requirements differ according to your computer's operating system. Please refer to the correct setup section for your specific environment
 
@@ -73,7 +73,7 @@ We use node.js as our development environment for bundling code, running tests, 
 
 #### For macOS Users
 
-For mac users, we recommend installing nodejs through homebrew which is a package manager. Even further, we recommend installing nodejs using nvm which is a node version manager so that you can install different versions of nodejs and switch between them. You can skip all that and use install nodejs - https://nodejs.org/en/download/ - but we do recommend using homebrew, etc. 
+For mac users, we recommend installing nodejs through homebrew which is a package manager. Even further, we recommend installing nodejs using nvm which is a node version manager so that you can install different versions of nodejs and switch between them. You can skip all that and use install nodejs - https://nodejs.org/en/download/ - but we do recommend using homebrew, etc.
 
 This is how you can do this:
 
@@ -159,12 +159,12 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
     ```
     ![image of terminal window with webpack message](/assets/ml5-webpack-build.png)
     ![localhost:8080/ml5.js shows compiled library](/assets/ml5-localhost.png)
-    
+
     If you see this message, it means the project is actively being built by Webpack's `webpack-dev-server`. Any changes you make to any file in the `/src` folder will automatically rebuild the `ml5.js` and `ml5.min.js` libraries as long as the server continues to run.
 
 4. Develop!
 
-	Run this command from the root of the project:
+  Run this command from the root of the project:
 
   ```bash
   npm run manual-test
@@ -235,11 +235,99 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
 
   Just be sure to add files before running commitizen!
 
-7. (OPTIONAL) Push your code and submit a Pull Request! Remember if you make a pull request on a new features or feature update you should make a parallel pull request to the ml5-examples repo so that others can use your new feature and test it out. 
+7. (OPTIONAL) Push your code and submit a Pull Request! Remember if you make a pull request on a new features or feature update you should make a parallel pull request to the ml5-examples repo so that others can use your new feature and test it out.
 
 ## Running Unit Tests
 
-WIP
+
+We’re still rolling out all of our unit tests, but if you want to contribute to their development or just test with the models that have more robust unit tests in place:
+
+ - To run all tests continuously as you update
+   ```npm run test```
+
+ - To run all tests once
+   ```npm run test:single```
+
+ - To run a test on a single model
+   ```npm run test -- --model:YourModelNameHere```
+
+This last one is case sensitive!
+
+
+## Making Releases (For the ml5 core team)
+
+Work in progress - we are working on making a few scripts to make it easier to make releases and deployments. For now, to address the long-winded process noted in https://github.com/ml5js/ml5-library/issues/387, we are experimenting with some devOps scripts.
+
+In the instance you're ready to make a new release from `development` to `release`:
+
+Steps:
+
+1. `npm run release:new`
+  
+  ```
+  version=0.3.2 npm run release:new
+  ```
+
+2. Go to Github and wait for tests to pass, then `squash and merge` the newly created `v0.3.2` branch to `development`
+3. Go back to your terminal:
+
+  ```
+  git checkout development
+  git fetch
+  git pull
+  ```
+
+4. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
+5. Go back to your terminal:
+
+  ```
+  git checkout release
+  git fetch
+  git pull
+  ```
+
+6. Now run our special publish script:
+
+  ```
+  npm run release:publish
+  ```
+
+7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+8. Your new npm version should be released! 
+
+Now what is important is that you: 
+
+1. go to Github and document that new release with `release notes`.
+2. go to `ml5-examples` and make sure you have the latest development branch stuff:
+
+  ```
+  git checkout development
+  git fetch
+  git pull
+  ```
+
+3. then make a new branch for deployment e.g. `new-release-v0.3.2` and update the ml5 references on all examples:
+
+  ```
+  git checkout -b new-release-v0.3.2
+  npm run update-ml5 0.3.2
+  git add .
+  git commit -m "update examples to v0.3.2"
+  ```
+
+4. Fix any merge conflicts if necessary
+
+  ```
+  git push origin new-release-v0.3.2
+  git tag v0.3.2
+  git push --tags
+  ```
+
+5. Merge `new-release-v0.3.2` with `release`
+6. Add release notes to the latest release
+7. Merge `release` with `master` (for the github pages & website)
+
+
 
 ## Additional Resources
 

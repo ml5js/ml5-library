@@ -16,7 +16,7 @@ import { imgToTensor } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   mobilenet: {
-    version: 1,
+    version: 2,
     alpha: 1.0,
     topk: 3,
   },
@@ -76,7 +76,8 @@ class ImageClassifier {
    */
   async loadModel(modelUrl) {
     if (modelUrl) this.model = await this.loadModelFrom(modelUrl);
-    else this.model = await this.modelToUse.load(this.version, this.alpha);
+    else this.model = await this.modelToUse.load({version: this.version, alpha: this.alpha});
+    
     return this;
   }
 
@@ -119,11 +120,13 @@ class ImageClassifier {
       });
     }
 
+    // Process the images
+    const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
+    const processedImg = imgToTensor(imgToPredict, imageResize);
+
     if (this.modelUrl) {
       await tf.nextFrame();
       const predictedClasses = tf.tidy(() => {
-        const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
-        const processedImg = imgToTensor(imgToPredict, imageResize);
         const predictions = this.model.predict(processedImg);
         return Array.from(predictions.as1D().dataSync());
       });
@@ -136,8 +139,9 @@ class ImageClassifier {
       }).sort((a, b) => b.confidence - a.confidence);
       return results;
     }
+
     return this.model
-      .classify(imgToPredict, numberOfClasses)
+      .classify(processedImg, numberOfClasses)
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
   }
 
@@ -162,32 +166,21 @@ class ImageClassifier {
     } else if (typeof inputNumOrCallback === 'number') {
       imgToPredict = this.video;
       numberOfClasses = inputNumOrCallback;
-    } else if (inputNumOrCallback instanceof HTMLImageElement) {
+    } else if (inputNumOrCallback instanceof HTMLVideoElement
+      || inputNumOrCallback instanceof HTMLImageElement
+      || inputNumOrCallback instanceof HTMLCanvasElement
+      || inputNumOrCallback instanceof ImageData) {
       imgToPredict = inputNumOrCallback;
     } else if (
       typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLImageElement
+      (inputNumOrCallback.elt instanceof HTMLVideoElement
+        || inputNumOrCallback.elt instanceof HTMLImageElement
+        || inputNumOrCallback.elt instanceof HTMLCanvasElement
+        || inputNumOrCallback.elt instanceof ImageData)
     ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (inputNumOrCallback instanceof HTMLCanvasElement) {
-      imgToPredict = inputNumOrCallback;
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLCanvasElement
-    ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.canvas instanceof HTMLCanvasElement
-    ) {
+        imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
+    } else if (typeof inputNumOrCallback === 'object' && inputNumOrCallback.canvas instanceof HTMLCanvasElement) {
       imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
-    } else if (inputNumOrCallback instanceof HTMLVideoElement) {
-      imgToPredict = inputNumOrCallback;
-    } else if (
-      typeof inputNumOrCallback === 'object' &&
-      inputNumOrCallback.elt instanceof HTMLVideoElement
-    ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js video
     } else if (!(this.video instanceof HTMLVideoElement)) {
       // Handle unsupported input
       throw new Error(

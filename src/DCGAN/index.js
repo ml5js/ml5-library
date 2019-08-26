@@ -10,7 +10,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import * as p5Utils from '../utils/p5Utils';
+import  p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
 
@@ -57,21 +57,33 @@ class DCGANBase {
     /**
      * Generates a new image
      * @param {function} callback - a callback function handle the results of generate
+     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
      * @return {object} a promise or the result of the callback function.
      */
-    async generate(callback) {
+    async generate(callback, latentVector) {
         await this.ready;
-        return callCallback(this.generateInternal(), callback);
+        return callCallback(this.generateInternal(latentVector), callback);
     }
 
     /**
      * Computes what will become the image tensor
      * @param {number} latentDim - the number of latent dimensions to pass through
+     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
      * @return {object} a tensor
      */
-    async compute(latentDim) {
+    async compute(latentDim, latentVector) {
         const y = tf.tidy(() => {
-            const z = tf.randomNormal([1, latentDim]);
+            let z;
+            if(Array.isArray(latentVector) === false) {
+                z = tf.randomNormal([1, latentDim]);
+            }
+            else {
+                const buffer = tf.buffer([1, latentDim]);
+                for(let count = 0; count < latentDim; count+=1) {
+                    buffer.set(latentVector[count], 0, count);
+                }
+                z = buffer.toTensor();
+            }
             // TBD: should model be a parameter to compute or is it ok to reference this.model here?
             const yDim = this.model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
             return yDim;
@@ -82,13 +94,14 @@ class DCGANBase {
 
     /**
      * Takes the tensor from compute() and returns an object of the generate image data
+     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
-    async generateInternal() {
+    async generateInternal(latentVector) {
         const {
             modelLatentDim
         } = this.modelInfo;
-        const imageTensor = await this.compute(modelLatentDim);
+        const imageTensor = await this.compute(modelLatentDim, latentVector);
 
         // get the raw data from tensor
         const raw = await tf.browser.toPixels(imageTensor);
@@ -126,7 +139,6 @@ class DCGANBase {
 }
 
 const DCGAN = (modelPath, cb) => {
-
     if (typeof modelPath !== 'string') {
         throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
