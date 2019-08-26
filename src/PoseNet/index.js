@@ -14,6 +14,7 @@ import * as posenet from '@tensorflow-models/posenet';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
+  architecture: 'MobileNetV1',
   imageScaleFactor: 0.3,
   outputStride: 16,
   flipHorizontal: false,
@@ -22,12 +23,16 @@ const DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'multiple',
+  inputResolution: 513,
   multiplier: 0.75,
+  quantBytes: 2
 };
 
 class PoseNet extends EventEmitter {
   /**
    * @typedef {Object} options
+   * @property {string} architecture - default 'MobileNetV1',
+   * @property {number} inputResolution - default 257,
    * @property {number} imageScaleFactor - default 0.3
    * @property {number} outputStride - default 16
    * @property {boolean} flipHorizontal - default false
@@ -36,7 +41,8 @@ class PoseNet extends EventEmitter {
    * @property {number} scoreThreshold - default 0.5
    * @property {number} nmsRadius - default 20
    * @property {String} detectionType - default single
-   * @property {multiplier} nmsRadius - default 0.75
+   * @property {multiplier} nmsRadius - default 0.75,
+   * @property {multiplier} quantBytes - default 2,
    */
   /**
    * Create a PoseNet model.
@@ -55,19 +61,42 @@ class PoseNet extends EventEmitter {
      * @type {String}
      * @public
      */
+    this.architecture = options.architecture || DEFAULTS.architecture;
     this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
     this.minConfidence = options.minConfidence || DEFAULTS.minConfidence;
+    this.maxPoseDetections = options.maxPoseDetections || DEFAULTS.maxPoseDetections;
     this.multiplier = options.multiplier || DEFAULTS.multiplier;
+    this.inputResolution = options.inputResolution || DEFAULTS.inputResolution;
+    this.quantBytes = options.quantBytes || DEFAULTS.quantBytes;
+    this.nmsRadius = options.nmsRadius || DEFAULTS.nmsRadius;
     this.ready = callCallback(this.load(), callback);
     // this.then = this.ready.then;
   }
 
   async load() {
-    this.net = await posenet.load(this.multiplier);
+    let modelJson;
+    if(this.architecture.toLowerCase() === 'mobilenetv1'){
+      modelJson = {
+        architecture: this.architecture,
+        outputStride: this.outputStride,
+        inputResolution: this.inputResolution,
+        multiplier: this.multiplier,
+        quantBytes: this.quantBytes
+      }
+    } else {
+      modelJson = {
+        architecture: this.architecture,
+        outputStride: this.outputStride,
+        inputResolution: this.inputResolution,
+        quantBytes: this.quantBytes
+      }
+    }
+
+    this.net = await posenet.load(modelJson);
 
     if (this.video) {
       if (this.video.readyState === 0) {
@@ -133,7 +162,7 @@ class PoseNet extends EventEmitter {
   async singlePose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
-    const pose = await this.net.estimateSinglePose(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    const pose = await this.net.estimateSinglePose(input, {flipHorizontal: this.flipHorizontal});
     const poseWithParts = this.mapParts(pose);
     const result = [{ pose:poseWithParts, skeleton: this.skeleton(pose.keypoints) }];
     this.emit('pose', result);
@@ -158,7 +187,13 @@ class PoseNet extends EventEmitter {
   async multiPose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
-    const poses = await this.net.estimateMultiplePoses(input, this.imageScaleFactor, this.flipHorizontal, this.outputStride);
+    const poses = await this.net.estimateMultiplePoses(input, {
+      flipHorizontal: this.flipHorizontal,
+      maxDetections: this.maxPoseDetections,
+      scoreThreshold: this.scoreThreshold,
+      nmsRadius: this.nmsRadius
+    });
+
     const posesWithParts = poses.map(pose => (this.mapParts(pose)));
     const result = posesWithParts.map(pose => ({ pose, skeleton: this.skeleton(pose.keypoints) }));
     this.emit('pose', result);
