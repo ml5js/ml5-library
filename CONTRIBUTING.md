@@ -262,6 +262,28 @@ In the instance you're ready to make a new release from `development` to `releas
 
 Steps:
 
+1. change the version number in `package.json`
+
+```
+version: 0.3.2,
+```
+
+then
+
+```
+git add .
+git commit -m "bumps version"
+```
+
+2. update the readme
+
+```
+pversion=0.3.1 npm run release:update:readme
+```
+
+3. 
+
+<!-- 
 1. `npm run release:new`
   
   ```
@@ -325,7 +347,7 @@ Now what is important is that you:
 
 5. Merge `new-release-v0.3.2` with `release`
 6. Add release notes to the latest release
-7. Merge `release` with `master` (for the github pages & website)
+7. Merge `release` with `master` (for the github pages & website) -->
 
 
 
