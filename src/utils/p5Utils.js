@@ -22,7 +22,9 @@ class P5Util {
      * @returns {boolean} if it is in p5 
      */
     checkP5() {
-        if (typeof this.p5Instance !== 'undefined' || 
+        // typeof this.p5Instance !== 'undefined' && this.p5Instance.p5 && this.p5Instance.p5.Image && typeof this.p5Instance.p5.Image === 'function'
+        if (typeof this.p5Instance !== 'undefined' &&
+            typeof this.p5Instance.loadImage === 'function' || 
             typeof this.p5Instance.p5 !== 'undefined' &&
             typeof this.p5Instance.p5.Image !== 'undefined' &&
             typeof this.p5Instance.p5.Image === 'function') return true;
