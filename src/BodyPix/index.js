@@ -298,6 +298,7 @@ class BodyPix {
      * @return {Object} a result object with maskBackground, maskPerson, raw
      */
     async segmentInternal(imgToSegment, segmentationOptions) {
+
         await this.ready;
         await tf.nextFrame();
 
