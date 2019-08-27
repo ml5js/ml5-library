@@ -1,8 +1,10 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import modelLoader from '../utils/modelLoader';
+
 /**
-* Initializes the Sentiment demo.
-*/
+ * Initializes the Sentiment demo.
+ */
 
 const OOV_CHAR = 2;
 const PAD_CHAR = 0;
@@ -52,19 +54,32 @@ class Sentiment {
   }
 
   /**
-  * Initializes the Sentiment demo.
-  */
+   * Initializes the Sentiment demo.
+   */
 
   async loadModel(modelName) {
 
-    if (modelName.toLowerCase() === 'moviereviews') {
-
     const movieReviews = {
-      model:
-        'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json',
-      metadata:
-        'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
-    };
+      model: null,
+      metadata: null,
+    }
+    
+    if (modelName.toLowerCase() === 'moviereviews') {
+        
+      movieReviews.model = 'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json';
+      movieReviews.metadata = 'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json';
+
+    } else if(modelLoader.isAbsoluteURL(modelName) === true ) {
+      const modelPath = modelLoader.getModelPath(modelName);
+
+      movieReviews.model = `${modelPath}/model.json`;
+      movieReviews.metadata = `${modelPath}/metadata.json`;
+
+    } else {
+      console.error('problem loading model');
+      return this;
+    }
+
 
     /**
      * The model being used.
@@ -81,9 +96,6 @@ class Sentiment {
     this.wordIndex = sentimentMetadata.word_index;
     this.vocabularySize = sentimentMetadata.vocabulary_size;
 
-    } else {
-      console.error('problem loading model')
-    }
     return this;
   }
 
@@ -113,15 +125,12 @@ class Sentiment {
     const score = predictOut.dataSync()[0];
     predictOut.dispose();
 
-    return { score };
+    return {
+      score
+    };
   }
 }
 
-const sentiment = (modelName, callback) => new Sentiment( modelName, callback ) ;
+const sentiment = (modelName, callback) => new Sentiment(modelName, callback);
 
 export default sentiment;
-
-
-
-
-
