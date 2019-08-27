@@ -16,10 +16,14 @@
     "test": "./node_modules/karma/bin/karma start karma.conf.js ",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
-    "release:update:readme": "node ./scripts/updateReadme.js",
-    "release:new": "node ./scripts/release.js && npm run release:push",
-    "release:push": "npm install && npm run build && git checkout -b v$npm_package_version && git add . && git commit -m 'bumps version' && git push origin v$npm_package_version",
-    "release:publish": "npm install && npm run build && git tag v$npm_package_version && git push --tags && npm publish"
+    "update:packageVersion": "node ./scripts/updatePackageVersion.js",
+    "checkout:latest": "git checkout -b v$npm_package_version",
+    "release:prep": "npm-run-all --sequential update:packageVersion checkout:latest",
+    "update:readme": "node ./scripts/updateReadme.js",
+    "release:build": "npm install && npm run build",
+    "release:commitAndPush": "git add . && git commit -m 'bumps version and adds latest build' && git push origin v$npm_package_version",
+    "release:tag": "git tag v$npm_package_version && git push --tags",
+    "publish:npm": "npm publish"
   },
   "repository": {
     "type": "git",
@@ -61,7 +65,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-safari-launcher": "1.0.0",
     "karma-webpack": "3.0.0",
-    "npm-run-all": "4.1.2",
+    "npm-run-all": "^4.1.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
     "semantic-release": "15.0.2",

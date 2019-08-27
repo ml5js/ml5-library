@@ -262,36 +262,41 @@ In the instance you're ready to make a new release from `development` to `releas
 
 Steps:
 
-1. change the version number in `package.json`
+1. change the version number and checkout a new branch:
 
 ```
-version: 0.3.2,
+newversion=0.3.2 npm run release:prep
 ```
 
-then
-
-```
-git add .
-git commit -m "bumps version"
-```
+you'll be now in: `v0.3.2`
 
 2. update the readme
 
 ```
-pversion=0.3.1 npm run release:update:readme
+pversion=0.3.1 npm run update:readme
 ```
 
-3. 
+3. Run install & build
 
-<!-- 
-1. `npm run release:new`
-  
-  ```
-  version=0.3.2 npm run release:new
-  ```
+```
+npm run release:build
+```
 
-2. Go to Github and wait for tests to pass, then `squash and merge` the newly created `v0.3.2` branch to `development`
-3. Go back to your terminal:
+4. Add and commit and push changes
+
+```
+npm run release:commitAndPush
+```
+
+5. Add tags and push 
+
+```
+npm run release:tag
+```
+
+Go to Github and wait for tests to pass, then `squash and merge` the newly created `v0.3.2` branch to `development`;
+
+6. Go back to your terminal:
 
   ```
   git checkout development
@@ -299,8 +304,9 @@ pversion=0.3.1 npm run release:update:readme
   git pull
   ```
 
-4. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
-5. Go back to your terminal:
+7. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
+
+8. Go back to your terminal:
 
   ```
   git checkout release
@@ -308,11 +314,12 @@ pversion=0.3.1 npm run release:update:readme
   git pull
   ```
 
-6. Now run our special publish script:
 
-  ```
-  npm run release:publish
-  ```
+9. publish to npm
+
+```
+npm run publish:npm
+```
 
 7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
 8. Your new npm version should be released! 
@@ -347,8 +354,7 @@ Now what is important is that you:
 
 5. Merge `new-release-v0.3.2` with `release`
 6. Add release notes to the latest release
-7. Merge `release` with `master` (for the github pages & website) -->
-
+7. Merge `release` with `master` (for the github pages & website)
 
 
 ## Additional Resources
