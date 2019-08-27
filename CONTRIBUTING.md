@@ -299,9 +299,7 @@ Go to Github and wait for tests to pass, then `squash and merge` the newly creat
 6. Go back to your terminal:
 
   ```
-  git checkout development
-  git fetch
-  git pull
+  npm run development:sync
   ```
 
 7. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
@@ -309,9 +307,7 @@ Go to Github and wait for tests to pass, then `squash and merge` the newly creat
 8. Go back to your terminal:
 
   ```
-  git checkout release
-  git fetch
-  git pull
+  npm run release:sync
   ```
 
 
