@@ -12,8 +12,10 @@ import callCallback from '../utils/callcallback';
 import { array3DToImage } from '../utils/imageUtilities';
 import Video from '../utils/Video';
 
-const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json';
-const imageSize = 128;
+const DEFAULTS = {
+  modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
+  imageSize: 128
+}
 
 class UNET extends Video {
   /**
@@ -24,9 +26,13 @@ class UNET extends Video {
    *    that will be resolved once the model has loaded.
    */
   constructor(video, options, callback) {
-    super(video, imageSize);
+    super(video, DEFAULTS.imageSize);
     this.modelReady = false;
     this.isPredicting = false;
+    this.config = {
+      modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
+      imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize
+    };
     this.ready = callCallback(this.loadModel(), callback);
   }
 
@@ -34,7 +40,7 @@ class UNET extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadLayersModel(URL);
+    this.model = await tf.loadLayersModel(this.config.modelPath);
     this.modelReady = true;
     return this;
   }
@@ -87,7 +93,7 @@ class UNET extends Video {
     const tensor = tf.tidy(() => {
       // preprocess
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
-      const resizedImg = tf.image.resizeBilinear(tfImage, [imageSize, imageSize]);
+      const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
       const normTensor = resizedImg.div(tf.scalar(255));
 
       const batchedImage = normTensor.expandDims(0);
@@ -134,7 +140,7 @@ const uNet = (videoOr, optionsOr, cb) => {
     callback = videoOr;
   } else if (typeof videoOr === 'object') {
     options = videoOr;
-  }
+  } 
 
   if (typeof optionsOr === 'object') {
     options = optionsOr;
