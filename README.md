@@ -36,7 +36,14 @@ There are several ways you can use the ml5.js library:
 
 * If you need to use an earlier version for any reason, you can change the version number.
 
+
+
 <p id="legacy-versions">
+
+**v0.3.0**
+
+    <script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+    
 
 **v0.3.0**
 
