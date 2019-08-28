@@ -8,6 +8,7 @@ A class that extract features from Mobilenet
 */
 
 import * as tf from '@tensorflow/tfjs';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 
 import Video from './../utils/Video';
 
@@ -16,10 +17,9 @@ import { saveBlob } from '../utils/io';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 224;
-const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
-  version: 1,
-  alpha: 0.25,
+  version: 2,
+  alpha: 1.00,
   topk: 3,
   learningRate: 0.0001,
   hiddenUnits: 100,
@@ -28,6 +28,7 @@ const DEFAULTS = {
   batchSize: 0.4,
   layer: 'conv_pw_13_relu',
 };
+
 const MODEL_INFO = {
   1: {
     0.25:
@@ -41,11 +42,11 @@ const MODEL_INFO = {
   },
   2: {
     0.50:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/3',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/2',
     0.75:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/3',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/2',
     1.00:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/3'
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/2'
   }
 };
 
@@ -99,12 +100,13 @@ class Mobilenet {
   }
 
   async loadModel() {
-    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.config.version}_${this.config.alpha}_${IMAGE_SIZE}/model.json`);
-    this.model = await tf.loadGraphModel(this.url, {fromTFHub: true});
 
+    this.mobilenet = await mobilenet.load({version: this.config.version, alpha: this.config.alpha});
+    this.model = await tf.loadGraphModel(String(this.url), {fromTFHub: true});
 
     const layer = this.mobilenet.getLayer(this.config.layer);
     this.mobilenetFeatures = await tf.model({ inputs: this.mobilenet.inputs, outputs: layer.output });
+
     if (this.video) {
       await this.mobilenetFeatures.predict(imgToTensor(this.video)); // Warm up
     }
