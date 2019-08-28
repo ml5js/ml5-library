@@ -18,7 +18,7 @@ import callCallback from '../utils/callcallback';
 const IMAGE_SIZE = 224;
 const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
-  version: 2,
+  version: 1,
   alpha: 0.25,
   topk: 3,
   learningRate: 0.0001,
