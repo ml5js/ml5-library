@@ -18,7 +18,7 @@ import callCallback from '../utils/callcallback';
 const IMAGE_SIZE = 224;
 const BASE_URL = 'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v';
 const DEFAULTS = {
-  version: 2,
+  version: 1,
   alpha: 0.25,
   topk: 3,
   learningRate: 0.0001,
@@ -41,11 +41,11 @@ const MODEL_INFO = {
   },
   2: {
     0.50:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/3',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_050_224/classification/2',
     0.75:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/3',
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_075_224/classification/2',
     1.00:
-        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/3'
+        'https://tfhub.dev/google/imagenet/mobilenet_v2_100_224/classification/2'
   }
 };
 
