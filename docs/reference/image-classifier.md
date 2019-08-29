@@ -23,7 +23,7 @@ function modelLoaded() {
 }
 
 // Make a prediction with a selected image
-classifier.predict(document.getElementById('image'), function(err, results) {
+classifier.classify(document.getElementById('image'), function(err, results) {
   console.log(results);
 });
 ```

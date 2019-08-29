@@ -29,3 +29,5 @@
 * 🏗 **Contributing**
   * [Contributor Notes]()
   * [Maintainer Notes]()
+  * [Style Guide]()
+    * [Reference template](./styleguide/_reference-template.md)
