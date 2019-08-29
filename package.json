@@ -16,6 +16,7 @@
     "test": "./node_modules/karma/bin/karma start karma.conf.js ",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
+    "dev:docs": "docsify serve docs",
     "update:packageVersion": "node ./scripts/updatePackageVersion.js",
     "checkout:latest": "git checkout -b v$npm_package_version",
     "release:prep": "npm-run-all --sequential update:packageVersion checkout:latest",
