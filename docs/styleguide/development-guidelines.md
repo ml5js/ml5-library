@@ -10,6 +10,7 @@ Here are some principles that we try to uphold while developing `ml5-library`:
 | **Readibility over Fanciness** | We're all for supporting the latest and greatest, but the reality is that the maintainers of ml5 come from a wide background of skills and levels. To promote contributions from all levels, we favor more readable code than the most efficient or streamlined. |
 | **Property and function names** | A guideline drawn from Processing is that function and property names should not be more than 2 words mashed together in camelCase. We try our best to adhere to this, except in cases where were are aligning as closely as possible to the API or pretrained model we've wrapped up. This is totally TBD | 
 | **modelNames** | Our general rule of thumb is to use camelCase for models -- e.g. `ml5.bodyPix()` or `ml5.poseNet()`. In some cases, the rules aren't entirely clear, but this is what we strive for. |
+| **Indentation & Code Formatting** | The easiest thing to do here is use a code formatter. You can see our settings in the [.vscode]() file. |
 
 
 

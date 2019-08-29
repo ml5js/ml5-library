@@ -30,4 +30,5 @@
   * [Contributor Notes]()
   * [Maintainer Notes]()
   * [Style Guide]()
-    * [Reference template](./styleguide/_reference-template.md)
+    * [Reference guidelines](./styleguide/reference-guidelines.md)
+    * [Development guidelines](./styleguide/development-guidelines.md)
