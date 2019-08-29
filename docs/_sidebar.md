@@ -2,7 +2,11 @@
 
 * 🌈 **Welcome**
   * [Getting Started](/)
-  * [FAQ](/)
+  * [FAQ](/faq.md)
+* 🗺 **Tutorials**
+  * [Introduction to ml5.js](/tutorials/hello-ml5.md)
+  * [Running a local web server](/tutorials/local-web-server)
+  * [Promises and Callbacks in ml5](/tutorials/promises-and-callbacks.md)
 * 🚀 **Reference**
   * [**Image**](/)
     * [ImageClassifier](./reference/image-classifier.md)
