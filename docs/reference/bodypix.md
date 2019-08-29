@@ -11,6 +11,27 @@ As written by the developers of BodyPix:
 
 "Bodypix is an open-source machine learning model which allows for person and body-part segmentation in the browser with TensorFlow.js. In computer vision, image segmentation refers to the technique of grouping pixels in an image into semantic areas typically to locate objects and boundaries. The BodyPix model is trained to do this for a person and twenty-four body parts (parts such as the left hand, front right lower leg, or back torso). In other words, BodyPix can classify the pixels of an image into two categories: 1) pixels that represent a person and 2) pixels that represent background. It can further classify pixels representing a person into any one of twenty-four body parts."
 
+## Quickstart
+
+```js
+const bodypix = ml5.bodyPix(modelReady)
+
+function modelReady() {
+  // segment the image given
+  bodypix.segment(img, gotResults)
+}
+
+function gotImage(error, result) {
+  if (error) {
+    console.log(error);
+    return;
+  }
+  // log the result
+  console.log(result.maskBackground);
+}
+```
+
+
 ## Usage
 
 ### Initialize
@@ -131,6 +152,31 @@ const bodyPix = new ml5.bodyPix(?video, ?options, ?callback)
 
 ### Properties
 
+***
+#### .video
+> *Object*. HTMLVideoElement if given in the constructor. Otherwise it is null.
+***
+
+***
+#### .model
+> *Object*. The bodyPix model.
+***
+
+***
+#### .modelReady
+> *Boolean*. Truthy value indicating the model has loaded.
+***
+
+***
+#### .modelPath
+> *String*. The path to the model.
+***
+
+***
+#### .config
+> *Object*. The configuration options of bodyPix.
+***
+
 
 
 ### Methods
@@ -181,6 +227,12 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 ## Examples
 
+**plain javascript**
+* [Segmentation on Image]()
+* [Segmentation on Video]()
+* [SegmentationWithParts on Video]()
+
+**p5.js**
 * [Segmentation on Image]()
 * [Segmentation on Video]()
 * [SegmentationWithParts on Video]()
@@ -192,6 +244,7 @@ No demos yet - contribute one today!
 ## Tutorials
 
 No tutorials yet - contribute one today!
+
 
 ## Source Code
 
