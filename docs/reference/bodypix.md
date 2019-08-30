@@ -237,6 +237,10 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 * [Segmentation on Video]()
 * [SegmentationWithParts on Video]()
 
+**p5 web editor**
+* [Example 1]()
+* [Example 2]()
+
 ## Demo
 
 No demos yet - contribute one today!
@@ -244,6 +248,15 @@ No demos yet - contribute one today!
 ## Tutorials
 
 No tutorials yet - contribute one today!
+
+## Acknowledgements
+
+**Contributors**:
+  * Name 1
+  * Name 2
+
+**Credits**:
+  * Paper Reference | Website URL | Github Repo | Book reference | etc
 
 
 ## Source Code

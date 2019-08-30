@@ -22,3 +22,16 @@ In addition to the principles above, we try our best to write our `ml5-examples`
 | ------------- | ------------ |               
 | **Beginner friendly first**  | We try to make sure the examples are as beginner friendly as possible. For example, this means using `for loops` rather than *fancy (but lovely) javascript array methods* when possible, or sometimes doing things in multiple steps.  |
 | **With as little HTML markup as possible** | We try to focus as much of the example in javascript as possible. That being said, it is not always possible to avoid HTML markup or advantageous to do so. When possible, add elements with javascript. |
+
+
+## Valuing contributions
+
+We use the all-contributor's bot to add contributors to the various ml5-repositories. 
+
+When a community member whether it is someone who flags an issue in a helpful way, makes a PR, hosts an event or workshop, etc in a way that is considered to the ml5 team as a "contribution", we add them by posting a comment in the respective PR or github issue: 
+
+```
+@all-contributors please add @<username> for <emojikeyA> <emojikeyB> <emojikeyC>
+```
+
+All of the key words for the all-contributors bot can be found here: https://allcontributors.org/docs/en/emoji-key

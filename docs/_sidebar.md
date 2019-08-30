@@ -36,3 +36,4 @@
   * [Style Guide]()
     * [Reference guidelines](./styleguide/reference-guidelines.md)
     * [Development guidelines](./styleguide/development-guidelines.md)
+    * [Design guidelines](./styleguide/design-guidelines.md)
