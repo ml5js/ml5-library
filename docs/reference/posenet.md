@@ -262,6 +262,15 @@ No demos yet - contribute one today!
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/EA3-k9mnLHs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
+## Acknowledgements
+
+**Contributors**:
+  * Name 1
+  * Name 2
+
+**Credits**:
+  * Paper Reference | Website URL | Github Repo | Book reference | etc
+
 ## Source Code
 
 * [/src/PoseNet]()

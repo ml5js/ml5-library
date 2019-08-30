@@ -125,6 +125,18 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+
+## Acknowledgements
+
+**Contributors**:
+  * Name 1
+  * Name 2
+
+**Credits**:
+  * Paper Reference | Website URL | Github Repo | Book reference | etc
+
+
+
 ## Source Code
 
 * [/src/SketchRNN/](https://github.com/ml5js/ml5-library/tree/release/src/SketchRNN)
