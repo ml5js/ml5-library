@@ -164,6 +164,9 @@ charrnn.reset()
 * [CharRNN_Text]()
 * [CharRNN_Text_Stateful]()
 
+**p5 web editor**
+* [Example 1]()
+* [Example 2]()
 
 ## Demo
 
