@@ -242,13 +242,13 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### MagicFeature Tutorial 2 via CodingTrain
+### ml5.js Feature Extractor Classification via CodingTrain
 <iframe width="560" height="315" src="https://www.youtube.com/embed/eeO-rWYFuG0"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-### MagicFeature Tutorial 2 via CodingTrain
+### ml5.js Transfer Learning with Feature Extractor via CodingTrain
 <iframe width="560" height="315" src="https://www.youtube.com/embed/kRpZ5OqUY6Y"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-### MagicFeature Tutorial 2 via CodingTrain
+### ml5.js Feature Extractor Regression via CodingTrain
 <iframe width="560" height="315" src="https://www.youtube.com/embed/aKgq0m1YjvQ"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
