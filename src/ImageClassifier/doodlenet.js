@@ -36,7 +36,7 @@ function preProcess(img, size) {
   }
 
   const [r, g, b] = tf.split(resized, 3, 3);
-  const gray = (r.add(g).add(b)).div(tf.scalar(3)).round(); // Get average r,g,b color value and round to 0 or 1
+  const gray = (r.add(g).add(b)).div(tf.scalar(3)).floor(); // Get average r,g,b color value and round to 0 or 1
   const batched = gray.reshape([1, size, size, 1]);
   return batched;
 }
