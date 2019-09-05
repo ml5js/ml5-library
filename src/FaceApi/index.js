@@ -19,6 +19,7 @@ const DEFAULTS = {
     withLandmarks: true,
     withExpressions: true,
     withDescriptors: true,
+    minConfidence: 0.5,
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
@@ -40,6 +41,7 @@ class FaceApiBase {
         this.model = null;
         this.modelReady = false;
         this.config = {
+            minConfidence: this.checkUndefined(options.minConfidence, DEFAULTS.minConfidence),
             withLandmarks: this.checkUndefined(options.withLandmarks, DEFAULTS.withLandmarks),
             withExpressions: this.checkUndefined(options.withExpressions, DEFAULTS.withExpressions),
             withDescriptors: this.checkUndefined(options.withDescriptors, DEFAULTS.withDescriptors),
@@ -82,11 +84,14 @@ class FaceApiBase {
         } = this.config.MODEL_URLS;
 
         this.model = faceapi;
-        await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
+        
+        const SsdMobilenetv1Options = this.model.SsdMobilenetv1Options({ minConfidence: this.minConfidence })
+        await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model, SsdMobilenetv1Options)
         await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
         // await this.model.loadFaceLandmarkTinyModel(FaceLandmark68TinyNet) 
         await this.model.loadFaceRecognitionModel(FaceRecognitionModel)
         await this.model.loadFaceExpressionModel(FaceExpressionModel)
+        
         this.modelReady = true;
         return this;
     }
