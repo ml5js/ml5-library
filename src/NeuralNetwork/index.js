@@ -13,6 +13,7 @@ import { saveBlob } from '../utils/io';
 
 const DEFAULTS = {
   activation: 'sigmoid',
+  debug: true
 }
 
 class NeuralNetwork {
@@ -22,6 +23,10 @@ class NeuralNetwork {
    */
   constructor(options) {
     // TODO: create the model based on many more options and defaults
+
+    this.config = {
+      debug: options.debug || DEFAULTS.debug,
+    }
 
     const inputUnits = options.input || 2;
     const hiddenUnits = Math.floor(inputUnits / 2) + 1;
