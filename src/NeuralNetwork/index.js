@@ -9,11 +9,23 @@ Generic NeuralNetwork class
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import { saveBlob } from '../utils/io';
+import {
+  saveBlob
+} from '../utils/io';
 
 const DEFAULTS = {
-  activation: 'sigmoid',
-  debug: true
+  task: 'regression',
+  // activation: 'sigmoid',
+  activationHidden: 'sigmoid',
+  activationOutput: 'sigmoid',
+  debug: true,
+  learningRate: 0.25,
+  outputUnits: 1,
+  hiddenUnits: 1,
+  inputUnits: 2,
+  modelMetrics: ['accuracy'],
+  modelLoss: 'meanSquaredError',
+  modelOptimizer: null
 }
 
 class NeuralNetwork {
@@ -25,39 +37,76 @@ class NeuralNetwork {
     // TODO: create the model based on many more options and defaults
 
     this.config = {
+      task: options.task || DEFAULTS.task,
       debug: options.debug || DEFAULTS.debug,
+      // activation: options.activation || DEFAULTS.activation,
+      activationHidden:  options.activationHidden || DEFAULTS.activationHidden,
+      activationOutput:  options.activationOutput || DEFAULTS.activationOutput,
+      inputUnits: options.inputs || DEFAULTS.inputUnits,
+      outputUnits: options.outputs || DEFAULTS.outputUnits,
+      hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
+      learningRate: options.outputs || DEFAULTS.learningRate,
+      modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
+      modelLoss: options.modelLoss || DEFAULTS.modelLoss,
+      modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
     }
 
-    const inputUnits = options.input || 2;
-    const hiddenUnits = Math.floor(inputUnits / 2) + 1;
-    const outputUnits = options.output || 1;
-    const activation = options.activation || DEFAULTS.activation;
-
-    this.model = tf.sequential();
-    const hidden = tf.layers.dense({
-      units: hiddenUnits,
-      inputShape: [inputUnits],
-      activation,
-    });
-    const output = tf.layers.dense({
-      units: outputUnits,
-      activation,
-    });
-    this.model.add(hidden);
-    this.model.add(output);
-
-    const LEARNING_RATE = 0.25;
-    const optimizer = tf.train.sgd(LEARNING_RATE);
-
-    this.model.compile({
-      optimizer,
-      loss: 'meanSquaredError',
-      metrics: ['accuracy'],
-    });
+    this.model = this.createModel();
 
     this.training_xs = [];
     this.training_ys = [];
   }
+
+  createModel() {
+    
+    switch (this.config.task) {
+      case 'regression':
+        this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
+        return this.createModelInternal();
+      case 'classification':
+
+        // Change the default activations for classifications
+        this.config.hiddenUnits = 16;
+        this.config.activationHidden = 'softmax' // 'relu', 
+        this.config.activationOutput = 'relu' // 'relu', 
+        this.config.modelLoss = 'categoricalCrossentropy' 
+        this.config.modelOptimizer = tf.train.adam();
+
+        return this.createModelInternal();
+      default:
+        console.log('no model exists for this type of task yet!');
+        return tf.sequential();
+    }
+  }
+
+  createModelInternal(){
+    const model = tf.sequential();
+    
+    const hidden = tf.layers.dense({
+      units: this.config.hiddenUnits,
+      inputShape: [this.config.inputUnits],
+      activation: this.config.activationHidden,
+    });
+
+    // TODO: figure out if we want to add in the ability to add more layers?
+    
+    const output = tf.layers.dense({
+      units: this.config.outputUnits,
+      activation: this.config.activationOutput,
+    });
+    
+    model.add(hidden);
+    model.add(output);
+
+    model.compile({
+      optimizer: this.config.modelOptimizer,
+      loss: this.config.modelLoss,
+      metrics: this.config.modelMetrics,
+    });
+
+    return model;
+  }
+
 
   addData(xs, ys) {
     this.training_xs.push(xs);
@@ -84,10 +133,17 @@ class NeuralNetwork {
       epochs: options.epochs,
       callbacks: {
         onEpochEnd: (epoch, logs) => {
-          callback(null, { status: 'training', epoch, loss: logs.loss, logs });
+          callback(null, {
+            status: 'training',
+            epoch,
+            loss: logs.loss,
+            logs
+          });
         },
         onTrainEnd: () => {
-          callback(null, { status: 'complete' });
+          callback(null, {
+            status: 'complete'
+          });
         },
       },
     });
@@ -156,14 +212,14 @@ class NeuralNetwork {
   }
 }
 
-const neuralNetwork = (inputOrOptions, output) => {
+const neuralNetwork = (inputsOrOptions, outputs) => {
   let options;
-  if (inputOrOptions instanceof Object) {
-    options = inputOrOptions;
+  if (inputsOrOptions instanceof Object) {
+    options = inputsOrOptions;
   } else {
     options = {
-      input: inputOrOptions,
-      output,
+      input: inputsOrOptions,
+      outputs,
     };
   }
 
