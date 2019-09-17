@@ -24,7 +24,7 @@ const DEFAULTS = {
   learningRate: 0.25,
   inputUnits: 2,
   outputUnits: 1,
-  noVal: 1,
+  noVal: null,
   hiddenUnits: 1,
   modelMetrics: ['accuracy'],
   modelLoss: 'meanSquaredError',
@@ -51,7 +51,7 @@ class NeuralNetwork {
       activationOutput: options.activationOutput || DEFAULTS.activationOutput,
       inputUnits: options.inputs || DEFAULTS.inputUnits,
       outputUnits: options.outputs || DEFAULTS.outputUnits,
-      noVal: options.noVal || DEFAULTS.outputs,
+      noVal: options.noVal || options.outputs,
       hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
       learningRate: options.outputs || DEFAULTS.learningRate,
       modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
@@ -192,53 +192,58 @@ class NeuralNetwork {
   }
 
 
-  // async normalize(data) {
-  //   return tf.tidy(() => {
-  //       const outputLabel = this.config.outputKeys[0];
-  //       const inputLabels = this.config.inputKeys;
-  //       // Step 1. Shuffle the data    
-  //       tf.util.shuffle(data);
+  normalize(data) {
+    return tf.tidy(() => {
+        const outputLabel = this.config.outputKeys[0];
+        const inputLabels = this.config.inputKeys;
+        // Step 1. Shuffle the data    
+        tf.util.shuffle(data);
 
-  //       // Step 2. Convert data to Tensor
-  //       // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
-  //       const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
-  //       const labels = data.map(d => d.ys[outputLabel]);
+
+        // TODO: need to test this for regression data.
         
-  //       const inputTensor = tf.tensor(inputs); 
-  //       let outputTensor;
-  //       if(this.config.task === 'classification'){
-  //         outputTensor = tf.oneHot(tf.tensor1d(labels, 'int32'), this.config.NO_VAL );
-  //       } else {
-  //         outputTensor = tf.tensor(labels);
-  //       }
+        // Step 2. Convert data to Tensor
+        // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
+        const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
+        const labels = data.map(d => d.ys[outputLabel]);
+
+        const inputTensor = tf.tensor(inputs); 
+
+        let outputTensor;
+        console.log(this.config.task)
+        if(this.config.task === 'classification'){
+          outputTensor = tf.oneHot(tf.tensor1d(labels, 'int32'), this.config.noVal );
+        } else {
+          outputTensor = tf.tensor(labels);
+        }
         
 
-  //       // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-  //       const inputMax = inputTensor.max();
-  //       const inputMin = inputTensor.min();  
-  //       const labelMax = outputTensor.max();
-  //       const labelMin = outputTensor.min();
+        // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+        const inputMax = inputTensor.max();
+        const inputMin = inputTensor.min();  
+        const labelMax = outputTensor.max();
+        const labelMin = outputTensor.min();
 
-  //       const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin)).flatten().reshape([ data.length, this.config.inputs]);
+        const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin)).flatten().reshape([ data.length, this.config.inputUnits]);
 
-  //       console.log()
-  //       const normalizedOutputs = outputTensor.sub(labelMin).div(labelMax.sub(labelMin));
+        // console.log()
+        const normalizedOutputs = outputTensor.sub(labelMin).div(labelMax.sub(labelMin));
     
-  //       // inputTensor.max(1).print();
-  //       return {
-  //           inputs: normalizedInputs, // normalizedInputs,
-  //           labels: normalizedOutputs,
-  //           // Return the min/max bounds so we can use them later.
-  //           inputMax,
-  //           inputMin,
-  //           labelMax,
-  //           labelMin,
-  //         }
+        inputTensor.max(1).print();
+        return {
+            inputs: normalizedInputs, // normalizedInputs,
+            labels: normalizedOutputs,
+            // Return the min/max bounds so we can use them later.
+            inputMax,
+            inputMin,
+            labelMax,
+            labelMin,
+          }
 
 
-  //   })
+    })
 
-  // }
+  }
 
 
   addData(xs, ys) {
