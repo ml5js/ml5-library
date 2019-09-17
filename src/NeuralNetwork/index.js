@@ -201,7 +201,7 @@ class NeuralNetwork {
 
 
         // TODO: need to test this for regression data.
-        
+
         // Step 2. Convert data to Tensor
         // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
         const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
@@ -230,6 +230,7 @@ class NeuralNetwork {
         const normalizedOutputs = outputTensor.sub(labelMin).div(labelMax.sub(labelMin));
     
         inputTensor.max(1).print();
+        
         return {
             inputs: normalizedInputs, // normalizedInputs,
             labels: normalizedOutputs,
@@ -251,43 +252,79 @@ class NeuralNetwork {
     this.training.ys.push(ys);
   }
 
-  async train(optionsOrEpochs, callback) {
-    let options;
-    if (optionsOrEpochs instanceof Object) {
-      options = optionsOrEpochs;
-    } else {
-      options = {
-        epochs: optionsOrEpochs,
-        shuffle: true,
-        validationSplit: 0.1,
-      };
-    }
-
-    const xs = tf.tensor2d(this.training.xs);
-    const ys = tf.tensor2d(this.training.ys);
-    await this.model.fit(xs, ys, {
-      shuffle: options.shuffle,
-      validationSplit: options.validationSplit,
-      epochs: options.epochs,
-      callbacks: {
-        onEpochEnd: (epoch, logs) => {
-          callback(null, {
-            status: 'training',
-            epoch,
-            loss: logs.loss,
-            logs
-          });
-        },
-        onTrainEnd: () => {
-          callback(null, {
-            status: 'complete'
-          });
-        },
-      },
-    });
-    xs.dispose();
-    ys.dispose();
+  train(inputs, labels, callback) {
+   return callCallback( this.trainInternal(inputs, labels), callback );
   }
+
+  async trainInternal(inputs, labels){
+    const {batchSize, epochs} = this.config;
+    let xs;
+    let ys;
+
+    // check if the inputs are tensors, if not, convert!
+    if( !(inputs instanceof tf.Tensor)){
+      xs = tf.tensor(inputs)
+      ys = tf.tensor(labels)
+    } else {
+      xs = inputs;
+      ys = labels;
+    }
+    
+    await this.model.fit(xs, ys, {
+        shuffle: true,
+        batchSize,
+        epochs,
+        validationSplit: 0.1,
+        callbacks:{
+            onEpochEnd: (epoch, logs) => {
+              console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+            },
+            onTrainEnd: ()=> {
+              console.log(`training complete!`);
+            }
+          },
+      });
+      xs.dispose();
+      ys.dispose();
+  }
+
+  // async trainInternal1(optionsOrEpochs, callback) {
+  //   let options;
+  //   if (optionsOrEpochs instanceof Object) {
+  //     options = optionsOrEpochs;
+  //   } else {
+  //     options = {
+  //       epochs: optionsOrEpochs,
+  //       shuffle: true,
+  //       validationSplit: 0.1,
+  //     };
+  //   }
+
+  //   const xs = tf.tensor2d(this.training.xs);
+  //   const ys = tf.tensor2d(this.training.ys);
+  //   await this.model.fit(xs, ys, {
+  //     shuffle: options.shuffle,
+  //     validationSplit: options.validationSplit,
+  //     epochs: options.epochs,
+  //     callbacks: {
+  //       onEpochEnd: (epoch, logs) => {
+  //         callback(null, {
+  //           status: 'training',
+  //           epoch,
+  //           loss: logs.loss,
+  //           logs
+  //         });
+  //       },
+  //       onTrainEnd: () => {
+  //         callback(null, {
+  //           status: 'complete'
+  //         });
+  //       },
+  //     },
+  //   });
+  //   xs.dispose();
+  //   ys.dispose();
+  // }
 
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
