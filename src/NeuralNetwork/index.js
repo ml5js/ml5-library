@@ -11,6 +11,10 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import { saveBlob } from '../utils/io';
 
+const DEFAULTS = {
+  activation: 'sigmoid',
+}
+
 class NeuralNetwork {
   /**
    * Create a Neural Network.
@@ -22,7 +26,7 @@ class NeuralNetwork {
     const inputUnits = options.input || 2;
     const hiddenUnits = Math.floor(inputUnits / 2) + 1;
     const outputUnits = options.output || 1;
-    const activation = options.activation || 'sigmoid';
+    const activation = options.activation || DEFAULTS.activation;
 
     this.model = tf.sequential();
     const hidden = tf.layers.dense({
