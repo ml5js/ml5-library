@@ -330,14 +330,40 @@ class NeuralNetwork {
     return callCallback(this.predictInternal(input), callback);
   }
 
-  async predictInternal(input) {
-    const xs = tf.tensor2d([input]);
-    const ys = this.model.predict(xs);
+  // async predictInternal(input) {
+  //   const xs = tf.tensor2d([input]);
+  //   const ys = this.model.predict(xs);
+  //   const results = {
+  //     output: await ys.data(),
+  //     tensor: ys,
+  //   };
+  //   xs.dispose();
+  //   return results;
+  // }
+
+  async  predictInternal(sample) {
+    console.log(sample)
+    const xs = tf.tensor(sample, [1,sample.length]);
+    const ys =  this.model.predict(xs);
+    
     const results = {
       output: await ys.data(),
-      tensor: ys,
-    };
+      tensor: ys
+    }
     xs.dispose();
+    
+    
+    // const maxValue = 0;
+    // let output = this.config.NO_VAL;
+
+    // for (let i = 0; i < this.config.inputUnits; i+=1) {
+    //   if (result[0][i] > maxValue) {
+    //     output = i;
+    //   }
+    // }
+
+    // return output;
+
     return results;
   }
 
