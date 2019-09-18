@@ -145,7 +145,7 @@ class NeuralNetwork {
     let options;
     if (typeof optionsOrDataUrl === 'string') {
       options = {
-        data_url: optionsOrDataUrl
+        dataUrl: optionsOrDataUrl
       }
     } else {
       options = optionsOrDataUrl;
@@ -166,7 +166,7 @@ class NeuralNetwork {
     const outputLabel = this.config.outputKeys[0];
     const inputLabels = this.config.inputKeys;
 
-    let data = await tf.data.csv(options.data_url, {
+    let data = tf.data.csv(options.dataUrl, {
       columnConfigs: {
         [outputLabel]: {
           isLabel: true
