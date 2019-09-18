@@ -248,12 +248,8 @@ class NeuralNetwork {
         labelMax,
         labelMin,
       }
-
-
-    })
-
+    });
   }
-
 
   addData(xs, ys) {
     this.training.xs.push(xs);
