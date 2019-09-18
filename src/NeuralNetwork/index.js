@@ -200,14 +200,16 @@ class NeuralNetwork {
     return data;
   }
 
+  /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
+  shuffle(data){
+      tf.util.shuffle(data);
+  }
+
 
   normalize(data) {
     return tf.tidy(() => {
       const outputLabel = this.config.outputKeys[0];
       const inputLabels = this.config.inputKeys;
-      // Step 1. Shuffle the data
-      tf.util.shuffle(data);
-
 
       // TODO: need to test this for regression data.
 
