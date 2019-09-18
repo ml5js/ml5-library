@@ -62,13 +62,11 @@ class NeuralNetwork {
     }
 
     this.model = this.createModel();
-    this.training = {
-      _xs: [],
-      _ys: []
+    this.data = {
+      xs: [],
+      ys: []
     }
 
-    // this.training_xs = [];
-    // this.training_ys = [];
   }
 
   /**
@@ -294,58 +292,12 @@ class NeuralNetwork {
     ys.dispose();
   }
 
-  // async trainInternal1(optionsOrEpochs, callback) {
-  //   let options;
-  //   if (optionsOrEpochs instanceof Object) {
-  //     options = optionsOrEpochs;
-  //   } else {
-  //     options = {
-  //       epochs: optionsOrEpochs,
-  //       shuffle: true,
-  //       validationSplit: 0.1,
-  //     };
-  //   }
-
-  //   const xs = tf.tensor2d(this.training.xs);
-  //   const ys = tf.tensor2d(this.training.ys);
-  //   await this.model.fit(xs, ys, {
-  //     shuffle: options.shuffle,
-  //     validationSplit: options.validationSplit,
-  //     epochs: options.epochs,
-  //     callbacks: {
-  //       onEpochEnd: (epoch, logs) => {
-  //         callback(null, {
-  //           status: 'training',
-  //           epoch,
-  //           loss: logs.loss,
-  //           logs
-  //         });
-  //       },
-  //       onTrainEnd: () => {
-  //         callback(null, {
-  //           status: 'complete'
-  //         });
-  //       },
-  //     },
-  //   });
-  //   xs.dispose();
-  //   ys.dispose();
-  // }
+  
 
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
   }
 
-  // async predictInternal(input) {
-  //   const xs = tf.tensor2d([input]);
-  //   const ys = this.model.predict(xs);
-  //   const results = {
-  //     output: await ys.data(),
-  //     tensor: ys,
-  //   };
-  //   xs.dispose();
-  //   return results;
-  // }
 
   async predictInternal(sample) {
     const xs = tf.tensor(sample, [1, sample.length]);
@@ -356,18 +308,6 @@ class NeuralNetwork {
       tensor: ys
     }
     xs.dispose();
-
-
-    // const maxValue = 0;
-    // let output = this.config.NO_VAL;
-
-    // for (let i = 0; i < this.config.inputUnits; i+=1) {
-    //   if (result[0][i] > maxValue) {
-    //     output = i;
-    //   }
-    // }
-
-    // return output;
 
     return results;
   }
