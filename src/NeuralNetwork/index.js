@@ -13,17 +13,17 @@ import callCallback from '../utils/callcallback';
 import {
   saveBlob
 } from '../utils/io';
+// import { input } from '@tensorflow/tfjs';
 
 
 const DEFAULTS = {
   task: 'regression',
-  // activation: 'sigmoid',
   activationHidden: 'sigmoid',
   activationOutput: 'sigmoid',
   debug: true,
   learningRate: 0.25,
-  inputUnits: 2,
-  outputUnits: 1,
+  inputs: 2,
+  outputs: 1,
   noVal: null,
   hiddenUnits: 1,
   modelMetrics: ['accuracy'],
@@ -31,8 +31,6 @@ const DEFAULTS = {
   modelOptimizer: null,
   batchSize: 64,
   epochs: 32,
-  inputKeys: [],
-  outputKeys: []
 }
 
 class NeuralNetwork {
@@ -44,13 +42,13 @@ class NeuralNetwork {
     // TODO: create the model based on many more options and defaults
 
     this.config = {
+      dataUrl: options.dataUrl || null,
       task: options.task || DEFAULTS.task,
       debug: options.debug || DEFAULTS.debug,
-      // activation: options.activation || DEFAULTS.activation,
       activationHidden: options.activationHidden || DEFAULTS.activationHidden,
       activationOutput: options.activationOutput || DEFAULTS.activationOutput,
-      inputUnits: options.inputs || DEFAULTS.inputUnits,
-      outputUnits: options.outputs || DEFAULTS.outputUnits,
+      inputs: options.inputs || DEFAULTS.inputs,
+      outputs: options.outputs || DEFAULTS.outputs,
       noVal: options.noVal || options.outputs,
       hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
       learningRate: options.outputs || DEFAULTS.learningRate,
@@ -59,15 +57,139 @@ class NeuralNetwork {
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       epochs: options.epochs || DEFAULTS.epochs,
+      meta: {
+        inputUnits: null,
+        outputUnits: null,
+        inputTypes: [],
+        outputTypes: [],
+      }
     }
 
-    this.model = this.createModel();
+    // Data Object storing xs and ys
     this.data = {
+      tensor: null,
       xs: [],
-      ys: []
+      ys: [],
+    }
+
+    // TODO: before the model is created, load any relevant data / run the getIOUnits() function 
+    // to get back the number of units
+    if (this.config.dataUrl !== null) {
+      this.model = this.createModelFromData();
+    } else {
+      // set the inputUnits and outputUnits
+      this.config.meta.inputUnits = this.config.inputs;
+      this.config.meta.outputUnits = this.config.outputs;
+      // create the model
+      this.model = this.createModel();
     }
 
   }
+
+  async createModelFromData(){
+    // load the data
+    await this.loadData();
+    // check the input columns for data type to
+    // calculate the total number of inputs
+    // and outputs
+    await this.getIOUnits();
+     
+    this.createModel();
+  }
+
+  /**
+   * Gets the total number of inputs/outputs based on the data type 
+   * Uses the relevant function to convert values e.g. oneHot() and 
+   * sends back the appropriate length of values
+   * @param {*} val 
+   */
+  getIOUnits() {
+    console.log(this.data)
+    let inputUnits = 0;
+    let outputUnits = 0;
+
+    
+    this.config.meta.inputTypes.forEach( (item) => {
+      if(item.dtype === 'number'){
+        inputUnits+=1;
+      } else if( item.dtype === 'string'){
+        console.log('yo!')
+      }
+    });
+
+    this.config.meta.outputTypes.forEach( (item) => {
+      if(item.dtype === 'number'){
+        outputUnits+=1;
+      } else if( item.dtype === 'string'){
+        const uniqueVals = [...new Set(this.data.ys.map( obj => obj[item.name]))]
+        outputUnits += uniqueVals.length;
+      }
+    });
+
+    console.log( inputUnits, outputUnits)
+
+    this.config.meta.inputUnits = inputUnits;
+    this.config.meta.outputUnits = outputUnits;
+
+  }
+
+
+  async loadData(){    
+    const outputLabel = this.config.outputs[0];
+    const inputLabels = this.config.inputs;
+
+    const inputConfig = {};
+    inputLabels.forEach(label => {
+      inputConfig[label] = {isLabel:false}
+    });
+
+    this.data.tensor = tf.data.csv(this.config.dataUrl, {
+      columnConfigs: {
+        ...inputConfig,
+        [outputLabel]: {
+          isLabel: true
+        }
+      },
+      configuredColumnsOnly: true
+    });
+
+    const data = await this.data.tensor.toArray();
+
+    data.forEach(item => {
+      this.data.xs.push(item.xs);
+      this.data.ys.push(item.ys);
+    });
+    
+    // TODO: check for int32, float32, bool, or string
+    this.config.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({ name:prop, dtype: typeof data[0].xs[prop]}))
+    this.config.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({name:prop, dtype: typeof data[0].ys[prop]})) 
+
+    console.log(this.config.meta)
+
+    if (this.config.debug) {
+      const values = inputLabels.map(label => {
+        return data.map(item => {
+          return {
+            x: item.xs[label],
+            y: item.ys[outputLabel]
+          }
+        })
+      })
+
+      tfvis.render.scatterplot({
+        name: 'debug mode'
+      }, {
+        values
+      }, {
+        xLabel: 'X',
+        yLabel: 'Y',
+        height: 300
+      });
+    }
+    
+
+  }
+
 
   /**
    * createModel()
@@ -104,14 +226,14 @@ class NeuralNetwork {
 
     const hidden = tf.layers.dense({
       units: this.config.hiddenUnits,
-      inputShape: [this.config.inputUnits],
+      inputShape: [this.config.meta.inputUnits],
       activation: this.config.activationHidden,
     });
 
     // TODO: figure out if we want to add in the ability to add more layers?
 
     const output = tf.layers.dense({
-      units: this.config.outputUnits,
+      units: this.config.meta.outputUnits,
       activation: this.config.activationOutput,
     });
 
@@ -134,73 +256,73 @@ class NeuralNetwork {
   }
 
 
-  /**
-   * Loads in CSV data by URL
-   * @param {*} options or DATAURL
-   * @param {*} callback
-   */
-  loadData(optionsOrDataUrl, callback) {
-    let options;
-    if (typeof optionsOrDataUrl === 'string') {
-      options = {
-        dataUrl: optionsOrDataUrl
-      }
-    } else {
-      options = optionsOrDataUrl;
-    }
-    return callCallback(this.loadDataInternal(options), callback);
-  }
+  // /**
+  //  * Loads in CSV data by URL
+  //  * @param {*} options or DATAURL
+  //  * @param {*} callback
+  //  */
+  // loadData(optionsOrDataUrl, callback) {
+  //   let options;
+  //   if (typeof optionsOrDataUrl === 'string') {
+  //     options = {
+  //       dataUrl: optionsOrDataUrl
+  //     }
+  //   } else {
+  //     options = optionsOrDataUrl;
+  //   }
+  //   return callCallback(this.loadDataInternal(options), callback);
+  // }
 
-  // TODO: need to add loading in for JSON data
-  /**
-   * Loads in a CSV file
-   * @param {*} options
-   */
-  async loadDataInternal(options) {
+  // // TODO: need to add loading in for JSON data
+  // /**
+  //  * Loads in a CSV file
+  //  * @param {*} options
+  //  */
+  // async loadDataInternal(options) {
 
-    this.config.inputKeys = options.inputKeys || [...new Array(this.inputUnits).fill(null).map((v, idx) => idx)];
-    this.config.outputKeys = options.outputKeys || [...new Array(this.outputUnits / 2).fill(null).map((v, idx) => idx)];
+  //   this.config.inputKeys = options.inputKeys || [...new Array(this.inputUnits).fill(null).map((v, idx) => idx)];
+  //   this.config.outputKeys = options.outputKeys || [...new Array(this.outputUnits / 2).fill(null).map((v, idx) => idx)];
 
-    const outputLabel = this.config.outputKeys[0];
-    const inputLabels = this.config.inputKeys;
+  //   const outputLabel = this.config.outputKeys[0];
+  //   const inputLabels = this.config.inputKeys;
 
-    let data = tf.data.csv(options.dataUrl, {
-      columnConfigs: {
-        [outputLabel]: {
-          isLabel: true
-        }
-      }
-    });
+  //   let data = tf.data.csv(options.dataUrl, {
+  //     columnConfigs: {
+  //       [outputLabel]: {
+  //         isLabel: true
+  //       }
+  //     }
+  //   });
 
-    data = await data.toArray();
+  //   data = await data.toArray();
 
-    if (this.config.debug) {
-      const values = inputLabels.map(label => {
-        return data.map(item => {
-          return {
-            x: item.xs[label],
-            y: item.ys[outputLabel]
-          }
-        })
-      })
+  //   if (this.config.debug) {
+  //     const values = inputLabels.map(label => {
+  //       return data.map(item => {
+  //         return {
+  //           x: item.xs[label],
+  //           y: item.ys[outputLabel]
+  //         }
+  //       })
+  //     })
 
-      tfvis.render.scatterplot({
-        name: 'debug mode'
-      }, {
-        values
-      }, {
-        xLabel: 'X',
-        yLabel: 'Y',
-        height: 300
-      });
-    }
+  //     tfvis.render.scatterplot({
+  //       name: 'debug mode'
+  //     }, {
+  //       values
+  //     }, {
+  //       xLabel: 'X',
+  //       yLabel: 'Y',
+  //       height: 300
+  //     });
+  //   }
 
-    return data;
-  }
+  //   return data;
+  // }
 
   /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
-  shuffle(data){
-      tf.util.shuffle(data);
+  shuffle(data) {
+    tf.util.shuffle(data);
   }
 
 
@@ -261,7 +383,10 @@ class NeuralNetwork {
   }
 
   async trainInternal(inputs, labels) {
-    const { batchSize, epochs } = this.config;
+    const {
+      batchSize,
+      epochs
+    } = this.config;
     let xs;
     let ys;
 
@@ -292,7 +417,7 @@ class NeuralNetwork {
     ys.dispose();
   }
 
-  
+
 
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
