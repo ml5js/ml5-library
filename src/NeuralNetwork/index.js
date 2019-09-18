@@ -214,39 +214,39 @@ class NeuralNetwork {
       // Step 2. Convert data to Tensor
       // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
       const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
-      const labels = data.map(d => d.ys[outputLabel]);
+      const targets = data.map(d => d.ys[outputLabel]);
 
       const inputTensor = tf.tensor(inputs);
 
       let outputTensor;
       if (this.config.task === 'classification') {
-        outputTensor = tf.oneHot(tf.tensor1d(labels, 'int32'), this.config.noVal);
+        outputTensor = tf.oneHot(tf.tensor1d(targets, 'int32'), this.config.noVal);
       } else {
-        outputTensor = tf.tensor(labels);
+        outputTensor = tf.tensor(targets);
       }
 
 
       // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
       const inputMax = inputTensor.max();
       const inputMin = inputTensor.min();
-      const labelMax = outputTensor.max();
-      const labelMin = outputTensor.min();
+      const targetMax = outputTensor.max();
+      const targetMin = outputTensor.min();
 
-      const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin)).flatten().reshape([data.length, this.config.inputUnits]);
+      const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([data.length, this.config.inputUnits]);
 
       // console.log()
-      const normalizedOutputs = outputTensor.sub(labelMin).div(labelMax.sub(labelMin));
+      const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
 
       inputTensor.max(1).print();
 
       return {
         inputs: normalizedInputs, // normalizedInputs,
-        labels: normalizedOutputs,
+        targets: normalizedOutputs,
         // Return the min/max bounds so we can use them later.
         inputMax,
         inputMin,
-        labelMax,
-        labelMin,
+        targetMax,
+        targetMin,
       }
     });
   }
