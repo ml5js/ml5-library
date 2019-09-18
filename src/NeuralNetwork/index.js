@@ -59,8 +59,6 @@ class NeuralNetwork {
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       epochs: options.epochs || DEFAULTS.epochs,
-      inputKeys: options.inputKeys || [...new Array(options.inputs).fill(null).map((v, idx) => idx)],
-      outputKeys: options.outputKeys || [...new Array(options.outputs / 2).fill(null).map((v, idx) => idx)]
     }
 
     this.model = this.createModel();
@@ -140,24 +138,35 @@ class NeuralNetwork {
 
   /**
    * Loads in CSV data by URL
-   * @param {*} DATA_URL
+   * @param {*} options or DATAURL
    * @param {*} callback
    */
-  loadData(DATA_URL, callback) {
-    return callCallback(this.loadDataInternal(DATA_URL), callback);
+  loadData(optionsOrDataUrl, callback) {
+    let options;
+    if (typeof optionsOrDataUrl === 'string') {
+      options = {
+        data_url: optionsOrDataUrl
+      }
+    } else {
+      options = optionsOrDataUrl;
+    }
+    return callCallback(this.loadDataInternal(options), callback);
   }
 
   // TODO: need to add loading in for JSON data
   /**
    * Loads in a CSV file
-   * @param {*} DATA_URL
+   * @param {*} options
    */
-  async loadDataInternal(DATA_URL) {
+  async loadDataInternal(options) {
+
+    this.config.inputKeys = options.inputKeys || [...new Array(this.inputUnits).fill(null).map((v, idx) => idx)];
+    this.config.outputKeys = options.outputKeys || [...new Array(this.outputUnits / 2).fill(null).map((v, idx) => idx)];
+
     const outputLabel = this.config.outputKeys[0];
     const inputLabels = this.config.inputKeys;
-    console.log(inputLabels)
 
-    let data = await tf.data.csv(DATA_URL, {
+    let data = await tf.data.csv(options.data_url, {
       columnConfigs: {
         [outputLabel]: {
           isLabel: true
@@ -210,7 +219,6 @@ class NeuralNetwork {
       const inputTensor = tf.tensor(inputs);
 
       let outputTensor;
-      console.log(this.config.task)
       if (this.config.task === 'classification') {
         outputTensor = tf.oneHot(tf.tensor1d(labels, 'int32'), this.config.noVal);
       } else {
@@ -341,8 +349,7 @@ class NeuralNetwork {
   //   return results;
   // }
 
-  async  predictInternal(sample) {
-    console.log(sample)
+  async predictInternal(sample) {
     const xs = tf.tensor(sample, [1, sample.length]);
     const ys = this.model.predict(xs);
 
