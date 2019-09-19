@@ -395,14 +395,21 @@ class NeuralNetwork {
       batchSize,
       epochs,
       validationSplit: 0.1,
-      callbacks: {
-        onEpochEnd: (epoch, logs) => {
-          console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
-        },
-        onTrainEnd: () => {
-          console.log(`training complete!`);
-        }
-      },
+      callbacks:[ tfvis.show.fitCallbacks(
+        { name: 'Training Performance' },
+        ['loss','accuracy'], 
+        { height: 200, callbacks: ['onEpochEnd'] }
+      ),
+      {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
+      ]
+      // callbacks: {
+      //   onEpochEnd: (epoch, logs) => {
+      //     console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+      //   },
+      //   onTrainEnd: () => {
+      //     console.log(`training complete!`);
+      //   }
+      // },
     });
     xs.dispose();
     ys.dispose();
