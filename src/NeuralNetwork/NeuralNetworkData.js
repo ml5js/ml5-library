@@ -1,11 +1,12 @@
 import * as tf from '@tensorflow/tfjs';
 // import * as tfvis from '@tensorflow/tfjs-vis';
 // import callCallback from '../utils/callcallback';
-import * as DEFAULTS from './NeuralNetworkDefaults';
+import DEFAULTS from './NeuralNetworkDefaults';
 
 class NeuralNetworkData {
     constructor(options) {
       this.task = options.task || DEFAULTS.task;
+
       this.inputs = options.inputs || DEFAULTS.inputs;
       this.outputs = options.outputs || DEFAULTS.outputs;
       // this.noVal = options.noVal || DEFAULTS.noVal;

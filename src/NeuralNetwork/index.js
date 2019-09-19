@@ -14,8 +14,8 @@ import {
   saveBlob
 } from '../utils/io';
 // import { input } from '@tensorflow/tfjs';
-import * as DEFAULTS from './NeuralNetworkDefaults';
-import * as NeuralNetworkData from './NeuralNetworkData';
+import DEFAULTS from './NeuralNetworkDefaults';
+import NeuralNetworkData from './NeuralNetworkData';
 
 class NeuralNetwork {
   /**
@@ -23,8 +23,39 @@ class NeuralNetwork {
    * @param {object} options - An object with options.
    */
   constructor(options, callback) {
-    // TODO: create the model based on many more options and defaults
 
+    // Check if the model is ready
+    this.ready = false;
+    // Model Config
+    // ??? Proposal???
+    // TODO: does it make sense to split this up?
+    /**
+     this.config = {
+        debug: options.debug || DEFAULTS.debug,
+        data:{
+          inputs: options.inputs || DEFAULTS.inputs,
+          outputs: options.outputs || DEFAULTS.outputs,
+          dataUrl: options.dataUrl || null,
+          noVal: options.noVal || options.outputs,
+        }.
+        architecture:{
+          task: options.task || DEFAULTS.task,
+          activationHidden: options.activationHidden || DEFAULTS.activationHidden,
+          activationOutput: options.activationOutput || DEFAULTS.activationOutput,
+          hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
+          learningRate: options.outputs || DEFAULTS.learningRate,
+          modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
+          modelLoss: options.modelLoss || DEFAULTS.modelLoss,
+          modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
+        },
+        training:{
+          batchSize: options.batchSize || DEFAULTS.batchSize,
+          epochs: options.epochs || DEFAULTS.epochs,
+        },
+     }
+     */
+
+    // Model Config
     this.config = {
       dataUrl: options.dataUrl || null,
       task: options.task || DEFAULTS.task,
@@ -43,26 +74,49 @@ class NeuralNetwork {
       epochs: options.epochs || DEFAULTS.epochs,
     }
 
+    // Create an instance of NeuralNetworkData Class
+    // to store data and apply data helper functions
     this.data = new NeuralNetworkData(options);
 
-    // TODO: before the model is created, load any relevant data / run the getIOUnits() function 
-    // to get back the number of units
+    // Create the model
     if (this.config.dataUrl !== null) {
+      // If dataUrl is specified: 
+      // * load any relevant data 
+      // * run the getIOUnits() function to 
+      // * create the model
       this.ready = this.createModelFromData(callback);
     } else {
-      // set the inputUnits and outputUnits
+      // If dataUrl is not specified: 
+      // * set the inputUnits and outputUnits
+      // * create the model
       this.data.meta.inputUnits = this.config.inputs;
       this.data.meta.outputUnits = this.config.outputs;
-      // create the model
+      // convert the inputs and outputs to arrays 
+      // if they are not specified this way already 
+      // e.g. input1, input2, input3 
+      // e.g. output1, output2, output3
+      this.data.inputs = this.createNamedIO(this.config.inputs, 'input');
+      this.data.outputs = this.createNamedIO(this.config.outputs, 'output');
       this.model = this.createModel();
     }
 
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  createNamedIO(val, inputType) {
+    console.log(val)
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    return arr;
+  }
+
+  /**
+   * Create model from data
+   * @param {*} callback 
+   */
   createModelFromData(callback) {
     return callCallback(this.createModelFromDataInternal(), callback)
   }
-
+  
   async createModelFromDataInternal() {
     // load the data
     await this.loadData();
@@ -112,6 +166,10 @@ class NeuralNetwork {
   }
 
 
+  /**
+   * Loads data if a dataUrl is specified in the 
+   * constructor
+   */
   async loadData() {
     const outputLabel = this.config.outputs[0];
     const inputLabels = this.config.inputs;
@@ -186,13 +244,16 @@ class NeuralNetwork {
   createModel() {
 
     switch (this.config.task) {
-      case 'regression':
+
+      case 'regression': // Create a model for regression
+        // set regression model parameters
         // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
         this.config.modelOptimizer = tf.train.adam();
-        return this.createModelInternal();
-      case 'classification':
 
-        // Change the default activations for classifications
+        return this.createModelInternal();
+
+      case 'classification': // Create a model for classification
+        // set classification model parameters
         this.config.hiddenUnits = 16;
         this.config.activationHidden = 'relu' // 'relu',
         this.config.activationOutput = 'softmax' // 'relu',
@@ -200,7 +261,10 @@ class NeuralNetwork {
         this.config.modelOptimizer = tf.train.adam();
 
         return this.createModelInternal();
+
       default:
+        // the default is a regression, but if something else is
+        // specified a user will just get tf.sequential()
         console.log('no model exists for this type of task yet!');
         return tf.sequential();
     }
@@ -252,7 +316,7 @@ class NeuralNetwork {
   train(optionsOrCallback, callback) {
     let options;
     let cb;
-    if(typeof optionsOrCallback === 'object'){
+    if (typeof optionsOrCallback === 'object') {
       options = optionsOrCallback;
       cb = callback
     } else {
@@ -321,14 +385,14 @@ class NeuralNetwork {
   }
 
 
-   /**
-    * Classify()
-    * Runs the classification if the neural network is doing a
-    * classification task
-    * @param {*} input 
-    * @param {*} callback 
-    */
-  classify(input, callback){
+  /**
+   * Classify()
+   * Runs the classification if the neural network is doing a
+   * classification task
+   * @param {*} input 
+   * @param {*} callback 
+   */
+  classify(input, callback) {
     return callCallback(this.predictInternal(input), callback);
   }
 
@@ -350,7 +414,7 @@ class NeuralNetwork {
     const ys = this.model.predict(xs);
 
     let results;
-    if(this.config.task === 'classification'){
+    if (this.config.task === 'classification') {
       // TODO: change the output format based on the 
       // type of behavior
       results = {
@@ -363,7 +427,7 @@ class NeuralNetwork {
         tensor: ys
       }
     }
-    
+
     xs.dispose();
 
     return results;
@@ -443,7 +507,7 @@ const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
     cb = outputsOrCallback;
   } else {
     options = {
-      input: inputsOrOptions,
+      inputs: inputsOrOptions,
       outputs: outputsOrCallback,
     };
     cb = callback;
