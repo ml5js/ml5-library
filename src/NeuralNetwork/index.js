@@ -102,6 +102,13 @@ class NeuralNetwork {
 
   }
 
+  /**
+   * Takes in a number or array and then either returns
+   * the array or returns an array of ['input0','input1']
+   * the array or returns an array of ['output0','output1']
+   * @param {*} val 
+   * @param {*} inputType 
+   */
   // eslint-disable-next-line class-methods-use-this
   createNamedIO(val, inputType) {
     console.log(val)
