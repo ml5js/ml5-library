@@ -131,6 +131,14 @@ class NeuralNetworkData {
     // });
   }
 
+  unNormalize(result){  
+    const unNormPreds = result
+      .mul(this.normalizedData.targetMax.sub(this.normalizedData.targetMin))
+      .add(this.normalizedData.targetMin);
+   
+    return unNormPreds.dataSync();
+  }
+
   addData(xs, ys) {
     this.xs.push(xs);
     this.ys.push(ys);
@@ -405,7 +413,7 @@ class NeuralNetwork {
           }
         ),
         {
-          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch}, ${JSON.stringify(logs)} - accuracy: ${logs.loss.toFixed(3)}`)
+          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`)
         },
         {
           onTrainEnd: () => console.log(`training complete!`)
