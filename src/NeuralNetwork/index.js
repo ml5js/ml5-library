@@ -97,7 +97,9 @@ class NeuralNetwork {
       // e.g. output1, output2, output3
       this.data.inputs = this.createNamedIO(this.config.inputs, 'input');
       this.data.outputs = this.createNamedIO(this.config.outputs, 'output');
+
       this.model = this.createModel();
+      this.ready = true;
     }
 
   }
@@ -130,47 +132,13 @@ class NeuralNetwork {
     // check the input columns for data type to
     // calculate the total number of inputs
     // and outputs
-    this.getIOUnits();
+    this.data.getIOUnits();
 
     // create the model
     this.model = this.createModel();
   }
 
-  /**
-   * Gets the total number of inputs/outputs based on the data type 
-   * Uses the relevant function to convert values e.g. oneHot() and 
-   * sends back the appropriate length of values
-   * @param {*} val 
-   */
-  getIOUnits() {
-    let inputUnits = 0;
-    let outputUnits = 0;
-
-
-    this.data.meta.inputTypes.forEach((item) => {
-      if (item.dtype === 'number') {
-        inputUnits += 1;
-      } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.data.xs.map(obj => obj[item.name]))]
-        inputUnits += uniqueVals.length;
-      }
-    });
-
-    this.data.meta.outputTypes.forEach((item) => {
-      if (item.dtype === 'number') {
-        outputUnits += 1;
-      } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.data.ys.map(obj => obj[item.name]))]
-        outputUnits += uniqueVals.length;
-      }
-    });
-
-    console.log(inputUnits, outputUnits)
-
-    this.data.meta.inputUnits = inputUnits;
-    this.data.meta.outputUnits = outputUnits;
-
-  }
+  
 
 
   /**
@@ -178,7 +146,7 @@ class NeuralNetwork {
    * constructor
    */
   async loadData() {
-    const outputLabel = this.config.outputs[0];
+    const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
 
     const inputConfig = {};
@@ -188,12 +156,17 @@ class NeuralNetwork {
       }
     });
 
+    const outputConfig = {};
+    outputLabels.forEach(label => {
+      outputConfig[label] = {
+        isLabel: true
+      }
+    });
+
     this.data.tensor = tf.data.csv(this.config.dataUrl, {
       columnConfigs: {
         ...inputConfig,
-        [outputLabel]: {
-          isLabel: true
-        }
+        ...outputConfig
       },
       configuredColumnsOnly: true
     });
@@ -220,24 +193,28 @@ class NeuralNetwork {
     // console.log(this.data.meta)
 
     if (this.config.debug) {
-      const values = inputLabels.map(label => {
-        return data.map(item => {
-          return {
-            x: item.xs[label],
-            y: item.ys[outputLabel]
-          }
+      outputLabels.forEach( outputLabel => {
+        const values = inputLabels.map(label => {
+          return data.map(item => {
+            return {
+              x: item.xs[label],
+              y: item.ys[outputLabel]
+            }
+          })
         })
+
+        tfvis.render.scatterplot({
+          name: 'debug mode'
+        }, {
+          values
+        }, {
+          xLabel: 'X',
+          yLabel: 'Y',
+          height: 300
+        });
+
       })
 
-      tfvis.render.scatterplot({
-        name: 'debug mode'
-      }, {
-        values
-      }, {
-        xLabel: 'X',
-        yLabel: 'Y',
-        height: 300
-      });
     }
 
 
@@ -347,8 +324,9 @@ class NeuralNetwork {
     const {
       inputs,
       targets
-    } = this.data.normalizedData;
+    } = this.data.normalizedData.tensors;
 
+    console.log('targets!')
     targets.print();
 
     // check if the inputs are tensors, if not, convert!
