@@ -34,9 +34,12 @@ const DEFAULTS = {
 }
 
 
-class NeuralNetworkData{
-  constructor(options){
+class NeuralNetworkData {
+  constructor(options) {
     this.task = options.task || DEFAULTS.task;
+    this.inputs = options.inputs || DEFAULTS.inputs;
+    this.outputs = options.outputs || DEFAULTS.outputs;
+    // this.noVal = options.noVal || DEFAULTS.noVal;
 
     this.meta = {
       inputUnits: null,
@@ -44,9 +47,9 @@ class NeuralNetworkData{
       inputTypes: [],
       outputTypes: [],
     }
-    
+
     this.data = null;
-    this.xs =[]; 
+    this.xs = [];
     this.ys = [];
     this.tensor = null;
     this.normalizedData = {
@@ -61,56 +64,75 @@ class NeuralNetworkData{
   }
 
   /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
-  shuffle(){
+  shuffle() {
+    if (this.data === null) {
+      this.data = [...new Array(this.xs.length).fill(null).map((item, idx) => ({
+        xs: this.xs[idx],
+        ys: this.ys[idx]
+      }))]
+    }
     tf.util.shuffle(this.data);
   }
 
-  normalize(){
-    console.log('normalizing!', this.task)
-      // return tf.tidy(() => {
-      //   const outputLabel = this.config.outputKeys[0];
-      //   const inputLabels = this.config.inputKeys;
-  
-      //   // TODO: need to test this for regression data.
-  
-      //   // Step 2. Convert data to Tensor
-      //   // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
-      //   const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
-      //   const targets = this.data.map(d => d.ys[outputLabel]);
-  
-      //   const inputTensor = tf.tensor(inputs);
-  
-      //   let outputTensor;
-      //   if (this.task === 'classification') {
-      //     outputTensor = tf.oneHot(tf.tensor1d(targets, 'int32'), this.config.noVal);
-      //   } else {
-      //     outputTensor = tf.tensor(targets);
-      //   }
-  
-  
-      //   // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-      //   const inputMax = inputTensor.max();
-      //   const inputMin = inputTensor.min();
-      //   const targetMax = outputTensor.max();
-      //   const targetMin = outputTensor.min();
-  
-      //   const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([this.data.length, this.meta.inputUnits]);
-  
-      //   // console.log()
-      //   const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
-  
-      //   inputTensor.max(1).print();
-  
-      //   this.normalizedData = {
-      //     inputs: normalizedInputs, // normalizedInputs,
-      //     targets: normalizedOutputs,
-      //     // Return the min/max bounds so we can use them later.
-      //     inputMax,
-      //     inputMin,
-      //     targetMax,
-      //     targetMin,
-      //   }
-      // });
+  normalize() {
+    if (this.data === null) {
+      this.data = [...new Array(this.xs.length).fill(null).map((item, idx) => ({
+        xs: this.xs[idx],
+        ys: this.ys[idx]
+      }))]
+    }
+    const outputLabel = this.outputs[0];
+    const inputLabels = this.inputs;
+
+    // !!!! TODO: need to test this for regression data. !!!!!
+
+    // Step 2. Convert data to Tensor
+    const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
+    const targets = this.data.map(d => d.ys[outputLabel]);
+
+    const uniqueTargets = [...new Set(targets)]
+    const oneHotTargets = targets.map(target => uniqueTargets.indexOf(target));
+    console.log(oneHotTargets)
+
+    const inputTensor = tf.tensor(inputs);
+
+
+    let outputTensor;
+    if (this.task === 'classification') {
+      outputTensor = tf.oneHot(tf.tensor1d(oneHotTargets, 'int32'), this.meta.outputUnits);
+    } else {
+      outputTensor = tf.tensor(targets);
+    }
+
+
+    // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+    const inputMax = inputTensor.max();
+    const inputMin = inputTensor.min();
+    const targetMax = outputTensor.max();
+    const targetMin = outputTensor.min();
+
+    const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([this.data.length, this.meta.inputUnits]);
+
+    // console.log()
+    const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
+
+    inputTensor.max(1).print();
+
+    this.normalizedData = {
+      inputs: normalizedInputs, // normalizedInputs,
+      targets: normalizedOutputs,
+      // Return the min/max bounds so we can use them later.
+      inputMax,
+      inputMin,
+      targetMax,
+      targetMin,
+    }
+    // });
+  }
+
+  addData(xs, ys) {
+    this.xs.push(xs);
+    this.ys.push(ys);
   }
 
 }
@@ -146,7 +168,7 @@ class NeuralNetwork {
     // TODO: before the model is created, load any relevant data / run the getIOUnits() function 
     // to get back the number of units
     if (this.config.dataUrl !== null) {
-      this.model = this.createModelFromData(callback);
+      this.ready = this.createModelFromData(callback);
     } else {
       // set the inputUnits and outputUnits
       this.data.meta.inputUnits = this.config.inputs;
@@ -157,11 +179,11 @@ class NeuralNetwork {
 
   }
 
-  createModelFromData(callback){
+  createModelFromData(callback) {
     return callCallback(this.createModelFromDataInternal(), callback)
   }
 
-  async createModelFromDataInternal(){
+  async createModelFromDataInternal() {
     // load the data
     await this.loadData();
     // check the input columns for data type to
@@ -170,8 +192,8 @@ class NeuralNetwork {
     this.getIOUnits();
 
     console.log('making classification model')
-     
-    this.createModel();
+
+    this.model = this.createModel();
   }
 
   /**
@@ -184,26 +206,26 @@ class NeuralNetwork {
     let inputUnits = 0;
     let outputUnits = 0;
 
-    
-    this.data.meta.inputTypes.forEach( (item) => {
-      if(item.dtype === 'number'){
-        inputUnits+=1;
-      } else if( item.dtype === 'string'){
-        const uniqueVals = [...new Set(this.data.xs.map( obj => obj[item.name]))]
+
+    this.data.meta.inputTypes.forEach((item) => {
+      if (item.dtype === 'number') {
+        inputUnits += 1;
+      } else if (item.dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.xs.map(obj => obj[item.name]))]
         inputUnits += uniqueVals.length;
       }
     });
 
-    this.data.meta.outputTypes.forEach( (item) => {
-      if(item.dtype === 'number'){
-        outputUnits+=1;
-      } else if( item.dtype === 'string'){
-        const uniqueVals = [...new Set(this.data.ys.map( obj => obj[item.name]))]
+    this.data.meta.outputTypes.forEach((item) => {
+      if (item.dtype === 'number') {
+        outputUnits += 1;
+      } else if (item.dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.ys.map(obj => obj[item.name]))]
         outputUnits += uniqueVals.length;
       }
     });
 
-    console.log( inputUnits, outputUnits)
+    console.log(inputUnits, outputUnits)
 
     this.data.meta.inputUnits = inputUnits;
     this.data.meta.outputUnits = outputUnits;
@@ -211,13 +233,15 @@ class NeuralNetwork {
   }
 
 
-  async loadData(){    
+  async loadData() {
     const outputLabel = this.config.outputs[0];
     const inputLabels = this.config.inputs;
 
     const inputConfig = {};
     inputLabels.forEach(label => {
-      inputConfig[label] = {isLabel:false}
+      inputConfig[label] = {
+        isLabel: false
+      }
     });
 
     this.data.tensor = tf.data.csv(this.config.dataUrl, {
@@ -238,12 +262,18 @@ class NeuralNetwork {
       this.data.xs.push(item.xs);
       this.data.ys.push(item.ys);
     });
-    
-    // TODO: check for int32, float32, bool, or string
-    this.data.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({ name:prop, dtype: typeof data[0].xs[prop]}))
-    this.data.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({name:prop, dtype: typeof data[0].ys[prop]})) 
 
-    console.log(this.data.meta)
+    // TODO: check for int32, float32, bool, or string
+    this.data.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({
+      name: prop,
+      dtype: typeof data[0].xs[prop]
+    }))
+    this.data.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({
+      name: prop,
+      dtype: typeof data[0].ys[prop]
+    }))
+
+    // console.log(this.data.meta)
 
     if (this.config.debug) {
       const values = inputLabels.map(label => {
@@ -265,7 +295,7 @@ class NeuralNetwork {
         height: 300
       });
     }
-    
+
 
   }
 
@@ -334,148 +364,30 @@ class NeuralNetwork {
     return model;
   }
 
-
-  // /**
-  //  * Loads in CSV data by URL
-  //  * @param {*} options or DATAURL
-  //  * @param {*} callback
-  //  */
-  // loadData(optionsOrDataUrl, callback) {
-  //   let options;
-  //   if (typeof optionsOrDataUrl === 'string') {
-  //     options = {
-  //       dataUrl: optionsOrDataUrl
-  //     }
-  //   } else {
-  //     options = optionsOrDataUrl;
-  //   }
-  //   return callCallback(this.loadDataInternal(options), callback);
-  // }
-
-  // // TODO: need to add loading in for JSON data
-  // /**
-  //  * Loads in a CSV file
-  //  * @param {*} options
-  //  */
-  // async loadDataInternal(options) {
-
-  //   this.config.inputKeys = options.inputKeys || [...new Array(this.inputUnits).fill(null).map((v, idx) => idx)];
-  //   this.config.outputKeys = options.outputKeys || [...new Array(this.outputUnits / 2).fill(null).map((v, idx) => idx)];
-
-  //   const outputLabel = this.config.outputKeys[0];
-  //   const inputLabels = this.config.inputKeys;
-
-  //   let data = tf.data.csv(options.dataUrl, {
-  //     columnConfigs: {
-  //       [outputLabel]: {
-  //         isLabel: true
-  //       }
-  //     }
-  //   });
-
-  //   data = await data.toArray();
-
-  //   if (this.config.debug) {
-  //     const values = inputLabels.map(label => {
-  //       return data.map(item => {
-  //         return {
-  //           x: item.xs[label],
-  //           y: item.ys[outputLabel]
-  //         }
-  //       })
-  //     })
-
-  //     tfvis.render.scatterplot({
-  //       name: 'debug mode'
-  //     }, {
-  //       values
-  //     }, {
-  //       xLabel: 'X',
-  //       yLabel: 'Y',
-  //       height: 300
-  //     });
-  //   }
-
-  //   return data;
-  // }
-
-  /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
-  // shuffle(data) {
-  //   tf.util.shuffle(data);
-  // }
-
-
-  normalize(data) {
-    return tf.tidy(() => {
-      const outputLabel = this.config.outputKeys[0];
-      const inputLabels = this.config.inputKeys;
-
-      // TODO: need to test this for regression data.
-
-      // Step 2. Convert data to Tensor
-      // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
-      const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
-      const targets = data.map(d => d.ys[outputLabel]);
-
-      const inputTensor = tf.tensor(inputs);
-
-      let outputTensor;
-      if (this.config.task === 'classification') {
-        outputTensor = tf.oneHot(tf.tensor1d(targets, 'int32'), this.config.noVal);
-      } else {
-        outputTensor = tf.tensor(targets);
-      }
-
-
-      // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-      const inputMax = inputTensor.max();
-      const inputMin = inputTensor.min();
-      const targetMax = outputTensor.max();
-      const targetMin = outputTensor.min();
-
-      const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([data.length, this.config.inputUnits]);
-
-      // console.log()
-      const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
-
-      inputTensor.max(1).print();
-
-      return {
-        inputs: normalizedInputs, // normalizedInputs,
-        targets: normalizedOutputs,
-        // Return the min/max bounds so we can use them later.
-        inputMax,
-        inputMin,
-        targetMax,
-        targetMin,
-      }
-    });
+  train(callback) {
+    return callCallback(this.trainInternal(), callback);
   }
 
-  addData(xs, ys) {
-    this.training.xs.push(xs);
-    this.training.ys.push(ys);
-  }
-
-  train(inputs, labels, callback) {
-    return callCallback(this.trainInternal(inputs, labels), callback);
-  }
-
-  async trainInternal(inputs, labels) {
+  async trainInternal() {
     const {
       batchSize,
       epochs
     } = this.config;
+
     let xs;
     let ys;
+    const {
+      inputs,
+      targets
+    } = this.data.normalizedData;
 
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {
       xs = tf.tensor(inputs)
-      ys = tf.tensor(labels)
+      ys = tf.tensor(targets)
     } else {
       xs = inputs;
-      ys = labels;
+      ys = targets;
     }
 
     await this.model.fit(xs, ys, {
@@ -572,7 +484,7 @@ const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
   if (inputsOrOptions instanceof Object) {
     options = inputsOrOptions;
     cb = outputsOrCallback;
-  } else  {
+  } else {
     options = {
       input: inputsOrOptions,
       outputs: outputsOrCallback,
@@ -585,3 +497,122 @@ const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
 };
 
 export default neuralNetwork;
+
+
+
+// /**
+//  * Loads in CSV data by URL
+//  * @param {*} options or DATAURL
+//  * @param {*} callback
+//  */
+// loadData(optionsOrDataUrl, callback) {
+//   let options;
+//   if (typeof optionsOrDataUrl === 'string') {
+//     options = {
+//       dataUrl: optionsOrDataUrl
+//     }
+//   } else {
+//     options = optionsOrDataUrl;
+//   }
+//   return callCallback(this.loadDataInternal(options), callback);
+// }
+
+// // TODO: need to add loading in for JSON data
+// /**
+//  * Loads in a CSV file
+//  * @param {*} options
+//  */
+// async loadDataInternal(options) {
+
+//   this.config.inputKeys = options.inputKeys || [...new Array(this.inputUnits).fill(null).map((v, idx) => idx)];
+//   this.config.outputKeys = options.outputKeys || [...new Array(this.outputUnits / 2).fill(null).map((v, idx) => idx)];
+
+//   const outputLabel = this.config.outputKeys[0];
+//   const inputLabels = this.config.inputKeys;
+
+//   let data = tf.data.csv(options.dataUrl, {
+//     columnConfigs: {
+//       [outputLabel]: {
+//         isLabel: true
+//       }
+//     }
+//   });
+
+//   data = await data.toArray();
+
+//   if (this.config.debug) {
+//     const values = inputLabels.map(label => {
+//       return data.map(item => {
+//         return {
+//           x: item.xs[label],
+//           y: item.ys[outputLabel]
+//         }
+//       })
+//     })
+
+//     tfvis.render.scatterplot({
+//       name: 'debug mode'
+//     }, {
+//       values
+//     }, {
+//       xLabel: 'X',
+//       yLabel: 'Y',
+//       height: 300
+//     });
+//   }
+
+//   return data;
+// }
+
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
+// shuffle(data) {
+//   tf.util.shuffle(data);
+// }
+
+
+// normalize(data) {
+//   return tf.tidy(() => {
+//     const outputLabel = this.config.outputKeys[0];
+//     const inputLabels = this.config.inputKeys;
+
+//     // TODO: need to test this for regression data.
+
+//     // Step 2. Convert data to Tensor
+//     // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
+//     const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
+//     const targets = data.map(d => d.ys[outputLabel]);
+
+//     const inputTensor = tf.tensor(inputs);
+
+//     let outputTensor;
+//     if (this.config.task === 'classification') {
+//       outputTensor = tf.oneHot(tf.tensor1d(targets, 'int32'), this.config.noVal);
+//     } else {
+//       outputTensor = tf.tensor(targets);
+//     }
+
+
+//     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+//     const inputMax = inputTensor.max();
+//     const inputMin = inputTensor.min();
+//     const targetMax = outputTensor.max();
+//     const targetMin = outputTensor.min();
+
+//     const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([data.length, this.config.inputUnits]);
+
+//     // console.log()
+//     const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
+
+//     inputTensor.max(1).print();
+
+//     return {
+//       inputs: normalizedInputs, // normalizedInputs,
+//       targets: normalizedOutputs,
+//       // Return the min/max bounds so we can use them later.
+//       inputMax,
+//       inputMin,
+//       targetMax,
+//       targetMin,
+//     }
+//   });
+// }
