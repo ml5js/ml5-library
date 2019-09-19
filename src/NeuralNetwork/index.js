@@ -85,6 +85,7 @@ class NeuralNetworkData {
     const inputLabels = this.inputs;
 
     // !!!! TODO: need to test this for regression data. !!!!!
+    // !!!! TODO: handle case where there are no labels but just an input number. !!!!!
 
     // Step 2. Convert data to Tensor
     const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
@@ -208,8 +209,6 @@ class NeuralNetwork {
     // calculate the total number of inputs
     // and outputs
     this.getIOUnits();
-
-    console.log('making classification model')
 
     this.model = this.createModel();
   }
