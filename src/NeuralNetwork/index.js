@@ -33,12 +33,39 @@ const DEFAULTS = {
   epochs: 32,
 }
 
+
+class NeuralNetworkData{
+  constructor(){
+    
+    this.meta = {
+      inputUnits: null,
+      outputUnits: null,
+      inputTypes: [],
+      outputTypes: [],
+    }
+    
+    this.xs =[]; 
+    this.ys = [];
+    this.tensor = null;
+
+  }
+
+  shuffle(){
+    console.log(this.test)
+  }
+
+  normalize(){
+    console.log(this.test);
+  }
+
+}
+
 class NeuralNetwork {
   /**
    * Create a Neural Network.
    * @param {object} options - An object with options.
    */
-  constructor(options) {
+  constructor(options, callback) {
     // TODO: create the model based on many more options and defaults
 
     this.config = {
@@ -57,36 +84,43 @@ class NeuralNetwork {
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       epochs: options.epochs || DEFAULTS.epochs,
-      meta: {
-        inputUnits: null,
-        outputUnits: null,
-        inputTypes: [],
-        outputTypes: [],
-      }
+      // meta: {
+      //   inputUnits: null,
+      //   outputUnits: null,
+      //   inputTypes: [],
+      //   outputTypes: [],
+      // }
     }
 
     // Data Object storing xs and ys
-    this.data = {
-      tensor: null,
-      xs: [],
-      ys: [],
-    }
+    // this.data = {
+    //   tensor: null,
+    //   xs: [],
+    //   ys: [],
+    // }
+
+    this.data = new NeuralNetworkData(options);
 
     // TODO: before the model is created, load any relevant data / run the getIOUnits() function 
     // to get back the number of units
     if (this.config.dataUrl !== null) {
-      this.model = this.createModelFromData();
+
+      this.model = this.createModelFromData(callback);
     } else {
       // set the inputUnits and outputUnits
-      this.config.meta.inputUnits = this.config.inputs;
-      this.config.meta.outputUnits = this.config.outputs;
+      this.data.meta.inputUnits = this.config.inputs;
+      this.data.meta.outputUnits = this.config.outputs;
       // create the model
       this.model = this.createModel();
     }
 
   }
 
-  async createModelFromData(){
+  createModelFromData(callback){
+    return callCallback(this.createModelFromDataInternal(), callback)
+  }
+
+  async createModelFromDataInternal(){
     // load the data
     await this.loadData();
     // check the input columns for data type to
@@ -109,7 +143,7 @@ class NeuralNetwork {
     let outputUnits = 0;
 
     
-    this.config.meta.inputTypes.forEach( (item) => {
+    this.data.meta.inputTypes.forEach( (item) => {
       if(item.dtype === 'number'){
         inputUnits+=1;
       } else if( item.dtype === 'string'){
@@ -117,7 +151,7 @@ class NeuralNetwork {
       }
     });
 
-    this.config.meta.outputTypes.forEach( (item) => {
+    this.data.meta.outputTypes.forEach( (item) => {
       if(item.dtype === 'number'){
         outputUnits+=1;
       } else if( item.dtype === 'string'){
@@ -128,8 +162,8 @@ class NeuralNetwork {
 
     console.log( inputUnits, outputUnits)
 
-    this.config.meta.inputUnits = inputUnits;
-    this.config.meta.outputUnits = outputUnits;
+    this.data.meta.inputUnits = inputUnits;
+    this.data.meta.outputUnits = outputUnits;
 
   }
 
@@ -161,10 +195,10 @@ class NeuralNetwork {
     });
     
     // TODO: check for int32, float32, bool, or string
-    this.config.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({ name:prop, dtype: typeof data[0].xs[prop]}))
-    this.config.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({name:prop, dtype: typeof data[0].ys[prop]})) 
+    this.data.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({ name:prop, dtype: typeof data[0].xs[prop]}))
+    this.data.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({name:prop, dtype: typeof data[0].ys[prop]})) 
 
-    console.log(this.config.meta)
+    console.log(this.data.meta)
 
     if (this.config.debug) {
       const values = inputLabels.map(label => {
@@ -226,14 +260,14 @@ class NeuralNetwork {
 
     const hidden = tf.layers.dense({
       units: this.config.hiddenUnits,
-      inputShape: [this.config.meta.inputUnits],
+      inputShape: [this.data.meta.inputUnits],
       activation: this.config.activationHidden,
     });
 
     // TODO: figure out if we want to add in the ability to add more layers?
 
     const output = tf.layers.dense({
-      units: this.config.meta.outputUnits,
+      units: this.data.meta.outputUnits,
       activation: this.config.activationOutput,
     });
 
@@ -482,6 +516,8 @@ class NeuralNetwork {
     return this.model;
   }
 }
+
+
 
 const neuralNetwork = (inputsOrOptions, outputs) => {
   let options;
