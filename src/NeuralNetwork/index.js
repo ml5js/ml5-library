@@ -111,7 +111,7 @@ class NeuralNetworkData {
     const targetMax = outputTensor.max();
     const targetMin = outputTensor.min();
 
-    const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([this.data.length, this.meta.inputUnits]);
+    const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin)).flatten().reshape([this.data.length, this.meta.inputUnits]);
 
     // console.log()
     const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
@@ -129,6 +129,15 @@ class NeuralNetworkData {
       targetMin,
     }
     // });
+  }
+
+  normalizeOne(arr){
+    const inputTensor = tf.tensor1d(arr);
+    const normTensor = inputTensor.sub(this.normalizedData.inputMin).div(this.normalizedData.inputMax.sub(this.normalizedData.inputMin));
+    // const normVals= normTensor
+    //   .mul(this.normalizedData.inputMax.sub(this.normalizedData.targetMin))
+    //   .add(this.normalizedData.targetMin);
+    return normTensor.dataSync()
   }
 
   unNormalize(result){  
