@@ -52,25 +52,13 @@ class NeuralNetworkData {
         }))]
       }
   
-      let outputLabels = [];
-      let inputLabels = [];
-  
-      // if the inputs are specified as numbers, then create an array of labels
-      // This handles case where there are no labels but just an input number.
-      if(typeof this.inputs === 'number' || typeof this.outputs === 'number'){
-        outputLabels = [...new Array(this.outputs).fill(null).map( (val,idx) => `label${idx}` )]
-        inputLabels = [...new Array(this.inputs).fill(null).map( (val,idx) => `label${idx}` )]
-      } else {
-        outputLabels = this.outputs;
-        inputLabels = this.inputs;
-      }
-  
-      const outputLabel = outputLabels[0];
-      
+      const outputLabels = this.outputs;
+      const inputLabels = this.inputs;
+      const outputLabel = outputLabels[0];    
   
       // !!!! TODO: need to test this for regression data. !!!!!
   
-  
+
       // Step 2. Convert data to Tensor
       const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
       const targets = this.data.map(d => d.ys[outputLabel]);
