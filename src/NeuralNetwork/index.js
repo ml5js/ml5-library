@@ -35,8 +35,9 @@ const DEFAULTS = {
 
 
 class NeuralNetworkData{
-  constructor(){
-    
+  constructor(options){
+    this.task = options.task || DEFAULTS.task;
+
     this.meta = {
       inputUnits: null,
       outputUnits: null,
@@ -44,18 +45,72 @@ class NeuralNetworkData{
       outputTypes: [],
     }
     
+    this.data = null;
     this.xs =[]; 
     this.ys = [];
     this.tensor = null;
+    this.normalizedData = {
+      inputs: null,
+      targets: null,
+      inputMax: null,
+      inputMin: null,
+      targetMax: null,
+      targetMin: null,
+    }
 
   }
 
+  /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
   shuffle(){
-    console.log(this.test)
+    tf.util.shuffle(this.data);
   }
 
   normalize(){
-    console.log(this.test);
+    console.log('normalizing!', this.task)
+      // return tf.tidy(() => {
+      //   const outputLabel = this.config.outputKeys[0];
+      //   const inputLabels = this.config.inputKeys;
+  
+      //   // TODO: need to test this for regression data.
+  
+      //   // Step 2. Convert data to Tensor
+      //   // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
+      //   const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
+      //   const targets = this.data.map(d => d.ys[outputLabel]);
+  
+      //   const inputTensor = tf.tensor(inputs);
+  
+      //   let outputTensor;
+      //   if (this.task === 'classification') {
+      //     outputTensor = tf.oneHot(tf.tensor1d(targets, 'int32'), this.config.noVal);
+      //   } else {
+      //     outputTensor = tf.tensor(targets);
+      //   }
+  
+  
+      //   // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+      //   const inputMax = inputTensor.max();
+      //   const inputMin = inputTensor.min();
+      //   const targetMax = outputTensor.max();
+      //   const targetMin = outputTensor.min();
+  
+      //   const normalizedInputs = inputTensor.sub(targetMin).div(targetMax.sub(inputMin)).flatten().reshape([this.data.length, this.meta.inputUnits]);
+  
+      //   // console.log()
+      //   const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
+  
+      //   inputTensor.max(1).print();
+  
+      //   this.normalizedData = {
+      //     inputs: normalizedInputs, // normalizedInputs,
+      //     targets: normalizedOutputs,
+      //     // Return the min/max bounds so we can use them later.
+      //     inputMax,
+      //     inputMin,
+      //     targetMax,
+      //     targetMin,
+      //   }
+      // });
   }
 
 }
@@ -84,27 +139,13 @@ class NeuralNetwork {
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       epochs: options.epochs || DEFAULTS.epochs,
-      // meta: {
-      //   inputUnits: null,
-      //   outputUnits: null,
-      //   inputTypes: [],
-      //   outputTypes: [],
-      // }
     }
-
-    // Data Object storing xs and ys
-    // this.data = {
-    //   tensor: null,
-    //   xs: [],
-    //   ys: [],
-    // }
 
     this.data = new NeuralNetworkData(options);
 
     // TODO: before the model is created, load any relevant data / run the getIOUnits() function 
     // to get back the number of units
     if (this.config.dataUrl !== null) {
-
       this.model = this.createModelFromData(callback);
     } else {
       // set the inputUnits and outputUnits
@@ -126,7 +167,9 @@ class NeuralNetwork {
     // check the input columns for data type to
     // calculate the total number of inputs
     // and outputs
-    await this.getIOUnits();
+    this.getIOUnits();
+
+    console.log('making classification model')
      
     this.createModel();
   }
@@ -138,7 +181,6 @@ class NeuralNetwork {
    * @param {*} val 
    */
   getIOUnits() {
-    console.log(this.data)
     let inputUnits = 0;
     let outputUnits = 0;
 
@@ -147,7 +189,8 @@ class NeuralNetwork {
       if(item.dtype === 'number'){
         inputUnits+=1;
       } else if( item.dtype === 'string'){
-        console.log('yo!')
+        const uniqueVals = [...new Set(this.data.xs.map( obj => obj[item.name]))]
+        inputUnits += uniqueVals.length;
       }
     });
 
@@ -188,6 +231,8 @@ class NeuralNetwork {
     });
 
     const data = await this.data.tensor.toArray();
+    // TODO: not sure if this makes sense...
+    this.data.data = data;
 
     data.forEach(item => {
       this.data.xs.push(item.xs);
@@ -355,9 +400,9 @@ class NeuralNetwork {
   // }
 
   /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
-  shuffle(data) {
-    tf.util.shuffle(data);
-  }
+  // shuffle(data) {
+  //   tf.util.shuffle(data);
+  // }
 
 
   normalize(data) {
@@ -519,18 +564,23 @@ class NeuralNetwork {
 
 
 
-const neuralNetwork = (inputsOrOptions, outputs) => {
+const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
+
   let options;
+  let cb;
+
   if (inputsOrOptions instanceof Object) {
     options = inputsOrOptions;
-  } else {
+    cb = outputsOrCallback;
+  } else  {
     options = {
       input: inputsOrOptions,
-      outputs,
+      outputs: outputsOrCallback,
     };
+    cb = callback;
   }
 
-  const instance = new NeuralNetwork(options);
+  const instance = new NeuralNetwork(options, cb);
   return instance;
 };
 
