@@ -8,7 +8,7 @@ const {
 } = ml5;
 
 const NN_DEFAULTS = {
-    activation: 'sigmoid'
+    activationHidden: 'sigmoid'
 }
 
 
@@ -21,28 +21,7 @@ describe('neuralNetwork', () => {
     });
 
     it('Should create neuralNetwork with all the defaults', async () => {
-        expect(nn.activation).toBe(NN_DEFAULTS.activation);
+        expect(nn.config.activationHidden).toBe(NN_DEFAULTS.activationHidden);
     });
 
-    // describe('expressions', () => {
-    //     it('Should get expressions for Frida', async () => {
-    //         const img = await getImage();
-    //         await faceapi.detectSingle(img)
-    //             .then(results => {
-    //                 expect(results.expressions).toEqual(jasmine.any(Object));
-
-    //             })
-    //     });
-    // });
-    
-    // describe('landmarks', () => {
-    //     it('Should get landmarks for Frida', async () => {
-    //         const img = await getImage();
-    //         await faceapi.detectSingle(img)
-    //             .then(results => {
-    //                 expect(results.landmarks).toEqual(jasmine.any(Object));
-
-    //             })
-    //     });
-    // });
 });
