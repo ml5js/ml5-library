@@ -13,44 +13,57 @@ import callCallback from '../utils/callcallback';
 import {
   saveBlob
 } from '../utils/io';
-
-
-const DEFAULTS = {
-  task: 'regression',
-  // activation: 'sigmoid',
-  activationHidden: 'sigmoid',
-  activationOutput: 'sigmoid',
-  debug: true,
-  learningRate: 0.25,
-  inputUnits: 2,
-  outputUnits: 1,
-  noVal: null,
-  hiddenUnits: 1,
-  modelMetrics: ['accuracy'],
-  modelLoss: 'meanSquaredError',
-  modelOptimizer: null,
-  batchSize: 64,
-  epochs: 32,
-  inputKeys: [],
-  outputKeys: []
-}
+// import { input } from '@tensorflow/tfjs';
+import DEFAULTS from './NeuralNetworkDefaults';
+import NeuralNetworkData from './NeuralNetworkData';
 
 class NeuralNetwork {
   /**
    * Create a Neural Network.
    * @param {object} options - An object with options.
    */
-  constructor(options) {
-    // TODO: create the model based on many more options and defaults
+  constructor(options, callback) {
 
+    // Check if the model is ready
+    this.ready = false;
+    // Model Config
+    // ??? Proposal???
+    // TODO: does it make sense to split this up?
+    /**
+     this.config = {
+        debug: options.debug || DEFAULTS.debug,
+        data:{
+          inputs: options.inputs || DEFAULTS.inputs,
+          outputs: options.outputs || DEFAULTS.outputs,
+          dataUrl: options.dataUrl || null,
+          noVal: options.noVal || options.outputs,
+        }.
+        architecture:{
+          task: options.task || DEFAULTS.task,
+          activationHidden: options.activationHidden || DEFAULTS.activationHidden,
+          activationOutput: options.activationOutput || DEFAULTS.activationOutput,
+          hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
+          learningRate: options.outputs || DEFAULTS.learningRate,
+          modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
+          modelLoss: options.modelLoss || DEFAULTS.modelLoss,
+          modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
+        },
+        training:{
+          batchSize: options.batchSize || DEFAULTS.batchSize,
+          epochs: options.epochs || DEFAULTS.epochs,
+        },
+     }
+     */
+
+    // Model Config
     this.config = {
+      dataUrl: options.dataUrl || null,
       task: options.task || DEFAULTS.task,
       debug: options.debug || DEFAULTS.debug,
-      // activation: options.activation || DEFAULTS.activation,
       activationHidden: options.activationHidden || DEFAULTS.activationHidden,
       activationOutput: options.activationOutput || DEFAULTS.activationOutput,
-      inputUnits: options.inputs || DEFAULTS.inputUnits,
-      outputUnits: options.outputs || DEFAULTS.outputUnits,
+      inputs: options.inputs || DEFAULTS.inputs,
+      outputs: options.outputs || DEFAULTS.outputs,
       noVal: options.noVal || options.outputs,
       hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
       learningRate: options.outputs || DEFAULTS.learningRate,
@@ -59,113 +72,145 @@ class NeuralNetwork {
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       epochs: options.epochs || DEFAULTS.epochs,
-      inputKeys: options.inputKeys || [...new Array(options.inputs).fill(null).map((v, idx) => idx)],
-      outputKeys: options.outputKeys || [...new Array(options.outputs / 2).fill(null).map((v, idx) => idx)]
     }
 
-    this.model = this.createModel();
-    this.training = {
-      _xs: [],
-      _ys: []
+    // Create an instance of NeuralNetworkData Class
+    // to store data and apply data helper functions
+    this.data = new NeuralNetworkData(options);
+
+    // Create the model
+    if (this.config.dataUrl !== null) {
+      // If dataUrl is specified: 
+      // * load any relevant data 
+      // * run the getIOUnits() function to 
+      // * create the model
+      this.ready = this.createModelFromData(callback);
+    } else {
+      // If dataUrl is not specified: 
+      // * set the inputUnits and outputUnits
+      // * create the model
+      this.data.meta.inputUnits = this.config.inputs;
+      this.data.meta.outputUnits = this.config.outputs;
+      // convert the inputs and outputs to arrays 
+      // if they are not specified this way already 
+      // e.g. input1, input2, input3 
+      // e.g. output1, output2, output3
+      this.data.inputs = this.createNamedIO(this.config.inputs, 'input');
+      this.data.outputs = this.createNamedIO(this.config.outputs, 'output');
+      this.model = this.createModel();
     }
 
-    // this.training_xs = [];
-    // this.training_ys = [];
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  createNamedIO(val, inputType) {
+    console.log(val)
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    return arr;
   }
 
   /**
-   * createModel()
-   * Depending on the task -- classification or regression -- returns a simple model architecture
-   */
-  createModel() {
-
-    switch (this.config.task) {
-      case 'regression':
-        this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
-        return this.createModelInternal();
-      case 'classification':
-
-        // Change the default activations for classifications
-        this.config.hiddenUnits = 16;
-        this.config.activationHidden = 'softmax' // 'relu', 
-        this.config.activationOutput = 'relu' // 'relu', 
-        this.config.modelLoss = 'categoricalCrossentropy'
-        this.config.modelOptimizer = tf.train.adam();
-
-        return this.createModelInternal();
-      default:
-        console.log('no model exists for this type of task yet!');
-        return tf.sequential();
-    }
-  }
-
-  /**
-   * createModelInternal()
-   * Creates a sequential model with 1 hidden layer, and 1 output layer
-   */
-  createModelInternal() {
-    const model = tf.sequential();
-
-    const hidden = tf.layers.dense({
-      units: this.config.hiddenUnits,
-      inputShape: [this.config.inputUnits],
-      activation: this.config.activationHidden,
-    });
-
-    // TODO: figure out if we want to add in the ability to add more layers?
-
-    const output = tf.layers.dense({
-      units: this.config.outputUnits,
-      activation: this.config.activationOutput,
-    });
-
-    model.add(hidden);
-    model.add(output);
-
-    model.compile({
-      optimizer: this.config.modelOptimizer,
-      loss: this.config.modelLoss,
-      metrics: this.config.modelMetrics,
-    });
-
-    if (this.config.debug) {
-      tfvis.show.modelSummary({
-        name: 'Model Summary'
-      }, model);
-    }
-
-    return model;
-  }
-
-
-  /**
-   * Loads in CSV data by URL
-   * @param {*} DATA_URL 
+   * Create model from data
    * @param {*} callback 
    */
-  loadData(DATA_URL, callback) {
-    return callCallback(this.loadDataInternal(DATA_URL), callback);
+  createModelFromData(callback) {
+    return callCallback(this.createModelFromDataInternal(), callback)
+  }
+  
+  async createModelFromDataInternal() {
+    // load the data
+    await this.loadData();
+    // check the input columns for data type to
+    // calculate the total number of inputs
+    // and outputs
+    this.getIOUnits();
+
+    // create the model
+    this.model = this.createModel();
   }
 
-  // TODO: need to add loading in for JSON data
   /**
-   * Loads in a CSV file 
-   * @param {*} DATA_URL 
+   * Gets the total number of inputs/outputs based on the data type 
+   * Uses the relevant function to convert values e.g. oneHot() and 
+   * sends back the appropriate length of values
+   * @param {*} val 
    */
-  async loadDataInternal(DATA_URL){
-    const outputLabel = this.config.outputKeys[0];
-    const inputLabels = this.config.inputKeys;
-    console.log(inputLabels)
+  getIOUnits() {
+    let inputUnits = 0;
+    let outputUnits = 0;
 
-    let data = await tf.data.csv(DATA_URL, {
-      columnConfigs: {
-        [outputLabel]: {
-          isLabel: true
-        }
+
+    this.data.meta.inputTypes.forEach((item) => {
+      if (item.dtype === 'number') {
+        inputUnits += 1;
+      } else if (item.dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.xs.map(obj => obj[item.name]))]
+        inputUnits += uniqueVals.length;
       }
     });
 
-    data = await data.toArray();
+    this.data.meta.outputTypes.forEach((item) => {
+      if (item.dtype === 'number') {
+        outputUnits += 1;
+      } else if (item.dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.ys.map(obj => obj[item.name]))]
+        outputUnits += uniqueVals.length;
+      }
+    });
+
+    console.log(inputUnits, outputUnits)
+
+    this.data.meta.inputUnits = inputUnits;
+    this.data.meta.outputUnits = outputUnits;
+
+  }
+
+
+  /**
+   * Loads data if a dataUrl is specified in the 
+   * constructor
+   */
+  async loadData() {
+    const outputLabel = this.config.outputs[0];
+    const inputLabels = this.config.inputs;
+
+    const inputConfig = {};
+    inputLabels.forEach(label => {
+      inputConfig[label] = {
+        isLabel: false
+      }
+    });
+
+    this.data.tensor = tf.data.csv(this.config.dataUrl, {
+      columnConfigs: {
+        ...inputConfig,
+        [outputLabel]: {
+          isLabel: true
+        }
+      },
+      configuredColumnsOnly: true
+    });
+
+    const data = await this.data.tensor.toArray();
+    // TODO: not sure if this makes sense...
+    this.data.data = data;
+
+    data.forEach(item => {
+      this.data.xs.push(item.xs);
+      this.data.ys.push(item.ys);
+    });
+
+    // TODO: check for int32, float32, bool, or string
+    this.data.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({
+      name: prop,
+      dtype: typeof data[0].xs[prop]
+    }))
+    this.data.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({
+      name: prop,
+      dtype: typeof data[0].ys[prop]
+    }))
+
+    // console.log(this.data.meta)
 
     if (this.config.debug) {
       const values = inputLabels.map(label => {
@@ -188,185 +233,213 @@ class NeuralNetwork {
       });
     }
 
-    return data;
-  }
-
-
-  normalize(data) {
-    return tf.tidy(() => {
-        const outputLabel = this.config.outputKeys[0];
-        const inputLabels = this.config.inputKeys;
-        // Step 1. Shuffle the data    
-        tf.util.shuffle(data);
-
-
-        // TODO: need to test this for regression data.
-
-        // Step 2. Convert data to Tensor
-        // const inputs = data.map(d => inputLabels.map(header => d.xs[header]));
-        const inputs = inputLabels.map(header => data.map(d => d.xs[header]))
-        const labels = data.map(d => d.ys[outputLabel]);
-
-        const inputTensor = tf.tensor(inputs); 
-
-        let outputTensor;
-        console.log(this.config.task)
-        if(this.config.task === 'classification'){
-          outputTensor = tf.oneHot(tf.tensor1d(labels, 'int32'), this.config.noVal );
-        } else {
-          outputTensor = tf.tensor(labels);
-        }
-        
-
-        // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-        const inputMax = inputTensor.max();
-        const inputMin = inputTensor.min();  
-        const labelMax = outputTensor.max();
-        const labelMin = outputTensor.min();
-
-        const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin)).flatten().reshape([ data.length, this.config.inputUnits]);
-
-        // console.log()
-        const normalizedOutputs = outputTensor.sub(labelMin).div(labelMax.sub(labelMin));
-    
-        inputTensor.max(1).print();
-        
-        return {
-            inputs: normalizedInputs, // normalizedInputs,
-            labels: normalizedOutputs,
-            // Return the min/max bounds so we can use them later.
-            inputMax,
-            inputMin,
-            labelMax,
-            labelMin,
-          }
-
-
-    })
 
   }
 
 
-  addData(xs, ys) {
-    this.training.xs.push(xs);
-    this.training.ys.push(ys);
+  /**
+   * createModel()
+   * Depending on the task -- classification or regression -- returns a simple model architecture
+   */
+  createModel() {
+
+    switch (this.config.task) {
+
+      case 'regression': // Create a model for regression
+        // set regression model parameters
+        // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
+        this.config.modelOptimizer = tf.train.adam();
+
+        return this.createModelInternal();
+
+      case 'classification': // Create a model for classification
+        // set classification model parameters
+        this.config.hiddenUnits = 16;
+        this.config.activationHidden = 'relu' // 'relu',
+        this.config.activationOutput = 'softmax' // 'relu',
+        this.config.modelLoss = 'categoricalCrossentropy'
+        this.config.modelOptimizer = tf.train.adam();
+
+        return this.createModelInternal();
+
+      default:
+        // the default is a regression, but if something else is
+        // specified a user will just get tf.sequential()
+        console.log('no model exists for this type of task yet!');
+        return tf.sequential();
+    }
   }
 
-  train(inputs, labels, callback) {
-   return callCallback( this.trainInternal(inputs, labels), callback );
+  /**
+   * createModelInternal()
+   * Creates a sequential model with 1 hidden layer, and 1 output layer
+   */
+  createModelInternal() {
+    const model = tf.sequential();
+
+    const hidden = tf.layers.dense({
+      units: this.config.hiddenUnits,
+      inputShape: [this.data.meta.inputUnits],
+      activation: this.config.activationHidden,
+    });
+
+    // TODO: figure out if we want to add in the ability to add more layers?
+
+    const output = tf.layers.dense({
+      units: this.data.meta.outputUnits,
+      activation: this.config.activationOutput,
+    });
+
+    model.add(hidden);
+    model.add(output);
+
+    model.compile({
+      optimizer: this.config.modelOptimizer,
+      loss: this.config.modelLoss,
+      metrics: this.config.modelMetrics,
+    });
+
+    if (this.config.debug) {
+      tfvis.show.modelSummary({
+        name: 'Model Summary'
+      }, model);
+    }
+
+    return model;
   }
 
-  async trainInternal(inputs, labels){
-    const {batchSize, epochs} = this.config;
+  /**
+   * User-facing neural network training
+   * @param {*} optionsOrCallback 
+   * @param {*} callback 
+   */
+  train(optionsOrCallback, callback) {
+    let options;
+    let cb;
+    if (typeof optionsOrCallback === 'object') {
+      options = optionsOrCallback;
+      cb = callback
+    } else {
+      options = {}
+      cb = optionsOrCallback;
+    }
+
+    return callCallback(this.trainInternal(options), cb);
+  }
+
+  /**
+   * Train the neural network
+   * @param {*} options 
+   */
+  async trainInternal(options) {
+    const batchSize = options.batchSize || this.config.batchSize;
+    const epochs = options.epochs || this.config.epochs;
+
     let xs;
     let ys;
+    const {
+      inputs,
+      targets
+    } = this.data.normalizedData;
+
+    targets.print();
 
     // check if the inputs are tensors, if not, convert!
-    if( !(inputs instanceof tf.Tensor)){
+    if (!(inputs instanceof tf.Tensor)) {
       xs = tf.tensor(inputs)
-      ys = tf.tensor(labels)
+      ys = tf.tensor(targets)
     } else {
       xs = inputs;
-      ys = labels;
+      ys = targets;
     }
-    
-    await this.model.fit(xs, ys, {
-        shuffle: true,
-        batchSize,
-        epochs,
-        validationSplit: 0.1,
-        callbacks:{
-            onEpochEnd: (epoch, logs) => {
-              console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
-            },
-            onTrainEnd: ()=> {
-              console.log(`training complete!`);
-            }
+
+    let modelFitCallbacks;
+    if (this.config.debug) {
+      modelFitCallbacks = [tfvis.show.fitCallbacks({
+            name: 'Training Performance'
           },
-      });
-      xs.dispose();
-      ys.dispose();
+          ['loss', 'accuracy'], {
+            height: 200,
+            callbacks: ['onEpochEnd']
+          }
+        ),
+        {
+          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`)
+        },
+        {
+          onTrainEnd: () => console.log(`training complete!`)
+        },
+      ]
+    } else {
+      modelFitCallbacks = []
+    }
+
+    await this.model.fit(xs, ys, {
+      shuffle: true,
+      batchSize,
+      epochs,
+      validationSplit: 0.1,
+      callbacks: modelFitCallbacks
+    });
+    xs.dispose();
+    ys.dispose();
   }
 
-  // async trainInternal1(optionsOrEpochs, callback) {
-  //   let options;
-  //   if (optionsOrEpochs instanceof Object) {
-  //     options = optionsOrEpochs;
-  //   } else {
-  //     options = {
-  //       epochs: optionsOrEpochs,
-  //       shuffle: true,
-  //       validationSplit: 0.1,
-  //     };
-  //   }
 
-  //   const xs = tf.tensor2d(this.training.xs);
-  //   const ys = tf.tensor2d(this.training.ys);
-  //   await this.model.fit(xs, ys, {
-  //     shuffle: options.shuffle,
-  //     validationSplit: options.validationSplit,
-  //     epochs: options.epochs,
-  //     callbacks: {
-  //       onEpochEnd: (epoch, logs) => {
-  //         callback(null, {
-  //           status: 'training',
-  //           epoch,
-  //           loss: logs.loss,
-  //           logs
-  //         });
-  //       },
-  //       onTrainEnd: () => {
-  //         callback(null, {
-  //           status: 'complete'
-  //         });
-  //       },
-  //     },
-  //   });
-  //   xs.dispose();
-  //   ys.dispose();
-  // }
+  /**
+   * Classify()
+   * Runs the classification if the neural network is doing a
+   * classification task
+   * @param {*} input 
+   * @param {*} callback 
+   */
+  classify(input, callback) {
+    return callCallback(this.predictInternal(input), callback);
+  }
 
+  /**
+   * Userfacing prediction function
+   * @param {*} input 
+   * @param {*} callback 
+   */
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
   }
 
-  // async predictInternal(input) {
-  //   const xs = tf.tensor2d([input]);
-  //   const ys = this.model.predict(xs);
-  //   const results = {
-  //     output: await ys.data(),
-  //     tensor: ys,
-  //   };
-  //   xs.dispose();
-  //   return results;
-  // }
+  /**
+   * Make a prediction based on the given input
+   * @param {*} sample 
+   */
+  async predictInternal(sample) {
+    const xs = tf.tensor(sample, [1, sample.length]);
+    const ys = this.model.predict(xs);
 
-  async  predictInternal(sample) {
-    console.log(sample)
-    const xs = tf.tensor(sample, [1,sample.length]);
-    const ys =  this.model.predict(xs);
-    
-    const results = {
-      output: await ys.data(),
-      tensor: ys
+    let results;
+    if (this.config.task === 'classification') {
+      // TODO: change the output format based on the 
+      // type of behavior
+      results = {
+        output: await ys.data(),
+        tensor: ys
+      }
+    } else {
+      results = {
+        output: await ys.data(),
+        tensor: ys
+      }
     }
+
     xs.dispose();
-    
-    
-    // const maxValue = 0;
-    // let output = this.config.NO_VAL;
-
-    // for (let i = 0; i < this.config.inputUnits; i+=1) {
-    //   if (result[0][i] > maxValue) {
-    //     output = i;
-    //   }
-    // }
-
-    // return output;
 
     return results;
   }
 
+
+  /**
+   * Save the model and weights
+   * @param {*} callback 
+   * @param {*} name 
+   */
   async save(callback, name) {
     this.model.save(tf.io.withSaveHandler(async (data) => {
       let modelName = 'model';
@@ -387,6 +460,11 @@ class NeuralNetwork {
     }));
   }
 
+  /**
+   * Load the model and weights in from a file
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
   async load(filesOrPath = null, callback) {
     if (typeof filesOrPath !== 'string') {
       let model = null;
@@ -413,18 +491,30 @@ class NeuralNetwork {
   }
 }
 
-const neuralNetwork = (inputsOrOptions, outputs) => {
+
+/**
+ * Create an instance of the NeuralNetwork
+ * @param {*} inputsOrOptions 
+ * @param {*} outputsOrCallback 
+ * @param {*} callback 
+ */
+const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
+
   let options;
+  let cb;
+
   if (inputsOrOptions instanceof Object) {
     options = inputsOrOptions;
+    cb = outputsOrCallback;
   } else {
     options = {
-      input: inputsOrOptions,
-      outputs,
+      inputs: inputsOrOptions,
+      outputs: outputsOrCallback,
     };
+    cb = callback;
   }
 
-  const instance = new NeuralNetwork(options);
+  const instance = new NeuralNetwork(options, cb);
   return instance;
 };
 
