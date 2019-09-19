@@ -390,26 +390,33 @@ class NeuralNetwork {
       ys = targets;
     }
 
+    let modelFitCallbacks;
+    if (this.config.debug) {
+      modelFitCallbacks = [tfvis.show.fitCallbacks({
+            name: 'Training Performance'
+          },
+          ['loss', 'accuracy'], {
+            height: 200,
+            callbacks: ['onEpochEnd']
+          }
+        ),
+        {
+          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`)
+        },
+        {
+          onTrainEnd: () => console.log(`training complete!`)
+        },
+      ]
+    } else {
+      modelFitCallbacks = []
+    }
+
     await this.model.fit(xs, ys, {
       shuffle: true,
       batchSize,
       epochs,
       validationSplit: 0.1,
-      callbacks:[ tfvis.show.fitCallbacks(
-        { name: 'Training Performance' },
-        ['loss','accuracy'], 
-        { height: 200, callbacks: ['onEpochEnd'] }
-      ),
-      {onEpochEnd: (epoch, logs) => console.log(logs.loss)}
-      ]
-      // callbacks: {
-      //   onEpochEnd: (epoch, logs) => {
-      //     console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
-      //   },
-      //   onTrainEnd: () => {
-      //     console.log(`training complete!`);
-      //   }
-      // },
+      callbacks: modelFitCallbacks
     });
     xs.dispose();
     ys.dispose();
