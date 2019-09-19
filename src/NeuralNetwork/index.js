@@ -244,8 +244,17 @@ class NeuralNetwork {
     return model;
   }
 
-  train(options, callback) {
-    return callCallback(this.trainInternal(options), callback);
+  train(optionsOrCallback, callback) {
+    let options;
+    let cb;
+    if(typeof optionsOrCallback === 'object'){
+      options = optionsOrCallback;
+      cb = callback
+    } else {
+      options = {}
+      cb = callback;
+    }
+    return callCallback(this.trainInternal(options), cb);
   }
 
   async trainInternal(options) {
