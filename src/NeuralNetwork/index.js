@@ -26,7 +26,7 @@ const DEFAULTS = {
   outputs: 1,
   noVal: null,
   hiddenUnits: 1,
-  modelMetrics: ['accuracy'],
+  modelMetrics: [ 'accuracy'],
   modelLoss: 'meanSquaredError',
   modelOptimizer: null,
   batchSize: 64,
@@ -90,15 +90,15 @@ class NeuralNetworkData {
     const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
     const targets = this.data.map(d => d.ys[outputLabel]);
 
-    const uniqueTargets = [...new Set(targets)]
-    const oneHotTargets = targets.map(target => uniqueTargets.indexOf(target));
-    console.log(oneHotTargets)
-
+    
     const inputTensor = tf.tensor(inputs);
 
 
     let outputTensor;
     if (this.task === 'classification') {
+      const uniqueTargets = [...new Set(targets)]
+      const oneHotTargets = targets.map(target => uniqueTargets.indexOf(target));
+      console.log(oneHotTargets)
       outputTensor = tf.oneHot(tf.tensor1d(oneHotTargets, 'int32'), this.meta.outputUnits);
     } else {
       outputTensor = tf.tensor(targets);
@@ -116,7 +116,8 @@ class NeuralNetworkData {
     // console.log()
     const normalizedOutputs = outputTensor.sub(targetMin).div(targetMax.sub(targetMin));
 
-    inputTensor.max(1).print();
+    inputTensor.print();
+    outputTensor.print()
 
     this.normalizedData = {
       inputs: normalizedInputs, // normalizedInputs,
@@ -308,7 +309,8 @@ class NeuralNetwork {
 
     switch (this.config.task) {
       case 'regression':
-        this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
+        // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
+        this.config.modelOptimizer = tf.train.adam();
         return this.createModelInternal();
       case 'classification':
 
@@ -381,6 +383,8 @@ class NeuralNetwork {
       targets
     } = this.data.normalizedData;
 
+    targets.print();
+
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {
       xs = tf.tensor(inputs)
@@ -401,7 +405,7 @@ class NeuralNetwork {
           }
         ),
         {
-          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`)
+          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch}, ${JSON.stringify(logs)} - accuracy: ${logs.loss.toFixed(3)}`)
         },
         {
           onTrainEnd: () => console.log(`training complete!`)
