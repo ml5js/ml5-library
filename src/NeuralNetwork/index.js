@@ -244,6 +244,11 @@ class NeuralNetwork {
     return model;
   }
 
+  /**
+   * User-facing neural network training
+   * @param {*} optionsOrCallback 
+   * @param {*} callback 
+   */
   train(optionsOrCallback, callback) {
     let options;
     let cb;
@@ -257,6 +262,10 @@ class NeuralNetwork {
     return callCallback(this.trainInternal(options), cb);
   }
 
+  /**
+   * Train the neural network
+   * @param {*} options 
+   */
   async trainInternal(options) {
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
