@@ -321,8 +321,9 @@ class NeuralNetwork {
       cb = callback
     } else {
       options = {}
-      cb = callback;
+      cb = optionsOrCallback;
     }
+
     return callCallback(this.trainInternal(options), cb);
   }
 
