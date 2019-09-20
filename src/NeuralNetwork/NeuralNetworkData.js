@@ -62,42 +62,55 @@ class NeuralNetworkData {
     }
 
     // get the labels
-    const {inputTypes, outputTypes} = this.meta;
-    
+    const {
+      inputTypes,
+      outputTypes
+    } = this.meta;
+
     // Step 1. get the inputs and targets
     // const inputs = inputLabels.map(header => this.data.map(d =>  d.xs[header]));
-    const inputs = inputTypes.map(header => this.data.map(d => { 
-        const {dtype, name} = header;
-        let encodedValues;
+    const inputs = inputTypes.map(header => this.data.map(d => {
+      const {
+        dtype,
+        name
+      } = header;
+      let encodedValues;
 
-        // check if the label is a string or numeric type
-        // if string - do one hot encoding
-        if(dtype === 'string'){
-          encodedValues = d.xs[name];
-        } else {
-          // if numeric - return numbers
-          encodedValues = d.xs[name];
-        }
-        
-        // return values
-        return encodedValues
-      })
-    )
+      // TODO: do all the stuff here!!!!
+      // check if the label is a string or numeric type
+      // if string - do one hot encoding
+      if (dtype === 'string') {
+        encodedValues = d.xs[name];
+      } else {
+        // if numeric - return numbers
+        encodedValues = d.xs[name];
+      }
+
+      // return values
+      return encodedValues
+    }))
 
     // const targets = outputLabels.map(header => this.data.map(d => d.ys[header]))
-    const targets = outputTypes.map(header => this.data.map(d => { 
-        
-        // check if the label is a string or numeric type
+    const targets = outputTypes.map(header => this.data.map(d => {
+      const {
+        dtype,
+        name
+      } = header;
+      let encodedValues;
 
-        // if string - do one hot encoding
-
+      // TODO: do all the stuff here!!!!
+      // check if the label is a string or numeric type
+      // if string - do one hot encoding
+      if (dtype === 'string') {
+        encodedValues = d.ys[name];
+      } else {
         // if numeric - return numbers
+        encodedValues = d.ys[name];
+      }
 
-
-        // return values
-        return d.ys[header] 
-      })
-    )
+      // return values
+      return encodedValues
+    }))
 
     // Step 2. Convert data to Tensor
     let inputTensor;
@@ -116,15 +129,15 @@ class NeuralNetworkData {
     // this.meta.outputTypes
 
     if (this.task === 'classification') {
-      const uniqueTargets = targets.map( (item) => [...new Set(item)])
-      const oneHotTargets = targets.map( (item, idx) => {
-        return targets[idx].map( val =>  {
+      const uniqueTargets = targets.map((item) => [...new Set(item)])
+      const oneHotTargets = targets.map((item, idx) => {
+        return targets[idx].map(val => {
           return uniqueTargets[idx].indexOf(val)
         })
-      }) 
-      
+      })
+
       const outputTensor1 = tf.tensor(oneHotTargets).asType('int32').flatten() // .reshape() 
-      outputTensor = tf.oneHot(outputTensor1, this.meta.outputUnits );
+      outputTensor = tf.oneHot(outputTensor1, this.meta.outputUnits);
       inputTensor = tf.tensor(inputs);
     } else {
       inputTensor = tf.tensor(inputs);
@@ -134,24 +147,24 @@ class NeuralNetworkData {
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
     // TODO: need to ensure to preserve the axis correctly! 
     // Subject to change!
-    const inputMax = inputTensor.max(1,true);
-    const inputMin = inputTensor.min(1,true);
+    const inputMax = inputTensor.max(1, true);
+    const inputMin = inputTensor.min(1, true);
     const targetMax = outputTensor.max();
     const targetMin = outputTensor.min();
 
     const normalizedInputs = inputTensor
-                              .sub(inputMin)
-                              .div(inputMax.sub(inputMin))
-                              .flatten()
-                              .reshape([this.data.length, this.meta.inputUnits]);
+      .sub(inputMin)
+      .div(inputMax.sub(inputMin))
+      .flatten()
+      .reshape([this.data.length, this.meta.inputUnits]);
     const normalizedOutputs = outputTensor
-                              .sub(targetMin)
-                              .div(targetMax.sub(targetMin))
-                              .flatten().reshape([this.data.length, this.meta.outputUnits]);
+      .sub(targetMin)
+      .div(targetMax.sub(targetMin))
+      .flatten().reshape([this.data.length, this.meta.outputUnits]);
 
     this.normalizedData = {
       // Return the min/max bounds so we can use them later.
-      tensors:{
+      tensors: {
         inputs: normalizedInputs, // normalizedInputs,
         targets: normalizedOutputs,
         inputMax,
@@ -162,7 +175,7 @@ class NeuralNetworkData {
       inputMax: inputMax.arraySync(),
       inputMin: inputMin.arraySync(),
       targetMax: targetMax.arraySync(),
-      targetMin: targetMin.arraySync() 
+      targetMin: targetMin.arraySync()
     }
     // });
   }
@@ -177,26 +190,26 @@ class NeuralNetworkData {
     let min;
     let max;
     let arr;
-    
+
     // check if single value or array
-    if(val instanceof Array){
+    if (val instanceof Array) {
       arr = val;
     } else {
       arr = [val];
     }
-    
-    if(io === "input"){
+
+    if (io === "input") {
       min = this.normalizedData.tensors.inputMin;
       max = this.normalizedData.tensors.inputMax;
-    } else if( io === "output"){
+    } else if (io === "output") {
       min = this.normalizedData.tensors.targetMin;
       max = this.normalizedData.tensors.targetMax;
     }
-    
+
     const inputTensor = tf.tensor1d(arr);
     const normTensor = inputTensor
-                    .sub(min)
-                    .div(max.sub(min));
+      .sub(min)
+      .div(max.sub(min));
 
     return normTensor.dataSync()
   }
@@ -212,26 +225,26 @@ class NeuralNetworkData {
     let min;
     let max;
     let arr;
-    
+
     // check if single value or array
-    if(val instanceof Array){
+    if (val instanceof Array) {
       arr = val;
     } else {
       arr = [val];
     }
-    
-    if(io === "input"){
+
+    if (io === "input") {
       min = this.normalizedData.tensors.inputMin;
       max = this.normalizedData.tensors.inputMax;
-    } else if( io === "output"){
+    } else if (io === "output") {
       min = this.normalizedData.tensors.targetMin;
       max = this.normalizedData.tensors.targetMax;
     }
 
     const inputTensor = tf.tensor1d(arr);
     const unNormPreds = inputTensor
-                  .mul(max.sub(min))
-                  .add(min);
+      .mul(max.sub(min))
+      .add(min);
 
     return unNormPreds.dataSync();
   }
