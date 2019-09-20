@@ -69,7 +69,7 @@ class NeuralNetworkData {
     const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
     const targets = outputLabels.map(header => this.data.map(d => d.ys[header]))
 
-    console.log(inputs, targets)
+    console.log(inputs);
     // Step 2. Convert data to Tensor
     const inputTensor = tf.tensor(inputs);
     let outputTensor;
@@ -78,18 +78,25 @@ class NeuralNetworkData {
       // const uniqueInputs = [...new Set(inputs)]
       // const oneHotInputs = inputs.map(input => uniqueInputs.indexOf(input));
 
-      const uniqueTargets = [...new Set(targets)]
-      const oneHotTargets = targets.map(target => uniqueTargets.indexOf(target));
-      console.log('onehot targets', oneHotTargets)
-
-      outputTensor = tf.oneHot(tf.tensor1d(oneHotTargets, 'int32'), this.meta.outputUnits);
+      // TODO: Need to check if the data are strings!
+      const uniqueTargets = targets.map( (item) => [...new Set(item)])
+      const oneHotTargets = targets.map( (item, idx) => {
+        return targets[idx].map( val =>  {
+          return uniqueTargets[idx].indexOf(val)
+        })
+      }) 
+      
+      const outputTensor1 = tf.tensor(oneHotTargets).asType('int32').flatten() // .reshape() 
+      outputTensor = tf.oneHot(outputTensor1, this.meta.outputUnits );
     } else {
       outputTensor = tf.tensor(targets);
     }
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    const inputMax = inputTensor.max();
-    const inputMin = inputTensor.min();
+    // TODO: need to ensure to preserve the axis! 
+    // Subject to change!
+    const inputMax = inputTensor.max(1,true);
+    const inputMin = inputTensor.min(1,true);
     const targetMax = outputTensor.max();
     const targetMin = outputTensor.min();
 
@@ -113,10 +120,10 @@ class NeuralNetworkData {
         targetMax,
         targetMin,
       },
-      inputMax: inputMax.dataSync(),
-      inputMin: inputMin.dataSync(),
-      targetMax: targetMax.dataSync(),
-      targetMin: targetMin.dataSync() 
+      inputMax: inputMax.arraySync(),
+      inputMin: inputMin.arraySync(),
+      targetMax: targetMax.arraySync(),
+      targetMin: targetMin.arraySync() 
     }
     // });
   }
@@ -201,28 +208,28 @@ class NeuralNetworkData {
     let outputUnits = 0;
 
 
-    this.data.meta.inputTypes.forEach((item) => {
+    this.meta.inputTypes.forEach((item) => {
       if (item.dtype === 'number') {
         inputUnits += 1;
       } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.data.xs.map(obj => obj[item.name]))]
+        const uniqueVals = [...new Set(this.xs.map(obj => obj[item.name]))]
         inputUnits += uniqueVals.length;
       }
     });
 
-    this.data.meta.outputTypes.forEach((item) => {
+    this.meta.outputTypes.forEach((item) => {
       if (item.dtype === 'number') {
         outputUnits += 1;
       } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.data.ys.map(obj => obj[item.name]))]
+        const uniqueVals = [...new Set(this.ys.map(obj => obj[item.name]))]
         outputUnits += uniqueVals.length;
       }
     });
 
     console.log(inputUnits, outputUnits)
 
-    this.data.meta.inputUnits = inputUnits;
-    this.data.meta.outputUnits = outputUnits;
+    this.meta.inputUnits = inputUnits;
+    this.meta.outputUnits = outputUnits;
 
   }
 
