@@ -62,23 +62,60 @@ class NeuralNetworkData {
     }
 
     // get the labels
-    const outputLabels = this.outputs;
-    const inputLabels = this.inputs;
-
+    const {inputTypes, outputTypes} = this.meta;
+    
     // Step 1. get the inputs and targets
-    const inputs = inputLabels.map(header => this.data.map(d => d.xs[header]))
-    const targets = outputLabels.map(header => this.data.map(d => d.ys[header]))
+    // const inputs = inputLabels.map(header => this.data.map(d =>  d.xs[header]));
+    const inputs = inputTypes.map(header => this.data.map(d => { 
+        const {dtype, name} = header;
+        let encodedValues;
 
-    console.log(inputs);
+        // check if the label is a string or numeric type
+        // if string - do one hot encoding
+        if(dtype === 'string'){
+          encodedValues = d.xs[name];
+        } else {
+          // if numeric - return numbers
+          encodedValues = d.xs[name];
+        }
+        
+        // return values
+        return encodedValues
+      })
+    )
+
+    // const targets = outputLabels.map(header => this.data.map(d => d.ys[header]))
+    const targets = outputTypes.map(header => this.data.map(d => { 
+        
+        // check if the label is a string or numeric type
+
+        // if string - do one hot encoding
+
+        // if numeric - return numbers
+
+
+        // return values
+        return d.ys[header] 
+      })
+    )
+
     // Step 2. Convert data to Tensor
-    const inputTensor = tf.tensor(inputs);
+    let inputTensor;
     let outputTensor;
 
-    if (this.task === 'classification') {
-      // const uniqueInputs = [...new Set(inputs)]
-      // const oneHotInputs = inputs.map(input => uniqueInputs.indexOf(input));
+    // TODO: STEP X - Check which data are string types
+    // Then onehot encode them, and mash them up with 
+    // the numeric types. 
 
-      // TODO: Need to check if the data are strings!
+    // Step X.1: Check inputs for strings
+    // this.meta.inputTypes
+    // const uniqueInputs = [...new Set(inputs)]
+    // const oneHotInputs = inputs.map(input => uniqueInputs.indexOf(input));
+
+    // Step X.2: check outputs for strings
+    // this.meta.outputTypes
+
+    if (this.task === 'classification') {
       const uniqueTargets = targets.map( (item) => [...new Set(item)])
       const oneHotTargets = targets.map( (item, idx) => {
         return targets[idx].map( val =>  {
@@ -88,12 +125,14 @@ class NeuralNetworkData {
       
       const outputTensor1 = tf.tensor(oneHotTargets).asType('int32').flatten() // .reshape() 
       outputTensor = tf.oneHot(outputTensor1, this.meta.outputUnits );
+      inputTensor = tf.tensor(inputs);
     } else {
+      inputTensor = tf.tensor(inputs);
       outputTensor = tf.tensor(targets);
     }
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    // TODO: need to ensure to preserve the axis! 
+    // TODO: need to ensure to preserve the axis correctly! 
     // Subject to change!
     const inputMax = inputTensor.max(1,true);
     const inputMin = inputTensor.min(1,true);
