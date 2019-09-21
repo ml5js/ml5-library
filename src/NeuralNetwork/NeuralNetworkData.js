@@ -53,8 +53,50 @@ class NeuralNetworkData {
   }
 
   /**
+   * 
+   */
+  encodeValues(ioTypeArray, ioType){
+    let dval;
+    let ioUnits;
+    if(ioType === 'input'){
+      dval = 'xs';
+      ioUnits = this.meta.inputUnits;
+    } else {
+      dval = 'ys';
+      ioUnits = this.meta.outputUnits;
+    }
+
+    return ioTypeArray.map(header => {
+      const {
+        dtype,
+        name
+      } = header;
+      
+      let encodedValues;
+
+      if (dtype === 'string') {
+        const dataArray = this.data.map(d => d[dval][name]);        
+        const uniqueValues = [...new Set(dataArray)];
+        const oneHotValues = dataArray.map((item) => {
+            return uniqueValues.indexOf(item)
+        })
+
+        encodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), ioUnits);
+        encodedValues = encodedValues.dataSync();
+      } else {
+        // if numeric - return numbers
+        encodedValues = this.data.map(d => d[dval][name]);
+      }
+
+      // return values
+      return encodedValues
+    })
+
+  }
+
+  /**
    * Normalize this.data
-   * return 
+   * Requires the inputTypes and outputTypes to be defined
    */
   normalize() {
     if (this.data === null) {
@@ -67,90 +109,19 @@ class NeuralNetworkData {
       outputTypes
     } = this.meta;
 
-    // Step 1. get the inputs and targets
-    // const inputs = inputLabels.map(header => this.data.map(d =>  d.xs[header]));
-    const inputs = inputTypes.map(header => this.data.map(d => {
-      const {
-        dtype,
-        name
-      } = header;
-      let encodedValues;
-
-      // TODO: do all the stuff here!!!!
-      // check if the label is a string or numeric type
-      // if string - do one hot encoding
-      if (dtype === 'string') {
-        encodedValues = d.xs[name];
-      } else {
-        // if numeric - return numbers
-        encodedValues = d.xs[name];
-      }
-
-      // return values
-      return encodedValues
-    }))
-
-    // const targets = outputLabels.map(header => this.data.map(d => d.ys[header]))
-    const targets = outputTypes.map(header => this.data.map(d => {
-      const {
-        dtype,
-        name
-      } = header;
-      let encodedValues;
-
-      // TODO: do all the stuff here!!!!
-      // check if the label is a string or numeric type
-      // if string - do one hot encoding
-      if (dtype === 'string') {
-        encodedValues = d.ys[name];
-      } else {
-        // if numeric - return numbers
-        encodedValues = d.ys[name];
-      }
-
-      // return values
-      return encodedValues
-    }))
-
-    // Step 2. Convert data to Tensor
-    let inputTensor;
-    let outputTensor;
-
     // TODO: STEP X - Check which data are string types
-    // Then onehot encode them, and mash them up with 
-    // the numeric types. 
-
-    // Step X.1: Check inputs for strings
-    // this.meta.inputTypes
-    // const uniqueInputs = [...new Set(inputs)]
-    // const oneHotInputs = inputs.map(input => uniqueInputs.indexOf(input));
-
-    // Step X.2: check outputs for strings
-    // this.meta.outputTypes
-
-    if (this.task === 'classification') {
-      const uniqueTargets = targets.map((item) => [...new Set(item)])
-      const oneHotTargets = targets.map((item, idx) => {
-        return targets[idx].map(val => {
-          return uniqueTargets[idx].indexOf(val)
-        })
-      })
-
-      const outputTensor1 = tf.tensor(oneHotTargets).asType('int32').flatten() // .reshape() 
-      outputTensor = tf.oneHot(outputTensor1, this.meta.outputUnits);
-      inputTensor = tf.tensor(inputs);
-    } else {
-      inputTensor = tf.tensor(inputs);
-      outputTensor = tf.tensor(targets);
-    }
+    const inputs = this.encodeValues(inputTypes, 'input')
+    const targets = this.encodeValues(outputTypes, 'output')
+    // convert those data to tensors after encoding oneHot() or not
+    const inputTensor =  tf.tensor(inputs);
+    const outputTensor = tf.tensor(targets);
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    // TODO: need to ensure to preserve the axis correctly! 
-    // Subject to change!
+    // TODO: need to ensure to preserve the axis correctly! - Subject to change!
     const inputMax = inputTensor.max(1, true);
     const inputMin = inputTensor.min(1, true);
-    const targetMax = outputTensor.max();
-    const targetMin = outputTensor.min();
+    const targetMax = outputTensor.max(1, true);
+    const targetMin = outputTensor.min(1, true);
 
     const normalizedInputs = inputTensor
       .sub(inputMin)
