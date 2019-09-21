@@ -56,6 +56,7 @@ class NeuralNetworkData {
    * 
    */
   encodeValues(ioTypeArray, ioType){
+    
     let dval;
     let ioUnits;
     if(ioType === 'input'){
@@ -94,6 +95,33 @@ class NeuralNetworkData {
 
   }
 
+  ensureIOTypes(ioType){
+    let dval;
+    if(ioType === 'input'){
+      dval = 'xs'
+    } else {
+      dval = 'ys'
+    }
+
+    console.log(this.data[0][dval])
+
+    return Object.keys(this.data[0][dval]).map(prop => {
+      const val = this.data[0][dval][prop];
+      const output = {
+        name: prop,
+        dtype: null
+      }
+      if(typeof val === 'string'){
+        output.dtype = 'string'
+      } else{
+        output.dtype = 'number'
+      }
+
+      return output;
+    })
+
+  }
+
   /**
    * Normalize this.data
    * Requires the inputTypes and outputTypes to be defined
@@ -101,6 +129,11 @@ class NeuralNetworkData {
   normalize() {
     if (this.data === null) {
       this.syncData();
+      
+      // TODO: check data and set inputTypes and outputTypes
+      this.meta.inputTypes = this.ensureIOTypes('input')
+      this.meta.outputTypes = this.ensureIOTypes('output')
+
     }
 
     // get the labels
@@ -118,10 +151,10 @@ class NeuralNetworkData {
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
     // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    const inputMax = inputTensor.max(1, true);
-    const inputMin = inputTensor.min(1, true);
-    const targetMax = outputTensor.max(1, true);
-    const targetMin = outputTensor.min(1, true);
+    const inputMax = inputTensor.max(1);
+    const inputMin = inputTensor.min(1);
+    const targetMax = outputTensor.max(1);
+    const targetMin = outputTensor.min(1);
 
     const normalizedInputs = inputTensor
       .sub(inputMin)
