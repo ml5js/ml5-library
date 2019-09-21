@@ -139,8 +139,15 @@ class NeuralNetwork {
   }
 
   
+  loadJsonInternal(){
+    console.log(this)
+  }
 
+  loadCSVInternal(){
+    console.log(this)
+  }
 
+  
   /**
    * Loads data if a dataUrl is specified in the 
    * constructor
