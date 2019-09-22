@@ -53,13 +53,13 @@ class NeuralNetworkData {
   }
 
   /**
-   * 
+   *
    */
-  encodeValues(ioTypeArray, ioType){
-    
+  encodeValues(ioTypeArray, ioType) {
+
     let dval;
     let ioUnits;
-    if(ioType === 'input'){
+    if (ioType === 'input') {
       dval = 'xs';
       ioUnits = this.meta.inputUnits;
     } else {
@@ -72,14 +72,14 @@ class NeuralNetworkData {
         dtype,
         name
       } = header;
-      
+
       let encodedValues;
 
       if (dtype === 'string') {
-        const dataArray = this.data.map(d => d[dval][name]);        
+        const dataArray = this.data.map(d => d[dval][name]);
         const uniqueValues = [...new Set(dataArray)];
         const oneHotValues = dataArray.map((item) => {
-            return uniqueValues.indexOf(item)
+          return uniqueValues.indexOf(item)
         })
 
         encodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), ioUnits);
@@ -95,9 +95,9 @@ class NeuralNetworkData {
 
   }
 
-  ensureIOTypes(ioType){
+  ensureIOTypes(ioType) {
     let dval;
-    if(ioType === 'input'){
+    if (ioType === 'input') {
       dval = 'xs'
     } else {
       dval = 'ys'
@@ -111,9 +111,9 @@ class NeuralNetworkData {
         name: prop,
         dtype: null
       }
-      if(typeof val === 'string'){
+      if (typeof val === 'string') {
         output.dtype = 'string'
-      } else{
+      } else {
         output.dtype = 'number'
       }
 
@@ -129,7 +129,7 @@ class NeuralNetworkData {
   normalize() {
     if (this.data === null) {
       this.syncData();
-      
+
       // TODO: check data and set inputTypes and outputTypes
       this.meta.inputTypes = this.ensureIOTypes('input')
       this.meta.outputTypes = this.ensureIOTypes('output')
@@ -144,11 +144,11 @@ class NeuralNetworkData {
 
     // TODO: STEP X - Check which data are string types
     const inputs = this.encodeValues(inputTypes, 'input')
-    const targets = this.encodeValues(outputTypes, 'output')
+    const targets = this.encodeValues(outputTypes, 'output');
 
     // convert those data to tensors after encoding oneHot() or not
-    const inputTensor =  tf.tensor(inputs);
-    const outputTensor = tf.tensor(targets);
+    const inputTensor = tf.tensor(inputs);
+    const outputTensor = tf.tensor(targets).cast('float32');
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
     // TODO: need to ensure to preserve the axis correctly! - Subject to change!
@@ -192,8 +192,8 @@ class NeuralNetworkData {
 
   /**
    * Normalize one value or array
-   * TODO: not sure this is the best way! 
-   * @param {*} arr 
+   * TODO: not sure this is the best way!
+   * @param {*} arr
    */
   normalizeSingle(val, io) {
 
@@ -228,8 +228,8 @@ class NeuralNetworkData {
    * unnormalizeSingle()
    * Get back a number or array being normalized
    * based on the input data
-   * @param {*} val 
-   * @param {*} io 
+   * @param {*} val
+   * @param {*} io
    */
   unnormalizeSingle(val, io) {
     let min;
@@ -260,10 +260,10 @@ class NeuralNetworkData {
   }
 
   /**
-   * Gets the total number of inputs/outputs based on the data type 
-   * Uses the relevant function to convert values e.g. oneHot() and 
+   * Gets the total number of inputs/outputs based on the data type
+   * Uses the relevant function to convert values e.g. oneHot() and
    * sends back the appropriate length of values
-   * @param {*} val 
+   * @param {*} val
    */
   getIOUnits() {
     let inputUnits = 0;
@@ -300,8 +300,8 @@ class NeuralNetworkData {
    * These data get "mashed" into the data object
    * when .normalize() or .shuffle() are called
    * TODO: Figure out a way to sync all this!
-   * @param {*} xs 
-   * @param {*} ys 
+   * @param {*} xs
+   * @param {*} ys
    */
   addData(xs, ys) {
     this.xs.push(xs);
