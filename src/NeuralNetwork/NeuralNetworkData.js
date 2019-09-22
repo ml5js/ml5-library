@@ -127,65 +127,109 @@ class NeuralNetworkData {
    * Requires the inputTypes and outputTypes to be defined
    */
   normalize() {
-    if (this.data === null) {
-      this.syncData();
+    console.log(this.xs);
+    console.log(this.ys);
 
-      // TODO: check data and set inputTypes and outputTypes
-      this.meta.inputTypes = this.ensureIOTypes('input')
-      this.meta.outputTypes = this.ensureIOTypes('output')
+    const labelList = [
+      'red-ish',
+      'green-ish',
+      'blue-ish',
+      'orange-ish',
+      'yellow-ish',
+      'pink-ish',
+      'purple-ish',
+      'brown-ish',
+      'grey-ish'
+    ]
 
+    const colors = [];
+    const labels = [];
+
+    for (let i = 0; i < this.xs.length; i += 1) {
+      const col = [this.xs[i].r / 255, this.xs[i].g / 255, this.xs[i].b / 255];
+      colors.push(col);
     }
 
-    // get the labels
-    const {
-      inputTypes,
-      outputTypes
-    } = this.meta;
+    for (let i = 0; i < this.ys.length; i += 1) {
+      labels.push(labelList.indexOf(this.ys[i].label));
+    }
 
-    // TODO: STEP X - Check which data are string types
-    const inputs = this.encodeValues(inputTypes, 'input')
-    const targets = this.encodeValues(outputTypes, 'output');
+    const inputTensor = tf.tensor2d(colors);
+    const labelsTensor = tf.tensor1d(labels, 'int32');
 
-    // convert those data to tensors after encoding oneHot() or not
-    const inputTensor = tf.tensor(inputs);
-    const outputTensor = tf.tensor(targets).cast('float32');
+    const outputTensor = tf.oneHot(labelsTensor, 9).cast('float32');
+    labelsTensor.dispose();
 
-    // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    const inputMax = inputTensor.max(1, true);
-    const inputMin = inputTensor.min(1, true);
-    const targetMax = outputTensor.max(1, true);
-    const targetMin = outputTensor.min(1, true);
+    // if (this.data === null) {
+    //   this.syncData();
 
-    inputMax.print()
-    inputMin.print()
-    targetMax.print()
-    targetMin.print()
+    //   // TODO: check data and set inputTypes and outputTypes
+    //   this.meta.inputTypes = this.ensureIOTypes('input')
+    //   this.meta.outputTypes = this.ensureIOTypes('output')
 
-    const normalizedInputs = inputTensor
-      .sub(inputMin)
-      .div(inputMax.sub(inputMin))
-      .flatten()
-      .reshape([this.data.length, this.meta.inputUnits]);
-    const normalizedOutputs = outputTensor
-      .sub(targetMin)
-      .div(targetMax.sub(targetMin))
-      .flatten().reshape([this.data.length, this.meta.outputUnits]);
+    // }
+
+    // // get the labels
+    // const {
+    //   inputTypes,
+    //   outputTypes
+    // } = this.meta;
+
+    // console.log(inputTypes);
+    // console.log(outputTypes);
+
+    // // TODO: STEP X - Check which data are string types
+    // const inputs = this.encodeValues(inputTypes, 'input')
+    // const targets = this.encodeValues(outputTypes, 'output');
+
+    // // convert those data to tensors after encoding oneHot() or not
+    // const inputTensor = tf.tensor(inputs);
+    // const outputTensor = tf.tensor(targets).cast('float32');
+    // console.log(inputTensor.shape);
+    // console.log(outputTensor.shape);
+
+    // // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
+    // // TODO: need to ensure to preserve the axis correctly! - Subject to change!
+    // const inputMax = inputTensor.max(1, true);
+    // const inputMin = inputTensor.min(1, true);
+    // const targetMax = outputTensor.max(1, true);
+    // const targetMin = outputTensor.min(1, true);
+
+    // inputMax.print()
+    // inputMin.print()
+    // targetMax.print()
+    // targetMin.print()
+
+    // const normalizedInputs = inputTensor
+    //   .sub(inputMin)
+    //   .div(inputMax.sub(inputMin))
+    //   .flatten()
+    //   .reshape([this.data.length, this.meta.inputUnits]);
+    // const normalizedOutputs = outputTensor
+    //   .sub(targetMin)
+    //   .div(targetMax.sub(targetMin))
+    //   .flatten().reshape([this.data.length, this.meta.outputUnits]);
+
+    // console.log(normalizedInputs.shape);
+    // console.log(normalizedOutputs.shape);
+
 
     this.normalizedData = {
       // Return the min/max bounds so we can use them later.
       tensors: {
-        inputs: normalizedInputs, // normalizedInputs,
-        targets: normalizedOutputs,
-        inputMax,
-        inputMin,
-        targetMax,
-        targetMin,
+        // inputs: normalizedInputs, // normalizedInputs,
+        // targets: normalizedOutputs,
+        inputs: inputTensor,
+        targets: outputTensor,
+        // inputMax,
+        // inputMin,
+        // targetMax,
+        // targetMin,
       },
-      inputMax: inputMax.arraySync(),
-      inputMin: inputMin.arraySync(),
-      targetMax: targetMax.arraySync(),
-      targetMin: targetMin.arraySync()
+      // inputMax: inputMax.arraySync(),
+      // inputMin: inputMin.arraySync(),
+      // targetMax: targetMax.arraySync(),
+      // targetMin: targetMin.arraySync()
     }
     // });
   }
