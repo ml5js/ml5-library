@@ -404,8 +404,7 @@ class NeuralNetwork {
       targets
     } = this.data.normalizedData.tensors;
 
-    console.log('targets!')
-    targets.print();
+    // targets.print();
 
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {

@@ -154,11 +154,11 @@ class NeuralNetworkData {
       labels.push(labelList.indexOf(this.ys[i].label));
     }
 
-    const inputTensor = tf.tensor2d(colors);
-    const labelsTensor = tf.tensor1d(labels, 'int32');
+    const inputTensorA = tf.tensor2d(colors);
+    const labelsTensorA = tf.tensor1d(labels, 'int32');
 
-    const outputTensor = tf.oneHot(labelsTensor, 9).cast('float32');
-    labelsTensor.dispose();
+    const outputTensorA = tf.oneHot(labelsTensorA, 9).cast('float32');
+    labelsTensorA.dispose();
 
     // if (this.data === null) {
     //   this.syncData();
@@ -169,46 +169,55 @@ class NeuralNetworkData {
 
     // }
 
-    // // get the labels
-    // const {
-    //   inputTypes,
-    //   outputTypes
-    // } = this.meta;
+    // get the labels
+    const {
+      inputTypes,
+      outputTypes
+    } = this.meta;
 
-    // console.log(inputTypes);
-    // console.log(outputTypes);
+    console.log(inputTypes);
+    console.log(outputTypes);
 
     // // TODO: STEP X - Check which data are string types
-    // const inputs = this.encodeValues(inputTypes, 'input')
-    // const targets = this.encodeValues(outputTypes, 'output');
+    const inputs = this.encodeValues(inputTypes, 'input')
+    const targets = this.encodeValues(outputTypes, 'output');
+
+    console.log(inputs);
+    console.log(targets);
+
 
     // // convert those data to tensors after encoding oneHot() or not
-    // const inputTensor = tf.tensor(inputs);
-    // const outputTensor = tf.tensor(targets).cast('float32');
+    const inputTensor = tf.tensor(inputs);
+    const outputTensor = tf.tensor(targets).cast('float32');
     // console.log(inputTensor.shape);
     // console.log(outputTensor.shape);
 
     // // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    // // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    // const inputMax = inputTensor.max(1, true);
-    // const inputMin = inputTensor.min(1, true);
-    // const targetMax = outputTensor.max(1, true);
-    // const targetMin = outputTensor.min(1, true);
+    // // TODO: need to ensure to preserve the axis correctly! - Subject to change
+    const inputMax = inputTensor.max(1, true);
+    const inputMin = inputTensor.min(1, true);
+    inputMin.print();
+    inputMax.print();
 
-    // inputMax.print()
-    // inputMin.print()
-    // targetMax.print()
-    // targetMin.print()
+    const targetMax = outputTensor.max(1, true);
+    const targetMin = outputTensor.min(1, true);
+    targetMin.print();
+    targetMax.print();
 
-    // const normalizedInputs = inputTensor
-    //   .sub(inputMin)
-    //   .div(inputMax.sub(inputMin))
-    //   .flatten()
-    //   .reshape([this.data.length, this.meta.inputUnits]);
-    // const normalizedOutputs = outputTensor
-    //   .sub(targetMin)
-    //   .div(targetMax.sub(targetMin))
-    //   .flatten().reshape([this.data.length, this.meta.outputUnits]);
+
+    const normalizedInputs = inputTensor
+      .sub(inputMin)
+      .div(inputMax.sub(inputMin))
+      .flatten()
+      .reshape([this.data.length, this.meta.inputUnits]);
+    inputTensorA.print();
+    normalizedInputs.print();
+    const normalizedOutputs = outputTensor
+      .sub(targetMin)
+      .div(targetMax.sub(targetMin))
+      .flatten().reshape([this.data.length, this.meta.outputUnits]);
+    outputTensorA.print();
+    normalizedOutputs.print();
 
     // console.log(normalizedInputs.shape);
     // console.log(normalizedOutputs.shape);
@@ -219,8 +228,8 @@ class NeuralNetworkData {
       tensors: {
         // inputs: normalizedInputs, // normalizedInputs,
         // targets: normalizedOutputs,
-        inputs: inputTensor,
-        targets: outputTensor,
+        inputs: inputTensorA,
+        targets: outputTensorA,
         // inputMax,
         // inputMin,
         // targetMax,
