@@ -139,20 +139,77 @@ class NeuralNetwork {
   }
 
   
-  loadJsonInternal(){
-    console.log(this)
+  async loadJSONInternal(){
+    const outputLabels = this.config.outputs;
+    const inputLabels = this.config.inputs;
+
+    const data = await fetch(this.config.dataUrl);
+    const json = await data.json();
+
+    // TODO: recurse through the object to find
+    // which object contains the 
+    let parentProp;
+    if( Object.keys(json).includes('entries')){
+      parentProp = 'entries'
+    } else if (Object.keys(json).includes('data')){
+      parentProp = 'data'
+    } else {
+      console.log(`your data must be contained in an array in \n
+      a property called entries or data`);
+      return;
+    }
+
+    const dataArray = json[parentProp];
+
+    this.data.xs = dataArray.map(item => {
+      const props = Object.keys(item);
+
+      const output = {};
+      props.forEach(prop => {
+        if(inputLabels.includes(prop)){
+          output[prop] = item[prop]
+        }
+      })
+
+      return output;
+    })
+
+    this.data.ys = dataArray.map(item => {
+      const props = Object.keys(item);
+
+      const output = {};
+      props.forEach(prop => {
+        if(outputLabels.includes(prop)){
+          output[prop] = item[prop]
+        }
+      })
+      
+      return output;
+    })
+
+    this.data.data = [];
+    
+    this.data.ys.forEach( (item, idx) =>  {
+      const output = {};
+      output.xs = this.data.xs[idx]
+      output.ys = this.data.ys[idx]
+      this.data.data.push(output);
+    })
+
+    // TODO: check for int32, float32, bool, or string
+    this.data.meta.inputTypes = Object.keys(this.data.data[0].xs).map(prop => ({
+      name: prop,
+      dtype: typeof this.data.data[0].xs[prop]
+    }))
+    this.data.meta.outputTypes = Object.keys(this.data.data[0].ys).map(prop => ({
+      name: prop,
+      dtype: typeof this.data.data[0].ys[prop]
+    }))
+
+    console.log(this.data.data)
   }
 
-  loadCSVInternal(){
-    console.log(this)
-  }
-
-  
-  /**
-   * Loads data if a dataUrl is specified in the 
-   * constructor
-   */
-  async loadData() {
+  async loadCSVInternal(){
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
 
@@ -223,8 +280,21 @@ class NeuralNetwork {
       })
 
     }
+  }
 
-
+  
+  /**
+   * Loads data if a dataUrl is specified in the 
+   * constructor
+   */
+  async loadData() {
+    if(this.config.dataUrl.endsWith('.csv')){
+      await this.loadCSVInternal();
+    } else if (this.config.dataUrl.endsWith('.json')){
+      await this.loadJSONInternal();
+    } else {
+      console.log('Not a valid data format. Must be csv or json')
+    }
   }
 
 
