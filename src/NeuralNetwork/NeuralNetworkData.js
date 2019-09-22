@@ -145,16 +145,22 @@ class NeuralNetworkData {
     // TODO: STEP X - Check which data are string types
     const inputs = this.encodeValues(inputTypes, 'input')
     const targets = this.encodeValues(outputTypes, 'output')
+
     // convert those data to tensors after encoding oneHot() or not
     const inputTensor =  tf.tensor(inputs);
     const outputTensor = tf.tensor(targets);
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
     // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    const inputMax = inputTensor.max(1);
-    const inputMin = inputTensor.min(1);
-    const targetMax = outputTensor.max(1);
-    const targetMin = outputTensor.min(1);
+    const inputMax = inputTensor.max(1, true);
+    const inputMin = inputTensor.min(1, true);
+    const targetMax = outputTensor.max(1, true);
+    const targetMin = outputTensor.min(1, true);
+
+    inputMax.print()
+    inputMin.print()
+    targetMax.print()
+    targetMin.print()
 
     const normalizedInputs = inputTensor
       .sub(inputMin)
