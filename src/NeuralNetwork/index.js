@@ -315,11 +315,17 @@ class NeuralNetwork {
 
       case 'classification': // Create a model for classification
         // set classification model parameters
+        // this.config.hiddenUnits = 16;
+        // this.config.activationHidden = 'relu' // 'relu',
+        // this.config.activationOutput = 'softmax' // 'relu',
+        // this.config.modelLoss = 'categoricalCrossentropy'
+        // this.config.modelOptimizer = tf.train.adam();
+
         this.config.hiddenUnits = 16;
-        this.config.activationHidden = 'relu' // 'relu',
+        this.config.activationHidden = 'sigmoid' // 'relu',
         this.config.activationOutput = 'softmax' // 'relu',
         this.config.modelLoss = 'categoricalCrossentropy'
-        this.config.modelOptimizer = tf.train.adam();
+        this.config.modelOptimizer = tf.train.sgd(DEFAULTS.learningRate); // tf.train.adam();
 
         return this.createModelInternal();
 
