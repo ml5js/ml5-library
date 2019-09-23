@@ -3,6 +3,7 @@ import * as tf from '@tensorflow/tfjs';
 // import callCallback from '../utils/callcallback';
 import DEFAULTS from './NeuralNetworkDefaults';
 
+/* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle", "normalizeInternal"] }] */
 class NeuralNetworkData {
   constructor(options) {
     this.task = options.task || DEFAULTS.task;
@@ -44,7 +45,6 @@ class NeuralNetworkData {
    * Shuffle this.data
    * If there are xs and ys, mash them in to data
    */
-  /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle"] }] */
   shuffle() {
     if (this.data === null) {
       this.syncData();
@@ -122,6 +122,20 @@ class NeuralNetworkData {
 
   }
 
+
+  normalizeInternal(arr){
+    const inputTensor = tf.tensor1d(arr);
+
+    const inputMax = inputTensor.max();
+    const inputMin = inputTensor.min();
+
+    const normalizedInputs = inputTensor
+      .sub(inputMin)
+      .div(inputMax.sub(inputMin))
+    
+    return normalizedInputs.dataSync();
+  }
+
   /**
    * Normalize this.data
    * Requires the inputTypes and outputTypes to be defined
@@ -146,48 +160,103 @@ class NeuralNetworkData {
     const inputs = this.encodeValues(inputTypes, 'input')
     const targets = this.encodeValues(outputTypes, 'output')
 
+    // reshape the inputs!
+
+    const normalizedInputs = inputs.map(item => this.normalizeInternal(item));
+    const normalizedOutputs = targets.map(item => this.normalizeInternal(item));
+
+    const reshapedInputs = [];
+    for(let i =0; i < this.data.length; i+=1){
+      const res = [];
+
+      for(let j = 0; j < normalizedInputs.length; j+=1){
+        res[j] = normalizedInputs[j][i]
+      }
+
+      reshapedInputs.push(res);
+    }
+
+    
+    const reshapedOutputs = normalizedOutputs.map( target => {
+      console.log(target.length)
+      const output = [];
+
+      for(let i = 0; i < target.length; i+=this.meta.outputUnits){
+        const row = []
+
+        for(let j = 0; j < this.meta.outputUnits; j+=1){
+          row[j] = target[ (i+j)]
+        }
+        output.push(row);
+      }
+
+      return output
+    })
+
+    // console.log(reshapedInputs)
+    // console.log(reshapedOutputs)
+
+    // reshape the outputs!
+
     // convert those data to tensors after encoding oneHot() or not
-    const inputTensor =  tf.tensor(inputs);
-    const outputTensor = tf.tensor(targets);
+    const inputTensor =  tf.tensor(reshapedInputs)
+    const outputTensor = tf.tensor(reshapedOutputs)
+
+    console.log(inputTensor.dataSync())
+    console.log(outputTensor.dataSync())
+
+    this.normalizedData = {
+      tensors:{
+        inputs: inputTensor, 
+        targets: outputTensor,
+      }
+    }
+
+
+    // console.log('input ----', inputTensor.dataSync())
+    // console.log('output ----', outputTensor.dataSync())
 
     // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
     // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    const inputMax = inputTensor.max(1, true);
-    const inputMin = inputTensor.min(1, true);
-    const targetMax = outputTensor.max(1, true);
-    const targetMin = outputTensor.min(1, true);
+    // const inputMax = inputTensor.max(1, true);
+    // const inputMin = inputTensor.min(1, true);
+    // const targetMax = outputTensor.max(1, true);
+    // const targetMin = outputTensor.min(1, true);
 
-    inputMax.print()
-    inputMin.print()
-    targetMax.print()
-    targetMin.print()
+    // inputMax.print()
+    // inputMin.print()
+    // targetMax.print()
+    // targetMin.print()
 
-    const normalizedInputs = inputTensor
-      .sub(inputMin)
-      .div(inputMax.sub(inputMin))
-      .flatten()
-      .reshape([this.data.length, this.meta.inputUnits]);
-    const normalizedOutputs = outputTensor
-      .sub(targetMin)
-      .div(targetMax.sub(targetMin))
-      .flatten().reshape([this.data.length, this.meta.outputUnits]);
+    // const normalizedInputs = inputTensor
+    //   .sub(inputMin)
+    //   .div(inputMax.sub(inputMin))
+      // .flatten()
+      // .reshape([ this.data.length, this.meta.inputUnits]);
 
-    this.normalizedData = {
-      // Return the min/max bounds so we can use them later.
-      tensors: {
-        inputs: normalizedInputs, // normalizedInputs,
-        targets: normalizedOutputs,
-        inputMax,
-        inputMin,
-        targetMax,
-        targetMin,
-      },
-      inputMax: inputMax.arraySync(),
-      inputMin: inputMin.arraySync(),
-      targetMax: targetMax.arraySync(),
-      targetMin: targetMin.arraySync()
-    }
-    // });
+
+      // const normalizedOutputs = outputTensor
+      //   .sub(targetMin)
+      //   .div(targetMax.sub(targetMin))
+      // .flatten()
+      // .reshape([this.data.length, this.meta.outputUnits]);
+
+
+    // this.normalizedData = {
+    //   // Return the min/max bounds so we can use them later.
+      // tensors: {
+        // inputs: inputTensor, // normalizedInputs,
+        // targets: outputTensor,
+    //     inputMax,
+    //     inputMin,
+    //     targetMax,
+    //     targetMin,
+      // },
+    //   inputMax: inputMax.arraySync(),
+    //   inputMin: inputMin.arraySync(),
+    //   targetMax: targetMax.arraySync(),
+    //   targetMin: targetMin.arraySync()
+    // }
   }
 
   /**
