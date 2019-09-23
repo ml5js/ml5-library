@@ -26,34 +26,6 @@ class NeuralNetwork {
 
     // Check if the model is ready
     this.ready = false;
-    // Model Config
-    // ??? Proposal???
-    // TODO: does it make sense to split this up?
-    /**
-     this.config = {
-        debug: options.debug || DEFAULTS.debug,
-        data:{
-          inputs: options.inputs || DEFAULTS.inputs,
-          outputs: options.outputs || DEFAULTS.outputs,
-          dataUrl: options.dataUrl || null,
-          noVal: options.noVal || options.outputs,
-        }.
-        architecture:{
-          task: options.task || DEFAULTS.task,
-          activationHidden: options.activationHidden || DEFAULTS.activationHidden,
-          activationOutput: options.activationOutput || DEFAULTS.activationOutput,
-          hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
-          learningRate: options.outputs || DEFAULTS.learningRate,
-          modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
-          modelLoss: options.modelLoss || DEFAULTS.modelLoss,
-          modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
-        },
-        training:{
-          batchSize: options.batchSize || DEFAULTS.batchSize,
-          epochs: options.epochs || DEFAULTS.epochs,
-        },
-     }
-     */
 
     // Model Config
     this.config = {
@@ -125,7 +97,7 @@ class NeuralNetwork {
   createModelFromData(callback) {
     return callCallback(this.createModelFromDataInternal(), callback)
   }
-  
+
   async createModelFromDataInternal() {
     // load the data
     await this.loadData();
@@ -138,8 +110,8 @@ class NeuralNetwork {
     this.model = this.createModel();
   }
 
-  
-  async loadJSONInternal(){
+
+  async loadJSONInternal() {
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
 
@@ -149,9 +121,9 @@ class NeuralNetwork {
     // TODO: recurse through the object to find
     // which object contains the 
     let parentProp;
-    if( Object.keys(json).includes('entries')){
+    if (Object.keys(json).includes('entries')) {
       parentProp = 'entries'
-    } else if (Object.keys(json).includes('data')){
+    } else if (Object.keys(json).includes('data')) {
       parentProp = 'data'
     } else {
       console.log(`your data must be contained in an array in \n
@@ -166,7 +138,7 @@ class NeuralNetwork {
 
       const output = {};
       props.forEach(prop => {
-        if(inputLabels.includes(prop)){
+        if (inputLabels.includes(prop)) {
           output[prop] = item[prop]
         }
       })
@@ -179,17 +151,17 @@ class NeuralNetwork {
 
       const output = {};
       props.forEach(prop => {
-        if(outputLabels.includes(prop)){
+        if (outputLabels.includes(prop)) {
           output[prop] = item[prop]
         }
       })
-      
+
       return output;
     })
 
     this.data.data = [];
-    
-    this.data.ys.forEach( (item, idx) =>  {
+
+    this.data.ys.forEach((item, idx) => {
       const output = {};
       output.xs = this.data.xs[idx]
       output.ys = this.data.ys[idx]
@@ -209,7 +181,7 @@ class NeuralNetwork {
     console.log(this.data.data)
   }
 
-  async loadCSVInternal(){
+  async loadCSVInternal() {
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
 
@@ -257,7 +229,7 @@ class NeuralNetwork {
     // console.log(this.data.meta)
 
     if (this.config.debug) {
-      outputLabels.forEach( outputLabel => {
+      outputLabels.forEach(outputLabel => {
         const values = inputLabels.map(label => {
           return data.map(item => {
             return {
@@ -282,15 +254,15 @@ class NeuralNetwork {
     }
   }
 
-  
+
   /**
    * Loads data if a dataUrl is specified in the 
    * constructor
    */
   async loadData() {
-    if(this.config.dataUrl.endsWith('.csv')){
+    if (this.config.dataUrl.endsWith('.csv')) {
       await this.loadCSVInternal();
-    } else if (this.config.dataUrl.endsWith('.json')){
+    } else if (this.config.dataUrl.endsWith('.json')) {
       await this.loadJSONInternal();
     } else {
       console.log('Not a valid data format. Must be csv or json')

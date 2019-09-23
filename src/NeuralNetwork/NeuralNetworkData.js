@@ -102,24 +102,27 @@ class NeuralNetworkData {
     } else {
       dval = 'ys'
     }
-    
+
 
     return Object.keys(this.data[0][dval]).map(prop => {
+
       const val = this.data[0][dval][prop];
+
       const output = {
         name: prop,
         dtype: null,
-        uniqueValueCount:null
+        uniqueValueCount: null
       }
       if (typeof val === 'string') {
-        output.dtype = 'string'
-        
+        output.dtype = typeof val
+
         // TODO: create a key/value map of values to one-hot encoded values here???
         const dataArray = this.data.map(d => d[dval][prop]);
         const uniqueValues = [...new Set(dataArray)];
         output.uniqueValueCount = uniqueValues.length;
+
       } else {
-        output.dtype = 'number'
+        output.dtype = typeof val
       }
 
       return output;
@@ -158,22 +161,25 @@ class NeuralNetworkData {
       ioUnits = this.meta.outputUnits;
     }
 
-    
+
     const output = []
 
-    for(let i = 0; i < this.data.length; i+=1){
+    for (let i = 0; i < this.data.length; i += 1) {
 
       const row = [];
 
-      for(let idx = 0; idx < inputArray.length; idx+=1){
-        const {dtype, uniqueValueCount} = ioTypeArray[idx];
+      for (let idx = 0; idx < inputArray.length; idx += 1) {
+        const {
+          dtype,
+          uniqueValueCount
+        } = ioTypeArray[idx];
 
-        if(dtype === 'string'){
+        if (dtype === 'string') {
           for (let j = 0; j < uniqueValueCount; j += 1) {
-            row.push(inputArray[idx][  (i * uniqueValueCount) + j ])
+            row.push(inputArray[idx][(i * uniqueValueCount) + j])
           }
 
-        } else if (dtype === 'number'){
+        } else if (dtype === 'number') {
 
           row.push(inputArray[idx][i]);
 
@@ -186,7 +192,7 @@ class NeuralNetworkData {
       output.push(row);
 
     }
-    
+
     console.log(ioUnits);
 
     return output;
@@ -199,13 +205,12 @@ class NeuralNetworkData {
    */
   normalize() {
     // if (this.data === null) {
-      this.syncData();
+    this.syncData();
 
-      // TODO: check data and set inputTypes and outputTypes
-      this.meta.inputTypes = this.ensureIOTypes('input')
-      this.meta.outputTypes = this.ensureIOTypes('output')
+    // TODO: check data and set inputTypes and outputTypes
+    this.meta.inputTypes = this.ensureIOTypes('input')
+    this.meta.outputTypes = this.ensureIOTypes('output')
 
-    // }
 
     // get the labels
     const {
@@ -335,34 +340,34 @@ export default NeuralNetworkData;
 // })
 
 // // Step 3. Normalize the data to the range 0 - 1 using min-max scaling
-    // TODO: need to ensure to preserve the axis correctly! - Subject to change!
-    // const inputMax = inputTensor.max(1, true);
-    // const inputMin = inputTensor.min(1, true);
-    // const targetMax = outputTensor.max(1, true);
-    // const targetMin = outputTensor.min(1, true);
+// TODO: need to ensure to preserve the axis correctly! - Subject to change!
+// const inputMax = inputTensor.max(1, true);
+// const inputMin = inputTensor.min(1, true);
+// const targetMax = outputTensor.max(1, true);
+// const targetMin = outputTensor.min(1, true);
 
-    // console.log('----- inputMax')
-    // inputMax.print()
+// console.log('----- inputMax')
+// inputMax.print()
 
-    // console.log('----- inputMin')
-    // inputMin.print()
+// console.log('----- inputMin')
+// inputMin.print()
 
-    // console.log('----- targetMax')
-    // targetMax.print()
+// console.log('----- targetMax')
+// targetMax.print()
 
-    // console.log('----- targetMin')
-    // targetMin.print()
+// console.log('----- targetMin')
+// targetMin.print()
 
-    // const normalizedInputs = inputTensor
-    //   .sub(inputMin)
-    //   .div(inputMax.sub(inputMin))
+// const normalizedInputs = inputTensor
+//   .sub(inputMin)
+//   .div(inputMax.sub(inputMin))
 
-    // const normalizedOutputs = outputTensor
-    //   .sub(targetMin)
-    //   .div(targetMax.sub(targetMin))
+// const normalizedOutputs = outputTensor
+//   .sub(targetMin)
+//   .div(targetMax.sub(targetMin))
 
-    // console.log('----- normalizedInputs')
-    // normalizedInputs.print();
+// console.log('----- normalizedInputs')
+// normalizedInputs.print();
 
-    // console.log('----- normalizedOutputs')
-    // normalizedOutputs.print();
+// console.log('----- normalizedOutputs')
+// normalizedOutputs.print();
