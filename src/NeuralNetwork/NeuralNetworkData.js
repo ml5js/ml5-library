@@ -133,7 +133,7 @@ class NeuralNetworkData {
       .sub(inputMin)
       .div(inputMax.sub(inputMin))
     
-    return normalizedInputs.dataSync();
+    return normalizedInputs.arraySync();
   }
 
   /**
@@ -160,6 +160,7 @@ class NeuralNetworkData {
     const inputs = this.encodeValues(inputTypes, 'input')
     const targets = this.encodeValues(outputTypes, 'output')
 
+    console.log(inputs.length, targets.length)
     // reshape the inputs!
 
     const normalizedInputs = inputs.map(item => this.normalizeInternal(item));
@@ -193,17 +194,14 @@ class NeuralNetworkData {
       return output
     })
 
-    // console.log(reshapedInputs)
-    // console.log(reshapedOutputs)
 
-    // reshape the outputs!
+    // // // convert those data to tensors after encoding oneHot() or not
+    const inputTensor =  tf.tensor(reshapedInputs).flatten().reshape([this.data.length, this.meta.inputUnits])
+    const outputTensor = tf.tensor(reshapedOutputs).flatten().reshape([this.data.length, this.meta.outputUnits])
+    
 
-    // convert those data to tensors after encoding oneHot() or not
-    const inputTensor =  tf.tensor(reshapedInputs)
-    const outputTensor = tf.tensor(reshapedOutputs)
-
-    console.log(inputTensor.dataSync())
-    console.log(outputTensor.dataSync())
+    // console.log('inputTensor -------', inputTensor.arraySync())
+    // console.log('outputTensor -------',outputTensor.arraySync())
 
     this.normalizedData = {
       tensors:{
@@ -264,34 +262,34 @@ class NeuralNetworkData {
    * TODO: not sure this is the best way! 
    * @param {*} arr 
    */
-  normalizeSingle(val, io) {
+  // normalizeSingle(val, io) {
 
-    let min;
-    let max;
-    let arr;
+  //   let min;
+  //   let max;
+  //   let arr;
 
-    // check if single value or array
-    if (val instanceof Array) {
-      arr = val;
-    } else {
-      arr = [val];
-    }
+  //   // check if single value or array
+  //   if (val instanceof Array) {
+  //     arr = val;
+  //   } else {
+  //     arr = [val];
+  //   }
 
-    if (io === "input") {
-      min = this.normalizedData.tensors.inputMin;
-      max = this.normalizedData.tensors.inputMax;
-    } else if (io === "output") {
-      min = this.normalizedData.tensors.targetMin;
-      max = this.normalizedData.tensors.targetMax;
-    }
+  //   if (io === "input") {
+  //     min = this.normalizedData.tensors.inputMin;
+  //     max = this.normalizedData.tensors.inputMax;
+  //   } else if (io === "output") {
+  //     min = this.normalizedData.tensors.targetMin;
+  //     max = this.normalizedData.tensors.targetMax;
+  //   }
 
-    const inputTensor = tf.tensor1d(arr);
-    const normTensor = inputTensor
-      .sub(min)
-      .div(max.sub(min));
+  //   const inputTensor = tf.tensor1d(arr);
+  //   const normTensor = inputTensor
+  //     .sub(min)
+  //     .div(max.sub(min));
 
-    return normTensor.dataSync()
-  }
+  //   return normTensor.dataSync()
+  // }
 
   /**
    * unnormalizeSingle()
@@ -300,33 +298,33 @@ class NeuralNetworkData {
    * @param {*} val 
    * @param {*} io 
    */
-  unnormalizeSingle(val, io) {
-    let min;
-    let max;
-    let arr;
+  // unnormalizeSingle(val, io) {
+  //   let min;
+  //   let max;
+  //   let arr;
 
-    // check if single value or array
-    if (val instanceof Array) {
-      arr = val;
-    } else {
-      arr = [val];
-    }
+  //   // check if single value or array
+  //   if (val instanceof Array) {
+  //     arr = val;
+  //   } else {
+  //     arr = [val];
+  //   }
 
-    if (io === "input") {
-      min = this.normalizedData.tensors.inputMin;
-      max = this.normalizedData.tensors.inputMax;
-    } else if (io === "output") {
-      min = this.normalizedData.tensors.targetMin;
-      max = this.normalizedData.tensors.targetMax;
-    }
+  //   if (io === "input") {
+  //     min = this.normalizedData.tensors.inputMin;
+  //     max = this.normalizedData.tensors.inputMax;
+  //   } else if (io === "output") {
+  //     min = this.normalizedData.tensors.targetMin;
+  //     max = this.normalizedData.tensors.targetMax;
+  //   }
 
-    const inputTensor = tf.tensor1d(arr);
-    const unNormPreds = inputTensor
-      .mul(max.sub(min))
-      .add(min);
+  //   const inputTensor = tf.tensor1d(arr);
+  //   const unNormPreds = inputTensor
+  //     .mul(max.sub(min))
+  //     .add(min);
 
-    return unNormPreds.dataSync();
-  }
+  //   return unNormPreds.dataSync();
+  // }
 
   /**
    * Gets the total number of inputs/outputs based on the data type 
