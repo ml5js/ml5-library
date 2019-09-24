@@ -381,27 +381,47 @@ class NeuralNetwork {
    * @param {*} optionsOrCallback 
    * @param {*} callback 
    */
-  train(optionsOrCallback, callback) {
+  train(optionsOrCallback, optionsOrWhileTraining, callback) {
     let options;
-    let cb;
-    if (typeof optionsOrCallback === 'object') {
+    let whileTrainingCb;
+    let finishedTrainingCb;
+    if (typeof optionsOrCallback === 'object' && 
+        typeof optionsOrWhileTraining === 'function' &&
+        typeof callback === 'function'
+    ) {
       options = optionsOrCallback;
-      cb = callback
+      whileTrainingCb = optionsOrWhileTraining;
+      finishedTrainingCb = callback;
+    } else if (typeof optionsOrCallback === 'object' && 
+              typeof optionsOrWhileTraining === 'function') {
+      options = optionsOrCallback;
+      whileTrainingCb = null;
+      finishedTrainingCb = optionsOrWhileTraining;
+    } else if (typeof optionsOrCallback === 'function' &&
+               typeof optionsOrWhileTraining === 'function'
+    ){
+      options = {};
+      whileTrainingCb = optionsOrCallback;
+      finishedTrainingCb = optionsOrWhileTraining;
     } else {
-      options = {}
-      cb = optionsOrCallback;
+      options = {};
+      whileTrainingCb = null;
+      finishedTrainingCb = optionsOrCallback;
     }
 
-    return callCallback(this.trainInternal(options), cb);
+    return callCallback(this.trainInternal(options, whileTrainingCb), finishedTrainingCb);
   }
 
   /**
    * Train the neural network
    * @param {*} options 
    */
-  async trainInternal(options) {
+  async trainInternal(options, whileTrainingCallback) {
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
+
+    const whileTraining = (typeof whileTrainingCallback === 'function') ? 
+        whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
 
     let xs;
     let ys;
@@ -433,7 +453,7 @@ class NeuralNetwork {
           }
         ),
         {
-          onEpochEnd: (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`)
+          onEpochEnd: whileTraining
         },
         {
           onTrainEnd: () => console.log(`training complete!`)
