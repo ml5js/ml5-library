@@ -52,20 +52,20 @@ class NeuralNetwork {
 
     // Create the model
     if (this.config.dataUrl !== null) {
-      // If dataUrl is specified: 
-      // * load any relevant data 
-      // * run the getIOUnits() function to 
+      // If dataUrl is specified:
+      // * load any relevant data
+      // * run the getIOUnits() function to
       // * create the model
       this.ready = this.createModelFromData(callback);
     } else {
-      // If dataUrl is not specified: 
+      // If dataUrl is not specified:
       // * set the inputUnits and outputUnits
       // * create the model
       this.data.meta.inputUnits = this.config.inputs;
       this.data.meta.outputUnits = this.config.outputs;
-      // convert the inputs and outputs to arrays 
-      // if they are not specified this way already 
-      // e.g. input1, input2, input3 
+      // convert the inputs and outputs to arrays
+      // if they are not specified this way already
+      // e.g. input1, input2, input3
       // e.g. output1, output2, output3
       this.data.inputs = this.createNamedIO(this.config.inputs, 'input');
       this.data.outputs = this.createNamedIO(this.config.outputs, 'output');
@@ -80,8 +80,8 @@ class NeuralNetwork {
    * Takes in a number or array and then either returns
    * the array or returns an array of ['input0','input1']
    * the array or returns an array of ['output0','output1']
-   * @param {*} val 
-   * @param {*} inputType 
+   * @param {*} val
+   * @param {*} inputType
    */
   // eslint-disable-next-line class-methods-use-this
   createNamedIO(val, inputType) {
@@ -92,7 +92,7 @@ class NeuralNetwork {
 
   /**
    * Create model from data
-   * @param {*} callback 
+   * @param {*} callback
    */
   createModelFromData(callback) {
     return callCallback(this.createModelFromDataInternal(), callback)
@@ -119,7 +119,7 @@ class NeuralNetwork {
     const json = await data.json();
 
     // TODO: recurse through the object to find
-    // which object contains the 
+    // which object contains the
     let parentProp;
     if (Object.keys(json).includes('entries')) {
       parentProp = 'entries'
@@ -285,7 +285,7 @@ class NeuralNetwork {
 
 
   /**
-   * Loads data if a dataUrl is specified in the 
+   * Loads data if a dataUrl is specified in the
    * constructor
    */
   async loadData() {
@@ -310,7 +310,7 @@ class NeuralNetwork {
       case 'regression': // Create a model for regression
         // set regression model parameters
         // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
-        this.config.modelOptimizer = tf.train.adam();
+        this.config.modelOptimizer = tf.train.adam(this.config.learningRate);
 
         return this.createModelInternal();
 
@@ -378,28 +378,28 @@ class NeuralNetwork {
 
   /**
    * User-facing neural network training
-   * @param {*} optionsOrCallback 
-   * @param {*} callback 
+   * @param {*} optionsOrCallback
+   * @param {*} callback
    */
   train(optionsOrCallback, optionsOrWhileTraining, callback) {
     let options;
     let whileTrainingCb;
     let finishedTrainingCb;
-    if (typeof optionsOrCallback === 'object' && 
-        typeof optionsOrWhileTraining === 'function' &&
-        typeof callback === 'function'
+    if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function' &&
+      typeof callback === 'function'
     ) {
       options = optionsOrCallback;
       whileTrainingCb = optionsOrWhileTraining;
       finishedTrainingCb = callback;
-    } else if (typeof optionsOrCallback === 'object' && 
-              typeof optionsOrWhileTraining === 'function') {
+    } else if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function') {
       options = optionsOrCallback;
       whileTrainingCb = null;
       finishedTrainingCb = optionsOrWhileTraining;
     } else if (typeof optionsOrCallback === 'function' &&
-               typeof optionsOrWhileTraining === 'function'
-    ){
+      typeof optionsOrWhileTraining === 'function'
+    ) {
       options = {};
       whileTrainingCb = optionsOrCallback;
       finishedTrainingCb = optionsOrWhileTraining;
@@ -414,14 +414,14 @@ class NeuralNetwork {
 
   /**
    * Train the neural network
-   * @param {*} options 
+   * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
 
-    const whileTraining = (typeof whileTrainingCallback === 'function') ? 
-        whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+    const whileTraining = (typeof whileTrainingCallback === 'function') ?
+      whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
 
     let xs;
     let ys;
@@ -445,19 +445,19 @@ class NeuralNetwork {
     let modelFitCallbacks;
     if (this.config.debug) {
       modelFitCallbacks = [tfvis.show.fitCallbacks({
-            name: 'Training Performance'
-          },
-          ['loss', 'accuracy'], {
-            height: 200,
-            callbacks: ['onEpochEnd']
-          }
-        ),
-        {
-          onEpochEnd: whileTraining
-        },
-        {
-          onTrainEnd: () => console.log(`training complete!`)
-        },
+        name: 'Training Performance'
+      },
+        ['loss', 'accuracy'], {
+        height: 200,
+        callbacks: ['onEpochEnd']
+      }
+      ),
+      {
+        onEpochEnd: whileTraining
+      },
+      {
+        onTrainEnd: () => console.log(`training complete!`)
+      },
       ]
     } else {
       modelFitCallbacks = []
@@ -479,8 +479,8 @@ class NeuralNetwork {
    * Classify()
    * Runs the classification if the neural network is doing a
    * classification task
-   * @param {*} input 
-   * @param {*} callback 
+   * @param {*} input
+   * @param {*} callback
    */
   classify(input, callback) {
     return callCallback(this.predictInternal(input), callback);
@@ -488,8 +488,8 @@ class NeuralNetwork {
 
   /**
    * Userfacing prediction function
-   * @param {*} input 
-   * @param {*} callback 
+   * @param {*} input
+   * @param {*} callback
    */
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
@@ -497,7 +497,7 @@ class NeuralNetwork {
 
   /**
    * Make a prediction based on the given input
-   * @param {*} sample 
+   * @param {*} sample
    */
   async predictInternal(sample) {
     const xs = tf.tensor(sample, [1, sample.length]);
@@ -505,7 +505,7 @@ class NeuralNetwork {
 
     let results;
     if (this.config.task === 'classification') {
-      // TODO: change the output format based on the 
+      // TODO: change the output format based on the
       // type of behavior
       results = {
         output: await ys.data(),
@@ -526,8 +526,8 @@ class NeuralNetwork {
 
   /**
    * Save the model and weights
-   * @param {*} callback 
-   * @param {*} name 
+   * @param {*} callback
+   * @param {*} name
    */
   async save(callback, name) {
     this.model.save(tf.io.withSaveHandler(async (data) => {
@@ -551,8 +551,8 @@ class NeuralNetwork {
 
   /**
    * Load the model and weights in from a file
-   * @param {*} filesOrPath 
-   * @param {*} callback 
+   * @param {*} filesOrPath
+   * @param {*} callback
    */
   async load(filesOrPath = null, callback) {
     if (typeof filesOrPath !== 'string') {
@@ -583,9 +583,9 @@ class NeuralNetwork {
 
 /**
  * Create an instance of the NeuralNetwork
- * @param {*} inputsOrOptions 
- * @param {*} outputsOrCallback 
- * @param {*} callback 
+ * @param {*} inputsOrOptions
+ * @param {*} outputsOrCallback
+ * @param {*} callback
  */
 const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
 
