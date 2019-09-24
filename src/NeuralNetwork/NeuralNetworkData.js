@@ -273,12 +273,16 @@ class NeuralNetworkData {
     });
 
     this.meta.outputTypes.forEach((item) => {
+
       if (item.dtype === 'number') {
         outputUnits += 1;
       } else if (item.dtype === 'string') {
         const uniqueVals = [...new Set(this.ys.map(obj => obj[item.name]))]
         outputUnits += uniqueVals.length;
+      } else {
+        console.log('not supported')
       }
+
     });
 
     this.meta.inputUnits = inputUnits;

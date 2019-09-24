@@ -169,16 +169,8 @@ class NeuralNetwork {
     })
 
     // TODO: check for int32, float32, bool, or string
-    this.data.meta.inputTypes = Object.keys(this.data.data[0].xs).map(prop => ({
-      name: prop,
-      dtype: typeof this.data.data[0].xs[prop]
-    }))
-    this.data.meta.outputTypes = Object.keys(this.data.data[0].ys).map(prop => ({
-      name: prop,
-      dtype: typeof this.data.data[0].ys[prop]
-    }))
+    this.setDTypes();
 
-    console.log(this.data.data)
   }
 
   async loadCSVInternal() {
@@ -195,7 +187,7 @@ class NeuralNetwork {
     const outputConfig = {};
     outputLabels.forEach(label => {
       outputConfig[label] = {
-        isLabel: true
+        isLabel: true,
       }
     });
 
@@ -207,7 +199,27 @@ class NeuralNetwork {
       configuredColumnsOnly: true
     });
 
-    const data = await this.data.tensor.toArray();
+
+    let data = await this.data.tensor.toArray();
+
+    // If the task is classification
+    // then convert the numeric values to strings
+    // to enable oneHot() encoding necessary
+    // for classification to run
+    if (this.config.task === 'classification') {
+      data = data.map((item) => {
+        const ys = {};
+        Object.keys(item.ys).forEach((val) => {
+          ys[val] = String(item.ys[val])
+        })
+        return Object.assign({
+          ys
+        }, {
+          xs: item.xs
+        })
+      })
+    }
+
     // TODO: not sure if this makes sense...
     this.data.data = data;
 
@@ -217,14 +229,7 @@ class NeuralNetwork {
     });
 
     // TODO: check for int32, float32, bool, or string
-    this.data.meta.inputTypes = Object.keys(data[0].xs).map(prop => ({
-      name: prop,
-      dtype: typeof data[0].xs[prop]
-    }))
-    this.data.meta.outputTypes = Object.keys(data[0].ys).map(prop => ({
-      name: prop,
-      dtype: typeof data[0].ys[prop]
-    }))
+    this.setDTypes();
 
     // console.log(this.data.meta)
 
@@ -250,8 +255,32 @@ class NeuralNetwork {
         });
 
       })
-
     }
+
+  }
+
+  /**
+   * Set the datatypes for this.data.meta: inputTypes and outputTypes
+   */
+  setDTypes() {
+    // TODO: check for int32, float32, bool, or string
+    this.data.meta.inputTypes = Object.keys(this.data.data[0].xs).map(prop => {
+
+      return {
+        name: prop,
+        dtype: typeof this.data.data[0].xs[prop]
+      }
+
+    })
+    this.data.meta.outputTypes = Object.keys(this.data.data[0].ys).map(prop => {
+
+      return {
+        name: prop,
+        dtype: typeof this.data.data[0].ys[prop]
+      }
+
+    })
+
   }
 
 
