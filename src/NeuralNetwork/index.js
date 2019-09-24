@@ -77,20 +77,6 @@ class NeuralNetwork {
   }
 
   /**
-   * Takes in a number or array and then either returns
-   * the array or returns an array of ['input0','input1']
-   * the array or returns an array of ['output0','output1']
-   * @param {*} val 
-   * @param {*} inputType 
-   */
-  // eslint-disable-next-line class-methods-use-this
-  createNamedIO(val, inputType) {
-    console.log(val)
-    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
-    return arr;
-  }
-
-  /**
    * Create model from data
    * @param {*} callback 
    */
@@ -309,18 +295,11 @@ class NeuralNetwork {
 
       case 'regression': // Create a model for regression
         // set regression model parameters
-        // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
-        this.config.modelOptimizer = tf.train.adam();
+        this.config.modelOptimizer = tf.train.adam(); // tf.train.sgd(this.config.learningRate);
 
         return this.createModelInternal();
 
       case 'classification': // Create a model for classification
-        // set classification model parameters
-        // this.config.hiddenUnits = 16;
-        // this.config.activationHidden = 'relu' // 'relu',
-        // this.config.activationOutput = 'softmax' // 'relu',
-        // this.config.modelLoss = 'categoricalCrossentropy'
-        // this.config.modelOptimizer = tf.train.adam();
 
         this.config.hiddenUnits = 16;
         this.config.activationHidden = 'sigmoid' // 'relu',
@@ -385,21 +364,21 @@ class NeuralNetwork {
     let options;
     let whileTrainingCb;
     let finishedTrainingCb;
-    if (typeof optionsOrCallback === 'object' && 
-        typeof optionsOrWhileTraining === 'function' &&
-        typeof callback === 'function'
+    if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function' &&
+      typeof callback === 'function'
     ) {
       options = optionsOrCallback;
       whileTrainingCb = optionsOrWhileTraining;
       finishedTrainingCb = callback;
-    } else if (typeof optionsOrCallback === 'object' && 
-              typeof optionsOrWhileTraining === 'function') {
+    } else if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function') {
       options = optionsOrCallback;
       whileTrainingCb = null;
       finishedTrainingCb = optionsOrWhileTraining;
     } else if (typeof optionsOrCallback === 'function' &&
-               typeof optionsOrWhileTraining === 'function'
-    ){
+      typeof optionsOrWhileTraining === 'function'
+    ) {
       options = {};
       whileTrainingCb = optionsOrCallback;
       finishedTrainingCb = optionsOrWhileTraining;
@@ -420,8 +399,8 @@ class NeuralNetwork {
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
 
-    const whileTraining = (typeof whileTrainingCallback === 'function') ? 
-        whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+    const whileTraining = (typeof whileTrainingCallback === 'function') ?
+      whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
 
     let xs;
     let ys;
@@ -430,7 +409,6 @@ class NeuralNetwork {
       targets
     } = this.data.normalizedData.tensors;
 
-    console.log('targets!')
     targets.print();
 
     // check if the inputs are tensors, if not, convert!
@@ -500,7 +478,34 @@ class NeuralNetwork {
    * @param {*} sample 
    */
   async predictInternal(sample) {
-    const xs = tf.tensor(sample, [1, sample.length]);
+
+    // Handle the input sample
+    // either an array of values in order of the inputs
+    // OR an JSON object of key/values
+
+    let inputData = [];
+    if (sample instanceof Array) {
+
+      inputData = sample;
+
+    } else if (sample instanceof Object) {
+
+      // TODO: check if the input order is preserved!
+      const headers = Object.keys(this.data.inputs);
+      inputData = headers.map(prop => {
+        return sample[prop]
+      });
+
+    }
+
+    // TODO: We need to normalize/oneHot encode the inputs 
+    // Check this.data.meta.inputUnits | this.data.meta.outputUnits 
+    // for relevant info. 
+    // for each input/output to use them here AND for unnormalizing for outputs
+
+
+
+    const xs = tf.tensor(inputData, [1, sample.length]);
     const ys = this.model.predict(xs);
 
     let results;
@@ -578,7 +583,24 @@ class NeuralNetwork {
     }
     return this.model;
   }
+
+  /**
+   * Takes in a number or array and then either returns
+   * the array or returns an array of ['input0','input1']
+   * the array or returns an array of ['output0','output1']
+   * @param {*} val 
+   * @param {*} inputType 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  createNamedIO(val, inputType) {
+    console.log(val)
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    return arr;
+  }
+
 }
+
+
 
 
 /**

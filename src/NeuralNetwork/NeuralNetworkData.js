@@ -25,10 +25,6 @@ class NeuralNetworkData {
     this.normalizedData = {
       inputs: null,
       targets: null,
-      inputMax: null,
-      inputMin: null,
-      targetMax: null,
-      targetMin: null,
     }
 
   }
@@ -131,11 +127,45 @@ class NeuralNetworkData {
   }
 
 
+  /**
+   * normalize array
+   * @param {*} arr 
+   */
   normalizeArray(arr) {
     const inputTensor = tf.tensor1d(arr);
 
     const inputMax = inputTensor.max();
     const inputMin = inputTensor.min();
+
+    const normalizedInputs = inputTensor
+      .sub(inputMin)
+      .div(inputMax.sub(inputMin))
+
+    return normalizedInputs.arraySync();
+  }
+
+  /**
+   * normalize array
+   * @param {*} arr 
+   */
+  normalizeIOArray(arr, idx, ioType) {
+
+    let ioTypesArray;
+    if(ioType === 'inputs'){
+      ioTypesArray = this.meta.inputTypes
+    } else {
+      ioTypesArray = this.meta.outputTypes
+    }
+    const ioMetaInfo = ioTypesArray[idx];
+
+    const inputTensor = tf.tensor1d(arr);
+
+    const inputMax = inputTensor.max();
+    const inputMin = inputTensor.min();
+
+    // Set the input min and max of the input/output- Types
+    ioMetaInfo.max = inputMax.arraySync();
+    ioMetaInfo.min = inputMin.arraySync();
 
     const normalizedInputs = inputTensor
       .sub(inputMin)
@@ -150,18 +180,8 @@ class NeuralNetworkData {
    * Reshape an array back to it
    * @param {*} arr 
    */
-  reshapeData(inputArray, ioTypeArray, ioType) {
-    // let dval;
-    let ioUnits;
-    if (ioType === 'input') {
-      // dval = 'xs';
-      ioUnits = this.meta.inputUnits;
-    } else {
-      // dval = 'ys';
-      ioUnits = this.meta.outputUnits;
-    }
-
-
+  reshapeData(inputArray, ioTypeArray) {
+    
     const output = []
 
     for (let i = 0; i < this.data.length; i += 1) {
@@ -193,8 +213,6 @@ class NeuralNetworkData {
 
     }
 
-    console.log(ioUnits);
-
     return output;
 
   }
@@ -223,17 +241,11 @@ class NeuralNetworkData {
     const targets = this.encodeValues(outputTypes, 'output')
 
     // Normalized the inputs - TODO: this can be optimized!
-    const normalizedInputs = inputs.map(item => this.normalizeArray(item));
-    const normalizedOutputs = targets.map(item => this.normalizeArray(item));
+    const normalizedInputs = inputs.map( (item, idx) => this.normalizeIOArray(item, idx, 'inputs'));
+    const normalizedOutputs = targets.map( (item, idx) => this.normalizeIOArray(item, idx, 'outputs'));
 
-    const reshapedInputs = this.reshapeData(normalizedInputs, inputTypes, 'inputs');
-    const reshapedOutputs = this.reshapeData(normalizedOutputs, outputTypes, 'outputs');
-
-    // console.log('----------- reshaped inputs')
-    // console.log(reshapedInputs)
-
-    // console.log('----------- reshaped outputs')
-    // console.log(reshapedOutputs)
+    const reshapedInputs = this.reshapeData(normalizedInputs, inputTypes);
+    const reshapedOutputs = this.reshapeData(normalizedOutputs, outputTypes);
 
     // convert those data to tensors after encoding oneHot() or not
     const inputTensor = tf.tensor(reshapedInputs).flatten().reshape([this.data.length, this.meta.inputUnits])
