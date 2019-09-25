@@ -48,7 +48,7 @@ class NeuralNetworkData {
   }
 
   /**
-   * 
+   *
    */
   encodeValues(ioTypeArray, ioType) {
 
@@ -62,7 +62,7 @@ class NeuralNetworkData {
       ioTypes = this.meta.outputTypes;
     }
 
-    return ioTypeArray.map( (header,idx) => {
+    return ioTypeArray.map((header, idx) => {
       const {
         dtype,
         name
@@ -84,13 +84,13 @@ class NeuralNetworkData {
         // TODO: This is super inefficient to .dataSync() and .arraySync()
         // COME BACK TO THIS LATER!
         const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync()
-        ioTypes[idx].legend = {} 
-        
-        uniqueValues.forEach( (uVal, uIdx) => {
+        ioTypes[idx].legend = {}
+
+        uniqueValues.forEach((uVal, uIdx) => {
           ioTypes[idx].legend[uVal] = oneHotEncodedValuesArray[uIdx]
         })
 
-        
+
       } else {
         // if numeric - return numbers
         encodedValues = this.data.map(d => d[dval][name]);
@@ -140,7 +140,7 @@ class NeuralNetworkData {
 
   /**
    * normalize array
-   * @param {*} arr 
+   * @param {*} arr
    */
   normalizeArray(arr) {
     const inputTensor = tf.tensor1d(arr);
@@ -157,12 +157,12 @@ class NeuralNetworkData {
 
   /**
    * normalize array
-   * @param {*} arr 
+   * @param {*} arr
    */
   normalizeIOArray(arr, idx, ioType) {
 
     let ioTypesArray;
-    if(ioType === 'inputs'){
+    if (ioType === 'inputs') {
       ioTypesArray = this.meta.inputTypes
     } else {
       ioTypesArray = this.meta.outputTypes
@@ -189,10 +189,10 @@ class NeuralNetworkData {
 
   /**
    * Reshape an array back to it
-   * @param {*} arr 
+   * @param {*} arr
    */
   reshapeData(inputArray, ioTypeArray) {
-    
+
     const output = []
 
     for (let i = 0; i < this.data.length; i += 1) {
@@ -252,8 +252,8 @@ class NeuralNetworkData {
     const targets = this.encodeValues(outputTypes, 'output')
 
     // Normalized the inputs - TODO: this can be optimized!
-    const normalizedInputs = inputs.map( (item, idx) => this.normalizeIOArray(item, idx, 'inputs'));
-    const normalizedOutputs = targets.map( (item, idx) => this.normalizeIOArray(item, idx, 'outputs'));
+    const normalizedInputs = inputs.map((item, idx) => this.normalizeIOArray(item, idx, 'inputs'));
+    const normalizedOutputs = targets.map((item, idx) => this.normalizeIOArray(item, idx, 'outputs'));
 
     const reshapedInputs = this.reshapeData(normalizedInputs, inputTypes);
     const reshapedOutputs = this.reshapeData(normalizedOutputs, outputTypes);
@@ -262,11 +262,11 @@ class NeuralNetworkData {
     const inputTensor = tf.tensor(reshapedInputs).flatten().reshape([this.data.length, this.meta.inputUnits])
     const outputTensor = tf.tensor(reshapedOutputs).flatten().reshape([this.data.length, this.meta.outputUnits])
 
-    console.log('----------- input tensor')
-    inputTensor.print()
+    // console.log('----------- input tensor')
+    // inputTensor.print()
 
-    console.log('----------- output tensor')
-    outputTensor.print()
+    // console.log('----------- output tensor')
+    // outputTensor.print()
 
     this.normalizedData = {
       tensors: {
@@ -277,10 +277,10 @@ class NeuralNetworkData {
   }
 
   /**
-   * Gets the total number of inputs/outputs based on the data type 
-   * Uses the relevant function to convert values e.g. oneHot() and 
+   * Gets the total number of inputs/outputs based on the data type
+   * Uses the relevant function to convert values e.g. oneHot() and
    * sends back the appropriate length of values
-   * @param {*} val 
+   * @param {*} val
    */
   getIOUnits() {
     let inputUnits = 0;
@@ -318,8 +318,8 @@ class NeuralNetworkData {
    * These data get "mashed" into the data object
    * when .normalize() or .shuffle() are called
    * TODO: Figure out a way to sync all this!
-   * @param {*} xs 
-   * @param {*} ys 
+   * @param {*} xs
+   * @param {*} ys
    */
   addData(xs, ys) {
     this.xs.push(xs);
