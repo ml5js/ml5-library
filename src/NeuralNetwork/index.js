@@ -525,8 +525,8 @@ class NeuralNetwork {
     // for relevant info.
     // for each input/output to use them here AND for unnormalizing for outputs
     let normalizedInputData = []
-    this.data.meta.inputTypes.forEach((item, idx) => {
-
+    this.data.inputs.forEach( (name, idx) => {
+      const item = this.data.meta.inputTypes.find( (obj) => obj.name === name );
       if (item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
@@ -547,7 +547,12 @@ class NeuralNetwork {
       // TODO: Check to see if this fails with numeric values
       // since no legend exists
       const outputData = this.data.meta.outputTypes.map((arr) => {
-        return Object.keys(arr.legend).map((k, idx) => {
+        
+        // TODO: the order of the legend items matters
+        // Likey this means instead of `.push()`, 
+        // we should do .unshift()
+        // alternatively we can use 'reverse()' here.
+        return Object.keys(arr.legend).reverse().map((k, idx) => {
           return { label: k, confidence: predictions[idx] }
         }).sort((a, b) => b.confidence - a.confidence);
       })[0];
@@ -561,7 +566,7 @@ class NeuralNetwork {
         const val = (predictions[idx] * (item.max - item.min)) + item.min;
         return {value: val}
       })[0]
-      
+
       results = outputData;
 
       results = {
