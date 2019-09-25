@@ -555,8 +555,17 @@ class NeuralNetwork {
       results = outputData;
       results.tensor = ys;
     } else {
+      // TODO: unnormalize the outputs
+      const predictions = await ys.data();
+      const outputData = this.data.meta.outputTypes.map( (item, idx) =>  {
+        const val = (predictions[idx] * (item.max - item.min)) + item.min;
+        return {value: val}
+      })[0]
+      
+      results = outputData;
+
       results = {
-        values: await ys.data(),
+        values: results,
         tensor: ys
       }
     }
