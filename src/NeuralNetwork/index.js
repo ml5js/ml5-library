@@ -424,7 +424,7 @@ class NeuralNetwork {
       targets
     } = this.data.normalizedData.tensors;
 
-    targets.print();
+    // targets.print();
 
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {
@@ -448,12 +448,19 @@ class NeuralNetwork {
       {
         onEpochEnd: whileTraining
       },
-      {
-        onTrainEnd: () => console.log(`training complete!`)
-      },
+        // {
+        //   onTrainEnd: () => console.log(`training complete!`)
+        // },
       ]
     } else {
-      modelFitCallbacks = []
+      modelFitCallbacks = [
+        {
+          onEpochEnd: whileTraining
+        },
+        // {
+        //   onTrainEnd: () => console.log(`training complete!`)
+        // },
+      ]
     }
 
     await this.model.fit(xs, ys, {
@@ -513,17 +520,17 @@ class NeuralNetwork {
 
     }
 
-    // TODO: We need to normalize/oneHot encode the inputs 
-    // Check this.data.meta.inputUnits | this.data.meta.outputUnits 
-    // for relevant info. 
+    // TODO: We need to normalize/oneHot encode the inputs
+    // Check this.data.meta.inputUnits | this.data.meta.outputUnits
+    // for relevant info.
     // for each input/output to use them here AND for unnormalizing for outputs
-    let normalizedInputData  = [] 
-    this.data.meta.inputTypes.forEach( (item, idx) => {
-      
-      if(item.dtype === 'number'){
+    let normalizedInputData = []
+    this.data.meta.inputTypes.forEach((item, idx) => {
+
+      if (item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
-      } else if( item.dtype === 'string'){
+      } else if (item.dtype === 'string') {
         const val = item.legend[inputData[idx]]
         normalizedInputData = [...normalizedInputData, ...val]
       }
@@ -534,24 +541,22 @@ class NeuralNetwork {
 
     let results;
     if (this.config.task === 'classification') {
-      
-      const predictions = await ys.data();
-      
-      // TODO: Check to see if this fails with numeric values 
-      // since no legend exists
-      const outputData = this.data.meta.outputTypes.map( (arr) => {
-        return Object.keys(arr.legend).map( (k, idx) => {
-            return {label: k, confidence: predictions[idx]}
-          }).sort( (a, b) => b.confidence - a.confidence);
-      });
 
-      results = {
-        output: outputData,
-        tensor: ys
-      }
+      const predictions = await ys.data();
+
+      // TODO: Check to see if this fails with numeric values
+      // since no legend exists
+      const outputData = this.data.meta.outputTypes.map((arr) => {
+        return Object.keys(arr.legend).map((k, idx) => {
+          return { label: k, confidence: predictions[idx] }
+        }).sort((a, b) => b.confidence - a.confidence);
+      })[0];
+
+      results = outputData;
+      results.tensor = ys;
     } else {
       results = {
-        output: await ys.data(),
+        value: await ys.data(),
         tensor: ys
       }
     }
