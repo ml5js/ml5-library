@@ -556,7 +556,7 @@ class NeuralNetwork {
       results.tensor = ys;
     } else {
       results = {
-        value: await ys.data(),
+        values: await ys.data(),
         tensor: ys
       }
     }
