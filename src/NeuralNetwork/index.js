@@ -309,18 +309,16 @@ class NeuralNetwork {
 
       case 'regression': // Create a model for regression
         // set regression model parameters
+<<<<<<< HEAD
         // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
         this.config.modelOptimizer = tf.train.adam(this.config.learningRate);
+=======
+        this.config.modelOptimizer = tf.train.adam(); // tf.train.sgd(this.config.learningRate);
+>>>>>>> generic-neural-network
 
         return this.createModelInternal();
 
       case 'classification': // Create a model for classification
-        // set classification model parameters
-        // this.config.hiddenUnits = 16;
-        // this.config.activationHidden = 'relu' // 'relu',
-        // this.config.activationOutput = 'softmax' // 'relu',
-        // this.config.modelLoss = 'categoricalCrossentropy'
-        // this.config.modelOptimizer = tf.train.adam();
 
         this.config.hiddenUnits = 16;
         this.config.activationHidden = 'sigmoid' // 'relu',
@@ -430,7 +428,6 @@ class NeuralNetwork {
       targets
     } = this.data.normalizedData.tensors;
 
-    console.log('targets!')
     targets.print();
 
     // check if the inputs are tensors, if not, convert!
@@ -500,15 +497,64 @@ class NeuralNetwork {
    * @param {*} sample
    */
   async predictInternal(sample) {
-    const xs = tf.tensor(sample, [1, sample.length]);
+
+    // Handle the input sample
+    // either an array of values in order of the inputs
+    // OR an JSON object of key/values
+
+    let inputData = [];
+    if (sample instanceof Array) {
+
+      inputData = sample;
+
+    } else if (sample instanceof Object) {
+
+      // TODO: check if the input order is preserved!
+      const headers = this.data.inputs;
+      inputData = headers.map(prop => {
+        return sample[prop]
+      });
+
+    }
+
+    // TODO: We need to normalize/oneHot encode the inputs 
+    // Check this.data.meta.inputUnits | this.data.meta.outputUnits 
+    // for relevant info. 
+    // for each input/output to use them here AND for unnormalizing for outputs
+    let normalizedInputData  = [] 
+    this.data.meta.inputTypes.forEach( (item, idx) => {
+      
+      if(item.dtype === 'number'){
+        const val = (inputData[idx] - item.min) / (item.max - item.min);
+        normalizedInputData.push(val);
+      } else if( item.dtype === 'string'){
+        const val = item.legend[inputData[idx]]
+        normalizedInputData = [...normalizedInputData, ...val]
+      }
+    })
+
+
+    console.log(normalizedInputData)
+
+
+    const xs = tf.tensor(normalizedInputData, [1, sample.length]);
     const ys = this.model.predict(xs);
 
     let results;
     if (this.config.task === 'classification') {
-      // TODO: change the output format based on the
-      // type of behavior
+      
+      const predictions = await ys.data();
+      
+      // TODO: Check to see if this fails with numeric values 
+      // since no legend exists
+      const outputData = this.data.meta.outputTypes.map( (arr) => {
+        return Object.keys(arr.legend).map( (k, idx) => {
+            return {label: k, confidence: predictions[idx]}
+          }).sort( (a, b) => b.confidence - a.confidence);
+      });
+
       results = {
-        output: await ys.data(),
+        output: outputData,
         tensor: ys
       }
     } else {
@@ -578,7 +624,10 @@ class NeuralNetwork {
     }
     return this.model;
   }
+
 }
+
+
 
 
 /**
