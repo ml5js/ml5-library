@@ -491,7 +491,7 @@ class NeuralNetwork {
     } else if (sample instanceof Object) {
 
       // TODO: check if the input order is preserved!
-      const headers = Object.keys(this.data.inputs);
+      const headers = this.data.inputs;
       inputData = headers.map(prop => {
         return sample[prop]
       });
@@ -502,18 +502,42 @@ class NeuralNetwork {
     // Check this.data.meta.inputUnits | this.data.meta.outputUnits 
     // for relevant info. 
     // for each input/output to use them here AND for unnormalizing for outputs
+    let normalizedInputData  = [] 
+    this.data.meta.inputTypes.forEach( (item, idx) => {
+      
+      if(item.dtype === 'number'){
+        const val = (inputData[idx] - item.min) / (item.max - item.min);
+        normalizedInputData.push(val);
+      } else if( item.dtype === 'string'){
+        const val = item.legend[inputData[idx]]
+        normalizedInputData = [...normalizedInputData, ...val]
+      }
+    })
 
 
+    console.log(normalizedInputData)
 
-    const xs = tf.tensor(inputData, [1, sample.length]);
+
+    const xs = tf.tensor(normalizedInputData, [1, sample.length]);
     const ys = this.model.predict(xs);
 
     let results;
     if (this.config.task === 'classification') {
       // TODO: change the output format based on the 
       // type of behavior
+      const predictions = await ys.data();
+
+      console.log(this.data.meta.outputTypes)
+     
+      // const outputData = this.data.meta.outputTypes.map( (arr) => {
+      //   return Object.keys(arr.legend).map( (k, idx) => {
+      //       console.log(predictions[idx])
+      //       return {label: k, confidence: predictions[idx]}
+      //     })
+      // })
+
       results = {
-        output: await ys.data(),
+        output: predictions,
         tensor: ys
       }
     } else {
