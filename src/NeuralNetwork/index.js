@@ -38,7 +38,7 @@ class NeuralNetwork {
       outputs: options.outputs || DEFAULTS.outputs,
       noVal: options.noVal || options.outputs,
       hiddenUnits: options.hiddenUnits || DEFAULTS.hiddenUnits,
-      learningRate: options.outputs || DEFAULTS.learningRate,
+      learningRate: options.learningRate || DEFAULTS.learningRate,
       modelMetrics: options.modelMetrics || DEFAULTS.modelMetrics,
       modelLoss: options.modelLoss || DEFAULTS.modelLoss,
       modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
@@ -85,8 +85,8 @@ class NeuralNetwork {
    */
   // eslint-disable-next-line class-methods-use-this
   createNamedIO(val, inputType) {
-    console.log(val)
-    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    console.log(val, inputType)
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${idx}`)]
     return arr;
   }
 
@@ -517,8 +517,8 @@ class NeuralNetwork {
     // for relevant info.
     // for each input/output to use them here AND for unnormalizing for outputs
     let normalizedInputData = []
-    this.data.inputs.forEach((name, idx) => {
-      const item = this.data.meta.inputTypes.find((obj) => obj.name === name);
+    this.data.inputs.forEach( (name, idx) => {
+      const item = this.data.meta.inputTypes.find( (obj) => obj.name === name);
       if (item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
