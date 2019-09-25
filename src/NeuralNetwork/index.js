@@ -438,29 +438,21 @@ class NeuralNetwork {
     let modelFitCallbacks;
     if (this.config.debug) {
       modelFitCallbacks = [tfvis.show.fitCallbacks({
-        name: 'Training Performance'
-      },
-        ['loss', 'accuracy'], {
-        height: 200,
-        callbacks: ['onEpochEnd']
-      }
-      ),
-      {
-        onEpochEnd: whileTraining
-      },
-        // {
-        //   onTrainEnd: () => console.log(`training complete!`)
-        // },
-      ]
-    } else {
-      modelFitCallbacks = [
+            name: 'Training Performance'
+          },
+          ['loss', 'accuracy'], {
+            height: 200,
+            callbacks: ['onEpochEnd']
+          }
+        ),
         {
           onEpochEnd: whileTraining
-        },
-        // {
-        //   onTrainEnd: () => console.log(`training complete!`)
-        // },
+        }
       ]
+    } else {
+      modelFitCallbacks = [{
+        onEpochEnd: whileTraining
+      }]
     }
 
     await this.model.fit(xs, ys, {
@@ -525,8 +517,8 @@ class NeuralNetwork {
     // for relevant info.
     // for each input/output to use them here AND for unnormalizing for outputs
     let normalizedInputData = []
-    this.data.inputs.forEach( (name, idx) => {
-      const item = this.data.meta.inputTypes.find( (obj) => obj.name === name );
+    this.data.inputs.forEach((name, idx) => {
+      const item = this.data.meta.inputTypes.find((obj) => obj.name === name);
       if (item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
@@ -547,13 +539,16 @@ class NeuralNetwork {
       // TODO: Check to see if this fails with numeric values
       // since no legend exists
       const outputData = this.data.meta.outputTypes.map((arr) => {
-        
+
         // TODO: the order of the legend items matters
         // Likey this means instead of `.push()`, 
         // we should do .unshift()
         // alternatively we can use 'reverse()' here.
         return Object.keys(arr.legend).reverse().map((k, idx) => {
-          return { label: k, confidence: predictions[idx] }
+          return {
+            label: k,
+            confidence: predictions[idx]
+          }
         }).sort((a, b) => b.confidence - a.confidence);
       })[0];
 
@@ -562,9 +557,11 @@ class NeuralNetwork {
     } else {
       // TODO: unnormalize the outputs
       const predictions = await ys.data();
-      const outputData = this.data.meta.outputTypes.map( (item, idx) =>  {
+      const outputData = this.data.meta.outputTypes.map((item, idx) => {
         const val = (predictions[idx] * (item.max - item.min)) + item.min;
-        return {value: val}
+        return {
+          value: val
+        }
       })[0]
 
       results = outputData;
