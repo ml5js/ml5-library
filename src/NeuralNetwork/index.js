@@ -309,12 +309,8 @@ class NeuralNetwork {
 
       case 'regression': // Create a model for regression
         // set regression model parameters
-<<<<<<< HEAD
         // this.config.modelOptimizer = tf.train.sgd(this.config.learningRate);
         this.config.modelOptimizer = tf.train.adam(this.config.learningRate);
-=======
-        this.config.modelOptimizer = tf.train.adam(); // tf.train.sgd(this.config.learningRate);
->>>>>>> generic-neural-network
 
         return this.createModelInternal();
 
