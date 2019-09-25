@@ -517,8 +517,8 @@ class NeuralNetwork {
     // for relevant info.
     // for each input/output to use them here AND for unnormalizing for outputs
     let normalizedInputData = []
-    this.data.inputs.forEach( (name, idx) => {
-      const item = this.data.meta.inputTypes.find( (obj) => obj.name === name);
+    this.data.inputs.forEach((name, idx) => {
+      const item = this.data.meta.inputTypes.find((obj) => obj.name === name);
       if (item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
@@ -567,7 +567,7 @@ class NeuralNetwork {
       results = outputData;
 
       results = {
-        values: results,
+        outputs: results,
         tensor: ys
       }
     }
