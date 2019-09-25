@@ -53,16 +53,16 @@ class NeuralNetworkData {
   encodeValues(ioTypeArray, ioType) {
 
     let dval;
-    // let ioUnits;
+    let ioTypes;
     if (ioType === 'input') {
       dval = 'xs';
-      // ioUnits = this.meta.inputUnits;
+      ioTypes = this.meta.inputTypes;
     } else {
       dval = 'ys';
-      // ioUnits = this.meta.outputUnits;
+      ioTypes = this.meta.outputTypes;
     }
 
-    return ioTypeArray.map(header => {
+    return ioTypeArray.map( (header,idx) => {
       const {
         dtype,
         name
@@ -78,8 +78,19 @@ class NeuralNetworkData {
         })
 
         // encodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), ioUnits);
-        encodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), uniqueValues.length);
-        encodedValues = encodedValues.dataSync();
+        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), uniqueValues.length);
+        encodedValues = oneHotEncodedValues.dataSync();
+
+        // TODO: This is super inefficient to .dataSync() and .arraySync()
+        // COME BACK TO THIS LATER!
+        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync()
+        ioTypes[idx].legend = {} 
+        
+        uniqueValues.forEach( (uVal, uIdx) => {
+          ioTypes[idx].legend[uVal] = oneHotEncodedValuesArray[uIdx]
+        })
+
+        
       } else {
         // if numeric - return numbers
         encodedValues = this.data.map(d => d[dval][name]);
