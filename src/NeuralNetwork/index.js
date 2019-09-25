@@ -111,12 +111,20 @@ class NeuralNetwork {
   }
 
 
-  async loadJSONInternal() {
+  async loadJSONInternal(parsedJson) {
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
+    
 
-    const data = await fetch(this.config.dataUrl);
-    const json = await data.json();
+    let json;
+    // handle loading parsedJson
+    if(parsedJson instanceof Object){
+      json = parsedJson;
+    } else {
+      const data = await fetch(this.config.dataUrl);
+      json = await data.json();
+    }
+    
 
     // TODO: recurse through the object to find
     // which object contains the
@@ -293,8 +301,23 @@ class NeuralNetwork {
       await this.loadCSVInternal();
     } else if (this.config.dataUrl.endsWith('.json')) {
       await this.loadJSONInternal();
+    } else if (this.config.dataUrl.includes('blob')) {
+      await this.loadBlobInternal()
     } else {
       console.log('Not a valid data format. Must be csv or json')
+    }
+  }
+
+  /**
+   * load a blob and check if it is json
+   */
+  async loadBlobInternal(){
+    const data = await fetch(this.config.dataUrl);
+    const json  = await data.json();
+    if(json instanceof Object){
+      await this.loadJSONInternal(json);
+    } else {
+      console.log('mmm might be passing in a string or something!')
     }
   }
 
