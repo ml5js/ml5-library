@@ -529,10 +529,6 @@ class NeuralNetwork {
       }
     })
 
-
-    console.log(normalizedInputData)
-
-
     const xs = tf.tensor(normalizedInputData, [1, sample.length]);
     const ys = this.model.predict(xs);
 
