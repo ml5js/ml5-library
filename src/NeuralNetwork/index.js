@@ -523,21 +523,19 @@ class NeuralNetwork {
 
     let results;
     if (this.config.task === 'classification') {
-      // TODO: change the output format based on the 
-      // type of behavior
+      
       const predictions = await ys.data();
-
-      console.log(this.data.meta.outputTypes)
-     
-      // const outputData = this.data.meta.outputTypes.map( (arr) => {
-      //   return Object.keys(arr.legend).map( (k, idx) => {
-      //       console.log(predictions[idx])
-      //       return {label: k, confidence: predictions[idx]}
-      //     })
-      // })
+      
+      // TODO: Check to see if this fails with numeric values 
+      // since no legend exists
+      const outputData = this.data.meta.outputTypes.map( (arr) => {
+        return Object.keys(arr.legend).map( (k, idx) => {
+            return {label: k, confidence: predictions[idx]}
+          }).sort( (a, b) => b.confidence - a.confidence);
+      });
 
       results = {
-        output: predictions,
+        output: outputData,
         tensor: ys
       }
     } else {
