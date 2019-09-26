@@ -9,6 +9,10 @@ class NeuralNetworkVis {
         this.config = {
             height: 300,
         };
+
+        // store tfvis here for now so people can access it
+        // through ml5?
+        this.tfvis = tfvis;
     }
 
     /**
