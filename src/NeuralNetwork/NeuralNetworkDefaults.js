@@ -7,7 +7,7 @@ const DEFAULTS = {
   inputs: 2,
   outputs: 1,
   noVal: null,
-  hiddenUnits: 1,
+  hiddenUnits: 16,
   modelMetrics: ['accuracy'],
   modelLoss: 'meanSquaredError',
   modelOptimizer: null,

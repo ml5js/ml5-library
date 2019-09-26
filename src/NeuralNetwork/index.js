@@ -120,7 +120,7 @@ class NeuralNetwork {
 
   /**
    * loading function for json
-   * @param {*} parsedJson 
+   * @param {*} parsedJson
    */
   async loadJSONInternal(parsedJson) {
     const outputLabels = this.config.outputs;
@@ -312,7 +312,7 @@ class NeuralNetwork {
    * load a blob and check if it is json
    */
   async loadBlobInternal() {
-    try{
+    try {
       const data = await fetch(this.config.dataUrl);
       const text = await data.text();
       if (this.isJsonString(text)) {
@@ -323,7 +323,7 @@ class NeuralNetwork {
         await this.loadJSONInternal(json);
       }
     }
-    catch(err){
+    catch (err) {
       console.log('mmm might be passing in a string or something!', err)
     }
   }
@@ -359,7 +359,7 @@ class NeuralNetwork {
       result.push(obj);
     }
 
-    return {entries:result}
+    return { entries: result }
   }
 
 
@@ -380,11 +380,11 @@ class NeuralNetwork {
 
       case 'classification': // Create a model for classification
 
-        this.config.hiddenUnits = 16;
-        this.config.activationHidden = 'sigmoid' // 'relu',
+        // this.config.hiddenUnits = 16;
+        // this.config.activationHidden = 'sigmoid' // 'relu',
         this.config.activationOutput = 'softmax' // 'relu',
         this.config.modelLoss = 'categoricalCrossentropy'
-        this.config.modelOptimizer = tf.train.sgd(DEFAULTS.learningRate); // tf.train.adam();
+        this.config.modelOptimizer = tf.train.sgd(this.config.learningRate); // tf.train.adam(DEFAULTS.learningRate);
 
         return this.createModelInternal();
 
@@ -599,7 +599,7 @@ class NeuralNetwork {
       const outputData = this.data.meta.outputTypes.map((arr) => {
 
         // TODO: the order of the legend items matters
-        // Likey this means instead of `.push()`, 
+        // Likey this means instead of `.push()`,
         // we should do .unshift()
         // alternatively we can use 'reverse()' here.
         return Object.keys(arr.legend).reverse().map((k, idx) => {
