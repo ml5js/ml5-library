@@ -146,7 +146,7 @@ class NeuralNetwork {
       parentProp = 'data'
     } else {
       console.log(`your data must be contained in an array in \n
-      a property called entries or data`);
+      a property called 'entries' or 'data'`);
       return;
     }
 
@@ -312,13 +312,54 @@ class NeuralNetwork {
    * load a blob and check if it is json
    */
   async loadBlobInternal() {
-    const data = await fetch(this.config.dataUrl);
-    const json = await data.json();
-    if (json instanceof Object) {
-      await this.loadJSONInternal(json);
-    } else {
-      console.log('mmm might be passing in a string or something!')
+    try{
+      const data = await fetch(this.config.dataUrl);
+      const text = await data.text();
+      if (this.isJsonString(text)) {
+        const json = JSON.parse(text);
+        await this.loadJSONInternal(json);
+      } else {
+        const json = this.csvJSON(text);
+        await this.loadJSONInternal(json);
+      }
     }
+    catch(err){
+      console.log('mmm might be passing in a string or something!', err)
+    }
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  isJsonString(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  // via: http://techslides.com/convert-csv-to-json-in-javascript
+  // eslint-disable-next-line class-methods-use-this
+  csvJSON(csv) {
+
+    const lines = csv.split("\n");
+
+    const result = [];
+
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i += 1) {
+
+      const obj = {};
+      const currentline = lines[i].split(",");
+
+      for (let j = 0; j < headers.length; j += 1) {
+        obj[headers[j]] = currentline[j];
+      }
+      result.push(obj);
+    }
+
+    return {entries:result}
   }
 
 
