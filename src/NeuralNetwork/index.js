@@ -16,6 +16,7 @@ import {
 // import { input } from '@tensorflow/tfjs';
 import DEFAULTS from './NeuralNetworkDefaults';
 import NeuralNetworkData from './NeuralNetworkData';
+import NeuralNetworkVis from './NeuralNetworkVis';
 
 class NeuralNetwork {
   /**
@@ -49,6 +50,9 @@ class NeuralNetwork {
     // Create an instance of NeuralNetworkData Class
     // to store data and apply data helper functions
     this.data = new NeuralNetworkData(options);
+
+    // A custom vis class to for debugging visualizations
+    this.vis = new NeuralNetworkVis();
 
     // Create the model
     if (this.config.dataUrl !== null) {
@@ -98,6 +102,9 @@ class NeuralNetwork {
     return callCallback(this.createModelFromDataInternal(), callback)
   }
 
+  /**
+   * Creates model architecture from the loaded data
+   */
   async createModelFromDataInternal() {
     // load the data
     await this.loadData();
@@ -111,20 +118,24 @@ class NeuralNetwork {
   }
 
 
+  /**
+   * loading function for json
+   * @param {*} parsedJson 
+   */
   async loadJSONInternal(parsedJson) {
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
-    
+
 
     let json;
     // handle loading parsedJson
-    if(parsedJson instanceof Object){
+    if (parsedJson instanceof Object) {
       json = parsedJson;
     } else {
       const data = await fetch(this.config.dataUrl);
       json = await data.json();
     }
-    
+
 
     // TODO: recurse through the object to find
     // which object contains the
@@ -179,8 +190,17 @@ class NeuralNetwork {
     // TODO: check for int32, float32, bool, or string
     this.setDTypes();
 
+    // TODO: Add debugging visualizations here
+    // for data loaded!
+    // if (this.config.debug) {
+    //   console.log(inputLabels, outputLabels)
+    // }
+
   }
 
+  /**
+   * loading function for csvs
+   */
   async loadCSVInternal() {
     const outputLabels = this.config.outputs;
     const inputLabels = this.config.inputs;
@@ -239,31 +259,11 @@ class NeuralNetwork {
     // TODO: check for int32, float32, bool, or string
     this.setDTypes();
 
-    // console.log(this.data.meta)
-
-    if (this.config.debug) {
-      outputLabels.forEach(outputLabel => {
-        const values = inputLabels.map(label => {
-          return data.map(item => {
-            return {
-              x: item.xs[label],
-              y: item.ys[outputLabel]
-            }
-          })
-        })
-
-        tfvis.render.scatterplot({
-          name: 'debug mode'
-        }, {
-          values
-        }, {
-          xLabel: 'X',
-          yLabel: 'Y',
-          height: 300
-        });
-
-      })
-    }
+    // TODO: Add debugging visualizations here
+    // for data loaded!
+    // if (this.config.debug) {
+    //   console.log(inputLabels, outputLabels)
+    // }
 
   }
 
@@ -311,10 +311,10 @@ class NeuralNetwork {
   /**
    * load a blob and check if it is json
    */
-  async loadBlobInternal(){
+  async loadBlobInternal() {
     const data = await fetch(this.config.dataUrl);
-    const json  = await data.json();
-    if(json instanceof Object){
+    const json = await data.json();
+    if (json instanceof Object) {
       await this.loadJSONInternal(json);
     } else {
       console.log('mmm might be passing in a string or something!')
@@ -460,14 +460,8 @@ class NeuralNetwork {
 
     let modelFitCallbacks;
     if (this.config.debug) {
-      modelFitCallbacks = [tfvis.show.fitCallbacks({
-            name: 'Training Performance'
-          },
-          ['loss', 'accuracy'], {
-            height: 200,
-            callbacks: ['onEpochEnd']
-          }
-        ),
+      modelFitCallbacks = [
+        this.vis.trainingVis(),
         {
           onEpochEnd: whileTraining
         }
