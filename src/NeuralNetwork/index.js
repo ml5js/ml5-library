@@ -578,8 +578,8 @@ class NeuralNetwork {
     this.data.inputs.forEach((name, idx) => {
       console.log(name);
       console.log(this.data.meta);
+      console.log(item);
       const item = this.data.meta.inputTypes.find((obj) => obj.name === name);
-
       if (item && item.dtype === 'number') {
         const val = (inputData[idx] - item.min) / (item.max - item.min);
         normalizedInputData.push(val);
