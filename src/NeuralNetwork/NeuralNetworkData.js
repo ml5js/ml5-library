@@ -48,7 +48,9 @@ class NeuralNetworkData {
     const path = this.config.dataOptions.dataUrl;
     const myCsv = tf.data.csv(path);
     const loadedData = await myCsv.toArray();
-    const json = {entries: loadedData}
+    const json = {
+      entries: loadedData
+    }
     this.loadJSONInternal(json);
   }
 
@@ -117,6 +119,25 @@ class NeuralNetworkData {
   }
 
   /**
+   * load a blob and check if it is json
+   */
+  async loadBlobInternal() {
+    try {
+      const data = await fetch(this.config.dataUrl);
+      const text = await data.text();
+      if (this.isJsonString(text)) {
+        const json = JSON.parse(text);
+        await this.loadJSONInternal(json);
+      } else {
+        const json = this.csvJSON(text);
+        await this.loadJSONInternal(json);
+      }
+    } catch (err) {
+      console.log('mmm might be passing in a string or something!', err)
+    }
+  }
+
+  /**
    * sets the data types of the data we're using
    * important for handling oneHot 
    */
@@ -141,24 +162,95 @@ class NeuralNetworkData {
   }
 
   /**
-   * load a blob and check if it is json
+   * Get the input and output units
+   * 
    */
-  async loadBlobInternal() {
-    try {
-      const data = await fetch(this.config.dataUrl);
-      const text = await data.text();
-      if (this.isJsonString(text)) {
-        const json = JSON.parse(text);
-        await this.loadJSONInternal(json);
-      } else {
-        const json = this.csvJSON(text);
-        await this.loadJSONInternal(json);
+  getIOUnits() {
+    let inputUnits = 0;
+    let outputUnits = 0;
+
+    // TODO: turn these into functions!
+    // calc the number of inputs/output units
+    Object.entries(this.meta.inputs).forEach(arr => {
+      const {
+        dtype
+      } = arr[1];
+      const prop = arr[0];
+      if (dtype === 'number') {
+        inputUnits += 1;
+      } else if (dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
+        // Store the unqiue values 
+        this.meta.inputs[prop].uniqueValues = uniqueVals;
+        
+        const onehotValues = this.data.raw.map((item) => {
+          return uniqueVals.indexOf(item.xs[prop])
+        });
+        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
+        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
+
+        this.meta.inputs[prop].legend = {};
+        uniqueVals.forEach((uVal, uIdx) => {
+          this.meta.inputs[prop].legend[uVal] = oneHotEncodedValuesArray[uIdx]
+        });
+
+        // increment the number of inputs/outputs
+        inputUnits += uniqueVals.length;
       }
-    } catch (err) {
-      console.log('mmm might be passing in a string or something!', err)
-    }
+    })
+
+
+    // calc the number of inputs/output units
+    Object.entries(this.meta.outputs).forEach(arr => {
+      const {
+        dtype
+      } = arr[1];
+      const prop = arr[0];
+      if (dtype === 'number') {
+        outputUnits += 1;
+      } else if (dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.raw.map(obj => obj.ys[prop]))]
+        // Store the unqiue values 
+        this.meta.outputs[prop].uniqueValues = uniqueVals;
+
+        const onehotValues = this.data.raw.map((item) => {
+          return uniqueVals.indexOf(item.ys[prop])
+        });
+
+        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
+        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
+
+        this.meta.outputs[prop].legend = {};
+        uniqueVals.forEach((uVal, uIdx) => {
+          this.meta.outputs[prop].legend[uVal] = oneHotEncodedValuesArray[uIdx]
+        });
+
+        // increment the number of inputs/outputs
+        outputUnits += uniqueVals.length;
+      }
+    })
+
+    this.meta.inputUnits = inputUnits;
+    this.meta.outputUnits = outputUnits;
   }
 
+  /**
+   * Takes in a number or array and then either returns
+   * the array or returns an array of ['input0','input1']
+   * the array or returns an array of ['output0','output1']
+   * @param {*} val
+   * @param {*} inputType
+   */
+  // eslint-disable-next-line class-methods-use-this
+  createNamedIO(val, inputType) {
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    return arr;
+  }
+
+  /**
+   * checks whether or not a string is a json
+   * @param {*} str 
+   */
   // eslint-disable-next-line class-methods-use-this
   isJsonString(str) {
     try {
@@ -169,6 +261,11 @@ class NeuralNetworkData {
     return true;
   }
 
+
+  /**
+   * Creates a csv from a strin
+   * @param {*} csv 
+   */
   // via: http://techslides.com/convert-csv-to-json-in-javascript
   // eslint-disable-next-line class-methods-use-this
   csvJSON(csv) {
@@ -195,6 +292,98 @@ class NeuralNetworkData {
     }
   }
 
+  /**
+   * Takes data as an array
+   * @param {*} xArray 
+   * @param {*} yArray 
+   */
+  addData(xArray, yArray){
+    const inputs = {};
+    const outputs = {};
+
+    xArray.forEach ( (item,idx) => {
+      // TODO: get the label from the inputs?
+      const label = `input${idx}`;
+      inputs[label] = item;
+    });
+
+    yArray.forEach ( (item,idx) => {
+      // TODO: get the label from the outputs?
+      const label = `output${idx}`;
+      outputs[label] = item;
+    });
+
+    this.data.raw.push({xs: inputs, ys: outputs});
+  }
+
+  /**
+   * normalize the data.raw
+   */
+  normalize(){
+    
+    // always make sure to check set the data types
+    this.setDTypes();
+    // always make sure that the IO units are set
+    this.getIOUnits();
+
+    // do the things...!
+    this.convertRawToTensor()
+  }
+
+  /**
+   * onehot encode values 
+   */
+  convertRawToTensor(){
+    console.log(this.meta)
+
+    // Given the inputs and output types, 
+    // now create the input and output tensors
+    // 1. start by creating a matrix
+    const inputs = []
+    const outputs = [];
+
+    this.data.raw.forEach( (item) =>  {
+      let inputRow = [];
+      let outputRow = [];
+      const {xs, ys} = item;
+
+      Object.entries(xs).forEach( (valArray) => {
+        const prop = valArray[0];
+        const val = valArray[1];
+        const {dtype} = this.meta.inputs[prop];
+
+        if(dtype === 'number'){
+          inputRow.push(val);
+        } else if(dtype === 'string'){
+          const oneHotArray = this.meta.inputs[prop].legend[val];
+          inputRow = [...inputRow, ...oneHotArray];
+        }
+
+      });
+
+      Object.entries(ys).forEach( (valArray) => {
+        const prop = valArray[0];
+        const val = valArray[1];
+        const {dtype} = this.meta.outputs[prop];
+
+        if(dtype === 'number'){
+          outputRow.push(val);
+        } else if(dtype === 'string'){
+          const oneHotArray = this.meta.outputs[prop].legend[val];
+          outputRow = [...outputRow, ...oneHotArray];
+        }
+
+      });
+
+      inputs.push(inputRow);
+      outputs.push(outputRow);
+
+    })
+
+    console.log(inputs, outputs)
+    
+
+  }
 
 
 } // end of class

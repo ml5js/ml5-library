@@ -109,6 +109,10 @@ class NeuralNetwork {
       this.data.meta.inputUnits = this.config.dataOptions.inputs;
       this.data.meta.outputUnits = this.config.dataOptions.outputs;
 
+      // convert the input number to an array of keys e.g. [label1, label2, label3]
+      this.data.config.dataOptions.inputs = this.data.createNamedIO(this.data.config.dataOptions.inputs, 'input');
+      this.data.config.dataOptions.outputs = this.data.createNamedIO(this.data.config.dataOptions.outputs, 'output');
+
       this.model = this.createModel();
       this.ready = true;
     }
@@ -206,12 +210,31 @@ class NeuralNetwork {
     // check the input columns for data type to
     // calculate the total number of inputs
     // and outputs
-    // this.data.getIOUnits();
-
+    this.data.getIOUnits();
     // create the model
     this.model = this.createModel();
   }
 
+  /**
+   * ----------------------------------------
+   * ----------------------------------------
+   * ---------------------------------------- 
+   */
+  /**
+   * Adds an endpoint to call data.addData()
+   * @param {*} xs 
+   * @param {*} ys 
+   */
+  addData(xs, ys){
+    this.data.addData(xs, ys);
+  }
+
+  /**
+   * normalize the data.raw
+   */
+  normalize(){
+    this.data.normalize();
+  }
 
 
 }
