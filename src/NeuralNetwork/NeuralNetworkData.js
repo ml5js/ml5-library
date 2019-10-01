@@ -17,8 +17,14 @@ class NeuralNetworkData {
 
     this.data = {
       raw: [],
-      normalized: [], // TODO: should we keep normalized?
-      tensor: []
+      tensor: {
+        inputs: null, // tensor
+        outputs: null, // tensor
+        inputMax:null, // tensor
+        inputMin:null, // tensor
+        outputMax:null, // tensor
+        outputMin:null, // tensor
+      }
     }
   }
 
@@ -182,7 +188,7 @@ class NeuralNetworkData {
         const uniqueVals = [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
         // Store the unqiue values 
         this.meta.inputs[prop].uniqueValues = uniqueVals;
-        
+
         const onehotValues = this.data.raw.map((item) => {
           return uniqueVals.indexOf(item.xs[prop])
         });
@@ -297,43 +303,120 @@ class NeuralNetworkData {
    * @param {*} xArray 
    * @param {*} yArray 
    */
-  addData(xArray, yArray){
+  addData(xArray, yArray) {
     const inputs = {};
     const outputs = {};
 
-    xArray.forEach ( (item,idx) => {
+    xArray.forEach((item, idx) => {
       // TODO: get the label from the inputs?
       const label = `input${idx}`;
       inputs[label] = item;
     });
 
-    yArray.forEach ( (item,idx) => {
+    yArray.forEach((item, idx) => {
       // TODO: get the label from the outputs?
       const label = `output${idx}`;
       outputs[label] = item;
     });
 
-    this.data.raw.push({xs: inputs, ys: outputs});
+    this.data.raw.push({
+      xs: inputs,
+      ys: outputs
+    });
   }
 
   /**
    * normalize the data.raw
    */
-  normalize(){
-    
+  normalize() {
+
     // always make sure to check set the data types
     this.setDTypes();
     // always make sure that the IO units are set
     this.getIOUnits();
 
     // do the things...!
-    this.convertRawToTensor()
+    const {
+      inputTensor,
+      outputTensor
+    } = this.convertRawToTensor();
+
+    // run normalize on the new tensors
+    const {
+      normalizedInputs,
+      normalizedOutputs,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin
+    } = this.normalizeInternal(inputTensor, outputTensor);
+
+    normalizedInputs.print()
+    normalizedOutputs.print()
+    inputMax.print()
+    inputMin.print()
+    outputMax.print()
+    outputMin.print()
+
+    // set the tensor data to the normalized inputs
+    this.data.tensor = {
+      inputs: normalizedInputs,
+      outputs: normalizedOutputs,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin,
+    }
+
+  }
+
+  /**
+   * 
+   */
+  normalizeInternal(inputTensor, outputTensor) {
+    // inputTensor.print()
+    // outputTensor.print()
+
+    // 4. Get the min and max values for normalization
+    // TODO: allow people to submit their own normalization values!
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
+
+    if (this.config.architecture.task === 'regression') {
+      // if the task is a regression, return all the 
+      // output stats as an array
+      inputMax = inputTensor.max(0);
+      inputMin = inputTensor.min(0);
+      outputMax = outputTensor.max(0);
+      outputMin = outputTensor.min(0);
+    } else if (this.config.architecture.task === 'classification') {
+      // if the task is a classification, return the single value
+      inputMax = inputTensor.max(0);
+      inputMin = inputTensor.min(0);
+      outputMax = outputTensor.max();
+      outputMin = outputTensor.min();
+    }
+
+    // 5. create a normalized tensor
+    const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    const normalizedOutputs = outputTensor.sub(outputMin).div(outputMax.sub(outputMin));
+
+    return {
+      normalizedInputs,
+      normalizedOutputs,
+      inputMin,
+      inputMax,
+      outputMax,
+      outputMin
+    }
   }
 
   /**
    * onehot encode values 
    */
-  convertRawToTensor(){
+  convertRawToTensor() {
     console.log(this.meta)
 
     // Given the inputs and output types, 
@@ -345,20 +428,25 @@ class NeuralNetworkData {
     // 2. encode the values
     // iterate through each entry and send the correct
     // oneHot encoded values or the numeric value
-    this.data.raw.forEach( (item) =>  {
+    this.data.raw.forEach((item) => {
       let inputRow = [];
       let outputRow = [];
-      const {xs, ys} = item;
+      const {
+        xs,
+        ys
+      } = item;
 
       // Create the inputs matrix
-      Object.entries(xs).forEach( (valArray) => {
+      Object.entries(xs).forEach((valArray) => {
         const prop = valArray[0];
         const val = valArray[1];
-        const {dtype} = this.meta.inputs[prop];
+        const {
+          dtype
+        } = this.meta.inputs[prop];
 
-        if(dtype === 'number'){
+        if (dtype === 'number') {
           inputRow.push(val);
-        } else if(dtype === 'string'){
+        } else if (dtype === 'string') {
           const oneHotArray = this.meta.inputs[prop].legend[val];
           inputRow = [...inputRow, ...oneHotArray];
         }
@@ -366,14 +454,16 @@ class NeuralNetworkData {
       });
 
       // Create the outputs matrix
-      Object.entries(ys).forEach( (valArray) => {
+      Object.entries(ys).forEach((valArray) => {
         const prop = valArray[0];
         const val = valArray[1];
-        const {dtype} = this.meta.outputs[prop];
+        const {
+          dtype
+        } = this.meta.outputs[prop];
 
-        if(dtype === 'number'){
+        if (dtype === 'number') {
           outputRow.push(val);
-        } else if(dtype === 'string'){
+        } else if (dtype === 'string') {
           const oneHotArray = this.meta.outputs[prop].legend[val];
           outputRow = [...outputRow, ...oneHotArray];
         }
@@ -385,47 +475,15 @@ class NeuralNetworkData {
 
     });
 
-    console.log(inputs, outputs)
+    // console.log(inputs, outputs)
     // 3. convert to tensors 
     const inputTensor = tf.tensor(inputs, [this.data.raw.length, this.meta.inputUnits]);
     const outputTensor = tf.tensor(outputs, [this.data.raw.length, this.meta.outputUnits]);
-    
-    // inputTensor.print()
-    // outputTensor.print()
 
-    // 4. Get the min and max values for normalization
-    // TODO: allow people to submit their own normalization values!
-    let inputMax;
-    let inputMin;
-    let outputMax;
-    let outputMin;
-
-    if(this.config.architecture.task === 'regression'){
-      // if the task is a regression, return all the 
-      // output stats as an array
-      inputMax = inputTensor.max(0);
-      inputMin = inputTensor.min(0);  
-      outputMax = outputTensor.max(0);
-      outputMin = outputTensor.min(0);
-    } else if (this.config.architecture.task === 'classification'){
-      // if the task is a classification, return the single value
-      inputMax = inputTensor.max(0);
-      inputMin = inputTensor.min(0);  
-      outputMax = outputTensor.max();
-      outputMin = outputTensor.min();
+    return {
+      inputTensor,
+      outputTensor
     }
-    
-    inputMax.print();
-    inputMin.print();
-    outputMax.print();
-    outputMin.print();
-
-    // 5. create a normalized tensor
-    const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
-    const normalizedLabels = outputTensor.sub(outputMin).div(outputMax.sub(outputMin));
-
-    normalizedInputs.print();
-    normalizedLabels.print();
 
   }
 

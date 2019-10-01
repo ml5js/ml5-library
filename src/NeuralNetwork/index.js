@@ -15,7 +15,7 @@ import callCallback from '../utils/callcallback';
 // import { input } from '@tensorflow/tfjs';
 import DEFAULTS from './NeuralNetworkDefaults';
 import NeuralNetworkData from './NeuralNetworkData';
-// import NeuralNetworkVis from './NeuralNetworkVis';
+import NeuralNetworkVis from './NeuralNetworkVis';
 
 class NeuralNetwork {
   /**
@@ -59,6 +59,7 @@ class NeuralNetwork {
 
     }
 
+
     // TODO: maybe we create a set of configs for 
     // regression vs. classification
     // set the default activations:
@@ -81,8 +82,8 @@ class NeuralNetwork {
       console.log(`task not defined. please set task: classification OR regression`);
     }
 
-
-
+    // vis class
+    this.vis = new NeuralNetworkVis();
     // data class
     this.data = new NeuralNetworkData(this.config);
     // check if the model is ready
@@ -234,6 +235,95 @@ class NeuralNetwork {
    */
   normalize(){
     this.data.normalize();
+  }
+
+  /**
+   * User-facing neural network training
+   * @param {*} optionsOrCallback
+   * @param {*} callback
+   */
+  train(optionsOrCallback, optionsOrWhileTraining, callback) {
+    let options;
+    let whileTrainingCb;
+    let finishedTrainingCb;
+    if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function' &&
+      typeof callback === 'function'
+    ) {
+      options = optionsOrCallback;
+      whileTrainingCb = optionsOrWhileTraining;
+      finishedTrainingCb = callback;
+    } else if (typeof optionsOrCallback === 'object' &&
+      typeof optionsOrWhileTraining === 'function') {
+      options = optionsOrCallback;
+      whileTrainingCb = null;
+      finishedTrainingCb = optionsOrWhileTraining;
+    } else if (typeof optionsOrCallback === 'function' &&
+      typeof optionsOrWhileTraining === 'function'
+    ) {
+      options = {};
+      whileTrainingCb = optionsOrCallback;
+      finishedTrainingCb = optionsOrWhileTraining;
+    } else {
+      options = {};
+      whileTrainingCb = null;
+      finishedTrainingCb = optionsOrCallback;
+    }
+
+    return callCallback(this.trainInternal(options, whileTrainingCb), finishedTrainingCb);
+  }
+
+  /**
+   * Train the neural network
+   * @param {*} options
+   */
+  async trainInternal(options, whileTrainingCallback) {
+    const batchSize = options.batchSize || this.config.batchSize;
+    const epochs = options.epochs || this.config.epochs;
+
+    const whileTraining = (typeof whileTrainingCallback === 'function') ?
+      whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+
+    let xs;
+    let ys;
+
+    const {
+      inputs,
+      outputs
+    } = this.data.data.tensor;
+
+    // check if the inputs are tensors, if not, convert!
+    if (!(inputs instanceof tf.Tensor)) {
+      xs = tf.tensor(inputs)
+      ys = tf.tensor(outputs)
+    } else {
+      xs = inputs;
+      ys = outputs;
+    }
+
+    let modelFitCallbacks;
+    if (this.config.debug) {
+      modelFitCallbacks = [
+        this.vis.trainingVis(),
+        {
+          onEpochEnd: whileTraining
+        }
+      ]
+    } else {
+      modelFitCallbacks = [{
+        onEpochEnd: whileTraining
+      }]
+    }
+
+    await this.model.fit(xs, ys, {
+      shuffle: true,
+      batchSize,
+      epochs,
+      validationSplit: 0.1,
+      callbacks: modelFitCallbacks
+    });
+    xs.dispose();
+    ys.dispose();
   }
 
 
