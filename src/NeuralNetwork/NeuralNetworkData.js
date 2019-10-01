@@ -390,11 +390,42 @@ class NeuralNetworkData {
     const inputTensor = tf.tensor(inputs, [this.data.raw.length, this.meta.inputUnits]);
     const outputTensor = tf.tensor(outputs, [this.data.raw.length, this.meta.outputUnits]);
     
-    inputTensor.print()
-    outputTensor.print()
-    // normalize the inputs and outputs
+    // inputTensor.print()
+    // outputTensor.print()
+
+    // 4. Get the min and max values for normalization
+    // TODO: allow people to submit their own normalization values!
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
+
+    if(this.config.architecture.task === 'regression'){
+      // if the task is a regression, return all the 
+      // output stats as an array
+      inputMax = inputTensor.max(0);
+      inputMin = inputTensor.min(0);  
+      outputMax = outputTensor.max(0);
+      outputMin = outputTensor.min(0);
+    } else if (this.config.architecture.task === 'classification'){
+      // if the task is a classification, return the single value
+      inputMax = inputTensor.max(0);
+      inputMin = inputTensor.min(0);  
+      outputMax = outputTensor.max();
+      outputMin = outputTensor.min();
+    }
     
-    
+    inputMax.print();
+    inputMin.print();
+    outputMax.print();
+    outputMin.print();
+
+    // 5. create a normalized tensor
+    const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    const normalizedLabels = outputTensor.sub(outputMin).div(outputMax.sub(outputMin));
+
+    normalizedInputs.print();
+    normalizedLabels.print();
 
   }
 
