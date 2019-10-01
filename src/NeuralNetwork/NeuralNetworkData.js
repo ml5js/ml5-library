@@ -342,11 +342,15 @@ class NeuralNetworkData {
     const inputs = []
     const outputs = [];
 
+    // 2. encode the values
+    // iterate through each entry and send the correct
+    // oneHot encoded values or the numeric value
     this.data.raw.forEach( (item) =>  {
       let inputRow = [];
       let outputRow = [];
       const {xs, ys} = item;
 
+      // Create the inputs matrix
       Object.entries(xs).forEach( (valArray) => {
         const prop = valArray[0];
         const val = valArray[1];
@@ -361,6 +365,7 @@ class NeuralNetworkData {
 
       });
 
+      // Create the outputs matrix
       Object.entries(ys).forEach( (valArray) => {
         const prop = valArray[0];
         const val = valArray[1];
@@ -378,9 +383,17 @@ class NeuralNetworkData {
       inputs.push(inputRow);
       outputs.push(outputRow);
 
-    })
+    });
 
     console.log(inputs, outputs)
+    // 3. convert to tensors 
+    const inputTensor = tf.tensor(inputs, [this.data.raw.length, this.meta.inputUnits]);
+    const outputTensor = tf.tensor(outputs, [this.data.raw.length, this.meta.outputUnits]);
+    
+    inputTensor.print()
+    outputTensor.print()
+    // normalize the inputs and outputs
+    
     
 
   }
