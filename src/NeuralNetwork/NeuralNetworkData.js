@@ -192,10 +192,8 @@ class NeuralNetworkData {
         const uniqueVals = [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
         // Store the unqiue values 
         this.meta.inputs[prop].uniqueValues = uniqueVals;
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map( (item,idx) => idx)];
 
-        const onehotValues = this.data.raw.map((item) => {
-          return uniqueVals.indexOf(item.xs[prop])
-        });
         const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
         const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
 
@@ -222,10 +220,7 @@ class NeuralNetworkData {
         const uniqueVals = [...new Set(this.data.raw.map(obj => obj.ys[prop]))]
         // Store the unqiue values 
         this.meta.outputs[prop].uniqueValues = uniqueVals;
-
-        const onehotValues = this.data.raw.map((item) => {
-          return uniqueVals.indexOf(item.ys[prop])
-        });
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map( (item,idx) => idx)];
 
         const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
         const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
@@ -344,6 +339,10 @@ class NeuralNetworkData {
       inputTensor,
       outputTensor
     } = this.convertRawToTensor();
+
+
+    // inputTensor.print()
+    // inputTensor.print()
 
     // run normalize on the new tensors
     const {

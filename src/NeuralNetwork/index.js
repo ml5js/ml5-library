@@ -366,6 +366,8 @@ class NeuralNetwork {
     // 1. Handle the input sample
     // either an array of values in order of the inputs
     // OR an JSON object of key/values
+    // console.log(sample)
+
     let inputData = [];
     if (sample instanceof Array) {
       inputData = sample;
