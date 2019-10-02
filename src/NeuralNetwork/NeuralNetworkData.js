@@ -354,12 +354,12 @@ class NeuralNetworkData {
       outputMin
     } = this.normalizeInternal(inputTensor, outputTensor);
 
-    normalizedInputs.print()
-    normalizedOutputs.print()
-    inputMax.print()
-    inputMin.print()
-    outputMax.print()
-    outputMin.print()
+    // normalizedInputs.print()
+    // normalizedOutputs.print()
+    // inputMax.print()
+    // inputMin.print()
+    // outputMax.print()
+    // outputMin.print()
 
     // set the tensor data to the normalized inputs
     this.data.tensor = {
