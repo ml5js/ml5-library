@@ -1,332 +1,615 @@
 import * as tf from '@tensorflow/tfjs';
 // import * as tfvis from '@tensorflow/tfjs-vis';
 // import callCallback from '../utils/callcallback';
-import DEFAULTS from './NeuralNetworkDefaults';
 
 /* eslint class-methods-use-this: ["error", { "exceptMethods": ["shuffle", "normalizeArray"] }] */
 class NeuralNetworkData {
   constructor(options) {
-    this.task = options.task || DEFAULTS.task;
-
-    this.inputs = options.inputs || DEFAULTS.inputs;
-    this.outputs = options.outputs || DEFAULTS.outputs;
-
+    this.config = options;
     this.meta = {
+      // number of units - varies depending on input data type
       inputUnits: null,
       outputUnits: null,
-      inputTypes: [],
-      outputTypes: [],
+      // objects describing input/output data by property name
+      inputs: {}, // { name1: {dtype}, name2: {dtype}  }
+      outputs: {}, // { name1: {dtype} }
+      isNormalized: false,
     }
 
-    this.data = null;
-    this.xs = [];
-    this.ys = [];
-    this.tensor = null;
-    this.normalizedData = {
-      inputs: null,
-      targets: null,
+    this.data = {
+      raw: [],
+      tensor: {
+        inputs: null, // tensor
+        outputs: null, // tensor
+        inputMax: null, // tensor
+        inputMin: null, // tensor
+        outputMax: null, // tensor
+        outputMin: null, // tensor
+      },
+      inputMax: null, // array or number
+      inputMin: null, // array or number
+      outputMax: null, // array or number
+      outputMin: null, // array or number
+    }
+
+    // TODO: temp fix - check normalizationOptions
+    if(options.dataOptions.normalizationOptions !== null && options.dataOptions.normalizationOptions !== undefined){
+      const items = ['inputMax', 'inputMin', 'outputMax', 'outputMin'];
+      items.forEach(prop => {
+        if(options.dataOptions.normalizationOptions[prop] !== null && options.dataOptions.normalizationOptions[prop] !== undefined ){
+          this.data[prop] = options.dataOptions.normalizationOptions[prop]
+        }
+      })
     }
 
   }
 
-  syncData() {
-    this.data = [...new Array(this.xs.length).fill(null).map((item, idx) => ({
-      xs: this.xs[idx],
-      ys: this.ys[idx]
-    }))]
+
+  
+
+  /**
+   * load data
+   */
+  async loadData() {
+    const {
+      dataUrl
+    } = this.config.dataOptions;
+    if (dataUrl.endsWith('.csv')) {
+      await this.loadCSVInternal();
+    } else if (dataUrl.endsWith('.json')) {
+      await this.loadJSONInternal();
+    } else if (dataUrl.includes('blob')) {
+      await this.loadBlobInternal()
+    } else {
+      console.log('Not a valid data format. Must be csv or json')
+    }
   }
 
   /**
-   * Shuffle this.data
-   * If there are xs and ys, mash them in to data
+   * load csv
+   * TODO: pass to loadJSONInternal()
    */
-  shuffle() {
-    if (this.data === null) {
-      this.syncData();
+  async loadCSVInternal() {
+    const path = this.config.dataOptions.dataUrl;
+    const myCsv = tf.data.csv(path);
+    const loadedData = await myCsv.toArray();
+    const json = {
+      entries: loadedData
     }
-    tf.util.shuffle(this.data);
+    this.loadJSONInternal(json);
   }
 
   /**
-   *
+   * load json data
+   * @param {*} parsedJson
    */
-  encodeValues(ioTypeArray, ioType) {
+  async loadJSONInternal(parsedJson) {
+    const {
+      dataUrl
+    } = this.config.dataOptions;
+    const outputLabels = this.config.dataOptions.outputs;
+    const inputLabels = this.config.dataOptions.inputs;
 
-    let dval;
-    let ioTypes;
-    if (ioType === 'input') {
-      dval = 'xs';
-      ioTypes = this.meta.inputTypes;
+    let json;
+    // handle loading parsedJson
+    if (parsedJson instanceof Object) {
+      json = parsedJson;
     } else {
-      dval = 'ys';
-      ioTypes = this.meta.outputTypes;
+      const data = await fetch(dataUrl);
+      json = await data.json();
     }
 
-    return ioTypeArray.map((header, idx) => {
-      const {
-        dtype,
-        name
-      } = header;
-
-      let encodedValues;
-
-      if (dtype === 'string') {
-        const dataArray = this.data.map(d => d[dval][name]);
-        const uniqueValues = [...new Set(dataArray)];
-        const oneHotValues = dataArray.map((item) => {
-          return uniqueValues.indexOf(item)
-        })
-
-        // encodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), ioUnits);
-        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(oneHotValues, 'int32'), uniqueValues.length);
-        encodedValues = oneHotEncodedValues.dataSync();
-
-        // TODO: This is super inefficient to .dataSync() and .arraySync()
-        // COME BACK TO THIS LATER!
-        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync()
-        ioTypes[idx].legend = {}
-
-        uniqueValues.forEach((uVal, uIdx) => {
-          ioTypes[idx].legend[uVal] = oneHotEncodedValuesArray[uIdx]
-        })
-
-
-      } else {
-        // if numeric - return numbers
-        encodedValues = this.data.map(d => d[dval][name]);
-      }
-
-      // return values
-      return encodedValues
-    })
-
-  }
-
-  ensureIOTypes(ioType) {
-    let dval;
-    if (ioType === 'input') {
-      dval = 'xs'
+    // TODO: recurse through the object to find
+    // which object contains the
+    let parentProp;
+    if (Object.keys(json).includes('entries')) {
+      parentProp = 'entries'
+    } else if (Object.keys(json).includes('data')) {
+      parentProp = 'data'
     } else {
-      dval = 'ys'
+      console.log(`your data must be contained in an array in \n
+      a property called 'entries' or 'data'`);
+      return;
     }
 
+    const dataArray = json[parentProp];
 
-    return Object.keys(this.data[0][dval]).map(prop => {
-
-      const val = this.data[0][dval][prop];
+    this.data.raw = dataArray.map((item) => {
 
       const output = {
-        name: prop,
-        dtype: null,
-        uniqueValueCount: null
+        xs: {},
+        ys: {}
       }
-      if (typeof val === 'string') {
-        output.dtype = typeof val
+      // TODO: keep an eye on the order of the
+      // property name order if you use the order
+      // later on in the code!
+      const props = Object.keys(item);
 
-        // TODO: create a key/value map of values to one-hot encoded values here???
-        const dataArray = this.data.map(d => d[dval][prop]);
-        const uniqueValues = [...new Set(dataArray)];
-        output.uniqueValueCount = uniqueValues.length;
+      props.forEach(prop => {
+        if (inputLabels.includes(prop)) {
+          output.xs[prop] = item[prop]
+        }
 
-      } else {
-        output.dtype = typeof val
-      }
+        if (outputLabels.includes(prop)) {
+          output.ys[prop] = item[prop]
+        }
+      })
 
       return output;
     })
 
-  }
+    // set the data types for the inputs and outputs
+    this.setDTypes();
 
-
-  /**
-   * normalize array
-   * @param {*} arr
-   */
-  normalizeArray(arr) {
-    const inputTensor = tf.tensor1d(arr);
-
-    const inputMax = inputTensor.max();
-    const inputMin = inputTensor.min();
-
-    const normalizedInputs = inputTensor
-      .sub(inputMin)
-      .div(inputMax.sub(inputMin))
-
-    return normalizedInputs.arraySync();
   }
 
   /**
-   * normalize array
-   * @param {*} arr
+   * load a blob and check if it is json
    */
-  normalizeIOArray(arr, idx, ioType) {
-
-    let ioTypesArray;
-    if (ioType === 'inputs') {
-      ioTypesArray = this.meta.inputTypes
-    } else {
-      ioTypesArray = this.meta.outputTypes
-    }
-    const ioMetaInfo = ioTypesArray[idx];
-
-    const inputTensor = tf.tensor1d(arr);
-
-    const inputMax = inputTensor.max();
-    const inputMin = inputTensor.min();
-
-    // Set the input min and max of the input/output- Types
-    ioMetaInfo.max = inputMax.arraySync();
-    ioMetaInfo.min = inputMin.arraySync();
-
-    const normalizedInputs = inputTensor
-      .sub(inputMin)
-      .div(inputMax.sub(inputMin))
-
-    return normalizedInputs.arraySync();
-  }
-
-
-
-  /**
-   * Reshape an array back to it
-   * @param {*} arr
-   */
-  reshapeData(inputArray, ioTypeArray) {
-
-    const output = []
-
-    for (let i = 0; i < this.data.length; i += 1) {
-
-      const row = [];
-
-      for (let idx = 0; idx < inputArray.length; idx += 1) {
-        const {
-          dtype,
-          uniqueValueCount
-        } = ioTypeArray[idx];
-
-        if (dtype === 'string') {
-          for (let j = 0; j < uniqueValueCount; j += 1) {
-            row.push(inputArray[idx][(i * uniqueValueCount) + j])
-          }
-
-        } else if (dtype === 'number') {
-
-          row.push(inputArray[idx][i]);
-
-        } else {
-          console.log('data type not supported');
-        }
-
+  async loadBlobInternal() {
+    try {
+      const data = await fetch(this.config.dataUrl);
+      const text = await data.text();
+      if (this.isJsonString(text)) {
+        const json = JSON.parse(text);
+        await this.loadJSONInternal(json);
+      } else {
+        const json = this.csvJSON(text);
+        await this.loadJSONInternal(json);
       }
-
-      output.push(row);
-
+    } catch (err) {
+      console.log('mmm might be passing in a string or something!', err)
     }
-
-    return output;
-
   }
 
   /**
-   * Normalize this.data
-   * Requires the inputTypes and outputTypes to be defined
+   * sets the data types of the data we're using
+   * important for handling oneHot
    */
-  normalize() {
-    // if (this.data === null) {
-    this.syncData();
+  setDTypes() {
+    // this.meta.inputs
+    const sample = this.data.raw[0];
+    const xs = Object.keys(sample.xs);
+    const ys = Object.keys(sample.ys);
 
-    // TODO: check data and set inputTypes and outputTypes
-    this.meta.inputTypes = this.ensureIOTypes('input')
-    this.meta.outputTypes = this.ensureIOTypes('output')
-
-
-    // get the labels
-    const {
-      inputTypes,
-      outputTypes
-    } = this.meta;
-
-    // Check which data are string types
-    const inputs = this.encodeValues(inputTypes, 'input')
-    const targets = this.encodeValues(outputTypes, 'output')
-
-    // Normalized the inputs - TODO: this can be optimized!
-    const normalizedInputs = inputs.map((item, idx) => this.normalizeIOArray(item, idx, 'inputs'));
-    const normalizedOutputs = targets.map((item, idx) => this.normalizeIOArray(item, idx, 'outputs'));
-
-    const reshapedInputs = this.reshapeData(normalizedInputs, inputTypes);
-    const reshapedOutputs = this.reshapeData(normalizedOutputs, outputTypes);
-
-    // convert those data to tensors after encoding oneHot() or not
-    const inputTensor = tf.tensor(reshapedInputs).flatten().reshape([this.data.length, this.meta.inputUnits])
-    const outputTensor = tf.tensor(reshapedOutputs).flatten().reshape([this.data.length, this.meta.outputUnits])
-
-    // console.log('----------- input tensor')
-    // inputTensor.print()
-
-    // console.log('----------- output tensor')
-    // outputTensor.print()
-
-    this.normalizedData = {
-      tensors: {
-        inputs: inputTensor, // normalizedInputs,
-        targets: outputTensor,
+    xs.forEach((prop) => {
+      this.meta.inputs[prop] = {
+        dtype: typeof sample.xs[prop]
       }
-    }
+    });
+
+    ys.forEach((prop) => {
+      this.meta.outputs[prop] = {
+        dtype: typeof sample.ys[prop]
+      }
+    });
+
   }
 
   /**
-   * Gets the total number of inputs/outputs based on the data type
-   * Uses the relevant function to convert values e.g. oneHot() and
-   * sends back the appropriate length of values
-   * @param {*} val
+   * Get the input and output units
+   *
    */
   getIOUnits() {
     let inputUnits = 0;
     let outputUnits = 0;
 
-    this.meta.inputTypes.forEach((item) => {
-      if (item.dtype === 'number') {
+    // TODO: turn these into functions!
+    // calc the number of inputs/output units
+    Object.entries(this.meta.inputs).forEach(arr => {
+      const {
+        dtype
+      } = arr[1];
+      const prop = arr[0];
+      if (dtype === 'number') {
         inputUnits += 1;
-      } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.xs.map(obj => obj[item.name]))]
+      } else if (dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
+        // Store the unqiue values
+        this.meta.inputs[prop].uniqueValues = uniqueVals;
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map((item, idx) => idx)];
+
+        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
+        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
+
+        this.meta.inputs[prop].legend = {};
+        uniqueVals.forEach((uVal, uIdx) => {
+          this.meta.inputs[prop].legend[uVal] = oneHotEncodedValuesArray[uIdx]
+        });
+
+        // increment the number of inputs/outputs
         inputUnits += uniqueVals.length;
       }
-    });
+    })
 
-    this.meta.outputTypes.forEach((item) => {
 
-      if (item.dtype === 'number') {
+    // calc the number of inputs/output units
+    Object.entries(this.meta.outputs).forEach(arr => {
+      const {
+        dtype
+      } = arr[1];
+      const prop = arr[0];
+      if (dtype === 'number') {
         outputUnits += 1;
-      } else if (item.dtype === 'string') {
-        const uniqueVals = [...new Set(this.ys.map(obj => obj[item.name]))]
-        outputUnits += uniqueVals.length;
-      } else {
-        console.log('not supported')
-      }
+      } else if (dtype === 'string') {
+        const uniqueVals = [...new Set(this.data.raw.map(obj => obj.ys[prop]))]
+        // Store the unqiue values
+        this.meta.outputs[prop].uniqueValues = uniqueVals;
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map((item, idx) => idx)];
 
-    });
+        const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
+        const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
+
+        this.meta.outputs[prop].legend = {};
+        uniqueVals.forEach((uVal, uIdx) => {
+          this.meta.outputs[prop].legend[uVal] = oneHotEncodedValuesArray[uIdx]
+        });
+
+        // increment the number of inputs/outputs
+        outputUnits += uniqueVals.length;
+      }
+    })
 
     this.meta.inputUnits = inputUnits;
     this.meta.outputUnits = outputUnits;
+  }
+
+  /**
+   * Takes in a number or array and then either returns
+   * the array or returns an array of ['input0','input1']
+   * the array or returns an array of ['output0','output1']
+   * @param {*} val
+   * @param {*} inputType
+   */
+  // eslint-disable-next-line class-methods-use-this
+  createNamedIO(val, inputType) {
+    const arr = (val instanceof Array) ? val : [...new Array(val).fill(null).map((item, idx) => `${inputType}${idx}`)]
+    return arr;
+  }
+
+  /**
+   * checks whether or not a string is a json
+   * @param {*} str
+   */
+  // eslint-disable-next-line class-methods-use-this
+  isJsonString(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+
+  /**
+   * Creates a csv from a strin
+   * @param {*} csv
+   */
+  // via: http://techslides.com/convert-csv-to-json-in-javascript
+  // eslint-disable-next-line class-methods-use-this
+  csvJSON(csv) {
+
+    const lines = csv.split("\n");
+
+    const result = [];
+
+    const headers = lines[0].split(",");
+
+    for (let i = 1; i < lines.length; i += 1) {
+
+      const obj = {};
+      const currentline = lines[i].split(",");
+
+      for (let j = 0; j < headers.length; j += 1) {
+        obj[headers[j]] = currentline[j];
+      }
+      result.push(obj);
+    }
+
+    return {
+      entries: result
+    }
+  }
+
+  /**
+   * Takes data as an array
+   * @param {*} xArray
+   * @param {*} yArray
+   */
+  addData(xArray, yArray) {
+    const inputs = {};
+    const outputs = {};
+
+    xArray.forEach((item, idx) => {
+      // TODO: get the label from the inputs?
+      const label = `input${idx}`;
+      inputs[label] = item;
+    });
+
+    yArray.forEach((item, idx) => {
+      // TODO: get the label from the outputs?
+      const label = `output${idx}`;
+      outputs[label] = item;
+    });
+
+    this.data.raw.push({
+      xs: inputs,
+      ys: outputs
+    });
+  }
+
+  /**
+   * normalize the data.raw
+   */
+  normalize() {
+    
+    // always make sure to check set the data types
+    this.setDTypes();
+    // always make sure that the IO units are set
+    this.getIOUnits();
+
+    // do the things...!
+    const {
+      inputTensor,
+      outputTensor
+    } = this.convertRawToTensor();
+
+
+    // inputTensor.print()
+    // inputTensor.print()
+
+    // run normalize on the new tensors
+    const {
+      normalizedInputs,
+      normalizedOutputs,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin
+    } = this.normalizeInternal(inputTensor, outputTensor);
+
+    // normalizedInputs.print()
+    // normalizedOutputs.print()
+    // inputMax.print()
+    // inputMin.print()
+    // outputMax.print()
+    // outputMin.print()
+
+    // set the tensor data to the normalized inputs
+    this.data.tensor = {
+      inputs: normalizedInputs,
+      outputs: normalizedOutputs,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin,
+    }
+
+    // set the input/output Min and max values as numbers
+    this.data.inputMin = inputMin.arraySync();
+    this.data.inputMax = inputMax.arraySync();
+    this.data.outputMax = outputMax.arraySync();
+    this.data.outputMin = outputMin.arraySync();
+
+    // set isNormalized to true if this function is called
+    this.meta.isNormalized = true;
+  }
+
+  /**
+   *
+   */
+  normalizeInternal(inputTensor, outputTensor) {
+    // inputTensor.print()
+    // outputTensor.print()
+
+    // 4. Get the min and max values for normalization
+    // TODO: allow people to submit their own normalization values!
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
+
+    // TODO: this is terrible and can be handled way better!
+    // REFACTOR THIS!!!
+    if (this.config.architecture.task === 'regression') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
+      } else {
+        // if the task is a regression, return all the
+        // output stats as an array
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max(0);
+        outputMin = outputTensor.min(0);
+      }
+    } else if (this.config.architecture.task === 'classification') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
+      } else {
+        // if the task is a classification, return the single value
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max();
+        outputMin = outputTensor.min();
+      }
+    }
+
+    // 5. create a normalized tensor
+    const normalizedInputs = inputTensor.sub(inputMin).div(inputMax.sub(inputMin));
+    const normalizedOutputs = outputTensor.sub(outputMin).div(outputMax.sub(outputMin));
+
+    return {
+      normalizedInputs,
+      normalizedOutputs,
+      inputMin,
+      inputMax,
+      outputMax,
+      outputMin
+    }
+  }
+
+  /**
+   * Assemble the data for training
+   */
+  warmUp(){
+    // always make sure to check set the data types
+    this.setDTypes();
+    // always make sure that the IO units are set
+    this.getIOUnits();
+
+    // do the things...!
+    const {
+      inputTensor,
+      outputTensor
+    } = this.convertRawToTensor();
+
+
+    inputTensor.print()
+    outputTensor.print()
+
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
+
+    // TODO: this is terrible and can be handled way better!
+    // REFACTOR THIS!!!
+    if (this.config.architecture.task === 'regression') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
+      } else {
+        // if the task is a regression, return all the
+        // output stats as an array
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max(0);
+        outputMin = outputTensor.min(0);
+      }
+    } else if (this.config.architecture.task === 'classification') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
+      } else {
+        // if the task is a classification, return the single value
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max();
+        outputMin = outputTensor.min();
+      }
+    }
+
+
+    this.data.tensor = {
+      inputs: inputTensor,
+      outputs: outputTensor,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin,
+    }
+
+    // set the input/output Min and max values as numbers
+    this.data.inputMin = inputMin.arraySync();
+    this.data.inputMax = inputMax.arraySync();
+    this.data.outputMax = outputMax.arraySync();
+    this.data.outputMin = outputMin.arraySync();
 
   }
 
   /**
-   * Adds data to the xs and ys array
-   * These data get "mashed" into the data object
-   * when .normalize() or .shuffle() are called
-   * TODO: Figure out a way to sync all this!
-   * @param {*} xs
-   * @param {*} ys
+   * onehot encode values
    */
-  addData(xs, ys) {
-    this.xs.push(xs);
-    this.ys.push(ys);
+  convertRawToTensor() {
+    // console.log(this.meta)
+
+    // Given the inputs and output types,
+    // now create the input and output tensors
+    // 1. start by creating a matrix
+    const inputs = []
+    const outputs = [];
+
+    // 2. encode the values
+    // iterate through each entry and send the correct
+    // oneHot encoded values or the numeric value
+    this.data.raw.forEach((item) => {
+      let inputRow = [];
+      let outputRow = [];
+      const {
+        xs,
+        ys
+      } = item;
+
+      // Create the inputs matrix
+      Object.entries(xs).forEach((valArray) => {
+        const prop = valArray[0];
+        const val = valArray[1];
+        const {
+          dtype
+        } = this.meta.inputs[prop];
+
+        if (dtype === 'number') {
+          inputRow.push(val);
+        } else if (dtype === 'string') {
+          const oneHotArray = this.meta.inputs[prop].legend[val];
+          inputRow = [...inputRow, ...oneHotArray];
+        }
+
+      });
+
+      // Create the outputs matrix
+      Object.entries(ys).forEach((valArray) => {
+        const prop = valArray[0];
+        const val = valArray[1];
+        const {
+          dtype
+        } = this.meta.outputs[prop];
+
+        if (dtype === 'number') {
+          outputRow.push(val);
+        } else if (dtype === 'string') {
+          const oneHotArray = this.meta.outputs[prop].legend[val];
+          outputRow = [...outputRow, ...oneHotArray];
+        }
+
+      });
+
+      inputs.push(inputRow);
+      outputs.push(outputRow);
+
+    });
+
+    // console.log(inputs, outputs)
+    // 3. convert to tensors
+    const inputTensor = tf.tensor(inputs, [this.data.raw.length, this.meta.inputUnits]);
+    const outputTensor = tf.tensor(outputs, [this.data.raw.length, this.meta.outputUnits]);
+
+    return {
+      inputTensor,
+      outputTensor
+    }
+
   }
 
-}
+
+
+
+} // end of class
 
 
 export default NeuralNetworkData;
