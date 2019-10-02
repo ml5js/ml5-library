@@ -626,6 +626,16 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "EonYang",
+      "name": "Yang",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9332910?v=4",
+      "profile": "http://yangyang.blog",
+      "contributions": [
+        "code",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
