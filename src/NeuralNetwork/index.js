@@ -424,10 +424,7 @@ class NeuralNetwork {
     const xs = tf.tensor(encodedInput, [1, this.data.meta.inputUnits]);
     const ys = this.model.predict(xs);
     
-    const results = {
-      output: null,
-      tensor: null,
-    };
+    let results = [];
 
     if(this.config.architecture.task === 'classification'){
       const predictions = await ys.data();
@@ -448,22 +445,29 @@ class NeuralNetwork {
         }).sort((a, b) => b.confidence - a.confidence);
       })[0];
 
-      // console.log(predictions);
-      results.output =  outputData;
+      // NOTE: we are doing a funky javascript thing
+      // setting an array as results, then adding 
+      // .tensor as a property of that array object
+      results =  outputData;
       results.tensor = ys;
 
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.data();
       
       const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
+        const prop = item[0];
         const {outputMin, outputMax} = this.data.data;
         const val = (predictions[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
         return {
-          value: val
+          value: val,
+          label: prop
         }
       });
 
-      results.output =  outputData;
+      // NOTE: we are doing a funky javascript thing
+      // setting an array as results, then adding 
+      // .tensor as a property of that array object
+      results = outputData;
       results.tensor = ys;
     }
 
