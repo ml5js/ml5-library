@@ -297,8 +297,17 @@ class NeuralNetwork {
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
 
-    const whileTraining = (typeof whileTrainingCallback === 'function') ?
-      whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+    let whileTraining;
+    // const whileTraining = (typeof whileTrainingCallback === 'function') ?
+    //   whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+
+    if(typeof whileTrainingCallback === 'function'){
+      whileTraining = whileTrainingCallback;
+    } else if(typeof whileTrainingCallback !== 'function' && this.config.debug === true){
+      whileTraining = (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+    } else {
+      whileTraining = () => null;
+    }
 
     let xs;
     let ys;
