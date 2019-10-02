@@ -237,15 +237,6 @@ class NeuralNetwork {
   }
 
   /**
-   * TODO: remove this in favor of 
-   * more specificity of .normalizeData()
-   * See below
-   */
-  normalize() {
-    this.data.normalize();
-  }
-
-  /**
    * normalize the data.raw
    */
   normalizeData() {
@@ -294,6 +285,10 @@ class NeuralNetwork {
    * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
+    // TODO: check if data are normalized, 
+    // if not, then make sure to add tensors 
+    // to this.data.tensor
+
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
 
