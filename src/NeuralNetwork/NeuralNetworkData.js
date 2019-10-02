@@ -13,6 +13,7 @@ class NeuralNetworkData {
       // objects describing input/output data by property name
       inputs: {}, // { name1: {dtype}, name2: {dtype}  }
       outputs: {}, // { name1: {dtype} }
+      isNormalized: false,
     }
 
     this.data = {
@@ -342,7 +343,7 @@ class NeuralNetworkData {
    * normalize the data.raw
    */
   normalize() {
-
+    
     // always make sure to check set the data types
     this.setDTypes();
     // always make sure that the IO units are set
@@ -391,6 +392,8 @@ class NeuralNetworkData {
     this.data.outputMax = outputMax.arraySync();
     this.data.outputMin = outputMin.arraySync();
 
+    // set isNormalized to true if this function is called
+    this.meta.isNormalized = true;
   }
 
   /**
@@ -407,28 +410,37 @@ class NeuralNetworkData {
     let outputMax;
     let outputMin;
 
+    // TODO: this is terrible and can be handled way better!
+    // REFACTOR THIS!!!
     if (this.config.architecture.task === 'regression') {
-      // if the task is a regression, return all the
-      // output stats as an array
-      inputMax = inputTensor.max(0);
-      inputMin = inputTensor.min(0);
-      outputMax = outputTensor.max(0);
-      outputMin = outputTensor.min(0);
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
+      } else {
+        // if the task is a regression, return all the
+        // output stats as an array
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max(0);
+        outputMin = outputTensor.min(0);
+      }
     } else if (this.config.architecture.task === 'classification') {
-      // if the task is a classification, return the single value
-      inputMax = inputTensor.max(0);
-      inputMin = inputTensor.min(0);
-      outputMax = outputTensor.max();
-      outputMin = outputTensor.min();
-    }
-
-    // TODO: refine this custom normalization function option
-    // Experimental!!!!
-    if (this.config.dataOptions.normalizationOptions instanceof Object) {
-      inputMax = tf.tensor1d(this.data.inputMax);
-      inputMin = tf.tensor1d(this.data.inputMin);
-      // outputMax = tf.tensor1d(this.data.outputMax);
-      // outputMin = tf.tensor1d(this.data.outputMin);
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
+      } else {
+        // if the task is a classification, return the single value
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max();
+        outputMin = outputTensor.min();
+      }
     }
 
     // 5. create a normalized tensor
@@ -446,10 +458,85 @@ class NeuralNetworkData {
   }
 
   /**
+   * Assemble the data for training
+   */
+  warmUp(){
+    // always make sure to check set the data types
+    this.setDTypes();
+    // always make sure that the IO units are set
+    this.getIOUnits();
+
+    // do the things...!
+    const {
+      inputTensor,
+      outputTensor
+    } = this.convertRawToTensor();
+
+
+    inputTensor.print()
+    outputTensor.print()
+
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
+
+    // TODO: this is terrible and can be handled way better!
+    // REFACTOR THIS!!!
+    if (this.config.architecture.task === 'regression') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
+      } else {
+        // if the task is a regression, return all the
+        // output stats as an array
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max(0);
+        outputMin = outputTensor.min(0);
+      }
+    } else if (this.config.architecture.task === 'classification') {
+      if(this.config.dataOptions.normalizationOptions instanceof Object){
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
+      } else {
+        // if the task is a classification, return the single value
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max();
+        outputMin = outputTensor.min();
+      }
+    }
+
+
+    this.data.tensor = {
+      inputs: inputTensor,
+      outputs: outputTensor,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin,
+    }
+
+    // set the input/output Min and max values as numbers
+    this.data.inputMin = inputMin.arraySync();
+    this.data.inputMax = inputMax.arraySync();
+    this.data.outputMax = outputMax.arraySync();
+    this.data.outputMin = outputMin.arraySync();
+
+  }
+
+  /**
    * onehot encode values
    */
   convertRawToTensor() {
-    console.log(this.meta)
+    // console.log(this.meta)
 
     // Given the inputs and output types,
     // now create the input and output tensors
@@ -518,6 +605,8 @@ class NeuralNetworkData {
     }
 
   }
+
+
 
 
 } // end of class

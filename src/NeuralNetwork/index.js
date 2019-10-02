@@ -288,6 +288,11 @@ class NeuralNetwork {
     // TODO: check if data are normalized, 
     // if not, then make sure to add tensors 
     // to this.data.tensor
+    // run the data.warmUp before training!
+    if(!this.data.meta.isNormalized){
+      console.log('not normalized')
+      this.data.warmUp();
+    }
 
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
