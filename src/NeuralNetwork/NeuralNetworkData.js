@@ -7,7 +7,7 @@ class NeuralNetworkData {
   constructor(options) {
     this.config = options;
     this.meta = {
-      // number of units - varies depending on input data type 
+      // number of units - varies depending on input data type
       inputUnits: null,
       outputUnits: null,
       // objects describing input/output data by property name
@@ -20,20 +20,23 @@ class NeuralNetworkData {
       tensor: {
         inputs: null, // tensor
         outputs: null, // tensor
-        inputMax:null, // tensor
-        inputMin:null, // tensor
-        outputMax:null, // tensor
-        outputMin:null, // tensor
+        inputMax: null, // tensor
+        inputMin: null, // tensor
+        outputMax: null, // tensor
+        outputMin: null, // tensor
       },
-      inputMax: options.dataOptions.normalizationOptions.inputMax || null, // array or number
-      inputMin: options.dataOptions.normalizationOptions.inputMin || null, // array or number
-      outputMax: options.dataOptions.normalizationOptions.outputMax || null, // array or number
-      outputMin: options.dataOptions.normalizationOptions.outputMin || null, // array or number
+    }
+
+    if (options.dataOptions.normalizationOptions) {
+      this.data.inputMax = options.dataOptions.normalizationOptions.inputMax || null; // array or number
+      this.data.inputMin = options.dataOptions.normalizationOptions.inputMin || null; // array or number
+      this.data.outputMax = options.dataOptions.normalizationOptions.outputMax || null; // array or number
+      this.data.outputMin = options.dataOptions.normalizationOptions.outputMin || null; // array or number
     }
   }
 
   /**
-   * load data 
+   * load data
    */
   async loadData() {
     const {
@@ -51,7 +54,7 @@ class NeuralNetworkData {
   }
 
   /**
-   * load csv 
+   * load csv
    * TODO: pass to loadJSONInternal()
    */
   async loadCSVInternal() {
@@ -66,7 +69,7 @@ class NeuralNetworkData {
 
   /**
    * load json data
-   * @param {*} parsedJson 
+   * @param {*} parsedJson
    */
   async loadJSONInternal(parsedJson) {
     const {
@@ -105,7 +108,7 @@ class NeuralNetworkData {
         xs: {},
         ys: {}
       }
-      // TODO: keep an eye on the order of the 
+      // TODO: keep an eye on the order of the
       // property name order if you use the order
       // later on in the code!
       const props = Object.keys(item);
@@ -149,7 +152,7 @@ class NeuralNetworkData {
 
   /**
    * sets the data types of the data we're using
-   * important for handling oneHot 
+   * important for handling oneHot
    */
   setDTypes() {
     // this.meta.inputs
@@ -173,7 +176,7 @@ class NeuralNetworkData {
 
   /**
    * Get the input and output units
-   * 
+   *
    */
   getIOUnits() {
     let inputUnits = 0;
@@ -190,9 +193,9 @@ class NeuralNetworkData {
         inputUnits += 1;
       } else if (dtype === 'string') {
         const uniqueVals = [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
-        // Store the unqiue values 
+        // Store the unqiue values
         this.meta.inputs[prop].uniqueValues = uniqueVals;
-        const onehotValues = [...new Array(uniqueVals.length).fill(null).map( (item,idx) => idx)];
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map((item, idx) => idx)];
 
         const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
         const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
@@ -218,9 +221,9 @@ class NeuralNetworkData {
         outputUnits += 1;
       } else if (dtype === 'string') {
         const uniqueVals = [...new Set(this.data.raw.map(obj => obj.ys[prop]))]
-        // Store the unqiue values 
+        // Store the unqiue values
         this.meta.outputs[prop].uniqueValues = uniqueVals;
-        const onehotValues = [...new Array(uniqueVals.length).fill(null).map( (item,idx) => idx)];
+        const onehotValues = [...new Array(uniqueVals.length).fill(null).map((item, idx) => idx)];
 
         const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
         const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
@@ -254,7 +257,7 @@ class NeuralNetworkData {
 
   /**
    * checks whether or not a string is a json
-   * @param {*} str 
+   * @param {*} str
    */
   // eslint-disable-next-line class-methods-use-this
   isJsonString(str) {
@@ -269,7 +272,7 @@ class NeuralNetworkData {
 
   /**
    * Creates a csv from a strin
-   * @param {*} csv 
+   * @param {*} csv
    */
   // via: http://techslides.com/convert-csv-to-json-in-javascript
   // eslint-disable-next-line class-methods-use-this
@@ -299,8 +302,8 @@ class NeuralNetworkData {
 
   /**
    * Takes data as an array
-   * @param {*} xArray 
-   * @param {*} yArray 
+   * @param {*} xArray
+   * @param {*} yArray
    */
   addData(xArray, yArray) {
     const inputs = {};
@@ -380,7 +383,7 @@ class NeuralNetworkData {
   }
 
   /**
-   * 
+   *
    */
   normalizeInternal(inputTensor, outputTensor) {
     // inputTensor.print()
@@ -394,7 +397,7 @@ class NeuralNetworkData {
     let outputMin;
 
     if (this.config.architecture.task === 'regression') {
-      // if the task is a regression, return all the 
+      // if the task is a regression, return all the
       // output stats as an array
       inputMax = inputTensor.max(0);
       inputMin = inputTensor.min(0);
@@ -410,7 +413,7 @@ class NeuralNetworkData {
 
     // TODO: refine this custom normalization function option
     // Experimental!!!!
-    if(this.config.dataOptions.normalizationOptions instanceof Object){
+    if (this.config.dataOptions.normalizationOptions instanceof Object) {
       inputMax = tf.tensor1d(this.data.inputMax);
       inputMin = tf.tensor1d(this.data.inputMin);
       // outputMax = tf.tensor1d(this.data.outputMax);
@@ -432,12 +435,12 @@ class NeuralNetworkData {
   }
 
   /**
-   * onehot encode values 
+   * onehot encode values
    */
   convertRawToTensor() {
     console.log(this.meta)
 
-    // Given the inputs and output types, 
+    // Given the inputs and output types,
     // now create the input and output tensors
     // 1. start by creating a matrix
     const inputs = []
@@ -494,7 +497,7 @@ class NeuralNetworkData {
     });
 
     // console.log(inputs, outputs)
-    // 3. convert to tensors 
+    // 3. convert to tensors
     const inputTensor = tf.tensor(inputs, [this.data.raw.length, this.meta.inputUnits]);
     const outputTensor = tf.tensor(outputs, [this.data.raw.length, this.meta.outputUnits]);
 
