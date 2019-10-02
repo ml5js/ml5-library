@@ -442,7 +442,7 @@ class NeuralNetwork {
         return {
           value: val
         }
-      })[0];
+      });
 
       results.output =  outputData;
       results.tensor = ys;
