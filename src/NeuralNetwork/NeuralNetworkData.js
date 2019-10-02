@@ -25,10 +25,10 @@ class NeuralNetworkData {
         outputMax:null, // tensor
         outputMin:null, // tensor
       },
-      inputMax:null, // array or number
-      inputMin:null, // array or number
-      outputMax:null, // array or number
-      outputMin:null, // array or number
+      inputMax: options.dataOptions.normalizationOptions.inputMax || null, // array or number
+      inputMin: options.dataOptions.normalizationOptions.inputMin || null, // array or number
+      outputMax: options.dataOptions.normalizationOptions.outputMax || null, // array or number
+      outputMin: options.dataOptions.normalizationOptions.outputMin || null, // array or number
     }
   }
 
@@ -341,8 +341,8 @@ class NeuralNetworkData {
     } = this.convertRawToTensor();
 
 
-    // inputTensor.print()
-    // inputTensor.print()
+    inputTensor.print()
+    inputTensor.print()
 
     // run normalize on the new tensors
     const {
@@ -406,6 +406,15 @@ class NeuralNetworkData {
       inputMin = inputTensor.min(0);
       outputMax = outputTensor.max();
       outputMin = outputTensor.min();
+    }
+
+    // TODO: refine this custom normalization function option
+    // Experimental!!!!
+    if(this.config.dataOptions.normalizationOptions instanceof Object){
+      inputMax = tf.tensor1d(this.data.inputMax);
+      inputMin = tf.tensor1d(this.data.inputMin);
+      // outputMax = tf.tensor1d(this.data.outputMax);
+      // outputMin = tf.tensor1d(this.data.outputMin);
     }
 
     // 5. create a normalized tensor
