@@ -344,8 +344,8 @@ class NeuralNetworkData {
     } = this.convertRawToTensor();
 
 
-    inputTensor.print()
-    inputTensor.print()
+    // inputTensor.print()
+    // inputTensor.print()
 
     // run normalize on the new tensors
     const {
