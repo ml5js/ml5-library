@@ -237,11 +237,21 @@ class NeuralNetwork {
   }
 
   /**
-   * normalize the data.raw
+   * TODO: remove this in favor of 
+   * more specificity of .normalizeData()
+   * See below
    */
   normalize() {
     this.data.normalize();
   }
+
+  /**
+   * normalize the data.raw
+   */
+  normalizeData() {
+    this.data.normalize();
+  }
+  
 
   /**
    * User-facing neural network training
