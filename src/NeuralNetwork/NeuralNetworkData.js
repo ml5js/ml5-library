@@ -24,7 +24,11 @@ class NeuralNetworkData {
         inputMin:null, // tensor
         outputMax:null, // tensor
         outputMin:null, // tensor
-      }
+      },
+      inputMax:null, // array or number
+      inputMin:null, // array or number
+      outputMax:null, // array or number
+      outputMin:null, // array or number
     }
   }
 
@@ -367,6 +371,12 @@ class NeuralNetworkData {
       outputMax,
       outputMin,
     }
+
+    // set the input/output Min and max values as numbers
+    this.data.inputMin = inputMin.arraySync();
+    this.data.inputMax = inputMax.arraySync();
+    this.data.outputMax = outputMax.arraySync();
+    this.data.outputMin = outputMin.arraySync();
 
   }
 
