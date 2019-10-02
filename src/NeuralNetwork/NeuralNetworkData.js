@@ -25,12 +25,26 @@ class NeuralNetworkData {
         outputMax:null, // tensor
         outputMin:null, // tensor
       },
-      inputMax: options.dataOptions.normalizationOptions.inputMax || null, // array or number
-      inputMin: options.dataOptions.normalizationOptions.inputMin || null, // array or number
-      outputMax: options.dataOptions.normalizationOptions.outputMax || null, // array or number
-      outputMin: options.dataOptions.normalizationOptions.outputMin || null, // array or number
+      inputMax: null, // array or number
+      inputMin: null, // array or number
+      outputMax: null, // array or number
+      outputMin: null, // array or number
     }
+
+    // TODO: temp fix - check normalizationOptions
+    if(options.normalizationOptions !== null && options.normalizationOptions !== undefined){
+      const items = ['inputMax', 'inputMin', 'outputMax', 'outputMin'];
+      items.forEach(prop => {
+        if(options.normalizationOptions[prop] !== null && options.normalizationOptions[prop] !== undefined ){
+          this.data[prop] = options.normalizationOptions[prop]
+        }
+      })
+    }
+
   }
+
+
+  
 
   /**
    * load data 
