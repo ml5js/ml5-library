@@ -9,9 +9,9 @@ Generic NeuralNetwork class
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-// import {
-//   saveBlob
-// } from '../utils/io';
+import {
+  saveBlob
+} from '../utils/io';
 // import { input } from '@tensorflow/tfjs';
 import DEFAULTS from './NeuralNetworkDefaults';
 import NeuralNetworkData from './NeuralNetworkData';
@@ -466,6 +466,76 @@ class NeuralNetwork {
     return results;
     
 
+  }
+
+
+  /**
+   * ----------------------------------------
+   * ----- Exporting / Saving ---------------
+   * ---------------------------------------- 
+   */
+   
+  /**
+   * TODO: export the data from this.data.data.raw
+   */
+  //  async saveData(){
+  //  // save the data out
+  // }
+
+
+  /**
+   * Save the model and weights
+   * @param {*} callback
+   * @param {*} name
+   */
+  async save(callback, name) {
+    this.model.save(tf.io.withSaveHandler(async (data) => {
+      let modelName = 'model';
+      if (name) modelName = name;
+
+      this.weightsManifest = {
+        modelTopology: data.modelTopology,
+        weightsManifest: [{
+          paths: [`./${modelName}.weights.bin`],
+          weights: data.weightSpecs,
+        }]
+      };
+      await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
+      await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
+      if (callback) {
+        callback();
+      }
+    }));
+  }
+
+  /**
+   * Load the model and weights in from a file
+   * @param {*} filesOrPath
+   * @param {*} callback
+   */
+  async load(filesOrPath = null, callback) {
+    if (typeof filesOrPath !== 'string') {
+      let model = null;
+      let weights = null;
+      Array.from(filesOrPath).forEach((file) => {
+        if (file.name.includes('.json')) {
+          model = file;
+          const fr = new FileReader();
+          fr.readAsText(file);
+        } else if (file.name.includes('.bin')) {
+          weights = file;
+        }
+      });
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+    } else {
+      fetch(filesOrPath)
+        .then(r => r.json());
+      this.model = await tf.loadLayersModel(filesOrPath);
+    }
+    if (callback) {
+      callback();
+    }
+    return this.model;
   }
 
 }
