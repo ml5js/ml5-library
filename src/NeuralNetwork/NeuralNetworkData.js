@@ -35,7 +35,7 @@ class NeuralNetworkData {
     if(options.dataOptions.normalizationOptions !== null && options.dataOptions.normalizationOptions !== undefined){
       const items = ['inputMax', 'inputMin', 'outputMax', 'outputMin'];
       items.forEach(prop => {
-        if(options.normalizationOptions[prop] !== null && options.dataOptions.normalizationOptions[prop] !== undefined ){
+        if(options.dataOptions.normalizationOptions[prop] !== null && options.dataOptions.normalizationOptions[prop] !== undefined ){
           this.data[prop] = options.dataOptions.normalizationOptions[prop]
         }
       })
