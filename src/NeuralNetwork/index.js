@@ -31,7 +31,7 @@ class NeuralNetwork {
       architecture: {
         task: options.task || DEFAULTS.task,
         // array of layers, the last is always the output layer
-        layers: [],
+        layers: options.layers || [],
         // array of activations corresponding to the layer number
         activations: [],
         // hiddenUnits
