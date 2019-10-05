@@ -113,12 +113,34 @@ class NeuralNetwork {
       this.ready = this.createModelFromData(callback);
     } else {
 
-      this.data.meta.inputUnits = this.config.dataOptions.inputs;
-      this.data.meta.outputUnits = this.config.dataOptions.outputs;
+      // set the input/output units
+      
+      // if the inputs is a number
+      // then set the inputUnits as the number
+      // and then create an array of input labels
+      if(typeof this.config.dataOptions.inputs === 'number'){
+        this.data.meta.inputUnits = this.config.dataOptions.inputs;
+        this.data.config.dataOptions.inputs = this.data.createNamedIO(this.data.config.dataOptions.inputs, 'input');
+      } else if (Array.isArray(this.config.dataOptions.inputs)){
+        this.data.meta.inputUnits = this.config.dataOptions.inputs.length;
+        this.data.config.dataOptions.inputs = this.config.dataOptions.inputs;
+      } else {
+        console.log('inputs in this format are not supported')
+      }
 
-      // convert the input number to an array of keys e.g. [label1, label2, label3]
-      this.data.config.dataOptions.inputs = this.data.createNamedIO(this.data.config.dataOptions.inputs, 'input');
-      this.data.config.dataOptions.outputs = this.data.createNamedIO(this.data.config.dataOptions.outputs, 'output');
+      // if the outputs is a number
+      // then set the outputUnits as a number
+      // amd then create an array of output labels
+      if(typeof this.config.dataOptions.outputs === 'number'){
+        this.data.meta.outputUnits = this.config.dataOptions.outputs;        
+        this.data.config.dataOptions.outputs = this.data.createNamedIO(this.data.config.dataOptions.outputs, 'output');
+      } else if (Array.isArray(this.config.dataOptions.outputs)){
+        this.data.meta.outputUnits = this.config.dataOptions.outputs.length;
+        this.data.config.dataOptions.outputs = this.config.dataOptions.outputs;
+      } else {
+        console.log('outputs in this format are not supported')
+      }
+
 
       this.model = this.createModel();
       this.ready = true;

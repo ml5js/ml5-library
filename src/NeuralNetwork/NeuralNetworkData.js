@@ -317,21 +317,37 @@ class NeuralNetworkData {
    * @param {*} xArray
    * @param {*} yArray
    */
-  addData(xArray, yArray) {
-    const inputs = {};
-    const outputs = {};
+  addData(xInputs, yInputs) {
+    let inputs = {};
+    let outputs = {};
 
-    xArray.forEach((item, idx) => {
-      // TODO: get the label from the inputs?
-      const label = `input${idx}`;
-      inputs[label] = item;
-    });
 
-    yArray.forEach((item, idx) => {
-      // TODO: get the label from the outputs?
-      const label = `output${idx}`;
-      outputs[label] = item;
-    });
+
+    if(Array.isArray(xInputs)){
+      xInputs.forEach((item, idx) => {
+        // TODO: get the label from the inputs?
+        // const label = `input${idx}`;
+        const label = this.config.dataOptions.inputs[idx];
+        inputs[label] = item;
+      });
+    } else if (typeof xInputs === 'object') {
+      inputs = xInputs;
+    } else {
+      console.log('input provided is not supported or does not match your output label specifications');
+    }
+    
+    if(Array.isArray(yInputs)){
+      yInputs.forEach((item, idx) => {
+        // TODO: get the label from the outputs?
+        // const label = `output${idx}`;
+        const label = this.config.dataOptions.outputs[idx];
+        outputs[label] = item;
+      });
+    } else if (typeof yInputs === 'object') {
+      outputs = yInputs;
+    } else {
+      console.log('input provided is not supported or does not match your output label specifications');
+    }
 
     this.data.raw.push({
       xs: inputs,
@@ -473,8 +489,8 @@ class NeuralNetworkData {
     } = this.convertRawToTensor();
 
 
-    inputTensor.print()
-    outputTensor.print()
+    // inputTensor.print()
+    // outputTensor.print()
 
     let inputMax;
     let inputMin;
