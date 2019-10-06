@@ -48,7 +48,7 @@ class NeuralNetwork {
         modelLoss: options.modelLoss || DEFAULTS.modelLoss,
         modelOptimizer: options.modelOptimizer || DEFAULTS.modelOptimizer,
       },
-      // data 
+      // data
       dataOptions: {
         dataUrl: options.dataUrl || null,
         inputs: options.inputs || DEFAULTS.inputs,
@@ -60,7 +60,7 @@ class NeuralNetwork {
     }
 
 
-    // TODO: maybe we create a set of configs for 
+    // TODO: maybe we create a set of configs for
     // regression vs. classification
     // set the default activations:
     if (this.config.architecture.task === 'regression') {
@@ -101,7 +101,7 @@ class NeuralNetwork {
   /**
    * ----------------------------------------
    * --- model creation / initialization ----
-   * ---------------------------------------- 
+   * ----------------------------------------
    */
 
   /**
@@ -132,12 +132,12 @@ class NeuralNetwork {
 
     switch (this.config.architecture.task) {
       case 'regression':
-        // if the layers are not defined default to a 
+        // if the layers are not defined default to a
         // neuralnet with 2 layers
         this.defineModelLayers();
         return this.createModelInternal();
       case 'classification':
-        // if the layers are not defined default to a 
+        // if the layers are not defined default to a
         // neuralnet with 2 layers
         this.defineModelLayers();
         return this.createModelInternal();
@@ -202,7 +202,7 @@ class NeuralNetwork {
 
   /**
    * create model from data
-   * @param {*} callback 
+   * @param {*} callback
    */
   createModelFromData(callback) {
     return callCallback(this.createModelFromDataInternal(), callback)
@@ -225,12 +225,12 @@ class NeuralNetwork {
   /**
    * ----------------------------------------
    * ----- adding data / training -----------
-   * ---------------------------------------- 
+   * ----------------------------------------
    */
   /**
    * Adds an endpoint to call data.addData()
-   * @param {*} xs 
-   * @param {*} ys 
+   * @param {*} xs
+   * @param {*} ys
    */
   addData(xs, ys) {
     this.data.addData(xs, ys);
@@ -242,7 +242,7 @@ class NeuralNetwork {
   normalizeData() {
     this.data.normalize();
   }
-  
+
 
   /**
    * User-facing neural network training
@@ -285,12 +285,12 @@ class NeuralNetwork {
    * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
-    // TODO: check if data are normalized, 
-    // if not, then make sure to add tensors 
+    // TODO: check if data are normalized,
+    // if not, then make sure to add tensors
     // to this.data.tensor
     // run the data.warmUp before training!
-    if(!this.data.meta.isNormalized){
-      console.log('not normalized')
+    if (!this.data.meta.isNormalized) {
+      // console.log('not normalized')
       this.data.warmUp();
     }
 
@@ -301,10 +301,10 @@ class NeuralNetwork {
     // const whileTraining = (typeof whileTrainingCallback === 'function') ?
     //   whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
 
-    if(typeof whileTrainingCallback === 'function'){
+    if (typeof whileTrainingCallback === 'function') {
       whileTraining = whileTrainingCallback;
-    } else if(typeof whileTrainingCallback !== 'function' && this.config.debug === true){
-      whileTraining = (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+      // } else if (typeof whileTrainingCallback !== 'function' && this.config.debug === true) {
+      //   whileTraining = (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
     } else {
       whileTraining = () => null;
     }
@@ -355,15 +355,15 @@ class NeuralNetwork {
   /**
    * ----------------------------------------
    * ----- prediction / classification-------
-   * ---------------------------------------- 
+   * ----------------------------------------
    */
-   /**
-   * Classify()
-   * Runs the classification if the neural network is doing a
-   * classification task
-   * @param {*} input
-   * @param {*} callback
-   */
+  /**
+  * Classify()
+  * Runs the classification if the neural network is doing a
+  * classification task
+  * @param {*} input
+  * @param {*} callback
+  */
   classify(input, callback) {
     return callCallback(this.predictInternal(input), callback);
   }
@@ -381,7 +381,7 @@ class NeuralNetwork {
    * Make a prediction based on the given input
    * @param {*} sample
    */
-  async predictInternal(sample){
+  async predictInternal(sample) {
     // 1. Handle the input sample
     // either an array of values in order of the inputs
     // OR an JSON object of key/values
@@ -398,23 +398,27 @@ class NeuralNetwork {
       });
     }
 
+
     // 2. onehot encode the sample if necessary
     let encodedInput = [];
-    
-    Object.entries(this.data.meta.inputs).forEach( (arr) => {
+
+    Object.entries(this.data.meta.inputs).forEach((arr) => {
       const prop = arr[0];
-      const {dtype} = arr[1];
+      const { dtype } = arr[1];
 
       // to ensure that we get the value in the right order
       const valIndex = this.data.config.dataOptions.inputs.indexOf(prop);
       const val = inputData[valIndex];
 
-      if(dtype === 'number'){
-        const {inputMin, inputMax} = this.data.data;
-        const normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
+      if (dtype === 'number') {
+        const { inputMin, inputMax } = this.data.data;
+        let normVal = val;
+        if (inputMin && inputMax) {
+          normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
+        }
         encodedInput.push(normVal);
-      } else if (dtype === 'string'){
-        const {legend} = arr[1];
+      } else if (dtype === 'string') {
+        const { legend } = arr[1];
         const onehotVal = legend[val]
         encodedInput = [...encodedInput, ...onehotVal]
       }
@@ -423,20 +427,20 @@ class NeuralNetwork {
 
     const xs = tf.tensor(encodedInput, [1, this.data.meta.inputUnits]);
     const ys = this.model.predict(xs);
-    
+
     let results = [];
 
-    if(this.config.architecture.task === 'classification'){
+    if (this.config.architecture.task === 'classification') {
       const predictions = await ys.data();
       // TODO: Check to see if this fails with numeric values
       // since no legend exists
-      const outputData = Object.entries(this.data.meta.outputs).map( (arr) => {
-        const {legend} = arr[1];
+      const outputData = Object.entries(this.data.meta.outputs).map((arr) => {
+        const { legend } = arr[1];
         // TODO: the order of the legend items matters
         // Likey this means instead of `.push()`,
         // we should do .unshift()
         // alternatively we can use 'reverse()' here.
-        return Object.entries(legend).map( (legendArr, idx) => {
+        return Object.entries(legend).map((legendArr, idx) => {
           const prop = legendArr[0];
           return {
             label: prop,
@@ -446,17 +450,17 @@ class NeuralNetwork {
       })[0];
 
       // NOTE: we are doing a funky javascript thing
-      // setting an array as results, then adding 
+      // setting an array as results, then adding
       // .tensor as a property of that array object
-      results =  outputData;
+      results = outputData;
       results.tensor = ys;
 
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.data();
-      
+
       const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
         const prop = item[0];
-        const {outputMin, outputMax} = this.data.data;
+        const { outputMin, outputMax } = this.data.data;
         const val = (predictions[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
         return {
           value: val,
@@ -465,15 +469,15 @@ class NeuralNetwork {
       });
 
       // NOTE: we are doing a funky javascript thing
-      // setting an array as results, then adding 
+      // setting an array as results, then adding
       // .tensor as a property of that array object
       results = outputData;
       results.tensor = ys;
     }
 
-    xs.dispose();    
+    xs.dispose();
     return results;
-    
+
 
   }
 
@@ -481,9 +485,9 @@ class NeuralNetwork {
   /**
    * ----------------------------------------
    * ----- Exporting / Saving ---------------
-   * ---------------------------------------- 
+   * ----------------------------------------
    */
-   
+
   /**
    * TODO: export the data from this.data.data.raw
    */
