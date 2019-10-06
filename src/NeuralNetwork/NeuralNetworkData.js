@@ -476,59 +476,59 @@ class NeuralNetworkData {
     // inputTensor.print()
     // outputTensor.print()
 
-    // let inputMax;
-    // let inputMin;
-    // let outputMax;
-    // let outputMin;
+    let inputMax;
+    let inputMin;
+    let outputMax;
+    let outputMin;
 
     // TODO: this is terrible and can be handled way better!
     // REFACTOR THIS!!!
-    // if (this.config.architecture.task === 'regression') {
-    //   if (this.config.dataOptions.normalizationOptions instanceof Object) {
-    //     // if there is an object with normalizationOptions
-    //     inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
-    //     inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
-    //     outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
-    //     outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
-    //   } else {
-    //     // if the task is a regression, return all the
-    //     // output stats as an array
-    //     inputMax = inputTensor.max(0);
-    //     inputMin = inputTensor.min(0);
-    //     outputMax = outputTensor.max(0);
-    //     outputMin = outputTensor.min(0);
-    //   }
-    // } else if (this.config.architecture.task === 'classification') {
-    //   if (this.config.dataOptions.normalizationOptions instanceof Object) {
-    //     // if there is an object with normalizationOptions
-    //     inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
-    //     inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
-    //     outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
-    //     outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
-    //   } else {
-    //     // if the task is a classification, return the single value
-    //     inputMax = inputTensor.max(0);
-    //     inputMin = inputTensor.min(0);
-    //     outputMax = outputTensor.max();
-    //     outputMin = outputTensor.min();
-    //   }
-    // }
+    if (this.config.architecture.task === 'regression') {
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max(0);
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min(0);
+      } else {
+        // if the task is a regression, return all the
+        // output stats as an array
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max(0);
+        outputMin = outputTensor.min(0);
+      }
+    } else if (this.config.architecture.task === 'classification') {
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
+        // if there is an object with normalizationOptions
+        inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
+        inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
+        outputMax = this.data.outputMax !== null ? tf.tensor1d(this.data.outputMax) : outputTensor.max();
+        outputMin = this.data.outputMin !== null ? tf.tensor1d(this.data.outputMin) : outputTensor.min();
+      } else {
+        // if the task is a classification, return the single value
+        inputMax = inputTensor.max(0);
+        inputMin = inputTensor.min(0);
+        outputMax = outputTensor.max();
+        outputMin = outputTensor.min();
+      }
+    }
 
 
     this.data.tensor = {
       inputs: inputTensor,
       outputs: outputTensor,
-      // inputMax,
-      // inputMin,
-      // outputMax,
-      // outputMin,
+      inputMax,
+      inputMin,
+      outputMax,
+      outputMin,
     }
 
     // set the input/output Min and max values as numbers
-    // this.data.inputMin = inputMin.arraySync();
-    // this.data.inputMax = inputMax.arraySync();
-    // this.data.outputMax = outputMax.arraySync();
-    // this.data.outputMin = outputMin.arraySync();
+    this.data.inputMin = inputMin.arraySync();
+    this.data.inputMax = inputMax.arraySync();
+    this.data.outputMax = outputMax.arraySync();
+    this.data.outputMin = outputMin.arraySync();
 
   }
 

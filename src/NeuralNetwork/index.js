@@ -411,10 +411,16 @@ class NeuralNetwork {
       const val = inputData[valIndex];
 
       if (dtype === 'number') {
-        const { inputMin, inputMax } = this.data.data;
-        let normVal = val;
-        if (inputMin && inputMax) {
-          normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
+        let normVal;
+        // if the data has not been normalized, just send in the raw sample
+        if(!this.data.meta.isNormalized){
+          normVal = val;
+        } else {
+          const { inputMin, inputMax } = this.data.data;
+          normVal = val;
+          if (inputMin && inputMax) {
+            normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
+          }
         }
         encodedInput.push(normVal);
       } else if (dtype === 'string') {
@@ -458,15 +464,23 @@ class NeuralNetwork {
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.data();
 
-      const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
+
+       const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
         const prop = item[0];
         const { outputMin, outputMax } = this.data.data;
-        const val = (predictions[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
+        let val;
+        if(!this.data.meta.isNormalized){
+          val = predictions[idx]
+        } else {
+          val = (predictions[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
+        }
+
         return {
           value: val,
           label: prop
         }
       });
+
 
       // NOTE: we are doing a funky javascript thing
       // setting an array as results, then adding
