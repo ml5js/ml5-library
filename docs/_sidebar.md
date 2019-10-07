@@ -1,5 +1,3 @@
-<!-- docs/_sidebar.md -->
-
 * 🌈 **Welcome**
   * [Getting Started](/)
   * [FAQ](/faq.md)
