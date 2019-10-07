@@ -1,3 +1,15 @@
+* [ImageClassifier](./reference/image-classifier.md)
+* [PoseNet](./reference/posenet.md)
+* [BodyPix](./reference/bodypix.md)
+* [UNET](./reference/unet.md)
+* [StyleTransfer](./reference/style-transfer.md)
+* [pix2pix](./reference/pix2pix.md)
+* [CVAE](./reference/cvae.md)
+* [DCGAN](./reference/dcgan.md)
+* [SketchRNN](./reference/sketchrnn.md)
+* [YOLO](./reference/yolo.md)
+
+
 * 🌈 **Welcome**
   * [Getting Started](/)
   * [FAQ](/faq.md)
