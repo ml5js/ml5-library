@@ -104,14 +104,14 @@ detector.getPitch(?callback)
 ## Examples
 
 **plain javascript**
-* [PitchDetection]()
-* [PitchDetection_Game]()
-
+* [PitchDetection](https://github.com/ml5js/ml5-examples/tree/release/javascript/PitchDetection/PitchDetection)
+* [PitchDetection_Game](https://github.com/ml5js/ml5-examples/tree/release/javascript/PitchDetection/PitchDetection_Game)
+* [PitchDetection_Piano](https://github.com/ml5js/ml5-examples/tree/release/javascript/PitchDetection/PitchDetection_Piano)
 
 **p5.js**
-* [PitchDetection]()
-* [PitchDetection_Game]()
-* [PitchDetection_Piano]()
+* [PitchDetection](https://github.com/ml5js/ml5-examples/tree/release/p5js/PitchDetection/PitchDetection)
+* [PitchDetection_Game](https://github.com/ml5js/ml5-examples/tree/release/p5js/PitchDetection/PitchDetection_Game)
+* [PitchDetection_Piano](https://github.com/ml5js/ml5-examples/tree/release/p5js/PitchDetection/PitchDetection_Piano)
 
 **p5 web editor**
 * [PitchDetection]()

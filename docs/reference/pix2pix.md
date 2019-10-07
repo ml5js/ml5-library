@@ -81,13 +81,13 @@ styleTransfer.transfer(canvas, ?callback)
 ## Examples
 
 **plain javascript**
-* [Pix2Pix_callback]()
-* [Pix2Pix_promise]()
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-examples/tree/release/javascript/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-examples/tree/release/javascript/Pix2Pix/Pix2Pix_promise)
 
 
 **p5.js**
-* [Pix2Pix_callback]()
-* [Pix2Pix_promise]()
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-examples/tree/release/p5js/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-examples/tree/release/p5js/Pix2Pix/Pix2Pix_promise)
 
 **p5 web editor**
 * [Pix2Pix_callback]()

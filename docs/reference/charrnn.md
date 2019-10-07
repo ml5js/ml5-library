@@ -150,19 +150,18 @@ charrnn.reset()
 ***
 
 
-
 ## Examples
 
 **plain javascript**
-* [CharRNN_Interactive]()
-* [CharRNN_Text]()
-* [CharRNN_Text_Stateful]()
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/release/javascript/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/release/javascript/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/release/javascript/CharRNN/CharRNN_Text_Stateful)
 
 
 **p5.js**
-* [CharRNN_Interactive]()
-* [CharRNN_Text]()
-* [CharRNN_Text_Stateful]()
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/release/p5js/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/release/p5js/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/release/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
 * [Example 1]()

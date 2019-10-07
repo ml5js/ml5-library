@@ -83,18 +83,16 @@ soundclassifier.classify(callback);
 ***
 
 
-
-
 ## Examples
 
 **plain javascript**
-* [SoundClassification_speechcommand]()
-* [SoundClassification_speechcommand_load]()
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/release/javascript/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/release/javascript/SoundClassification/SoundClassification_speechcommand_load)
 
 
 **p5.js**
-* [SoundClassification_speechcommand]()
-* [SoundClassification_speechcommand_load]()
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/release/p5js/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/release/p5js/SoundClassification/SoundClassification_speechcommand_load)
 
 **p5 web editor**
 * [SoundClassification_speechcommand]()
