@@ -5,8 +5,8 @@
   * [Introduction to ml5.js](/tutorials/hello-ml5.md)
   * [Running a local web server](/tutorials/local-web-server)
   * [Promises and Callbacks in ml5](/tutorials/promises-and-callbacks.md)
-* 🚀 **Reference**
-  * [**Image**](/)
+* [🚀 **Reference**](/reference/index.md)
+  * [**Image**]()
     * [ImageClassifier](/reference/image-classifier.md)
     * [PoseNet](/reference/posenet.md)
     * [BodyPix](/reference/bodypix.md)
