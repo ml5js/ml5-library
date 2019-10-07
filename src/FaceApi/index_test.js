@@ -57,7 +57,6 @@ describe('faceApi', () => {
             await faceapi.detectSingle(img)
                 .then(results => {
                     expect(results.landmarks).toEqual(jasmine.any(Object));
-
                 })
         });
     });

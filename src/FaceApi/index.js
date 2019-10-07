@@ -255,15 +255,15 @@ class FaceApiBase {
         let result;
         if (withLandmarks) {
             if (withDescriptors) {
-                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceDescriptors();
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceDescriptor();
             } else {
-                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
+                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
             }
 
         } else if (!withLandmarks) {
-            result = await this.model.detectAllFaces(imgToClassify)
+            result = await this.model.detectSingleFace(imgToClassify)
         } else {
-            result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceDescriptors();
+            result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceDescriptor();
         }
 
         // always resize the results to the input image size
