@@ -33,10 +33,10 @@ class NeuralNetworkData {
     }
 
     // TODO: temp fix - check normalizationOptions
-    if(options.dataOptions.normalizationOptions !== null && options.dataOptions.normalizationOptions !== undefined){
+    if (options.dataOptions.normalizationOptions !== null && options.dataOptions.normalizationOptions !== undefined) {
       const items = ['inputMax', 'inputMin', 'outputMax', 'outputMin'];
       items.forEach(prop => {
-        if(options.dataOptions.normalizationOptions[prop] !== null && options.dataOptions.normalizationOptions[prop] !== undefined ){
+        if (options.dataOptions.normalizationOptions[prop] !== null && options.dataOptions.normalizationOptions[prop] !== undefined) {
           this.data[prop] = options.dataOptions.normalizationOptions[prop]
         }
       })
@@ -45,7 +45,7 @@ class NeuralNetworkData {
   }
 
 
-  
+
 
   /**
    * load data
@@ -343,7 +343,7 @@ class NeuralNetworkData {
    * normalize the data.raw
    */
   normalize() {
-    
+
     // always make sure to check set the data types
     this.setDTypes();
     // always make sure that the IO units are set
@@ -413,7 +413,7 @@ class NeuralNetworkData {
     // TODO: this is terrible and can be handled way better!
     // REFACTOR THIS!!!
     if (this.config.architecture.task === 'regression') {
-      if(this.config.dataOptions.normalizationOptions instanceof Object){
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
         // if there is an object with normalizationOptions
         inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
         inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
@@ -428,7 +428,7 @@ class NeuralNetworkData {
         outputMin = outputTensor.min(0);
       }
     } else if (this.config.architecture.task === 'classification') {
-      if(this.config.dataOptions.normalizationOptions instanceof Object){
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
         // if there is an object with normalizationOptions
         inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
         inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
@@ -460,7 +460,7 @@ class NeuralNetworkData {
   /**
    * Assemble the data for training
    */
-  warmUp(){
+  warmUp() {
     // always make sure to check set the data types
     this.setDTypes();
     // always make sure that the IO units are set
@@ -473,8 +473,8 @@ class NeuralNetworkData {
     } = this.convertRawToTensor();
 
 
-    inputTensor.print()
-    outputTensor.print()
+    // inputTensor.print()
+    // outputTensor.print()
 
     let inputMax;
     let inputMin;
@@ -484,7 +484,7 @@ class NeuralNetworkData {
     // TODO: this is terrible and can be handled way better!
     // REFACTOR THIS!!!
     if (this.config.architecture.task === 'regression') {
-      if(this.config.dataOptions.normalizationOptions instanceof Object){
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
         // if there is an object with normalizationOptions
         inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
         inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
@@ -499,7 +499,7 @@ class NeuralNetworkData {
         outputMin = outputTensor.min(0);
       }
     } else if (this.config.architecture.task === 'classification') {
-      if(this.config.dataOptions.normalizationOptions instanceof Object){
+      if (this.config.dataOptions.normalizationOptions instanceof Object) {
         // if there is an object with normalizationOptions
         inputMax = this.data.inputMax !== null ? tf.tensor1d(this.data.inputMax) : inputTensor.max(0);
         inputMin = this.data.inputMin !== null ? tf.tensor1d(this.data.inputMin) : inputTensor.min(0);
