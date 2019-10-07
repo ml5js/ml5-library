@@ -17,7 +17,7 @@
     * [DCGAN](/reference/dcgan.md)
     * [SketchRNN](/reference/sketchrnn.md)
     * [YOLO](/reference/yolo.md)
-  * [**Sound**](/sound)
+  * [**Sound**]()
     * [SpeechClassification](/reference/speech-classifier.md)
     * [PitchDetection](/reference/pitch-detection.md)
   * [**Text**]()
