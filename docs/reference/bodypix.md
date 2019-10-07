@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="BodyPix Header Image of Harriet Tubman" src="/../images/reference__header-bodypix.png">
+    <img style="display:block; max-height:20rem" alt="BodyPix Header Image of Harriet Tubman" src="_media/reference__header-bodypix.png">
 </center>
 
 

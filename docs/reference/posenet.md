@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="pose detection" src="/images/reference__header-posenet.jpg">
+    <img style="display:block; max-height:20rem" alt="pose detection" src="_media/reference__header-posenet.jpg">
     <p>image via: https://pdm.com.co/tag/posenet/</p>
 </center>
 
