@@ -1,5 +1,7 @@
 # NeuralNetwork
 
+**currently in development - not currently in ml5 release**
+
 
 <center>
     <img style="display:block; max-height:20rem" alt="neural network placeholder" src="https://via.placeholder.com/150">
