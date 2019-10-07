@@ -7,7 +7,7 @@
 /* eslint no-await-in-loop: "off" */
 
 /*
- * FaceApi: real-time face recognition, expressions, and landmark detection
+ * FaceApi: real-time face recognition, and landmark detection
  * Ported and integrated from all the hard work by: https://github.com/justadudewhohacks/face-api.js?files=1
  */
 
