@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="generated map images" src="/images/reference__header-dcgan.png">
+    <img style="display:block; max-height:20rem" alt="generated map images" src="_media/reference__header-dcgan.png">
 </center>
 
 
