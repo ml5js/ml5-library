@@ -156,4 +156,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/ImageClassifier](https://github.com/ml5js/ml5-library/tree/release/src/ImageClassifier)
+* [/src/ImageClassifier](https://github.com/ml5js/ml5-library/tree/development/src/ImageClassifier)

@@ -80,10 +80,10 @@ sentiment.predict(text)
 ## Examples
 
 **plain javascript**
-* [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/release/javascript/Sentiment/Sentiment_Interactive)
+* [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Sentiment/Sentiment_Interactive)
 
 **p5.js**
-* [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/release/p5js/Sentiment/Sentiment_Interactive)
+* [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Sentiment/Sentiment_Interactive)
 
 **p5 web editor**
 * [Sentiment_Interactive]()
@@ -109,5 +109,5 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-[/src/Sentiment/](https://github.com/ml5js/ml5-library/tree/release/src/Sentiment)
+[/src/Sentiment/](https://github.com/ml5js/ml5-library/tree/development/src/Sentiment)
 
