@@ -24,19 +24,19 @@
       name: 'ml5',
       repo: 'https://github.com/ml5js/ml5-library',
       loadSidebar: '_sidebar.md',
-      alias:{
-        '/.*/sidebar.md': '/./sidebar.md'
-      },
+      // alias:{
+      //   '/.*/sidebar.md': '/./sidebar.md'
+      // },
       subMaxLevel: 2,
       relativePath:false,
       maxLevel:2,
       mergeNavbar: true,
       auto2top: false,
-      // plugins: [
-      //   EditOnGithubPlugin.create(
-      //     config.editOnGithub.docBase, null, config.editOnGithub.title
-      //   )
-      // ]
+      plugins: [
+        EditOnGithubPlugin.create(
+          config.editOnGithub.docBase, null, config.editOnGithub.title
+        )
+      ]
     }
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
