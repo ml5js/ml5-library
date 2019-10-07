@@ -1,6 +1,5 @@
-* 🌈 **Welcome**
-  * [Getting Started](/)
-  * [FAQ](/faq.md)
+* [Getting Started](/)
+* [FAQ](/faq.md)
 * 🗺 **Tutorials**
   * [Introduction to ml5.js](/tutorials/hello-ml5.md)
   * [Running a local web server](/tutorials/local-web-server)
