@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="/./images/reference__header-imageClassifier.png">
+    <img style="display:block; max-height:20rem" alt="image classification of bird" src="/../images/reference__header-imageClassifier.png">
 </center>
 
 
