@@ -302,12 +302,9 @@ class NeuralNetwork {
    * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
-    // TODO: check if data are normalized,
-    // if not, then make sure to add tensors
-    // to this.data.tensor
-    // run the data.warmUp before training!
+    
+    // check if data are normalized, run the data.warmUp before training
     if (!this.data.meta.isNormalized) {
-      // console.log('not normalized')
       this.data.warmUp();
     }
 
@@ -318,13 +315,8 @@ class NeuralNetwork {
     const epochs = options.epochs || this.config.epochs;
 
     let whileTraining;
-    // const whileTraining = (typeof whileTrainingCallback === 'function') ?
-    //   whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
-
     if (typeof whileTrainingCallback === 'function') {
       whileTraining = whileTrainingCallback;
-      // } else if (typeof whileTrainingCallback !== 'function' && this.config.debug === true) {
-      //   whileTraining = (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
     } else {
       whileTraining = () => null;
     }
