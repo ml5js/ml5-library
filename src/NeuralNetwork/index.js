@@ -235,8 +235,6 @@ class NeuralNetwork {
     // calculate the total number of inputs
     // and outputs
     this.data.getIOUnits();
-    // create the model
-    this.model = this.createModel();
   }
 
   /**
