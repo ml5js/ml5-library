@@ -507,7 +507,7 @@ class NeuralNetwork {
     const xs = tf.tensor(encodedInput, [encodedInput.length, this.data.meta.inputUnits]);
     const ys = this.model.predict(xs);
 
-    ys.print();
+    // ys.print();
 
     // Step 4: Convert the outputs back to the recognizable format
     let results = [];
