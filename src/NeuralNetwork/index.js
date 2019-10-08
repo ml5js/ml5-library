@@ -113,11 +113,11 @@ class NeuralNetwork {
       // --- set the input/output units ---
       const inputIOUnits = this.initializeIOUnits(this.config.dataOptions.inputs, 'inputs');
       this.data.meta.inputUnits = inputIOUnits.units;
-      this.data.config.dataOptions.inputs =  inputIOUnits.labels;
+      this.data.config.dataOptions.inputs = inputIOUnits.labels;
 
       const outputIOUnits = this.initializeIOUnits(this.config.dataOptions.outputs, 'outputs');
       this.data.meta.outputUnits = outputIOUnits.units;
-      this.data.config.dataOptions.outputs =  outputIOUnits.labels;
+      this.data.config.dataOptions.outputs = outputIOUnits.labels;
 
       this.ready = true;
     }
@@ -131,28 +131,31 @@ class NeuralNetwork {
    * @param {*} input 
    * @param {*} ioType 
    */
-  initializeIOUnits(input, ioType){
+  initializeIOUnits(input, ioType) {
     let units;
     let labels;
     let ioLabel;
 
-    if(ioType === 'outputs'){
+    if (ioType === 'outputs') {
       ioLabel = 'output'
     } else {
       ioLabel = 'input'
     }
 
-    if(typeof input === 'number'){
-      units = input;        
+    if (typeof input === 'number') {
+      units = input;
       labels = this.data.createNamedIO(input, ioLabel);
-    } else if (Array.isArray(input)){
+    } else if (Array.isArray(input)) {
       units = input.length;
       labels = input;
     } else {
       console.log(`${ioType} in this format are not supported`)
     }
 
-    return {units, labels};
+    return {
+      units,
+      labels
+    };
 
   }
 
@@ -317,7 +320,7 @@ class NeuralNetwork {
     // get batch size and epochs
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
-    
+
     // placeholder for whiletraining callback;
     let whileTraining;
     // if debug is true, show tf vis during model training
@@ -393,12 +396,12 @@ class NeuralNetwork {
    * ----------------------------------------
    */
   /**
-  * Classify()
-  * Runs the classification if the neural network is doing a
-  * classification task
-  * @param {*} input
-  * @param {*} callback
-  */
+   * Classify()
+   * Runs the classification if the neural network is doing a
+   * classification task
+   * @param {*} input
+   * @param {*} callback
+   */
   classify(input, callback) {
     return callCallback(this.predictInternal(input), callback);
   }
@@ -439,7 +442,9 @@ class NeuralNetwork {
 
     Object.entries(this.data.meta.inputs).forEach((arr) => {
       const prop = arr[0];
-      const { dtype } = arr[1];
+      const {
+        dtype
+      } = arr[1];
 
       // to ensure that we get the value in the right order
       const valIndex = this.data.config.dataOptions.inputs.indexOf(prop);
@@ -448,10 +453,13 @@ class NeuralNetwork {
       if (dtype === 'number') {
         let normVal;
         // if the data has not been normalized, just send in the raw sample
-        if(!this.data.meta.isNormalized){
+        if (!this.data.meta.isNormalized) {
           normVal = val;
         } else {
-          const { inputMin, inputMax } = this.data.data;
+          const {
+            inputMin,
+            inputMax
+          } = this.data.data;
           normVal = val;
           if (inputMin && inputMax) {
             normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
@@ -459,7 +467,9 @@ class NeuralNetwork {
         }
         encodedInput.push(normVal);
       } else if (dtype === 'string') {
-        const { legend } = arr[1];
+        const {
+          legend
+        } = arr[1];
         const onehotVal = legend[val]
         encodedInput = [...encodedInput, ...onehotVal]
       }
@@ -476,7 +486,9 @@ class NeuralNetwork {
       // TODO: Check to see if this fails with numeric values
       // since no legend exists
       const outputData = Object.entries(this.data.meta.outputs).map((arr) => {
-        const { legend } = arr[1];
+        const {
+          legend
+        } = arr[1];
         // TODO: the order of the legend items matters
         // Likey this means instead of `.push()`,
         // we should do .unshift()
@@ -500,11 +512,14 @@ class NeuralNetwork {
       const predictions = await ys.data();
 
 
-       const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
+      const outputData = Object.entries(this.data.meta.outputs).map((item, idx) => {
         const prop = item[0];
-        const { outputMin, outputMax } = this.data.data;
+        const {
+          outputMin,
+          outputMax
+        } = this.data.data;
         let val;
-        if(!this.data.meta.isNormalized){
+        if (!this.data.meta.isNormalized) {
           val = predictions[idx]
         } else {
           val = (predictions[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
@@ -538,14 +553,37 @@ class NeuralNetwork {
    */
 
   /**
-   * TODO: export the data from this.data.data.raw
+   * Calls this.data.saveData() to save data out to a json file
+   * @param {*} callback 
+   * @param {*} name 
    */
-   async saveData(callback, name){
-   // save the data out
-   await this.data.saveData(name);
-   if (callback) {
-    callback();
-   }
+  async saveData(nameOrCallback, callback) {
+    let cb;
+    let outputName;
+    
+    // check the inputs
+    if(typeof nameOrCallback === 'string' && callback){
+      outputName = nameOrCallback
+      cb = callback;
+    } else if( typeof nameOrCallback === 'string' && !callback) {
+      cb = null;
+      outputName = nameOrCallback
+    } else if(typeof nameOrCallback === 'function') {
+      cb = nameOrCallback
+      outputName = undefined;
+    } 
+
+    // save the data out
+    await this.data.saveData(outputName);
+    
+    if (typeof cb === 'function') {
+      cb();
+    }
+  }
+
+
+  async loadData(){
+    console.log(this);
   }
 
 
@@ -566,6 +604,7 @@ class NeuralNetwork {
           weights: data.weightSpecs,
         }]
       };
+
       await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
       await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
       if (callback) {
