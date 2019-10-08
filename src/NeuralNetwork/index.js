@@ -94,8 +94,6 @@ class NeuralNetwork {
     // initialize
     this.init(callback);
 
-    // console.log(typeof callback, typeof tf, typeof callCallback)
-
   }
 
   /**
@@ -112,9 +110,7 @@ class NeuralNetwork {
     if (this.config.dataOptions.dataUrl !== null) {
       this.ready = this.createModelFromData(callback);
     } else {
-
-      // set the input/output units
-      
+      // --- set the input/output units ---
       // if the inputs is a number
       // then set the inputUnits as the number
       // and then create an array of input labels
@@ -141,8 +137,7 @@ class NeuralNetwork {
         console.log('outputs in this format are not supported')
       }
 
-
-      this.model = this.createModel();
+      // this.model = this.createModel();
       this.ready = true;
     }
   }
@@ -315,6 +310,9 @@ class NeuralNetwork {
       // console.log('not normalized')
       this.data.warmUp();
     }
+
+    // Create the model when train is called
+    this.model = this.createModel();
 
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
