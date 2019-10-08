@@ -407,12 +407,176 @@ class NeuralNetwork {
   }
 
   /**
-   * Userfacing prediction function
+   * classifyMultiple()
+   * Runs the classification task on multiple inputs
+   * @param {*} input 
+   * @param {*} callback 
+   */
+  classifyMultiple(input, callback){
+    return callCallback(this.predictMultipleInternal(input), callback);
+  }
+
+  /**
+   * User-facing prediction function
    * @param {*} input
    * @param {*} callback
    */
   predict(input, callback) {
     return callCallback(this.predictInternal(input), callback);
+  }
+
+  /**
+   * User-facing prediction function for multiple inputs
+   * @param {*} input
+   * @param {*} callback
+   */
+  predictMultiple(input, callback){
+    return callCallback(this.predictMultipleInternal(input), callback);
+  }
+
+  /**
+   * Make a prediction based on the given input
+   * @param {*} sample 
+   */
+  async predictMultipleInternal(sampleList){
+    
+    // 1. Handle the input sample
+    const inputData = [];
+    sampleList.forEach(sample => {
+      let inputRow = [];
+      if (sample instanceof Array) {
+        inputRow = sample;
+      } else if (sample instanceof Object) {
+        // TODO: make sure that the input order is preserved!
+        const headers = this.data.config.dataOptions.inputs;
+        inputRow = headers.map(prop => {
+          return sample[prop]
+        });
+      }
+      inputData.push(inputRow);
+    });
+
+
+    // 2. onehot encode the sample if necessary
+    const encodedInput = [];
+    
+    sampleList.forEach( item => {
+      let encodedInputRow = [];
+      Object.entries(this.data.meta.inputs).forEach((arr) => {
+        const prop = arr[0];
+        const {
+          dtype
+        } = arr[1];
+  
+        // to ensure that we get the value in the right order
+        const valIndex = this.data.config.dataOptions.inputs.indexOf(prop);
+        const val = item[valIndex];
+  
+        if (dtype === 'number') {
+          let normVal;
+          // if the data has not been normalized, just send in the raw sample
+          if (!this.data.meta.isNormalized) {
+            normVal = val;
+          } else {
+            const {
+              inputMin,
+              inputMax
+            } = this.data.data;
+            normVal = val;
+            if (inputMin && inputMax) {
+              normVal = (val - inputMin[valIndex]) / (inputMax[valIndex] - inputMin[valIndex]);
+            }
+          }
+          encodedInputRow.push(normVal);
+        } else if (dtype === 'string') {
+          const {
+            legend
+          } = arr[1];
+          const onehotVal = legend[val]
+          encodedInputRow = [...encodedInputRow, ...onehotVal]
+        }
+  
+        encodedInput.push(encodedInputRow);
+      });
+
+    });
+    
+    
+
+    // Step 3: make the prediction
+    const xs = tf.tensor(encodedInput, [encodedInput.length, this.data.meta.inputUnits]);
+    const ys = this.model.predict(xs);
+
+    ys.print();
+
+    // Step 4: Convert the outputs back to the recognizable format
+    let results = [];
+    
+    if (this.config.architecture.task === 'classification') {
+      const predictions = await ys.array();
+      // TODO: Check to see if this fails with numeric values
+      // since no legend exists
+      const outputData = predictions.map( prediction => {
+        return Object.entries(this.data.meta.outputs).map((arr) => {
+          const {
+            legend
+          } = arr[1];
+          // TODO: the order of the legend items matters
+          // Likey this means instead of `.push()`,
+          // we should do .unshift()
+          // alternatively we can use 'reverse()' here.
+          return Object.entries(legend).map((legendArr, idx) => {
+            const prop = legendArr[0];
+            return {
+              label: prop,
+              confidence: prediction[idx]
+            }
+          }).sort((a, b) => b.confidence - a.confidence);
+        })[0];
+      }) 
+      // NOTE: we are doing a funky javascript thing
+      // setting an array as results, then adding
+      // .tensor as a property of that array object
+      results = outputData;
+      results.tensor = ys;
+
+    } else if (this.config.architecture.task === 'regression') {
+      const predictions = await ys.array();
+
+      
+
+      const outputData = predictions.map( prediction => {
+       return  Object.entries(this.data.meta.outputs).map((item, idx) => {
+          const prop = item[0];
+          const {
+            outputMin,
+            outputMax
+          } = this.data.data;
+          let val;
+          if (!this.data.meta.isNormalized) {
+            val = prediction[idx]
+          } else {
+            val = (prediction[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
+          }
+  
+          return {
+            value: val,
+            label: prop
+          }
+        });
+      })
+      
+
+      // NOTE: we are doing a funky javascript thing
+      // setting an array as results, then adding
+      // .tensor as a property of that array object
+      results = outputData;
+      results.tensor = ys;
+    }
+
+    xs.dispose();
+    return results;
+
   }
 
   /**
@@ -544,6 +708,8 @@ class NeuralNetwork {
 
 
   }
+
+  
 
 
   /**
