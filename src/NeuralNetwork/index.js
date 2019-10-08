@@ -581,9 +581,41 @@ class NeuralNetwork {
     }
   }
 
+  /**
+   * loadData from fileinput or path
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
+  async loadData(filesOrPath = null, callback){
+    
+    let loadedData;
+    if (typeof filesOrPath !== 'string') {
+        const file = filesOrPath[0];
+        const fr = new FileReader();
+        fr.readAsText(file);
+        if (file.name.includes('.json')) {
+          const temp = await file.text();
+          loadedData = JSON.parse(temp);
+        } else {
+          console.log('data must be a json object containing an array called "data" or "entries')
+        }
+    } else {
+      loadedData = await fetch(filesOrPath);
+      loadedData = await loadedData.json();
+    }
 
-  async loadData(){
-    console.log(this);
+    // check if a data or entries property exists
+    if(loadedData.data){
+      this.data.data.raw = loadedData.data;
+    } else if (loadedData.entries){
+      this.data.data.raw = loadedData.entries;
+    } else {
+      console.log('data must be a json object containing an array called "data" or "entries')
+    }
+
+    if (callback) {
+      callback();
+    }
   }
 
 
