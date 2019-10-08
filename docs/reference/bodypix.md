@@ -228,14 +228,15 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 ## Examples
 
 **plain javascript**
-* [Segmentation on Image]()
-* [Segmentation on Video]()
-* [SegmentationWithParts on Video]()
+* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Image)
+* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam_Parts)
 
 **p5.js**
-* [Segmentation on Image]()
-* [Segmentation on Video]()
-* [SegmentationWithParts on Video]()
+* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Image)
+* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Webcam_Parts)
+* [BodyPix_p5Instance](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_p5Instance)
 
 **p5 web editor**
 * [Example 1]()
