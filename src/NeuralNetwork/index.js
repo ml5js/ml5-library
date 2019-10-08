@@ -94,8 +94,6 @@ class NeuralNetwork {
     // initialize
     this.init(callback);
 
-    // console.log(typeof callback, typeof tf, typeof callCallback)
-
   }
 
   /**
@@ -112,17 +110,50 @@ class NeuralNetwork {
     if (this.config.dataOptions.dataUrl !== null) {
       this.ready = this.createModelFromData(callback);
     } else {
+      // --- set the input/output units ---
+      const inputIOUnits = this.initializeIOUnits(this.config.dataOptions.inputs, 'inputs');
+      this.data.meta.inputUnits = inputIOUnits.units;
+      this.data.config.dataOptions.inputs =  inputIOUnits.labels;
 
-      this.data.meta.inputUnits = this.config.dataOptions.inputs;
-      this.data.meta.outputUnits = this.config.dataOptions.outputs;
+      const outputIOUnits = this.initializeIOUnits(this.config.dataOptions.outputs, 'outputs');
+      this.data.meta.outputUnits = outputIOUnits.units;
+      this.data.config.dataOptions.outputs =  outputIOUnits.labels;
 
-      // convert the input number to an array of keys e.g. [label1, label2, label3]
-      this.data.config.dataOptions.inputs = this.data.createNamedIO(this.data.config.dataOptions.inputs, 'input');
-      this.data.config.dataOptions.outputs = this.data.createNamedIO(this.data.config.dataOptions.outputs, 'output');
-
-      this.model = this.createModel();
       this.ready = true;
     }
+  }
+
+  /**
+   * if the inputs is a number
+   * then set the inputUnits as the number
+   * and then create an array of input labels
+   * if not, then use what is given
+   * @param {*} input 
+   * @param {*} ioType 
+   */
+  initializeIOUnits(input, ioType){
+    let units;
+    let labels;
+    let ioLabel;
+
+    if(ioType === 'outputs'){
+      ioLabel = 'output'
+    } else {
+      ioLabel = 'input'
+    }
+
+    if(typeof input === 'number'){
+      units = input;        
+      labels = this.data.createNamedIO(input, ioLabel);
+    } else if (Array.isArray(input)){
+      units = input.length;
+      labels = input;
+    } else {
+      console.log(`${ioType} in this format are not supported`)
+    }
+
+    return {units, labels};
+
   }
 
   /**
@@ -218,8 +249,6 @@ class NeuralNetwork {
     // calculate the total number of inputs
     // and outputs
     this.data.getIOUnits();
-    // create the model
-    this.model = this.createModel();
   }
 
   /**
@@ -285,37 +314,41 @@ class NeuralNetwork {
    * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
-    // TODO: check if data are normalized,
-    // if not, then make sure to add tensors
-    // to this.data.tensor
-    // run the data.warmUp before training!
-    if (!this.data.meta.isNormalized) {
-      // console.log('not normalized')
-      this.data.warmUp();
-    }
-
+    // get batch size and epochs
     const batchSize = options.batchSize || this.config.batchSize;
     const epochs = options.epochs || this.config.epochs;
-
+    
+    // placeholder for whiletraining callback;
     let whileTraining;
-    // const whileTraining = (typeof whileTrainingCallback === 'function') ?
-    //   whileTrainingCallback : (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
+    // if debug is true, show tf vis during model training
+    // if not, then use whileTraining
+    let modelFitCallbacks;
 
-    if (typeof whileTrainingCallback === 'function') {
-      whileTraining = whileTrainingCallback;
-      // } else if (typeof whileTrainingCallback !== 'function' && this.config.debug === true) {
-      //   whileTraining = (epoch, logs) => console.log(`Epoch: ${epoch} - accuracy: ${logs.loss.toFixed(3)}`);
-    } else {
-      whileTraining = () => null;
-    }
-
-    let xs;
-    let ys;
-
+    // Get the inputs and outputs from the data object
     const {
       inputs,
       outputs
     } = this.data.data.tensor;
+
+    // placeholder for xs and ys data for training
+    let xs;
+    let ys;
+
+    // check if data are normalized, run the data.warmUp before training
+    if (!this.data.meta.isNormalized) {
+      this.data.warmUp();
+    }
+
+    // Create the model when train is called
+    // important that this comes after checking if .isNormalized
+    this.model = this.createModel();
+
+    // check if a whileTrainingCallback was passed
+    if (typeof whileTrainingCallback === 'function') {
+      whileTraining = whileTrainingCallback;
+    } else {
+      whileTraining = () => null;
+    }
 
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {
@@ -326,7 +359,7 @@ class NeuralNetwork {
       ys = outputs;
     }
 
-    let modelFitCallbacks;
+    // check if the debug mode is on to specify model fit callbacks
     if (this.config.debug) {
       modelFitCallbacks = [
         this.vis.trainingVis(),
@@ -340,6 +373,7 @@ class NeuralNetwork {
       }]
     }
 
+    // train the model
     await this.model.fit(xs, ys, {
       shuffle: true,
       batchSize,
@@ -347,6 +381,7 @@ class NeuralNetwork {
       validationSplit: 0.1,
       callbacks: modelFitCallbacks
     });
+    // dispose of the xs and ys
     xs.dispose();
     ys.dispose();
   }
