@@ -302,32 +302,41 @@ class NeuralNetwork {
    * @param {*} options
    */
   async trainInternal(options, whileTrainingCallback) {
+    // get batch size and epochs
+    const batchSize = options.batchSize || this.config.batchSize;
+    const epochs = options.epochs || this.config.epochs;
     
+    // placeholder for whiletraining callback;
+    let whileTraining;
+    // if debug is true, show tf vis during model training
+    // if not, then use whileTraining
+    let modelFitCallbacks;
+
+    // Get the inputs and outputs from the data object
+    const {
+      inputs,
+      outputs
+    } = this.data.data.tensor;
+
+    // placeholder for xs and ys data for training
+    let xs;
+    let ys;
+
     // check if data are normalized, run the data.warmUp before training
     if (!this.data.meta.isNormalized) {
       this.data.warmUp();
     }
 
     // Create the model when train is called
+    // important that this comes after checking if .isNormalized
     this.model = this.createModel();
 
-    const batchSize = options.batchSize || this.config.batchSize;
-    const epochs = options.epochs || this.config.epochs;
-
-    let whileTraining;
+    // check if a whileTrainingCallback was passed
     if (typeof whileTrainingCallback === 'function') {
       whileTraining = whileTrainingCallback;
     } else {
       whileTraining = () => null;
     }
-
-    let xs;
-    let ys;
-
-    const {
-      inputs,
-      outputs
-    } = this.data.data.tensor;
 
     // check if the inputs are tensors, if not, convert!
     if (!(inputs instanceof tf.Tensor)) {
@@ -338,7 +347,7 @@ class NeuralNetwork {
       ys = outputs;
     }
 
-    let modelFitCallbacks;
+    // check if the debug mode is on to specify model fit callbacks
     if (this.config.debug) {
       modelFitCallbacks = [
         this.vis.trainingVis(),
@@ -352,6 +361,7 @@ class NeuralNetwork {
       }]
     }
 
+    // train the model
     await this.model.fit(xs, ys, {
       shuffle: true,
       batchSize,
@@ -359,6 +369,7 @@ class NeuralNetwork {
       validationSplit: 0.1,
       callbacks: modelFitCallbacks
     });
+    // dispose of the xs and ys
     xs.dispose();
     ys.dispose();
   }
