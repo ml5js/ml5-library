@@ -1,4 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
+import {
+  saveBlob
+} from '../utils/io';
 // import * as tfvis from '@tensorflow/tfjs-vis';
 // import callCallback from '../utils/callcallback';
 
@@ -594,6 +597,21 @@ class NeuralNetworkData {
   }
 
 
+  async saveData(name){
+    const today = new Date();
+    const date = `${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}`;
+    const time = `${String(today.getHours())}-${String(today.getMinutes())}-${String(today.getSeconds())}`;
+    const datetime = `${date}_${time}`;
+    
+    let dataName = datetime;
+    if (name) dataName = name;
+
+    const output = {
+      data: this.data.raw
+    }
+
+    await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
+  }
 
 
 } // end of class

@@ -540,9 +540,13 @@ class NeuralNetwork {
   /**
    * TODO: export the data from this.data.data.raw
    */
-  //  async saveData(){
-  //  // save the data out
-  // }
+   async saveData(callback, name){
+   // save the data out
+   await this.data.saveData(name);
+   if (callback) {
+    callback();
+   }
+  }
 
 
   /**
