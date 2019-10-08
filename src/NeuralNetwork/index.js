@@ -111,35 +111,49 @@ class NeuralNetwork {
       this.ready = this.createModelFromData(callback);
     } else {
       // --- set the input/output units ---
-      // if the inputs is a number
-      // then set the inputUnits as the number
-      // and then create an array of input labels
-      if(typeof this.config.dataOptions.inputs === 'number'){
-        this.data.meta.inputUnits = this.config.dataOptions.inputs;
-        this.data.config.dataOptions.inputs = this.data.createNamedIO(this.data.config.dataOptions.inputs, 'input');
-      } else if (Array.isArray(this.config.dataOptions.inputs)){
-        this.data.meta.inputUnits = this.config.dataOptions.inputs.length;
-        this.data.config.dataOptions.inputs = this.config.dataOptions.inputs;
-      } else {
-        console.log('inputs in this format are not supported')
-      }
+      const inputIOUnits = this.initializeIOUnits(this.config.dataOptions.inputs, 'inputs');
+      this.data.meta.inputUnits = inputIOUnits.units;
+      this.data.config.dataOptions.inputs =  inputIOUnits.labels;
 
-      // if the outputs is a number
-      // then set the outputUnits as a number
-      // amd then create an array of output labels
-      if(typeof this.config.dataOptions.outputs === 'number'){
-        this.data.meta.outputUnits = this.config.dataOptions.outputs;        
-        this.data.config.dataOptions.outputs = this.data.createNamedIO(this.data.config.dataOptions.outputs, 'output');
-      } else if (Array.isArray(this.config.dataOptions.outputs)){
-        this.data.meta.outputUnits = this.config.dataOptions.outputs.length;
-        this.data.config.dataOptions.outputs = this.config.dataOptions.outputs;
-      } else {
-        console.log('outputs in this format are not supported')
-      }
+      const outputIOUnits = this.initializeIOUnits(this.config.dataOptions.outputs, 'outputs');
+      this.data.meta.outputUnits = outputIOUnits.units;
+      this.data.config.dataOptions.outputs =  outputIOUnits.labels;
 
-      // this.model = this.createModel();
       this.ready = true;
     }
+  }
+
+  /**
+   * if the inputs is a number
+   * then set the inputUnits as the number
+   * and then create an array of input labels
+   * if not, then use what is given
+   * @param {*} input 
+   * @param {*} ioType 
+   */
+  initializeIOUnits(input, ioType){
+    let units;
+    let labels;
+    let ioLabel;
+
+    if(ioType === 'outputs'){
+      ioLabel = 'output'
+    } else {
+      ioLabel = 'input'
+    }
+
+    if(typeof input === 'number'){
+      units = input;        
+      labels = this.data.createNamedIO(input, ioLabel);
+    } else if (Array.isArray(input)){
+      units = input.length;
+      labels = input;
+    } else {
+      console.log(`${ioType} in this format are not supported`)
+    }
+
+    return {units, labels};
+
   }
 
   /**
