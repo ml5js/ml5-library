@@ -218,16 +218,18 @@ featureExtractor.predict(input, ?callback)
 ***
 
 
+
+
 ## Examples
 
 **plain javascript**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
+* [FeatureExtractor_Image_Regression]()
+* [FeatureExtractor_Image_Classification]()
 
 
 **p5.js**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Classification)
+* [FeatureExtractor_Image_Regression]()
+* [FeatureExtractor_Image_Classification]()
 
 **p5 web editor**
 * [FeatureExtractor_Image_Regression]()
@@ -260,5 +262,5 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-[src/FeatureExtractor](https://github.com/ml5js/ml5-library/tree/development/src/FeatureExtractor)
+[src/FeatureExtractor](https://github.com/ml5js/ml5-library/tree/release/src/FeatureExtractor)
 
