@@ -101,12 +101,12 @@ yolo.detect(?callback)
 ## Examples
 
 **plain javascript**
-* [YOLO_single_image]()
-* [YOLO_webcam]()
+* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/javascript/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/YOLO/YOLO_webcam)
 
 **p5.js**
-* [YOLO_single_image]()
-* [YOLO_webcam]()
+* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_webcam)
 
 **p5 web editor**
 * [YOLO_single_image]()
@@ -131,4 +131,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/release/src/YOLO)
+* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/development/src/YOLO)
