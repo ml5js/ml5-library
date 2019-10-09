@@ -860,7 +860,8 @@ class NeuralNetwork {
 
       // TODO: handle this better to account for absolute URLS and to specify handling
       // models with different names
-      const metaPath = `${filesOrPath.split('/').slice(0, -1).join('/')}/model_meta.json`;
+      // const metaPath = `${filesOrPath.split('/').slice(0, -1).join('/')}/model_meta.json`;
+      const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
       let modelMetadata = await fetch(metaPath);
       modelMetadata = await modelMetadata.json();
         
