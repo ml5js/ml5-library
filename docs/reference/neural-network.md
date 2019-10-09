@@ -1,6 +1,6 @@
 # NeuralNetwork
 
-**currently in development - not currently in ml5 release**
+**currently in development - coming soon to the ml5 release**
 
 
 <center>
@@ -61,7 +61,7 @@ const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback)
 
 The options that can be specified are: 
 
-    ```js
+  ```js
     const DEFAULTS = {
       dataUrl: 'data.csv' // can be a url path or relative path
       task: 'regression',
@@ -79,89 +79,344 @@ The options that can be specified are:
       batchSize: 64,
       epochs: 32,
   }
+  ```
+
+* For your reference, a few typical uses are showcased below:
+  * Example 1:
+    ```js
+    const options = {
+      inputs: 1,
+      outputs: 1,
+      type:'regression`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options)
     ```
+  * Example 2: loading data as a csv
+    ```js
+    const options = {
+      dataUrl: 'weather.csv'
+      inputs: ['avg_temperature', 'humidity'],
+      outputs: ['rained'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+    ```
+  * Example 3: loading data as a json
+    ```js
+    /**
+    The weather json looks something like:
+    {"data": [ 
+      {"xs": {"avg_temperature":20, "humidity": 0.2}, "ys": {"rained": "no"}},
+      {"xs": {"avg_temperature":30, "humidity": 0.9}, "ys": {"rained": "yes"}}
+    ] } 
+    **/
+    const options = {
+      dataUrl: 'weather.json'
+      inputs: ['avg_temperature', 'humidity'],
+      outputs: ['rained'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+    ```
+  * Example 4: specifying labels for a blank neural network
+    ```js
+    const options = {
+      inputs: ['x', 'y'],
+      outputs: ['label'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options)
+    ```
+
 
 ### Properties
 
-
-<!-- /////////////////////
-PROPERTY DEFINITION START 
-* Notice that each property definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
 ***
-#### .property1
-> *String*. A description of the property associated with the new model instance.
+#### .config
+> *Object*: a configuration object that organizes the input options for the model and data. A high level structure of the config object is as follows: {debug, {architecture}, {training}, {dataOptions} }
 ***
-<!-- /////////////////////
-PROPERTY DEFINITION END 
-///////////////////////// -->
-
 ***
-#### .property2
-> *Object*. A description of the property associated with the new model instance.
+#### .vis
+> *Object*: allows access to the tf.vis functionality and the `NeuralNetworkVis` object.
 ***
-
 ***
-#### .property3
-> *Object*. A description of the property associated with the new model instance.
+#### .data
+> *Object*: allows access to the `NeuralNetworkData` object.
 ***
-
+***
+#### .ready
+> *Boolean*: set to true if the model is loaded and ready, false if it is not.
+***
+***
+#### .model
+> *Object*: the model. 
+***
 
 ### Methods
 
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-* Notice that each function definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
+
 ***
-#### .makeSparkles()
-> Given a number, will make magicSparkles
+#### .addData()
+> If you are not uploading data using the `dataUrl` property of the options given to the constructor, then you can add data to a "blank" neural network class using the `.addData()` function. 
 
 ```js
-classifier.makeSparkles(?numberOfSparkles, ?callback)
+neuralNetwork.addData(xs, ys)
 ```
 
 📥 **Inputs**
 
-* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
-* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+* **xs**: Required. Array | Object. 
+  * If an array is given, then the inputs must be ordered as specified in the constructor. If no labels are given in the constructor, then the order that your data are added here will set the order of how you will pass data to `.predict()` or `.classify()`.
+  * If an object is given, then feed in key/value pairs.
+* **ys**: Required. Array | Object.
+  * If an array is given, then the inputs must be ordered as specified in the constructor.
+  * If an object is given, then feed in key/value pairs.
 
 📤 **Outputs**
 
-* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+* n/a: adds data to `neuralNetwork.data.data.raw`
 
 ***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
 
-
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-///////////////////////// -->
 ***
-#### .makeDisappear()
-> Given an image, will make objects in the image disappear
+#### .normalizeData()
+> normalizes the data on a scale from 0 to 1. The data being normalized are part of the `NeuralNetworkData` class which can be accessed in: `neuralNetwork.data.data.raw`
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+neuralNetwork.normalizeData()
 ```
 
 📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+
+* n/a
 
 📤 **Outputs**
 
-* **Image**: Returns an image.
+* n/a: normalizes the data in `neuralNetwork.data.data.raw` and adds `inputs` and `output` tensors to `neuralNetwork.data.data.tensor` as well as the `inputMin`, `inputMax`, `outputMin`, and `outputMax` as tensors. The `inputMin`, `inputMax`, `outputMin`, and `outputMax` are also added to `neuralNetwork.data.data` as Numbers. 
 
 ***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
+
+
+***
+#### .train()
+> trains the model with the data loaded during the instantiation of the `NeuralNetwork` or the data added using `neuralNetwork.addData()`
+
+```js
+neuralNetwork.train(?optionsOrCallback, ?optionsOrWhileTraining, ?callback)
+```
+
+📥 **Inputs**
+* **optionsOrCallback**: Optional. 
+  * If an object of options is given, then `optionsOrCallback` will be an object where you can specify the `batchSize` and `epochs`:
+    ```js
+    {batchSize: 24, epochs:32}
+    ```
+  * If a callback function is given here then this will be a callback that will be called when the training is finished.
+    ```js
+    function doneTraining(){
+      console.log('done!');
+    }
+    ```
+  * If a callback function is given here and a second callback function is given, `optionsOrCallback` will be a callback function that is called after each `epoch` of training, and the `optionsOrWhileTraining` callback function will be a callback function that is called when the training has completed:
+    ```js
+    function whileTraining(epoch, loss){
+      console.log(`epoch: ${epoch}, loss:${loss}`);
+    }
+    function doneTraining(){
+        console.log('done!');
+    }
+    neuralNetwork.train(whileTraining, doneTraining)
+    ```
+* **optionsOrWhileTraining**: Optional. 
+  * If an object of options is given as the first parameter, then `optionsOrWhileTraining` will be a callback  function that is fired after the training as finished.
+  * If a callback function is given as the first parameter to handle the `whileTraining`, then `optionsOrWhileTraining` will be a callback function that is fired after the training as finished.
+* **callback**: Optional. Function. 
+  * If an object of options is given as the first parameter and a callback function is given as a second parameter, then this `callback` parameter will be a callback function that is fired after the training as finished.
+  ```js
+  const trainingOptions = {
+    batchSize: 32,
+    epochs: 12,
+  }
+  function whileTraining(epoch, loss){
+      console.log(`epoch: ${epoch}, loss:${loss}`);
+  }
+  function doneTraining(){
+      console.log('done!');
+  }
+  neuralNetwork.train(trainingOptions, whileTraining, doneTraining)
+
+  ```
+
+📤 **Outputs**
+
+* n/a: Here, `neuralNetwork.model` is created and the model is trained.
+
+***
+
+
+
+***
+#### .predict()
+> Given an input, will return an array of predictions. 
+
+```js
+neuralNetwork.predict(inputs, callback)
+```
+
+📥 **Inputs**
+
+* **inputs**: Required. Array | Object.
+  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
+* **callback**: Required. Function. A function to handle the results of `.predict()`.
+
+📤 **Outputs**
+
+* **Array**: Returns an array of objects. Each object contains `{value, label}`.
+
+***
+
+***
+#### .predictMultiple()
+> Given an input, will return an array of arrays of predictions. 
+
+```js
+neuralNetwork.predictMultiple(inputs, callback)
+```
+
+📥 **Inputs**
+
+* **inputs**: Required. Array of arrays | Array of objects.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
+* **callback**: Required. Function. A function to handle the results of `.predictMultiple()`.
+
+📤 **Outputs**
+
+* **Array**: Returns an array of arrays. Each child array contains objects. Each object contains `{value, label}`.
+
+***
+
+***
+#### .classify()
+> Given an input, will return an array of classifications. 
+
+```js
+neuralNetwork.classify(inputs, callback)
+```
+
+📥 **Inputs**
+
+* **inputs**: Required. Array | Object.
+  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
+* **callback**: Required. Function. A function to handle the results of `.classify()`.
+
+📤 **Outputs**
+
+* **Array**: Returns an array of objects. Each object contains `{label, confidence}`.
+
+***
+
+***
+#### .classifyMultiple()
+> Given an input, will return an array of arrays of classifications. 
+
+```js
+neuralNetwork.classifyMultiple(inputs, callback)
+```
+
+📥 **Inputs**
+
+* **inputs**: Required. Array of arrays | Array of objects.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
+* **callback**: Required. Function. A function to handle the results of `.classifyMultiple()`.
+
+📤 **Outputs**
+
+* **Array**: Returns an array of arrays. Each child array contains objects. Each object contains `{label, confidence}`.
+
+***
+
+
+***
+#### .saveData()
+> Saves the data that has been added
+
+```js
+neuralNetwork.saveData(?outputName, ?callback)
+```
+
+📥 **Inputs**
+* **outputName**: Optional. String. An output name you'd like your data to be called. If no input is given, then the name will be `data_YYYY-MM-DD_mm-hh`. 
+* **callback**: Optional. function. A callback that is called after the data has been saved.
+
+
+📤 **Outputs**
+
+* n/a: downloads the data to a `.json` file in your `downloads` folder.
+
+***
+
+***
+#### .loadData()
+> loads the data to `neuralNetwork.data.data.raw`
+
+```js
+neuralnetwork.loadData(?filesOrPath, ?callback)
+```
+
+📥 **Inputs**
+* **filesOrPath**: REQUIRED. String | InputFiles. A string path to a `.json` data object or InputFiles from html input `type="file"`. Must be structured for example as: `{"data": [ { xs:{input0:1, input1:2}, ys:{output0:"a"},  ...]}`
+* **callback**: Optional. function. A callback that is called after the data has been loaded.
+
+📤 **Outputs**
+
+* n/a: set `neuralNetwork.data.data.raw` to the array specified in the `"data"` property of the incoming `.json` file.
+
+***
+
+
+***
+#### .save()
+> Saves the trained model
+
+```js
+neuralNetwork.save(?outputName, ?callback)
+```
+
+📥 **Inputs**
+* **outputName**: Optional. String. An output name you'd like your model to be called. If no input is given, then the name will be `model`. 
+* **callback**: Optional. function. A callback that is called after the model has been saved.
+
+📤 **Outputs**
+
+* n/a: downloads the model to a `.json` file and a `model.weights.bin` binary file in your `downloads` folder.
+
+***
+
+***
+#### .load()
+> Loads a pre-trained model
+
+```js
+neuralNetwork.load(?filesOrPath, ?callback)
+```
+
+📥 **Inputs**
+* **filesOrPath**: REQUIRED. String | InputFiles. 
+  * If a string path to the `model.json` data object is given, then the `model.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
+  * If InputFiles from html input `type="file"`. Then make sure to select BOTH the `model.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
+* **callback**: Optional. function. A callback that is called after the model has been loaded.
+
+📤 **Outputs**
+
+* n/a: loads the model to `neuralNetwork.model`
+
+
+***
+
 
 
 ## Examples
@@ -185,12 +440,7 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### MagicFeature Tutorial 1 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/D9BoBSkLvFo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### MagicFeature Tutorial 2 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/yNkAuWz5lnY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+No tutorials yet - contribute one today!
 
 ## Acknowledgements
 

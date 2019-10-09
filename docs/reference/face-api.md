@@ -1,10 +1,10 @@
 # Face-Api
 
-**currently in development - not currently in ml5 release**
+**currently in development - coming soon to the ml5 release**
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="face landmark detection" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="face landmark detection" src="_media/reference__header-faceapi.png">
 </center>
 
 
@@ -162,11 +162,7 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### MagicFeature Tutorial 1 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/D9BoBSkLvFo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### MagicFeature Tutorial 2 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/yNkAuWz5lnY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+No tutorials yet - contribute one today!
 
 
 ## Acknowledgements
