@@ -1,6 +1,6 @@
 # NeuralNetwork
 
-**currently in development - not currently in ml5 release**
+**currently in development - coming soon to the ml5 release**
 
 
 <center>
@@ -83,40 +83,32 @@ The options that can be specified are:
 
 ### Properties
 
-
-<!-- /////////////////////
-PROPERTY DEFINITION START 
-* Notice that each property definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
 ***
-#### .property1
-> *String*. A description of the property associated with the new model instance.
+#### .config
+> *Object*: a configuration object that organizes the input options for the model and data. A high level structure of the config object is as follows: {debug, {architecture}, {training}, {dataOptions} }
 ***
-<!-- /////////////////////
-PROPERTY DEFINITION END 
-///////////////////////// -->
-
 ***
-#### .property2
-> *Object*. A description of the property associated with the new model instance.
+#### .vis
+> *Object*: allows access to the tf.vis functionality and the `NeuralNetworkVis` object.
 ***
-
 ***
-#### .property3
-> *Object*. A description of the property associated with the new model instance.
+#### .data
+> *Object*: allows access to the `NeuralNetworkData` object.
 ***
-
+***
+#### .ready
+> *Boolean*: set to true if the model is loaded and ready, false if it is not.
+***
+***
+#### .model
+> *Object*: the tf model. 
+***
 
 ### Methods
 
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-* Notice that each function definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
+
 ***
-#### .makeSparkles()
+#### .normalizeData()
 > Given a number, will make magicSparkles
 
 ```js
@@ -133,16 +125,10 @@ classifier.makeSparkles(?numberOfSparkles, ?callback)
 * **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
 
 ***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
 
 
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-///////////////////////// -->
 ***
-#### .makeDisappear()
+#### .train()
 > Given an image, will make objects in the image disappear
 
 ```js
@@ -159,9 +145,163 @@ classifier.makeDisappear(input, ?numberOfObjects, ?callback)
 * **Image**: Returns an image.
 
 ***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
+
+
+
+***
+#### .predict()
+> Given a number, will make magicSparkles
+
+```js
+classifier.makeSparkles(?numberOfSparkles, ?callback)
+```
+
+📥 **Inputs**
+
+* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+
+📤 **Outputs**
+
+* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+
+***
+
+***
+#### .predictMultiple()
+> Given a number, will make magicSparkles
+
+```js
+classifier.makeSparkles(?numberOfSparkles, ?callback)
+```
+
+📥 **Inputs**
+
+* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+
+📤 **Outputs**
+
+* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+
+***
+
+***
+#### .classify()
+> Given a number, will make magicSparkles
+
+```js
+classifier.makeSparkles(?numberOfSparkles, ?callback)
+```
+
+📥 **Inputs**
+
+* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+
+📤 **Outputs**
+
+* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+
+***
+
+***
+#### .classifyMultiple()
+> Given a number, will make magicSparkles
+
+```js
+classifier.makeSparkles(?numberOfSparkles, ?callback)
+```
+
+📥 **Inputs**
+
+* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+
+📤 **Outputs**
+
+* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+
+***
+
+
+***
+#### .saveData()
+> Given an image, will make objects in the image disappear
+
+```js
+classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+```
+
+📥 **Inputs**
+* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
+* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
+* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+
+📤 **Outputs**
+
+* **Image**: Returns an image.
+
+***
+
+***
+#### .loadData()
+> Given an image, will make objects in the image disappear
+
+```js
+classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+```
+
+📥 **Inputs**
+* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
+* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
+* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+
+📤 **Outputs**
+
+* **Image**: Returns an image.
+
+***
+
+
+***
+#### .save()
+> Given an image, will make objects in the image disappear
+
+```js
+classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+```
+
+📥 **Inputs**
+* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
+* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
+* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+
+📤 **Outputs**
+
+* **Image**: Returns an image.
+
+***
+
+***
+#### .load()
+> Given an image, will make objects in the image disappear
+
+```js
+classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+```
+
+📥 **Inputs**
+* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
+* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
+* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+
+📤 **Outputs**
+
+* **Image**: Returns an image.
+
+***
+
 
 
 ## Examples
@@ -185,12 +325,7 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### MagicFeature Tutorial 1 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/D9BoBSkLvFo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### MagicFeature Tutorial 2 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/yNkAuWz5lnY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
+No tutorials yet - contribute one today!
 
 ## Acknowledgements
 
