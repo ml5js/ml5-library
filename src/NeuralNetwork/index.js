@@ -803,8 +803,19 @@ class NeuralNetwork {
         }]
       };
 
+      const dataMeta = {
+        data:{
+          inputMin: this.data.data.inputMin,
+          inputMax: this.data.data.inputMax,
+          outputMin: this.data.data.outputMin,
+          outputMax: this.data.data.outputMax,
+        },
+        meta: this.data.meta
+      }
+
       await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
       await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
+      await saveBlob(JSON.stringify(dataMeta), `${modelName}_meta.json`, 'text/plain');
       if (callback) {
         callback();
       }
