@@ -61,7 +61,7 @@ const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback)
 
 The options that can be specified are: 
 
-    ```js
+  ```js
     const DEFAULTS = {
       dataUrl: 'data.csv' // can be a url path or relative path
       task: 'regression',
@@ -79,7 +79,7 @@ The options that can be specified are:
       batchSize: 64,
       epochs: 32,
   }
-    ```
+  ```
 
 * For your reference, a few typical uses are showcased below:
   * Example 1:
