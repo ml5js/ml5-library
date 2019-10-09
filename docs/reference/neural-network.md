@@ -270,78 +270,78 @@ neuralNetwork.classifyMultiple(inputs, callback)
 
 ***
 #### .saveData()
-> Given an image, will make objects in the image disappear
+> Saves the data that has been added
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+neuralNetwork.saveData(?outputName, ?callback)
 ```
 
 📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+* **outputName**: Optional. String. An output name you'd like your data to be called. If no input is given, then the name will be `data_YYYY-MM-DD_mm-hh`. 
+* **callback**: Optional. function. A callback that is called after the data has been saved.
+
 
 📤 **Outputs**
 
-* **Image**: Returns an image.
+* n/a: downloads the data to a `.json` file in your `downloads` folder.
 
 ***
 
 ***
 #### .loadData()
-> Given an image, will make objects in the image disappear
+> loads the data to `neuralNetwork.data.data.raw`
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+neuralnetwork.loadData(?filesOrPath, ?callback)
 ```
 
 📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+* **filesOrPath**: REQUIRED. String | InputFiles. A string path to a `.json` data object or InputFiles from html input `type="file"`. Must be structured for example as: `{"data": [ { xs:{input0:1, input1:2}, ys:{output0:"a"},  ...]}`
+* **callback**: Optional. function. A callback that is called after the data has been loaded.
 
 📤 **Outputs**
 
-* **Image**: Returns an image.
+* n/a: set `neuralNetwork.data.data.raw` to the array specified in the `"data"` property of the incoming `.json` file.
 
 ***
 
 
 ***
 #### .save()
-> Given an image, will make objects in the image disappear
+> Saves the trained model
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+neuralNetwork.save(?outputName, ?callback)
 ```
 
 📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+* **outputName**: Optional. String. An output name you'd like your model to be called. If no input is given, then the name will be `model`. 
+* **callback**: Optional. function. A callback that is called after the model has been saved.
 
 📤 **Outputs**
 
-* **Image**: Returns an image.
+* n/a: downloads the model to a `.json` file and a `model.weights.bin` binary file in your `downloads` folder.
 
 ***
 
 ***
 #### .load()
-> Given an image, will make objects in the image disappear
+> Loads a pre-trained model
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+neuralNetwork.load(?filesOrPath, ?callback)
 ```
 
 📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
+* **filesOrPath**: REQUIRED. String | InputFiles. 
+  * If a string path to the `model.json` data object is given, then the `model.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
+  * If InputFiles from html input `type="file"`. Then make sure to select BOTH the `model.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
+* **callback**: Optional. function. A callback that is called after the model has been loaded.
 
 📤 **Outputs**
 
-* **Image**: Returns an image.
+* n/a: loads the model to `neuralNetwork.model`
+
 
 ***
 
