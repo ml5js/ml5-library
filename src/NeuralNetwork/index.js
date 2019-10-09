@@ -830,10 +830,15 @@ class NeuralNetwork {
   async load(filesOrPath = null, callback) {
     if (typeof filesOrPath !== 'string') {
       let model = null;
+      let modelMetadata = null;
       let weights = null;
       Array.from(filesOrPath).forEach((file) => {
         if (file.name.includes('.json')) {
           model = file;
+          const fr = new FileReader();
+          fr.readAsText(file);
+        } else if (file.name.includes('_meta.json')) {
+          modelMetadata = file;
           const fr = new FileReader();
           fr.readAsText(file);
         } else if (file.name.includes('.bin')) {
@@ -841,10 +846,32 @@ class NeuralNetwork {
         }
       });
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+      
+      this.data.data.inputMax = modelMetadata.data.inputMax;
+      this.data.data.inputMin = modelMetadata.data.inputMin;
+      this.data.data.outputMax = modelMetadata.data.outputMax;
+      this.data.data.outputMin = modelMetadata.data.outputMin;
+      this.data.meta = modelMetadata.meta;
+
     } else {
-      fetch(filesOrPath)
-        .then(r => r.json());
+
+      // let modelJson = await fetch(filesOrPath)
+      // modelJson = await modelJson.json();
+
+      // TODO: handle this better to account for absolute URLS and to specify handling
+      // models with different names
+      const metaPath = `${filesOrPath.split('/').slice(0, -1).join('/')}/model_meta.json`;
+      let modelMetadata = await fetch(metaPath);
+      modelMetadata = await modelMetadata.json();
+        
       this.model = await tf.loadLayersModel(filesOrPath);
+
+      this.data.data.inputMax = modelMetadata.data.inputMax;
+      this.data.data.inputMin = modelMetadata.data.inputMin;
+      this.data.data.outputMax = modelMetadata.data.outputMax;
+      this.data.data.outputMin = modelMetadata.data.outputMin;
+      this.data.meta = modelMetadata.meta;
+
     }
     if (callback) {
       callback();
