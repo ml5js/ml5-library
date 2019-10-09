@@ -412,7 +412,7 @@ class NeuralNetwork {
    * @param {*} input 
    * @param {*} callback 
    */
-  classifyMultiple(input, callback){
+  classifyMultiple(input, callback) {
     return callCallback(this.predictMultipleInternal(input), callback);
   }
 
@@ -430,7 +430,7 @@ class NeuralNetwork {
    * @param {*} input
    * @param {*} callback
    */
-  predictMultiple(input, callback){
+  predictMultiple(input, callback) {
     return callCallback(this.predictMultipleInternal(input), callback);
   }
 
@@ -438,8 +438,8 @@ class NeuralNetwork {
    * Make a prediction based on the given input
    * @param {*} sample 
    */
-  async predictMultipleInternal(sampleList){
-    
+  async predictMultipleInternal(sampleList) {
+
     // 1. Handle the input sample
     const inputData = [];
     sampleList.forEach(sample => {
@@ -459,19 +459,19 @@ class NeuralNetwork {
 
     // 2. onehot encode the sample if necessary
     const encodedInput = [];
-    
-    sampleList.forEach( item => {
+
+    sampleList.forEach(item => {
       let encodedInputRow = [];
       Object.entries(this.data.meta.inputs).forEach((arr) => {
         const prop = arr[0];
         const {
           dtype
         } = arr[1];
-  
+
         // to ensure that we get the value in the right order
         const valIndex = this.data.config.dataOptions.inputs.indexOf(prop);
         const val = item[valIndex];
-  
+
         if (dtype === 'number') {
           let normVal;
           // if the data has not been normalized, just send in the raw sample
@@ -495,13 +495,13 @@ class NeuralNetwork {
           const onehotVal = legend[val]
           encodedInputRow = [...encodedInputRow, ...onehotVal]
         }
-  
+
         encodedInput.push(encodedInputRow);
       });
 
     });
-    
-    
+
+
 
     // Step 3: make the prediction
     const xs = tf.tensor(encodedInput, [encodedInput.length, this.data.meta.inputUnits]);
@@ -511,12 +511,12 @@ class NeuralNetwork {
 
     // Step 4: Convert the outputs back to the recognizable format
     let results = [];
-    
+
     if (this.config.architecture.task === 'classification') {
       const predictions = await ys.array();
       // TODO: Check to see if this fails with numeric values
       // since no legend exists
-      const outputData = predictions.map( prediction => {
+      const outputData = predictions.map(prediction => {
         return Object.entries(this.data.meta.outputs).map((arr) => {
           const {
             legend
@@ -533,7 +533,7 @@ class NeuralNetwork {
             }
           }).sort((a, b) => b.confidence - a.confidence);
         })[0];
-      }) 
+      })
       // NOTE: we are doing a funky javascript thing
       // setting an array as results, then adding
       // .tensor as a property of that array object
@@ -543,10 +543,10 @@ class NeuralNetwork {
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.array();
 
-      
 
-      const outputData = predictions.map( prediction => {
-       return  Object.entries(this.data.meta.outputs).map((item, idx) => {
+
+      const outputData = predictions.map(prediction => {
+        return Object.entries(this.data.meta.outputs).map((item, idx) => {
           const prop = item[0];
           const {
             outputMin,
@@ -558,14 +558,14 @@ class NeuralNetwork {
           } else {
             val = (prediction[idx] * (outputMax[idx] - outputMin[idx])) + outputMin[idx];
           }
-  
+
           return {
             value: val,
             label: prop
           }
         });
       })
-      
+
 
       // NOTE: we are doing a funky javascript thing
       // setting an array as results, then adding
@@ -709,7 +709,7 @@ class NeuralNetwork {
 
   }
 
-  
+
 
 
   /**
@@ -726,22 +726,22 @@ class NeuralNetwork {
   async saveData(nameOrCallback, callback) {
     let cb;
     let outputName;
-    
+
     // check the inputs
-    if(typeof nameOrCallback === 'string' && callback){
+    if (typeof nameOrCallback === 'string' && callback) {
       outputName = nameOrCallback
       cb = callback;
-    } else if( typeof nameOrCallback === 'string' && !callback) {
+    } else if (typeof nameOrCallback === 'string' && !callback) {
       cb = null;
       outputName = nameOrCallback
-    } else if(typeof nameOrCallback === 'function') {
+    } else if (typeof nameOrCallback === 'function') {
       cb = nameOrCallback
       outputName = undefined;
-    } 
+    }
 
     // save the data out
     await this.data.saveData(outputName);
-    
+
     if (typeof cb === 'function') {
       cb();
     }
@@ -752,28 +752,33 @@ class NeuralNetwork {
    * @param {*} filesOrPath 
    * @param {*} callback 
    */
-  async loadData(filesOrPath = null, callback){
-    
+  async loadData(filesOrPath = null, callback) {
+
     let loadedData;
     if (typeof filesOrPath !== 'string') {
-        const file = filesOrPath[0];
-        const fr = new FileReader();
-        fr.readAsText(file);
-        if (file.name.includes('.json')) {
-          const temp = await file.text();
-          loadedData = JSON.parse(temp);
-        } else {
-          console.log('data must be a json object containing an array called "data" or "entries')
-        }
+      const file = filesOrPath[0];
+      const fr = new FileReader();
+      fr.readAsText(file);
+      if (file.name.includes('.json')) {
+        const temp = await file.text();
+        loadedData = JSON.parse(temp);
+      } else {
+        console.log('data must be a json object containing an array called "data" or "entries')
+      }
     } else {
-      loadedData = await fetch(filesOrPath);
-      loadedData = await loadedData.json();
+      let text = await fetch(filesOrPath);
+      text = await loadedData.text();
+      if (this.data.isJsonString(text)) {
+        loadedData = JSON.parse(text);
+      } else {
+        console.log('Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData')
+      }
     }
 
     // check if a data or entries property exists
-    if(loadedData.data){
+    if (loadedData.data) {
       this.data.data.raw = loadedData.data;
-    } else if (loadedData.entries){
+    } else if (loadedData.entries) {
       this.data.data.raw = loadedData.entries;
     } else {
       console.log('data must be a json object containing an array called "data" or "entries')
@@ -804,7 +809,7 @@ class NeuralNetwork {
       };
 
       const dataMeta = {
-        data:{
+        data: {
           inputMin: this.data.data.inputMin,
           inputMax: this.data.data.inputMax,
           outputMin: this.data.data.outputMin,
@@ -846,7 +851,7 @@ class NeuralNetwork {
         }
       });
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
-      
+
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
@@ -864,7 +869,7 @@ class NeuralNetwork {
       const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
       let modelMetadata = await fetch(metaPath);
       modelMetadata = await modelMetadata.json();
-        
+
       this.model = await tf.loadLayersModel(filesOrPath);
 
       this.data.data.inputMax = modelMetadata.data.inputMax;
