@@ -81,6 +81,54 @@ The options that can be specified are:
   }
     ```
 
+* For your reference, a few typical uses are showcased below:
+  * Example 1:
+    ```js
+    const options = {
+      inputs: 1,
+      outputs: 1,
+      type:'regression`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options)
+    ```
+  * Example 2: loading data as a csv
+    ```js
+    const options = {
+      dataUrl: 'weather.csv'
+      inputs: ['avg_temperature', 'humidity'],
+      outputs: ['rained'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+    ```
+  * Example 3: loading data as a json
+    ```js
+    /**
+    The weather json looks something like:
+    {"data": [ 
+      {"xs": {"avg_temperature":20, "humidity": 0.2}, "ys": {"rained": "no"}},
+      {"xs": {"avg_temperature":30, "humidity": 0.9}, "ys": {"rained": "yes"}}
+    ] } 
+    **/
+    const options = {
+      dataUrl: 'weather.json'
+      inputs: ['avg_temperature', 'humidity'],
+      outputs: ['rained'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+    ```
+  * Example 4: specifying labels for a blank neural network
+    ```js
+    const options = {
+      inputs: ['x', 'y'],
+      outputs: ['label'],
+      type:'classification`
+    }
+    const neuralNetwork = ml5.neuralNetwork(options)
+    ```
+
+
 ### Properties
 
 ***
@@ -105,6 +153,30 @@ The options that can be specified are:
 ***
 
 ### Methods
+
+
+***
+#### .addData()
+> If you are not uploading data using the `dataUrl` property of the options given to the constructor, then you can add data to a "blank" neural network class using the `.addData()` function. 
+
+```js
+neuralNetwork.addData(xs, ys)
+```
+
+📥 **Inputs**
+
+* **xs**: Required. Array | Object. 
+  * If an array is given, then the inputs must be ordered as specified in the constructor. If no labels are given in the constructor, then the order that your data are added here will set the order of how you will pass data to `.predict()` or `.classify()`.
+  * If an object is given, then feed in key/value pairs.
+* **ys**: Required. Array | Object.
+  * If an array is given, then the inputs must be ordered as specified in the constructor.
+  * If an object is given, then feed in key/value pairs.
+
+📤 **Outputs**
+
+* n/a: adds data to `neuralNetwork.data.data.raw`
+
+***
 
 ***
 #### .normalizeData()
