@@ -855,6 +855,8 @@ class NeuralNetwork {
 
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
 
+      console.log(filesOrPath, this.model);
+
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
@@ -862,9 +864,11 @@ class NeuralNetwork {
       this.data.meta = modelMetadata.meta;
 
     } else if(filesOrPath instanceof Object){
-
+      
       let modelMetadata = await fetch(filesOrPath.metadata);
-      modelMetadata = await modelMetadata.json();      
+
+      modelMetadata = await modelMetadata.text();
+      modelMetadata = JSON.parse(modelMetadata);
       
       this.model = await tf.loadLayersModel(filesOrPath.model);
 
