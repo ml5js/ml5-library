@@ -128,8 +128,8 @@ class NeuralNetwork {
    * then set the inputUnits as the number
    * and then create an array of input labels
    * if not, then use what is given
-   * @param {*} input 
-   * @param {*} ioType 
+   * @param {*} input
+   * @param {*} ioType
    */
   initializeIOUnits(input, ioType) {
     let units;
@@ -409,8 +409,8 @@ class NeuralNetwork {
   /**
    * classifyMultiple()
    * Runs the classification task on multiple inputs
-   * @param {*} input 
-   * @param {*} callback 
+   * @param {*} input
+   * @param {*} callback
    */
   classifyMultiple(input, callback) {
     return callCallback(this.predictMultipleInternal(input), callback);
@@ -436,7 +436,7 @@ class NeuralNetwork {
 
   /**
    * Make a prediction based on the given input
-   * @param {*} sample 
+   * @param {*} sample
    */
   async predictMultipleInternal(sampleList) {
 
@@ -720,8 +720,8 @@ class NeuralNetwork {
 
   /**
    * Calls this.data.saveData() to save data out to a json file
-   * @param {*} callback 
-   * @param {*} name 
+   * @param {*} callback
+   * @param {*} name
    */
   async saveData(nameOrCallback, callback) {
     let cb;
@@ -749,8 +749,8 @@ class NeuralNetwork {
 
   /**
    * loadData from fileinput or path
-   * @param {*} filesOrPath 
-   * @param {*} callback 
+   * @param {*} filesOrPath
+   * @param {*} callback
    */
   async loadData(filesOrPath = null, callback) {
 
@@ -766,8 +766,8 @@ class NeuralNetwork {
         console.log('data must be a json object containing an array called "data" or "entries')
       }
     } else {
-      let text = await fetch(filesOrPath);
-      text = await loadedData.text();
+      loadedData = await fetch(filesOrPath);
+      const text = await loadedData.text();
       if (this.data.isJsonString(text)) {
         loadedData = JSON.parse(text);
       } else {
