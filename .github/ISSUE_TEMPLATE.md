@@ -1,4 +1,51 @@
 <!--------------------------------------------
+🌈DEAR BELOVED ML5 COMMUNITY MEMBER. WELCOME. 🌈
+---------------------------------------------->
+
+Dear ml5 community, 
+
+I'm submitting a new issue. Please see the details below.
+
+
+<center> <b>A good issue 🌟</b> </center>
+
+### → Step 1: Describe the issue 📝
+> Did you find a bug? Want to suggest an idea for feature?
+
+
+
+
+<center> <b> An better issue 🌟🌟🌟</b></center>
+
+### → Step 2: Screenshots or Relevant Documentation 🖼
+> Here's some helpful screenshots and/or documentation of the new feature 
+
+
+
+
+<center> <b> A great issue 🌟🌟</b></center>
+
+### → Step 3: Share an example of the issue 🦄
+> Here's some example code or a demonstration of  in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
+
+
+
+
+
+
+<center> <b> Other relevant information, if applicable </b></center>
+
+### → Describe your setup 🦄
+> Here's some helpful information about my setup...
+
+- **Web browser & version**:
+- **Operating System**:
+- **ml5 version you're using**:
+- **Any additional notes**
+
+
+
+<!--------------------------------------------
 🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
 DEAR BELOVED ML5 COMMUNITY MEMBER. WELCOME.
 
@@ -13,47 +60,4 @@ WE WILL PRIORITIZE WELL DOCUMENTED ISSUES.
 THANK YOU! MERCI! ABRIGADO! GRACIAS! DANKE!
 🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
 ---------------------------------------------->
-
-
-
-<!--------------------------------------------
-A clear and concise description of what the issue is about. 
-Let us know if you:
-
-- found a bug 🐛
-- want to suggest an update 💡
-- have an idea for a new feature 🆕 
----------------------------------------------->
-
-## → Description 📝
-> I am submitting am issue about...
-
-
-
-<!--------------------------------------------
-(Any relevant screenshots, sketches, or helpful concept diagrams)
----------------------------------------------->
-
-## → Screenshots 🖼
-> Here are some helpful screenshots to illustrate the issue...
-
-
-
-<!--------------------------------------------
-A list of relevant information for this issue. 
-This will help people navigate the project and offer some clues of where to start. 
-Depending on the nature of this issue, important and helpful information might include:
-
-COPY/PASTE/FILL ME IN BELOW:
-- **Web browser and version**:
-- **Operating System**:
-- **ml5 version you're using**:
-- **Links to example code**:
-
----------------------------------------------->
-
-## → Helpful Information 🦄
-> Here's some helpful information about my setup...
-
-
 
