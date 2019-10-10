@@ -406,8 +406,8 @@ neuralNetwork.load(?filesOrPath, ?callback)
 
 📥 **Inputs**
 * **filesOrPath**: REQUIRED. String | InputFiles. 
-  * If a string path to the `model.json` data object is given, then the `model.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
-  * If InputFiles from html input `type="file"`. Then make sure to select BOTH the `model.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
+  * If a string path to the `model.json` data object is given, then the `model.json`, `model_meta.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
+  * If InputFiles from html input `type="file"`. Then make sure to select ALL THREE of the `model.json`, `model_meta.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
 * **callback**: Optional. function. A callback that is called after the model has been loaded.
 
 📤 **Outputs**
@@ -445,8 +445,10 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * [Dan Shiffman](https://github.com/shiffman)
+  * [Joey Lee](https://github.com/joeyklee/)
+  * [Yining Shi](https://github.com/yining1023/)
+  * [Lydia Jessup](https://github.com/lydiajessup)
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
