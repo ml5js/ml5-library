@@ -833,10 +833,12 @@ class NeuralNetwork {
    * @param {*} callback
    */
   async load(filesOrPath = null, callback) {
-    if (typeof filesOrPath !== 'string') {
+
+    if (filesOrPath instanceof FileList) {
       let model = null;
       let modelMetadata = null;
       let weights = null;
+
       Array.from(filesOrPath).forEach((file) => {
         if (file.name.includes('.json')) {
           model = file;
@@ -850,6 +852,7 @@ class NeuralNetwork {
           weights = file;
         }
       });
+
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
 
       this.data.data.inputMax = modelMetadata.data.inputMax;
@@ -858,14 +861,39 @@ class NeuralNetwork {
       this.data.data.outputMin = modelMetadata.data.outputMin;
       this.data.meta = modelMetadata.meta;
 
+    } else if(filesOrPath instanceof Object){
+      let model = null;
+      let modelMetadata = null;
+      let weights = null;
+
+      console.log(filesOrPath);
+      Object.entries(filesOrPath).forEach( (item) => {
+        const key = item[0];
+        const file = item[1];
+
+        if(key === 'model'){
+          model = file;
+          const fr = new FileReader();
+          fr.readAsText(file);
+        } else if( key === "metadata"){
+          modelMetadata = file;
+          const fr = new FileReader();
+          fr.readAsText(file);
+        } else if( key === "weights" ){
+          weights = file;
+        }
+      })
+      
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+
+      this.data.data.inputMax = modelMetadata.data.inputMax;
+      this.data.data.inputMin = modelMetadata.data.inputMin;
+      this.data.data.outputMax = modelMetadata.data.outputMax;
+      this.data.data.outputMin = modelMetadata.data.outputMin;
+      this.data.meta = modelMetadata.meta;
+
+
     } else {
-
-      // let modelJson = await fetch(filesOrPath)
-      // modelJson = await modelJson.json();
-
-      // TODO: handle this better to account for absolute URLS and to specify handling
-      // models with different names
-      // const metaPath = `${filesOrPath.split('/').slice(0, -1).join('/')}/model_meta.json`;
       const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
       let modelMetadata = await fetch(metaPath);
       modelMetadata = await modelMetadata.json();
