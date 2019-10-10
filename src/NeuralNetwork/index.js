@@ -862,29 +862,11 @@ class NeuralNetwork {
       this.data.meta = modelMetadata.meta;
 
     } else if(filesOrPath instanceof Object){
-      let model = null;
-      let modelMetadata = null;
-      let weights = null;
 
-      console.log(filesOrPath);
-      Object.entries(filesOrPath).forEach( (item) => {
-        const key = item[0];
-        const file = item[1];
-
-        if(key === 'model'){
-          model = file;
-          const fr = new FileReader();
-          fr.readAsText(file);
-        } else if( key === "metadata"){
-          modelMetadata = file;
-          const fr = new FileReader();
-          fr.readAsText(file);
-        } else if( key === "weights" ){
-          weights = file;
-        }
-      })
+      let modelMetadata = await fetch(filesOrPath.metadata);
+      modelMetadata = await modelMetadata.json();      
       
-      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+      this.model = await tf.loadLayersModel(filesOrPath.model);
 
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
