@@ -7,9 +7,9 @@ Dear ml5 community,
 I'm making a Pull Request(PR). Please see the details below.
 
 
-<center> <b>A good PR 🌟</b> </center>
+**A good PR 🌟**
 
-### → Step 1: Which branch are you submitting to? 🌲
+### → Step 1:  Which branch are you submitting to? 🌲
 > Development (for new features or updates), Release (for bug fixes), or ___________?
 
 
@@ -21,7 +21,7 @@ I'm making a Pull Request(PR). Please see the details below.
 
 
 
-<center> <b> A great PR 🌟🌟</b></center>
+**A great PR 🌟🌟**
 
 ### → Step 3: Share a Relevant Example 🦄
 > Here's some example code or a link to another PR in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
@@ -29,7 +29,7 @@ I'm making a Pull Request(PR). Please see the details below.
 
 
 
-<center> <b> The best PR 🌟🌟🌟</b></center>
+**The best PR 🌟🌟🌟**
 
 ### → Step 4: Screenshots or Relevant Documentation 🖼
 > Here's some helpful screenshots and/or documentation of the new feature 

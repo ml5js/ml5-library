@@ -7,7 +7,6 @@ Dear ml5 community,
 I'm submitting a new issue. Please see the details below.
 
 
-<center> <b>A good issue 🌟</b> </center>
 
 ### → Step 1: Describe the issue 📝
 > Did you find a bug? Want to suggest an idea for feature?
@@ -15,15 +14,10 @@ I'm submitting a new issue. Please see the details below.
 
 
 
-<center> <b> An better issue 🌟🌟🌟</b></center>
-
 ### → Step 2: Screenshots or Relevant Documentation 🖼
 > Here's some helpful screenshots and/or documentation of the new feature 
 
 
-
-
-<center> <b> A great issue 🌟🌟</b></center>
 
 ### → Step 3: Share an example of the issue 🦄
 > Here's some example code or a demonstration of  in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
@@ -33,7 +27,7 @@ I'm submitting a new issue. Please see the details below.
 
 
 
-<center> <b> Other relevant information, if applicable </b></center>
+**Other relevant information, if applicable**
 
 ### → Describe your setup 🦄
 > Here's some helpful information about my setup...
