@@ -839,7 +839,6 @@ class NeuralNetwork {
       const files = await Promise.all(
         Array.from(filesOrPath).map( async (file) => {
           if (file.name.includes('model.json')) {
-            // model = file;
             return {name:"model", file}
           } else if (file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
@@ -855,48 +854,51 @@ class NeuralNetwork {
       const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
       const weights = files.find(item => item.name === 'weights').file;
 
-      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
-
+      // set the metainfo
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
       this.data.data.outputMin = modelMetadata.data.outputMin;
       this.data.meta = modelMetadata.meta;
 
+      // load the model
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+
     } else if(filesOrPath instanceof Object){
+      // filesOrPath = {model: URL, metadata: URL, weights: URL}
       
       let modelMetadata = await fetch(filesOrPath.metadata);
-
       modelMetadata = await modelMetadata.text();
       modelMetadata = JSON.parse(modelMetadata);
 
       let modelJson = await fetch(filesOrPath.model);
-      modelJson = await modelJson.json();
-      modelJson.weightsManifest[0].paths = [filesOrPath.metadata];
+      modelJson = await modelJson.text();
+      const modelJsonFile = new File([modelJson], 'model.json', {type: 'application/json'});
+
+      let weightsBlob = await fetch(filesOrPath.weights);
+      weightsBlob = await weightsBlob.blob();
+      const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', {type: 'application/macbinary'});
       
-
-      this.model = await tf.loadLayersModel(modelJson);
-
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
       this.data.data.outputMin = modelMetadata.data.outputMin;
       this.data.meta = modelMetadata.meta;
 
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([modelJsonFile, weightsBlobFile]));
 
     } else {
       const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
       let modelMetadata = await fetch(metaPath);
       modelMetadata = await modelMetadata.json();
 
-      this.model = await tf.loadLayersModel(filesOrPath);
-
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
       this.data.data.outputMin = modelMetadata.data.outputMin;
       this.data.meta = modelMetadata.meta;
 
+      this.model = await tf.loadLayersModel(filesOrPath);
     }
     if (callback) {
       callback();
