@@ -852,7 +852,7 @@ class NeuralNetwork {
        )
 
       const model = files.find(item => item.name === 'model').file;
-      const modelMetadata = files.find(item => item.name === 'metadata').file;
+      const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
       const weights = files.find(item => item.name === 'weights').file;
 
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
