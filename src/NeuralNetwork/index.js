@@ -835,27 +835,27 @@ class NeuralNetwork {
   async load(filesOrPath = null, callback) {
 
     if (filesOrPath instanceof FileList) {
-      let model = null;
-      let modelMetadata = null;
-      let weights = null;
+      
+      const files = await Promise.all(
+        Array.from(filesOrPath).map( async (file) => {
+          if (file.name.includes('model.json')) {
+            // model = file;
+            return {name:"model", file}
+          } else if (file.name.includes('_meta.json')) {
+            const modelMetadata = await file.text();
+            return {name: "metadata", file:modelMetadata}
+          } else if (file.name.includes('.bin')) {
+            return {name:"weights", file}
+          }
+          return {name:null, file:null}
+        })
+       )
 
-      Array.from(filesOrPath).forEach((file) => {
-        if (file.name.includes('.json')) {
-          model = file;
-          const fr = new FileReader();
-          fr.readAsText(file);
-        } else if (file.name.includes('_meta.json')) {
-          modelMetadata = file;
-          const fr = new FileReader();
-          fr.readAsText(file);
-        } else if (file.name.includes('.bin')) {
-          weights = file;
-        }
-      });
+      const model = files.find(item => item.name === 'model').file;
+      const modelMetadata = files.find(item => item.name === 'metadata').file;
+      const weights = files.find(item => item.name === 'weights').file;
 
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
-
-      console.log(filesOrPath, this.model);
 
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
@@ -869,8 +869,13 @@ class NeuralNetwork {
 
       modelMetadata = await modelMetadata.text();
       modelMetadata = JSON.parse(modelMetadata);
+
+      let modelJson = await fetch(filesOrPath.model);
+      modelJson = await modelJson.json();
+      modelJson.weightsManifest[0].paths = [filesOrPath.metadata];
       
-      this.model = await tf.loadLayersModel(filesOrPath.model);
+
+      this.model = await tf.loadLayersModel(modelJson);
 
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
