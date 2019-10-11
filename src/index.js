@@ -24,6 +24,7 @@ import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
+import neuralNetwork from './NeuralNetwork';
 import faceApi from './FaceApi';
 import kmeans from './KMeans';
 import p5Utils from './utils/p5Utils';
@@ -54,4 +55,5 @@ module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   tf,
   version,
   sentiment,
+  neuralNetwork,
 });
