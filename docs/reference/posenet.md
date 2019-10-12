@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="pose detection" src="/images/reference__header-posenet.jpg">
+    <img style="display:block; max-height:20rem" alt="pose detection" src="_media/reference__header-posenet.jpg">
     <p>image via: https://pdm.com.co/tag/posenet/</p>
 </center>
 
@@ -242,15 +242,15 @@ poseNet.multiPose(?input)
 ## Examples
 
 **plain javascript**
-* [PoseNet_image_single]()
-* [PoseNet_part_selection]()
-* [PoseNet_webcam]()
+* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_webcam)
 
 
 **p5.js**
-* [PoseNet_image_single]()
-* [PoseNet_part_selection]()
-* [PoseNet_webcam]()
+* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_webcam)
 
 ## Demo
 
@@ -273,4 +273,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/PoseNet]()
+* [/src/PoseNet](https://github.com/ml5js/ml5-library/tree/development/src/PoseNet)

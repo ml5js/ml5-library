@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="placeholder" src="https://via.placeholder.com/150">
 </center>
 
 
@@ -83,18 +83,16 @@ soundclassifier.classify(callback);
 ***
 
 
-
-
 ## Examples
 
 **plain javascript**
-* [SoundClassification_speechcommand]()
-* [SoundClassification_speechcommand_load]()
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/development/javascript/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/development/javascript/SoundClassification/SoundClassification_speechcommand_load)
 
 
 **p5.js**
-* [SoundClassification_speechcommand]()
-* [SoundClassification_speechcommand_load]()
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/development/p5js/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/development/p5js/SoundClassification/SoundClassification_speechcommand_load)
 
 **p5 web editor**
 * [SoundClassification_speechcommand]()
@@ -123,4 +121,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/SoundClassifier/](https://github.com/ml5js/ml5-library/tree/release/src/SoundClassifier)
+* [/src/SoundClassifier/](https://github.com/ml5js/ml5-library/tree/development/src/SoundClassifier)

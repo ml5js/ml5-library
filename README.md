@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-58-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-60-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -177,7 +177,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/tezzutezzu"><img src="https://avatars2.githubusercontent.com/u/135866?v=4" width="100px;" alt="danilo"/><br /><sub><b>danilo</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=tezzutezzu" title="Code">💻</a> <a href="#ideas-tezzutezzu" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/EmmaGoodliffe"><img src="https://avatars1.githubusercontent.com/u/32788926?v=4" width="100px;" alt="Emma Goodliffe"/><br /><sub><b>Emma Goodliffe</b></sub></a><br /><a href="#ideas-EmmaGoodliffe" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/EmmaGoodliffe"><img src="https://avatars1.githubusercontent.com/u/32788926?v=4" width="100px;" alt="Emma Goodliffe"/><br /><sub><b>Emma Goodliffe</b></sub></a><br /><a href="#ideas-EmmaGoodliffe" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-EmmaGoodliffe" title="Answering Questions">💬</a> <a href="#maintenance-EmmaGoodliffe" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://yangyang.blog"><img src="https://avatars3.githubusercontent.com/u/9332910?v=4" width="100px;" alt="Yang"/><br /><sub><b>Yang</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=EonYang" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3AEonYang" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/lydiajessup"><img src="https://avatars3.githubusercontent.com/u/26204298?v=4" width="100px;" alt="Lydia Jessup"/><br /><sub><b>Lydia Jessup</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lydiajessup" title="Code">💻</a> <a href="#ideas-lydiajessup" title="Ideas, Planning, & Feedback">🤔</a> <a href="#example-lydiajessup" title="Examples">💡</a></td>
   </tr>
 </table>
 

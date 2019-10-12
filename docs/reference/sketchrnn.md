@@ -102,16 +102,18 @@ sketchrnn.generate(?seed, ?options, ?callback)
 
 
 
+
+
 ## Examples
 
 **plain javascript**
-* [SketchRNN_basic]()
-* [SketchRNN_interactive]()
+* [SketchRNN_basic](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/_basic)
+* [SketchRNN_interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/SketchRNN_interactive)
 
 
 **p5.js**
-* [SketchRNN_basic]()
-* [SketchRNN_interactive]()
+* [SketchRNN_basic](https://github.com/ml5js/ml5-examples/tree/development/p5js/SketchRNN/SketchRNN_basic)
+* [SketchRNN_interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/SketchRNN/SketchRNN_interactive)
 
 **p5 web editor**
 * [SketchRNN_basic]()
@@ -139,5 +141,5 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/SketchRNN/](https://github.com/ml5js/ml5-library/tree/release/src/SketchRNN)
+* [/src/SketchRNN/](https://github.com/ml5js/ml5-library/tree/development/src/SketchRNN)
 

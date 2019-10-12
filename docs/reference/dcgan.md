@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="generated map images" src="/images/reference__header-dcgan.png">
+    <img style="display:block; max-height:20rem" alt="generated map images" src="_media/reference__header-dcgan.png">
 </center>
 
 
@@ -102,17 +102,17 @@ dcgan.generate(callback, ?latentVector);
 ## Examples
 
 **plain javascript**
-* [DCGAN_LatentVector]()
-* [DCGAN_LatentVector_RandomWalk]()
-* [DCGAN_LatentVector_Slider]()
-* [DCGAN_Random]()
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_Random)
 
 
 **p5.js**
-* [DCGAN_LatentVector]()
-* [DCGAN_LatentVector_RandomWalk]()
-* [DCGAN_LatentVector_Slider]()
-* [DCGAN_Random]()
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_Random)
 
 **p5 web editor**
 * [DCGAN_LatentVector]()

@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="/../images/reference__header-imageClassifier.png">
+    <img style="display:block; max-height:20rem" alt="image classification of bird" src="_media/reference__header-imageClassifier.png">
 </center>
 
 
@@ -106,26 +106,31 @@ classifier.classify(?numberOfClasses ,?callback)
 ## Examples
 
 **plain javascript**
-* [ImageClassification]()
-* [ImageClassification_DoodleNet_Canvas]()
-* [ImageClassification_DoodleNet_Video]()
-* [ImageClassification_MultipleImages]()
-* [ImageClassification_Video]()
-* [ImageClassification_Video_Load]()
-* [ImageClassification_VideoScavengerHunt]()
-* [ImageClassification_VideoSound]()
-* [ImageClassification_VideoSoundTranslate]()
+* [ImageClassification](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification)
+* [ImageClassification_DoodleNet_Canvas](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_DoodleNet_Canvas)
+* [ImageClassification_DoodleNet_Video](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_DoodleNet_Video)
+* [ImageClassification_MultipleImages](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_MultipleImages)
+* [ImageClassification_Video](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_Video)
+* [ImageClassification_VideoScavengerHunt](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_VideoScavengerHunt)
+* [ImageClassification_VideoSound](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_VideoSound)
+* [ImageClassification_VideoSoundTranslate](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_VideoSoundTranslate)
+* [ImageClassification_Video_Load](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification_Video_Load)
 
 **p5.js**
-* [ImageClassification]()
-* [ImageClassification_DoodleNet_Canvas]()
-* [ImageClassification_DoodleNet_Video]()
-* [ImageClassification_MultipleImages]()
-* [ImageClassification_Video]()
-* [ImageClassification_Video_Load]()
-* [ImageClassification_VideoScavengerHunt]()
-* [ImageClassification_VideoSound]()
-* [ImageClassification_VideoSoundTranslate]()
+* [ImageClassification](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification)
+* [ImageClassification_DoodleNet_Canvas](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_DoodleNet_Canvas)
+* [ImageClassification_DoodleNet_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_DoodleNet_Video)
+* [ImageClassification_MultipleImages](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_MultipleImages)
+* [ImageClassification_Teachable-Machine](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_Teachable-Machine)
+* [ImageClassification_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_Video)
+* [ImageClassification_VideoScavengerHunt](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_VideoScavengerHunt)
+* [ImageClassification_VideoSound](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_VideoSound)
+* [ImageClassification_VideoSoundTranslate](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_VideoSoundTranslate)
+* [ImageClassification_Video_Load](https://github.com/ml5js/ml5-examples/tree/development/p5js/ImageClassification/ImageClassification_Video_Load)
+
+**p5.js Web Editor**
+
+* coming soon!
 
 ## Demo
 
@@ -151,4 +156,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/ImageClassifier]()
+* [/src/ImageClassifier](https://github.com/ml5js/ml5-library/tree/development/src/ImageClassifier)
