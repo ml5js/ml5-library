@@ -833,22 +833,25 @@ class NeuralNetwork {
    * @param {*} callback
    */
   async load(filesOrPath = null, callback) {
+    console.log(filesOrPath);
+    console.log(typeof filesOrPath);
 
     if (filesOrPath instanceof FileList) {
-      
+      console.log("FileList")
+
       const files = await Promise.all(
-        Array.from(filesOrPath).map( async (file) => {
+        Array.from(filesOrPath).map(async (file) => {
           if (file.name.includes('model.json')) {
-            return {name:"model", file}
+            return { name: "model", file }
           } else if (file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
-            return {name: "metadata", file:modelMetadata}
+            return { name: "metadata", file: modelMetadata }
           } else if (file.name.includes('.bin')) {
-            return {name:"weights", file}
+            return { name: "weights", file }
           }
-          return {name:null, file:null}
+          return { name: null, file: null }
         })
-       )
+      )
 
       const model = files.find(item => item.name === 'model').file;
       const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
@@ -864,21 +867,33 @@ class NeuralNetwork {
       // load the model
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
 
-    } else if(filesOrPath instanceof Object){
+    } else {
+      console.log("something else")
+      let pathObject;
+      if (typeof filesOrPath === 'string') {
+        console.log("string!")
+        pathObject = {
+          model: filesOrPath,
+          metadata: `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`,
+          weights: `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model.weights.bin`
+        };
+      } else {
+        pathObject = filesOrPath;
+      }
       // filesOrPath = {model: URL, metadata: URL, weights: URL}
-      
-      let modelMetadata = await fetch(filesOrPath.metadata);
+
+      let modelMetadata = await fetch(pathObject.metadata);
       modelMetadata = await modelMetadata.text();
       modelMetadata = JSON.parse(modelMetadata);
 
-      let modelJson = await fetch(filesOrPath.model);
+      let modelJson = await fetch(pathObject.model);
       modelJson = await modelJson.text();
-      const modelJsonFile = new File([modelJson], 'model.json', {type: 'application/json'});
+      const modelJsonFile = new File([modelJson], 'model.json', { type: 'application/json' });
 
-      let weightsBlob = await fetch(filesOrPath.weights);
+      let weightsBlob = await fetch(pathObject.weights);
       weightsBlob = await weightsBlob.blob();
-      const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', {type: 'application/macbinary'});
-      
+      const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', { type: 'application/macbinary' });
+
       this.data.data.inputMax = modelMetadata.data.inputMax;
       this.data.data.inputMin = modelMetadata.data.inputMin;
       this.data.data.outputMax = modelMetadata.data.outputMax;
@@ -886,19 +901,6 @@ class NeuralNetwork {
       this.data.meta = modelMetadata.meta;
 
       this.model = await tf.loadLayersModel(tf.io.browserFiles([modelJsonFile, weightsBlobFile]));
-
-    } else {
-      const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
-      let modelMetadata = await fetch(metaPath);
-      modelMetadata = await modelMetadata.json();
-
-      this.data.data.inputMax = modelMetadata.data.inputMax;
-      this.data.data.inputMin = modelMetadata.data.inputMin;
-      this.data.data.outputMax = modelMetadata.data.outputMax;
-      this.data.data.outputMin = modelMetadata.data.outputMin;
-      this.data.meta = modelMetadata.meta;
-
-      this.model = await tf.loadLayersModel(filesOrPath);
     }
     if (callback) {
       callback();
