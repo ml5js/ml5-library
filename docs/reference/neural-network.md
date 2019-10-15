@@ -440,8 +440,8 @@ neuralNetwork.load(?filesOrPath, ?callback)
 * coming soon
 
 **p5.js**
-- [NeuralNetwork_Simple-Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Classificatio)
-- [NeuralNetwork_Simple-Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Regressio)
+- [NeuralNetwork_Simple-Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Classification)
+- [NeuralNetwork_Simple-Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Regression)
 - [NeuralNetwork_XOR](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_XOR)
 - [NeuralNetwork_basics](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_basics)
 - [NeuralNetwork_co2net](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_co2net)
