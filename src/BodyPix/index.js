@@ -257,17 +257,17 @@ class BodyPix {
             // clean the following conditional statement up!
         } else if (optionsOrCallback instanceof HTMLImageElement 
             || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof HTMLVideoElement
             || optionsOrCallback instanceof ImageData) {
                 imgToSegment = optionsOrCallback;
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
             || optionsOrCallback.elt instanceof HTMLCanvasElement 
             || optionsOrCallback.elt instanceof ImageData)){
-                
-                if(optionsOrCallback.canvas instanceof HTMLCanvasElement){
-                    imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
-                } else {
-                    imgToSegment = optionsOrCallback.elt; // Handle p5.js image
-                }
+            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
+            imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.elt instanceof HTMLVideoElement) {
+            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(
@@ -353,6 +353,7 @@ class BodyPix {
             // clean the following conditional statement up!
         } else if (optionsOrCallback instanceof HTMLImageElement 
             || optionsOrCallback instanceof HTMLCanvasElement 
+            || optionsOrCallback instanceof HTMLVideoElement
             || optionsOrCallback instanceof ImageData) {
                 imgToSegment = optionsOrCallback;
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
@@ -361,6 +362,8 @@ class BodyPix {
             imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
+        } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.elt instanceof HTMLVideoElement) {
+            imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (!(this.video instanceof HTMLVideoElement)) {
             // Handle unsupported input
             throw new Error(

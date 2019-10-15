@@ -12,6 +12,7 @@ The U-Net is a convolutional neural network that was developed for biomedical im
 
 UNET allows you to segment an image, removing, for example, the background from video of you while sitting at your desk.
 
+
 ## Quickstart
 
 ```js
@@ -106,11 +107,11 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * [Zaid Alyafeai](https://github.com/zaidalyafeai)
+  * [Joey Lee](https://github.com/joeyklee)
 
 **Credits**:
-  * Paper Reference | Website URL | Github Repo | Book reference | etc
+  * UNET 'face' was trained by [Zaid Alyafeai](https://github.com/zaidalyafeai) using [mut1ny - Face/Head segmentation dataset](http://www.mut1ny.com/face-headsegmentation-dataset).
 
 ## Source Code
 
