@@ -457,8 +457,7 @@ neuralNetwork.load(?filesOrPath, ?callback)
 - [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+* coming soon
 
 ## Demo
 
@@ -481,6 +480,6 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/MagicFeature]()
+* [/src/NeuralNetwork](https://github.com/ml5js/ml5-library/tree/development/src/NeuralNetwork)
 
 
