@@ -10,6 +10,8 @@
 
 The ml5.soundClassifier() allows you to classify audio. With the right pre-trained models, you can detect whether a certain noise was made (e.g. a clapping sound or a whistle) or a certain word was said (e.g. Up, Down, Yes, No). At this moment, with the ml5.soundClassifier(), you can use your own custom pre-trained speech commands or use the the "SpeechCommands18w" which can recognize "the ten digits from "zero" to "nine", "up", "down", "left", "right", "go", "stop", "yes", "no", as well as the additional categories of "unknown word" and "background noise"."
 
+**Train your own sound classifier model with Teachable Machine**: If you'd like to train your own custom sound classification model, try [Google's Teachable Machine - coming soon!](https://teachablemachine.withgoogle.com/io19)
+
 ## Quickstart
 
 ```js
@@ -44,7 +46,15 @@ const soundclassifier = ml5.soundClassifier(?model, ?options, ?callback)
 By default the soundClassifier will start the default microphone.
 
 #### Parameters
-* **model**: Optional. Model name or URL path to a `model.json`
+* **model**: Optional. Model name or URL path to a `model.json`. Here are some options:
+  * `SpeechCommands18w`: loads the 18w speech commands 
+    ```js
+    const classifier = ml5.soundClassifier('SpeechCommands18w', modelReady);
+    ```
+  * Custom model made in Google's Teachable Machine:
+    ```js
+    const classifier = ml5.soundClassifier('path/to/model.json', modelReady);
+    ```
 * **callback**: Optional. A function to run once the model has been loaded.
 * **options**: Optional. An object describing a model accuracy and performance. The available parameters are:
   

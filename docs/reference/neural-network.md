@@ -408,6 +408,20 @@ neuralNetwork.load(?filesOrPath, ?callback)
 * **filesOrPath**: REQUIRED. String | InputFiles. 
   * If a string path to the `model.json` data object is given, then the `model.json`, `model_meta.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
   * If InputFiles from html input `type="file"`. Then make sure to select ALL THREE of the `model.json`, `model_meta.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
+  * Method 1: using a json object. In this case, the paths to the specific files are set directly.
+    ```js
+    const modelInfo = {
+      model: 'path/to/model.json',
+      metadata: 'path/to/model_meta.json',
+      weights: 'path/to/model.weights.bin'
+    }
+    neuralNetwork.load(modelInfo, modelLoadedCallback)
+    ```
+  * Method 2: specifying only the path to th model.json. In this case, the `model_meta.json` and the `model.weights.bin` are assumed to be in the same directory, named exactly like `model_meta.json` and `model.weights.bin`.
+    ```js
+    neuralNetwork.load('path/to/model.json', modelLoadedCallback)
+    ``` 
+  * Method 3: using the `<input type="file" multiple>`
 * **callback**: Optional. function. A callback that is called after the model has been loaded.
 
 📤 **Outputs**
@@ -422,17 +436,28 @@ neuralNetwork.load(?filesOrPath, ?callback)
 ## Examples
 
 **plain javascript**
-* [Example 1]()
-* [Example 2]()
 
+* coming soon
 
 **p5.js**
-* [Example 1]()
-* [Example 2]()
+- [NeuralNetwork_Simple-Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Classification)
+- [NeuralNetwork_Simple-Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Regression)
+- [NeuralNetwork_XOR](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_XOR)
+- [NeuralNetwork_basics](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_basics)
+- [NeuralNetwork_co2net](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_co2net)
+- [NeuralNetwork_color_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_color_classifier)
+- [NeuralNetwork_load_model](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_model)
+- [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
+- [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
+- [NeuralNetwork_multiple-layers](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_multiple-layer)
+- [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_face)
+- [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
+- [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
+- [NeuralNetwork_titanic](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_titanic)
+- [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+* coming soon
 
 ## Demo
 
@@ -455,6 +480,6 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/MagicFeature]()
+* [/src/NeuralNetwork](https://github.com/ml5js/ml5-library/tree/development/src/NeuralNetwork)
 
 
