@@ -21,46 +21,34 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 There are several ways you can use the ml5.js library:
 
+
+
+
+
 <p id="latest-version">
 
 * You can use the latest version (0.3.1) by adding it to the head section of your HTML document:
 
 **v0.3.1**
-```javascript
-<script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
-```
+
+    <script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
-
-
-
-* If you need to use an earlier version for any reason, you can change the version number.
-
-
-
-<p id="legacy-versions">
-
-**v0.3.0**
-
-    <script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+    
+    
     
 
-**v0.3.0**
 
-    <script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+* If you need to use an earlier version for any reason, you can change the version number. The [previous versions of ml5 can be found here](https://www.npmjs.com/package/ml5). You can use those previous versions by replacing `<version>` with the ml5 version of interest:
 
+```js
+<script src="https://unpkg.com/ml5@<version>/dist/ml5.min.js" type="text/javascript"></script>
+```
 
-**v0.2.3**
-
-    <script src="https://unpkg.com/ml5@0.2.3/dist/ml5.min.js" type="text/javascript"></script>
-
-
-**v0.1.3**
-
-    <script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
-
-
-</p data-id="legacy-versions">
+For example:
+```js
+<script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
+```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
 
