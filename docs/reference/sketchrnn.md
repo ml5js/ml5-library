@@ -18,7 +18,7 @@ The ml5 library includes [a list of supported SketchRNN models](https://github.c
 
 ```js
 // Create a new SketchRNN Instance
-const model = ml5.SketchRNN("cat", modelReady);
+const model = ml5.sketchRNN("cat", modelReady);
 
 // When the model is loaded
 function modelReady() {
@@ -40,7 +40,7 @@ function gotSketch(err, result) {
 ### Initialize
 
 ```js
-const sketchrnn = ml5.SketchRNN(model, ?callback)
+const sketchrnn = ml5.sketchRNN(model, ?callback)
 ```
 
 #### Parameters
