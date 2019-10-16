@@ -131,8 +131,8 @@ No demos yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * YG Zhang & Rui An
+  * Additional contributions by Joey Lee
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

@@ -141,20 +141,19 @@ faceapi.detectSingle(optionsOrCallback, configOrCallback, cb)
 
 ## Examples
 
-**plain javascript**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Image_Landmarks/)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks/)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
-
-
 **p5.js**
 * [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Image_Landmarks)
 * [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks)
 * [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+* [FaceApi_Image_Landmarks]() - coming soon
+* [FaceApi_Video_Landmarks]() - coming soon
+
+**plain javascript**
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Image_Landmarks/)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks/)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
 
 ## Demo
 
@@ -168,11 +167,10 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Ported by [Joey Lee](https://jk-lee.com)
 
 **Credits**:
-  * Paper Reference | Website URL | Github Repo | Book reference | etc
+  * [Face-api.js](https://github.com/justadudewhohacks/face-api.js/blob/master/README.md) is an open source project built by [Vincent Mühler](https://github.com/justadudewhohacks).
 
 ## Source Code
 

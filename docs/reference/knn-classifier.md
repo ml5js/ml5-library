@@ -226,13 +226,6 @@ knnClassifier.load(path, callback?)
 
 ## Examples
 
-**plain javascript**
-* [KNNClassification_PoseNet](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_PoseNet)
-* [KNNClassification_Video](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_Video)
-* [KNNClassification_VideoSound](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_VideoSound)
-* [KNNClassification_VideoSquare](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_VideoSquare)
-
-
 **p5.js**
 * [KNNClassification_PoseNet](https://github.com/ml5js/ml5-examples/tree/development/p5js/KNNClassification/KNNClassification_PoseNet)
 * [KNNClassification_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/KNNClassification/KNNClassification_Video)
@@ -240,10 +233,19 @@ knnClassifier.load(path, callback?)
 * [KNNClassification_VideoSquare](https://github.com/ml5js/ml5-examples/tree/development/p5js/KNNClassification/KNNClassification_VideoSquare)
 
 **p5 web editor**
-* [KNNClassification_PoseNet]()
-* [KNNClassification_Video]()
-* [KNNClassification_VideoSound]()
-* [KNNClassification_VideoSquare]()
+* [KNNClassification_PoseNet](https://editor.p5js.org/ml5/sketches/4c7Fgs7baz)
+* [KNNClassification_Video](https://editor.p5js.org/ml5/sketches/ZIDZyjW5LM)
+* [KNNClassification_VideoSound](https://editor.p5js.org/ml5/sketches/It5-jyEY2R)
+* [KNNClassification_VideoSquare](https://editor.p5js.org/ml5/sketches/S3JfKStZ8I)
+
+
+**plain javascript**
+* [KNNClassification_PoseNet](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_PoseNet)
+* [KNNClassification_Video](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_Video)
+* [KNNClassification_VideoSound](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_VideoSound)
+* [KNNClassification_VideoSquare](https://github.com/ml5js/ml5-examples/tree/development/javascript/KNNClassification/KNNClassification_VideoSquare)
+
+
 
 ## Demo
 
@@ -263,8 +265,7 @@ No demos yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Yining Shi & Cristobal Valenzuela
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
