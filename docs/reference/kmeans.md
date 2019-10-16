@@ -1,7 +1,7 @@
 # Kmeans Clustering
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="groups of points colored depending on which cluster it has been categorized into by the kmeans algorithm" src="_media/reference__header-kmeans.png">
 </center>
 
 
@@ -12,18 +12,21 @@ The KMeans clustering algorithm. Read more about it [here](https://en.wikipedia.
 ## Quickstart
 
 ```js
+const data = [{x: 0, y:0}, {x:0, y:1},{x:1, y:0}, {x:1, y:1}]
+const options = {
+    'k': 3,
+    'maxIter': 4,
+    'threshold': 0.5,
+};
 // Initialize the magicFeature
-const magic = ml5.magicFeature('sparkles', modelLoaded);
+const kmeans = ml5.kmeans(data, options, clustersCalculated);
 
 // When the model is loaded
-function modelLoaded() {
-  console.log('Model Loaded!');
+function clustersCalculated() {
+  console.log('Points Clustered!');
+  console.log(kmeans.dataset)
 }
 
-// Make some sparkles
-magic.makeSparkles(100, function(err, results) {
-  console.log(results);
-});
 ```
 
 
@@ -32,109 +35,62 @@ magic.makeSparkles(100, function(err, results) {
 ### Initialize
 
 ```js
-const magic = ml5.magicFeature(requiredInput, ?optionalInput1, ?optionalInput2)
+const kmeans = ml5.kmeans(data, ?options, ?callback);
 ```
 
 #### Parameters
-* **requiredInput**: REQUIRED. Notice there is no question mark in front of the input.
-* **optionalInput1**: OPTIONAL. Notice the `?` indicates an optional parameter.
-* **optionalInput2**: OPTIONAL. A description of some kind of object with some properties. Notice the `?` indicates an optional parameter.
+* **data**: REQUIRED. JSON object | Data URL. Can be a CSV or JSON dataset. Your data might look like:
+  * csv:
+    ```js
+    x1,y1
+    1,2
+    3,4
+    5,6
+    ```
+  * json:
+    ```js
+    [{x: 0, y:0}, {x:0, y:1},{x:1, y:0}, {x:1, y:1}]
+    ```
+* **options**: OPTIONAL. Sets the options including:
+  * `k`: the number of clusters
+  * `maxIter`: Max number of iterations to try before forcing convergence.
+  * `threshold`: Threshold for updated centriod distance before declaring convergence.
+* **callback**: OPTIONAL. A callback function that is called once the kmeans clusters have been calculated.
   
-    ```
-    { 
-      sparkleCount: 100, 
-      delightFactor: 1.0, 
-      party: true 
-    }
-    ```
 
 ### Properties
 
 
-<!-- /////////////////////
-PROPERTY DEFINITION START 
-* Notice that each property definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
 ***
-#### .property1
-> *String*. A description of the property associated with the new model instance.
-***
-<!-- /////////////////////
-PROPERTY DEFINITION END 
-///////////////////////// -->
-
-***
-#### .property2
-> *Object*. A description of the property associated with the new model instance.
+#### .config
+> *Object*: object containing the configuration of the kmeans
 ***
 
 ***
-#### .property3
-> *Object*. A description of the property associated with the new model instance.
+#### .dataset
+> **Array**: an array of objects containing the original data where each object is a "row" of data with a property called `centroid` indicating which cluster this point belongs to.
 ***
+***
+#### .dataTensor
+> **Tensor**: an tensorflow tensor representing the `.dataset` property
+***
+***
+#### .centroids
+> **Tensor**: an tensorflow tensor representing the `.centroids` 
+***
+
 
 
 ### Methods
 
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-* Notice that each function definition is wrapped in three stars `***`
-* This creates lines to contain everything
-///////////////////////// -->
-***
-#### .makeSparkles()
-> Given a number, will make magicSparkles
 
-```js
-classifier.makeSparkles(?numberOfSparkles, ?callback)
-```
-
-📥 **Inputs**
-
-* **numberOfSparkles**: Optional. Number. The number of sparkles you want to return.
-* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
-
-📤 **Outputs**
-
-* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
-
-***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
-
-
-<!-- /////////////////////
-FUNCTION DEFINITION START 
-///////////////////////// -->
-***
-#### .makeDisappear()
-> Given an image, will make objects in the image disappear
-
-```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
-```
-
-📥 **Inputs**
-* **input**: REQUIRED. HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. The image or video you want to run the function on.
-* **numberOfObjects**: Optional. Number. The number of objects you want to disappear.
-* **callback**: Optional. Function. A function to handle the results of `.makeDisappear()`. Likely a function to do something with the results of the image where objects have disappeared.
-
-📤 **Outputs**
-
-* **Image**: Returns an image.
-
-***
-<!-- /////////////////////
-FUNCTION DEFINITION END 
-///////////////////////// -->
+* The ml5.kmeans() calculates the kmeans clusters of the input data. See usage above.
 
 
 ## Examples
 
 **p5.js**
-* coming soon
+* [KMeans_imageSegmentation](https://github.com/ml5js/ml5-examples/tree/development/p5js/KMeans/KMeans_imageSegmentation/)
 
 **p5 web editor**
 * coming soon
@@ -142,23 +98,22 @@ FUNCTION DEFINITION END
 **plain javascript**
 * coming soon
 
+**d3.js**
+* [KMeans_GaussianClusterDemo](https://github.com/ml5js/ml5-examples/tree/development/d3/KMeans/KMeans_GaussianClusterDemo)
+
 ## Demo
 
 No demos yet - contribute one today!
 
 ## Tutorials
 
-### MagicFeature Tutorial 1 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/D9BoBSkLvFo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-### MagicFeature Tutorial 2 via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/yNkAuWz5lnY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+No tutorials yet - contribute one today!
 
 
 ## Acknowledgements
 
 **Contributors**:
-  * Jared Wilbur
+  * [Jared Wilber](https://www.jwilber.me/)
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
