@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="Illustration of a background masked behind a person" src="_media/reference__header-unet.png">
 </center>
 
 
@@ -10,7 +10,9 @@
 
 The U-Net is a convolutional neural network that was developed for biomedical image segmentation at the Computer Science Department of the University of Freiburg, Germany.[1] The network is based on the fully convolutional network [2] and its architecture was modified and extended to work with fewer training images and to yield more precise segmentations.
 
-UNET allows you to segment an image, removing, for example, the background from video of you while sitting at your desk.
+UNET allows you to segment an image. 
+
+The ml5 unet `face` allows you to remove, for example, the background from video of the upper body of person.
 
 
 ## Quickstart
