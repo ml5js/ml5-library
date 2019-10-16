@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="placeholder" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="cat detected by yolo" src="_media/reference__header-yolo.png">
 </center>
 
 
