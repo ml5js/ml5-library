@@ -220,18 +220,18 @@ featureExtractor.predict(input, ?callback)
 
 ## Examples
 
-**plain javascript**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
-
-
 **p5.js**
 * [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Regression)
 * [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Classification)
 
 **p5 web editor**
-* [FeatureExtractor_Image_Regression]()
-* [FeatureExtractor_Image_Classification]()
+* [FeatureExtractor_Image_Classification](https://editor.p5js.org/ml5/sketches/4AWAKkeZBx)
+* [FeatureExtractor_Image_Regression](https://editor.p5js.org/ml5/sketches/AAA54W1ajd)
+
+**plain javascript**
+* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
+* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
+
 
 
 ## Demo
@@ -252,8 +252,7 @@ No demos yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Yining Shi & Cristobal Valenzuela
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

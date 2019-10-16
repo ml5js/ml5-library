@@ -1,5 +1,4 @@
-# NameOfFeature
-
+# Kmeans Clustering
 
 <center>
     <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
@@ -8,12 +7,7 @@
 
 ## Description
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+The KMeans clustering algorithm. Read more about it [here](https://en.wikipedia.org/wiki/K-means_clustering)
 
 ## Quickstart
 
@@ -140,16 +134,13 @@ FUNCTION DEFINITION END
 ## Examples
 
 **p5.js**
-* [Example 1]()
-* [Example 2]()
+* coming soon
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+* coming soon
 
 **plain javascript**
-* [Example 1]()
-* [Example 2]()
+* coming soon
 
 ## Demo
 
@@ -167,14 +158,13 @@ No demos yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Jared Wilbur
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
 
 ## Source Code
 
-* [/src/MagicFeature]()
+* [/src/KMeans](https://github.com/ml5js/ml5-library/tree/development/src/KMeans)
 
 

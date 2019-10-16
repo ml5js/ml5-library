@@ -28,6 +28,7 @@
     * [NeuralNetwork](/reference/neural-network.md)
     * [FeatureExtractor](/reference/feature-extractor.md)
     * [KNNClassifier](/reference/knn-classifier.md)
+    * [kmeans](/reference/kmeans.md)
   * **Image** 🖼
     * [ImageClassifier](/reference/image-classifier.md)
     * [PoseNet](/reference/posenet.md)

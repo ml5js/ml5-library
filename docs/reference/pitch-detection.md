@@ -103,20 +103,20 @@ detector.getPitch(?callback)
 
 ## Examples
 
-**plain javascript**
-* [PitchDetection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection)
-* [PitchDetection_Game](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection_Game)
-* [PitchDetection_Piano](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection_Piano)
-
 **p5.js**
 * [PitchDetection](https://github.com/ml5js/ml5-examples/tree/development/p5js/PitchDetection/PitchDetection)
 * [PitchDetection_Game](https://github.com/ml5js/ml5-examples/tree/development/p5js/PitchDetection/PitchDetection_Game)
 * [PitchDetection_Piano](https://github.com/ml5js/ml5-examples/tree/development/p5js/PitchDetection/PitchDetection_Piano)
 
 **p5 web editor**
-* [PitchDetection]()
-* [PitchDetection_Game]()
-* [PitchDetection_Piano]()
+* [PitchDetection](https://editor.p5js.org/ml5/sketches/RmX1EsBzKi)
+* [PitchDetection_Game](https://editor.p5js.org/ml5/sketches/kQ-qvPySiw-)
+* [PitchDetection_Piano](https://editor.p5js.org/ml5/sketches/fzc0dAdUpMs)
+
+**plain javascript**
+* [PitchDetection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection)
+* [PitchDetection_Game](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection_Game)
+* [PitchDetection_Piano](https://github.com/ml5js/ml5-examples/tree/development/javascript/PitchDetection/PitchDetection_Piano)
 
 ## Demo
 
@@ -129,8 +129,7 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Hannah Davis
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

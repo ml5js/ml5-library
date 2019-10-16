@@ -191,7 +191,7 @@ bodyPix.segment(?input, ?options, callback)
 
 📥 **Inputs**
 
-* **input**: HTMLImageElement | ImageData | HTMLCanvasElement. NOTE: Videos should be added in the constructor.
+* **input**: HTMLImageElement | | HTMLVideoElement | ImageData | HTMLCanvasElement. NOTE: Videos can be added in the constructor.
 * **options**: Object. You can change the `outputStride  and   `segmentationThreshold`
 * **callback**: Function. A function to handle the results of `.segment()`. Likely a function to do something with the segmented image.
 
@@ -214,7 +214,7 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 📥 **Inputs**
 
-* **input**: HTMLImageElement | ImageData | HTMLCanvasElement. NOTE: Videos should be added in the constructor.
+* **input**: HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. NOTE: Videos can be added in the constructor.
 * **options**: Object. You can change the `outputStride  and   `segmentationThreshold`
 * **callback**: Function. A function to handle the results of `.segment()`. Likely a function to do something with the segmented image.
 
@@ -227,11 +227,6 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 ## Examples
 
-**plain javascript**
-* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Image)
-* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam)
-* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam_Parts)
-
 **p5.js**
 * [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Image)
 * [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Webcam)
@@ -240,6 +235,11 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 **p5 web editor**
 * none yet
+
+**plain javascript**
+* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Image)
+* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam_Parts)
 
 ## Demo
 
