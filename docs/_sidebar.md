@@ -41,7 +41,7 @@
     * [SketchRNN](/reference/sketchrnn.md)
     * [YOLO](/reference/yolo.md)
   * **Sound** 📻
-    * [SpeechClassification](/reference/speech-classifier.md)
+    * [SoundClassification](/reference/sound-classifier.md)
     * [PitchDetection](/reference/pitch-detection.md)
   * **Text** 📕
     * [CharRNN](/reference/charrnn.md)

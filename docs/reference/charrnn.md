@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="image of book with text that says, 'you are designing for humans not machines'" src="_media/reference__header-charrnn.png">
 </center>
 
 
