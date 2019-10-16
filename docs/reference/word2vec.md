@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="illustration of an equation with egg plus cat equals kitten" src="_media/reference__header-word2vec.png">
 </center>
 
 

@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="placeholder" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="placeholder" src="_media/reference__header-sound-classifier.png">
 </center>
 
 

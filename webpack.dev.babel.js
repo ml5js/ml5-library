@@ -13,7 +13,8 @@ export default merge(common, {
   devtool: 'inline-source-map',
   devServer: {
     watchContentBase: true,
-    contentBase: join(__dirname, './dist')
+    contentBase: join(__dirname, './dist'),
+    disableHostCheck: true,
   },
   plugins: [
     new HtmlWebpackPlugin({

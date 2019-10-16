@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="Illustration of a brain being sent through a funnel" src="_media/reference__header-feature-extractor.png">
 </center>
 
 
