@@ -152,20 +152,21 @@ charrnn.reset()
 
 ## Examples
 
-**plain javascript**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text_Stateful)
-
-
 **p5.js**
 * [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Interactive)
 * [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text)
 * [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+
+* [CharRNN_Interactive](https://editor.p5js.org/ml5/sketches/u7FVGffzX)
+* [CharRNN_Text](https://editor.p5js.org/ml5/sketches/fAzNrafbpa)
+* [CharRNN_Text_Stateful](https://editor.p5js.org/ml5/sketches/AmPtRcgoX7)
+
+**plain javascript**
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text_Stateful)
 
 ## Demo
 
@@ -178,8 +179,7 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Cristobal Valenzuela and Memo Atken
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

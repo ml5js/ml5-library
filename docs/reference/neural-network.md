@@ -435,9 +435,6 @@ neuralNetwork.load(?filesOrPath, ?callback)
 
 ## Examples
 
-**plain javascript**
-
-* coming soon
 
 **p5.js**
 - [NeuralNetwork_Simple-Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Classification)
@@ -457,6 +454,10 @@ neuralNetwork.load(?filesOrPath, ?callback)
 - [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
+* coming soon
+
+**plain javascript**
+
 * coming soon
 
 ## Demo

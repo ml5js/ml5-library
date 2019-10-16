@@ -139,16 +139,15 @@ FUNCTION DEFINITION END
 
 ## Examples
 
-**plain javascript**
-* [Example 1]()
-* [Example 2]()
-
-
 **p5.js**
 * [Example 1]()
 * [Example 2]()
 
 **p5 web editor**
+* [Example 1]()
+* [Example 2]()
+
+**plain javascript**
 * [Example 1]()
 * [Example 2]()
 

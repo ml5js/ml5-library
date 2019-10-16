@@ -88,14 +88,15 @@ unet.segment(?video, ?callback);
 
 ## Examples
 
-**plain javascript**
-* [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/UNET/UNET_webcam)
-
 **p5.js**
 * [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/UNET/UNET_webcam)
 
 **p5 web editor**
 * [UNET_webcam]()
+
+**plain javascript**
+* [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/UNET/UNET_webcam)
+
 
 ## Demo
 
@@ -109,8 +110,8 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * [Zaid Alyafeai](https://github.com/zaidalyafeai)
-  * [Joey Lee](https://github.com/joeyklee)
+  * Developed by [Zaid Alyafeai](https://github.com/zaidalyafeai)
+  * Additional contributions by [Joey Lee](https://github.com/joeyklee)
 
 **Credits**:
   * UNET 'face' was trained by [Zaid Alyafeai](https://github.com/zaidalyafeai) using [mut1ny - Face/Head segmentation dataset](http://www.mut1ny.com/face-headsegmentation-dataset).
