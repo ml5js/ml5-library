@@ -4,7 +4,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="neural network placeholder" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="Illustration of brain" src="_media/reference__header-neural-network.png">
 </center>
 
 

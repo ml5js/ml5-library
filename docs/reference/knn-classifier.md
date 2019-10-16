@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="Illustration of hands making the signs of rock, paper, and scissors on top of different labels" src="_media/reference__header-knn-classifier.png">
 </center>
 
 

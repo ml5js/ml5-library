@@ -52,9 +52,9 @@
 <div class="Sidebar__section-divider">&nbsp;</div>
 
 * **Contributing** 🏗 
-  * [Contributor Notes]()
-  * [Maintainer Notes]()
-  * [Style Guide]()
+  * [Contributor Notes](/styleguide/contributor-notes.md)
+  * [Maintenance Notes](/styleguide/maintenance-notes.md)
+  * Style Guide
     * [Reference guidelines](/styleguide/reference-guidelines.md)
     * [Development guidelines](/styleguide/development-guidelines.md)
     * [Design guidelines](/styleguide/design-guidelines.md)
