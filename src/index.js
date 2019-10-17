@@ -45,6 +45,7 @@ const withPreload = {
   word2vec,
   YOLO,
   uNet,
+  sentiment,
   bodyPix,
   faceApi,
 };
@@ -54,6 +55,5 @@ module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   ...imageUtils,
   tf,
   version,
-  sentiment,
   neuralNetwork,
 });
