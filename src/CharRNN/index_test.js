@@ -14,14 +14,14 @@ const RNN_MODEL_DEFAULTS = {
 
 const RNN_DEFAULTS = {
   seed: 'a',
-  length: 20,
+  length: 5,
   temperature: 0.5,
   stateful: false
 }
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 30,
+  length: 5,
   temperature: 0.7
 }
 
@@ -49,12 +49,12 @@ describe('charRnn', () => {
   describe('generate', () => {
     it('Should generate content that follows default options if given an empty object', async() => {
       const result = await rnn.generate({});
-      expect(result.sample.length).toBe(20);
+      expect(result.sample.length).toBe(5);
     });
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(30);
+      expect(result.sample.length).toBe(5);
     });
   });
 });
