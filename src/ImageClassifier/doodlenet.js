@@ -15,9 +15,15 @@ const DEFAULTS = {
 function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement || img instanceof HTMLVideoElement || img instanceof HTMLCanvasElement) {
+    if (img instanceof HTMLImageElement 
+      || img instanceof HTMLVideoElement 
+      || img instanceof HTMLCanvasElement
+      || img instanceof ImageData) {
       image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement || img.elt instanceof HTMLVideoElement || img.elt instanceof HTMLCanvasElement)) {
+    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement 
+      || img.elt instanceof HTMLVideoElement 
+      || img.elt instanceof HTMLCanvasElement
+      || img.elt instanceof ImageData)) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image, video and canvas.
     }
   } else {
@@ -28,8 +34,9 @@ function preProcess(img, size) {
   if (normalized.shape[0] !== size || normalized.shape[1] !== size) {
     resized = tf.image.resizeBilinear(normalized, [size, size]);
   }
-  const [r, g, b] = tf.split(resized, 3, 2);
-  const gray = (r.add(g).add(b)).div(tf.scalar(3)).round(); // Get average r,g,b color value and round to 0 or 1
+
+  const [r, g, b] = tf.split(resized, 3, 3);
+  const gray = (r.add(g).add(b)).div(tf.scalar(3)).floor(); // Get average r,g,b color value and round to 0 or 1
   const batched = gray.reshape([1, size, size, 1]);
   return batched;
 }

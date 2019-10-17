@@ -1,23 +1,57 @@
-## → Description 📝
+<!--------------------------------------------
+🌈DEAR BELOVED ML5 COMMUNITY MEMBER. WELCOME. 🌈
+---------------------------------------------->
 
-A clear and concise description of what the issue is about. Let us know if you:
+Dear ml5 community, 
 
-- found a bug 🐛
-- want to suggest an update 💡
-- have an idea for a new feature 🆕 
-
-
-
-## → Screenshots 🖼
-(Any relevant screenshots, sketches, or helpful concept diagrams)
+I'm submitting a new issue. Please see the details below.
 
 
-## → Helpful Information 🦄
 
-A list of relevant information for this issue. This will help people navigate the project and offer some clues of where to start. Depending on the nature of this issue, important and helpful information might include:
+### → Step 1: Describe the issue 📝
+> Did you find a bug? Want to suggest an idea for feature?
 
-- **Web browser and version** (e.g. Firefox version 65, Chrome version 71.0)
-- **Operating System** (e.g. MacOS, Windows, Ubuntu)
-- Steps to reproduce the issue
-- ml5 version you're using 
-- Links to example code in the [p5 web editor](https://editor.p5js.org) or other online shareable code editor
+
+
+
+### → Step 2: Screenshots or Relevant Documentation 🖼
+> Here's some helpful screenshots and/or documentation of the new feature 
+
+
+
+### → Step 3: Share an example of the issue 🦄
+> Here's some example code or a demonstration of  in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
+
+
+
+
+
+
+**Other relevant information, if applicable**
+
+### → Describe your setup 🦄
+> Here's some helpful information about my setup...
+
+- **Web browser & version**:
+- **Operating System**:
+- **ml5 version you're using**:
+- **Any additional notes**
+
+
+
+<!--------------------------------------------
+🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
+DEAR BELOVED ML5 COMMUNITY MEMBER. WELCOME.
+
+BEFORE SUBMITTING AN ISSUE PLEASE MAKE
+SURE TO SUBMIT THE RELEVANT INFORMATION
+TO THE SECTIONS LISTED BELOW. 
+HELP US HELP YOU BY PROVIDING ALL THE HELPFUL
+INFORMATION THAT WILL ALLOW THE ML5 COMMUNITY
+TO UNDERSTAND WHAT YOUR ISSUE SUBMISSION IS ABOUT.
+WE WILL PRIORITIZE WELL DOCUMENTED ISSUES.
+
+THANK YOU! MERCI! ABRIGADO! GRACIAS! DANKE!
+🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
+---------------------------------------------->
+

@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import { array3DToImage } from '../utils/imageUtilities';
 import Video from '../utils/Video';
+import p5Utils from '../utils/p5Utils';
 
 const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json';
 const imageSize = 128;
@@ -40,10 +41,10 @@ class UNET extends Video {
   }
 
   // check if p5js
-  static checkP5() {
-    if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
-    return false;
-  }
+  // static checkP5() {
+  //   if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
+  //   return false;
+  // }
 
   async segment(inputOrCallback, cb) {
     await this.ready;
@@ -51,9 +52,12 @@ class UNET extends Video {
     let callback = cb;
 
     if (inputOrCallback instanceof HTMLImageElement
-      || inputOrCallback instanceof HTMLVideoElement) {
+      || inputOrCallback instanceof HTMLVideoElement
+      || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement || inputOrCallback.elt instanceof HTMLVideoElement)) {
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
+      || inputOrCallback.elt instanceof HTMLVideoElement
+      || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
@@ -105,8 +109,10 @@ class UNET extends Video {
     const raw = await tf.browser.toPixels(tensor);
     let image;
 
-    if (UNET.checkP5()) {
-      image = window.loadImage(dom.src);
+    if (p5Utils.checkP5()) {
+        const blob1 = await p5Utils.rawToBlob(raw, imageSize, imageSize);
+        const p5Image1 = await p5Utils.blobToP5Image(blob1);
+        image = p5Image1;
     }
 
     return {

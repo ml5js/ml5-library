@@ -13,7 +13,7 @@ const DEFAULTS = {
   batchSize: 0.4,
   topk: 3,
   alpha: 1,
-  version: 1,
+  version: 2,
 };
 
 describe('imageClassifier', () => {
@@ -37,7 +37,7 @@ describe('imageClassifier', () => {
   }
 
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
     classifier = await imageClassifier('MobileNet', undefined, {});
   });
 
