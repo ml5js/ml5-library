@@ -55,7 +55,7 @@ This example is built with p5.js. You can also find the same example without p5.
 </div> -->
 
 <!-- added inline height -->
-<div style="height:600px" class="iframe__container iframe__container--video"><iframe src="https://ml5js.github.io/ml5-examples/p5js/ImageClassification/ImageClassification" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<div style="height:800px" class="iframe__container iframe__container--video"><iframe src="https://ml5js.github.io/ml5-examples/p5js/ImageClassification/ImageClassification" frameborder="0" height="800px" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 ## Code
 
