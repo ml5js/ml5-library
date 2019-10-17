@@ -25,7 +25,7 @@ The fastest way to get started exploring the creative possibilities of ml5.js ar
 ***
 #### Quickstart: Plain JavaScript
 
-Reference the [latest version](https://unpkg.com/ml5@0.3.1/dist/ml5.min.js) of ml5.js using a script tag in an HTML file as below: 
+Reference the [latest version](https://unpkg.com/ml5@0.4.0/dist/ml5.min.js) of ml5.js using a script tag in an HTML file as below: 
 
 
 In an **index.html** file, copy and paste the following and open up that file in your web browser. 
