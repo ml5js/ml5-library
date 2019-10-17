@@ -14,14 +14,14 @@ const RNN_MODEL_DEFAULTS = {
 
 const RNN_DEFAULTS = {
   seed: 'a',
-  length: 5,
+  length: 20,
   temperature: 0.5,
   stateful: false
 }
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 5,
+  length: 10,
   temperature: 0.7
 }
 
@@ -36,7 +36,7 @@ describe('charRnn', () => {
   it('instantiates an rnn with all the defaults', async () => {
     expect(rnn.ready).toBeTruthy();
     expect(rnn.defaults.seed).toBe(RNN_DEFAULTS.seed);
-    // expect(rnn.defaults.length).toBe(RNN_DEFAULTS.length);
+    expect(rnn.defaults.length).toBe(RNN_DEFAULTS.length);
     expect(rnn.defaults.temperature).toBe(RNN_DEFAULTS.temperature);
     expect(rnn.defaults.stateful).toBe(RNN_DEFAULTS.stateful);
   });
@@ -49,12 +49,12 @@ describe('charRnn', () => {
   describe('generate', () => {
     it('Should generate content that follows default options if given an empty object', async() => {
       const result = await rnn.generate({});
-      expect(result.sample.length).toBe(5);
+      expect(result.sample.length).toBe(20);
     });
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(5);
+      expect(result.sample.length).toBe(RNN_OPTIONS.length);
     });
   });
 });
