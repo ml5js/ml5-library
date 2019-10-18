@@ -17,15 +17,7 @@
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
     "dev:docs": "docsify serve docs",
-    "update:packageVersion": "node ./scripts/updatePackageVersion.js",
-    "checkout:latest": "git checkout -b v$npm_package_version",
-    "release:prep": "npm-run-all --sequential update:packageVersion checkout:latest",
     "update:readme": "node ./scripts/updateReadme.js",
-    "release:build": "npm install && npm run build",
-    "release:commitAndPush": "git add . && git commit -m 'bumps version and adds latest build' && git push origin v$npm_package_version",
-    "release:tag": "git tag v$npm_package_version && git push --tags",
-    "development:sync": "git checkout development && git fetch && git pull",
-    "release:sync": "git checkout release && git fetch && git pull",
     "publish:npm": "npm publish"
   },
   "repository": {
