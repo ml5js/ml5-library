@@ -37,7 +37,7 @@ describe('imageClassifier', () => {
   }
 
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
     classifier = await imageClassifier('MobileNet', undefined, {});
   });
 

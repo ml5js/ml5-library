@@ -21,7 +21,7 @@ const RNN_DEFAULTS = {
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 30,
+  length: 10,
   temperature: 0.7
 }
 
@@ -54,7 +54,7 @@ describe('charRnn', () => {
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(30);
+      expect(result.sample.length).toBe(RNN_OPTIONS.length);
     });
   });
 });
