@@ -36,6 +36,9 @@ const imageSize = 416;
 
 class YOLOBase extends Video {
   /**
+  * @deprecated Please use ObjectDetector class instead
+  */
+  /**
    * @typedef {Object} options
    * @property {number} filterBoxesThreshold - default 0.01
    * @property {number} IOUThreshold - default 0.4
@@ -57,7 +60,8 @@ class YOLOBase extends Video {
     this.modelReady = false;
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
-    // this.then = this.ready.then;
+
+    console.warn("WARNING! Function YOLO has been deprecated, please use the new ObjectDetector function instead");
   }
 
   async loadModel() {
