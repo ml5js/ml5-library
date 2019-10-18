@@ -52,7 +52,6 @@
     * [CharRNN](/reference/charrnn.md)
     * [Sentiment](/reference/sentiment.md)
     * [Word2Vec](/reference/word2vec.md)
-    * [SketchRNN](/reference/sketchrnn.md)
 
 * **Contributing** 🏗 
 <div class="Sidebar__section-divider">&nbsp;</div>
