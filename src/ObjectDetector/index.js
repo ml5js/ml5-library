@@ -12,9 +12,9 @@ import YOLO from '../YOLO/index';
 class ObjectDetectorBase {
   /**
    * @typedef {Object} options
-   * @property {number} filterBoxesThreshold - default 0.01
-   * @property {number} IOUThreshold - default 0.4
-   * @property {number} classProbThreshold - default 0.4
+   * @property {number} filterBoxesThreshold - Optional. default 0.01
+   * @property {number} IOUThreshold - Optional. default 0.4
+   * @property {number} classProbThreshold - Optional. default 0.4
    */
   /**
    * Create ObjectDetector model. Works on video and images.
