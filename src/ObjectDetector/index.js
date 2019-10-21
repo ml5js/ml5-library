@@ -32,12 +32,18 @@ class ObjectDetector {
     this.options = options || {};
     this.callback = callback;
 
+    if (video instanceof HTMLVideoElement) {
+      this.video = video;
+    } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
+      this.video = video.elt; // Handle p5.js image
+    }
+
     switch (modelName) {
       case 'YOLO':
-        this.model = new YOLO(video, { disableDeprecationNotice: true, ...options }, callback);
+        this.model = new YOLO(this.video, { disableDeprecationNotice: true, ...options }, callback);
         break;
       case 'CocoSsd':
-        this.model = new CocoSsd(video, options, callback);
+        this.model = new CocoSsd(this.video, options, callback);
         break;
       default:
         throw new Error('Model name not supported')
