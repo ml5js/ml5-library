@@ -9,7 +9,6 @@
     Wraps the coco-ssd model in tfjs to be used in ml5
 */
 
-import * as tf from '@tensorflow/tfjs';
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
 
 class CocoSsd {
@@ -34,8 +33,8 @@ class CocoSsd {
     detect(callback) {
         if (this.isModelReady) {
             this.cocoSsdModel.detect(this.video).then((predictions) => {
-                let formattedPredictions = [];
-                for (let i = 0; i < predictions.length; i++) {
+                const formattedPredictions = [];
+                for (let i = 0; i < predictions.length; i += 1) {
                     const prediction = predictions[i];
                     formattedPredictions.push({
                         label: prediction.class,

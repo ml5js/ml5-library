@@ -34,8 +34,7 @@ class ObjectDetector {
 
     switch (modelName) {
       case 'YOLO':
-        options.disableDeprecationNotice = true;
-        this.model = new YOLO(video, options, callback);
+        this.model = new YOLO(video, { disableDeprecationNotice: true, ...options }, callback);
         break;
       case 'CocoSsd':
         this.model = new CocoSsd(video, options, callback);
