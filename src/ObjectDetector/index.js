@@ -28,12 +28,13 @@ class ObjectDetectorBase {
   constructor(modelName, video, options, callback) {
     this.modelName = modelName;
     this.video = video;
-    this.options = options;
+    this.options = options || {};
     this.callback = callback;
   }
 }
 
 const ObjectDetector = (modelName, video, options, callback) => {
+  options.disableDeprecationNotice = true;
   return new YOLO(video, options, callback);
 };
 

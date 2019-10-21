@@ -61,7 +61,9 @@ class YOLOBase extends Video {
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
 
-    console.warn("WARNING! Function YOLO has been deprecated, please use the new ObjectDetector function instead");
+    if (!options.disableDeprecationNotice) {
+      console.warn("WARNING! Function YOLO has been deprecated, please use the new ObjectDetector function instead");
+    }
   }
 
   async loadModel() {
