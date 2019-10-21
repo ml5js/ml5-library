@@ -8,8 +8,9 @@
 */
 
 import YOLO from './YOLO/index';
+import CocoSsd from './CocoSsd/index';
 
-class ObjectDetectorBase {
+class ObjectDetector {
   /**
    * @typedef {Object} options
    * @property {number} filterBoxesThreshold - Optional. default 0.01
@@ -30,12 +31,23 @@ class ObjectDetectorBase {
     this.video = video;
     this.options = options || {};
     this.callback = callback;
+
+    switch (modelName) {
+      case 'YOLO':
+        options.disableDeprecationNotice = true;
+        this.model = new YOLO(video, options, callback);
+        break;
+      case 'CocoSsd':
+        this.model = new CocoSsd(video, options, callback);
+        break;
+      default:
+        throw new Error('Model name not supported')
+    }
+  }
+
+  detect(callback) {
+    this.model.detect(callback);
   }
 }
-
-const ObjectDetector = (modelName, video, options, callback) => {
-  options.disableDeprecationNotice = true;
-  return new YOLO(video, options, callback);
-};
 
 export default ObjectDetector;
