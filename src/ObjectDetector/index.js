@@ -7,7 +7,7 @@
   ObjectDetection
 */
 
-import YOLO from '../YOLO/index';
+import YOLO from './YOLO/index';
 
 class ObjectDetectorBase {
   /**
