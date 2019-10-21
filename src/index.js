@@ -11,7 +11,7 @@ import KNNClassifier from './KNNClassifier/';
 import featureExtractor from './FeatureExtractor/';
 import word2vec from './Word2vec/';
 import YOLO from './ObjectDetector/YOLO';
-import ObjectDetector from './ObjectDetector';
+import objectDetector from './ObjectDetector';
 import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
 import styleTransfer from './StyleTransfer/';
@@ -44,7 +44,7 @@ const withPreload = {
   styleTransfer,
   word2vec,
   YOLO,
-  ObjectDetector,
+  objectDetector,
   uNet,
 };
 

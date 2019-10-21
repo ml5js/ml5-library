@@ -45,8 +45,13 @@ class ObjectDetector {
   }
 
   detect(callback) {
+    console.log('detect at ObjectDetector')
     this.model.detect(callback);
   }
 }
 
-export default ObjectDetector;
+const objectDetector = (modelName, video, options, callback) => {
+  return new ObjectDetector(modelName, video, options, callback)
+}
+
+export default objectDetector;

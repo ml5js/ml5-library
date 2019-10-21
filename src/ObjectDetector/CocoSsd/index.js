@@ -26,11 +26,13 @@ class CocoSsd {
         this.callback = callback;
         cocoSsd.load().then(_cocoSsdModel => {
             this.cocoSsdModel = _cocoSsdModel;
+            this.isModelReady = true;
             callback();
         });
     }
 
     detect(callback) {
+        console.log('detect at CocoSsd')
         if (this.isModelReady) {
             this.cocoSsdModel.detect(this.video).then((predictions) => {
                 const formattedPredictions = [];
