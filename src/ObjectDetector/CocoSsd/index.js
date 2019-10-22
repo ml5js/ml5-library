@@ -14,14 +14,12 @@ import * as cocoSsd from '@tensorflow-models/coco-ssd';
 class CocoSsd {
     /**
      * Create CocoSsd model. Works on video and images. 
-     * @param {HTMLVideoElement} video - Optional. The video to be used for object detection and classification.
      * @param {Object} options - Optional. A set of options.
      * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
      *    that will be resolved once the model has loaded.
      */
-    constructor(video, options, callback) {
+    constructor(options, callback) {
         this.isModelReady = false;
-        this.video = video;
         this.options = options;
         this.callback = callback;
         cocoSsd.load().then(_cocoSsdModel => {
@@ -31,9 +29,15 @@ class CocoSsd {
         });
     }
 
-    detect(callback) {
+    /**
+    * Detect objects that are in video, returns bounding box, label, and confidence scores
+    * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+    * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+    *    that will be resolved once the prediction is done.
+    */
+    detect(subject, callback) {
         if (this.isModelReady) {
-            this.cocoSsdModel.detect(this.video).then((predictions) => {
+            this.cocoSsdModel.detect(subject).then((predictions) => {
                 const formattedPredictions = [];
                 for (let i = 0; i < predictions.length; i += 1) {
                     const prediction = predictions[i];

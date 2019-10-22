@@ -9,6 +9,7 @@
 
 import YOLO from './YOLO/index';
 import CocoSsd from './CocoSsd/index';
+import { isInstanceOfSupportedElement } from '../utils/imageUtilities';
 
 class ObjectDetector {
   /**
@@ -32,18 +33,20 @@ class ObjectDetector {
     this.options = options || {};
     this.callback = callback;
 
-    if (video instanceof HTMLVideoElement) {
+    if (isInstanceOfSupportedElement(video)) {
+      console.log('element assigned A')
       this.video = video;
-    } else if (typeof video === 'object' && video.elt instanceof HTMLVideoElement) {
-      this.video = video.elt; // Handle p5.js image
+    } else if (typeof video === 'object' && isInstanceOfSupportedElement(video.elt)) {
+      console.log('element assigned B')
+      this.video = video.elt; // Handle p5.js video and image
     }
 
     switch (modelName) {
       case 'YOLO':
-        this.model = new YOLO(this.video, { disableDeprecationNotice: true, ...options }, callback);
+        this.model = new YOLO({ disableDeprecationNotice: true, ...options }, callback);
         break;
       case 'CocoSsd':
-        this.model = new CocoSsd(this.video, options, callback);
+        this.model = new CocoSsd(options, callback);
         break;
       default:
         throw new Error('Model name not supported')
@@ -51,8 +54,7 @@ class ObjectDetector {
   }
 
   detect(callback) {
-    console.log('detect at ObjectDetector')
-    this.model.detect(callback);
+    this.model.detect(this.video, callback);
   }
 }
 

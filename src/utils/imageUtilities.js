@@ -74,9 +74,18 @@ function imgToTensor(input, size = null) {
   });
 }
 
+// Static Method: Check if subject is supported for object detection
+function isInstanceOfSupportedElement(subject) {
+  return (subject instanceof HTMLVideoElement
+    || subject instanceof HTMLImageElement
+    || subject instanceof HTMLCanvasElement
+    || subject instanceof ImageData)
+}
+
 export {
   array3DToImage,
   processVideo,
   cropImage,
   imgToTensor,
+  isInstanceOfSupportedElement,
 };
