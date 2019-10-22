@@ -14,7 +14,7 @@ describe('Sentiment', ()=>{
     expect(model.predict('Happy').score).toBeGreaterThan(0.5);
   });
 
-  it("Shit has a sentiment score less than 0.5", ()=>{
-    expect(model.predict('Shit').score).toBeLessThan(0.5);
+  it("Terrible has a sentiment score less than 0.5", ()=>{
+    expect(model.predict('Terrible').score).toBeLessThan(0.5);
   });
 });
