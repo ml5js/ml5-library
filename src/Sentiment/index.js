@@ -42,7 +42,6 @@ class Sentiment {
    * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
    */
   constructor(modelName, callback) {
-    console.log('constructor');
     /**
      * Boolean value that specifies if the model has loaded.
      * @type {boolean}
