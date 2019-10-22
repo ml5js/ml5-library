@@ -35,7 +35,7 @@ class CocoSsd {
     * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
     *    that will be resolved once the prediction is done.
     */
-    detect(subject, callback) {
+    async detect(subject, callback) {
         if (this.isModelReady) {
             this.cocoSsdModel.detect(subject).then((predictions) => {
                 const formattedPredictions = [];
@@ -50,7 +50,7 @@ class CocoSsd {
                         h: prediction.bbox[3],
                     });
                 }
-                callback(false, formattedPredictions);
+                return callback(false, formattedPredictions);
             })
         }
     }

@@ -34,10 +34,8 @@ class ObjectDetector {
     this.callback = callback;
 
     if (isInstanceOfSupportedElement(video)) {
-      console.log('element assigned A')
       this.video = video;
     } else if (typeof video === 'object' && isInstanceOfSupportedElement(video.elt)) {
-      console.log('element assigned B')
       this.video = video.elt; // Handle p5.js video and image
     }
 
@@ -54,7 +52,7 @@ class ObjectDetector {
   }
 
   detect(callback) {
-    this.model.detect(this.video, callback);
+    return this.model.detect(this.video, callback);
   }
 }
 
