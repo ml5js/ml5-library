@@ -135,6 +135,10 @@ class NeuralNetworkData {
 
         if (outputLabels.includes(prop)) {
           output.ys[prop] = item[prop]
+          // convert ys into strings, if the task is classification
+          if(this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string"){
+            output.ys[prop] += "";
+          }
         }
       })
 
