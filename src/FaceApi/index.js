@@ -115,6 +115,7 @@ class FaceApiBase {
             imgToClassify = optionsOrCallback;
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
                 optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
                 optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
@@ -209,6 +210,7 @@ class FaceApiBase {
             imgToClassify = optionsOrCallback;
         } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
                 optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
                 optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
