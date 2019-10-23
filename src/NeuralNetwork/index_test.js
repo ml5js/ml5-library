@@ -9,27 +9,27 @@ const {
 } = ml5;
 
 const NN_DEFAULTS = {
-  task: 'regression',
-  activationHidden: 'sigmoid',
-  activationOutput: 'sigmoid',
-  debug: false,
-  learningRate: 0.25,
-  inputs: 2,
-  outputs: 1,
-  noVal: null,
-  hiddenUnits: 16,
-  modelMetrics: ['accuracy'],
-  modelLoss: 'meanSquaredError',
-  modelOptimizer: null,
-  batchSize: 64,
-  epochs: 32,
+    task: 'regression',
+    activationHidden: 'sigmoid',
+    activationOutput: 'sigmoid',
+    debug: false,
+    learningRate: 0.25,
+    inputs: 2,
+    outputs: 1,
+    noVal: null,
+    hiddenUnits: 16,
+    modelMetrics: ['accuracy'],
+    modelLoss: 'meanSquaredError',
+    modelOptimizer: null,
+    batchSize: 64,
+    epochs: 32,
 }
 
 
 describe('neuralNetwork', () => {
     let nn;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         nn = await neuralNetwork();
     });
@@ -50,7 +50,7 @@ describe('neuralNetwork', () => {
         // expect(nn.config.training.modelMetrics).toBe(NN_DEFAULTS.modelMetrics);
         expect(nn.config.training.modelLoss).toBe(NN_DEFAULTS.modelLoss);
         // expect(nn.config.training.modelOptimizer).toBe();
-        
+
         // data defaults
         // expect(nn.config.dataOptions.dataUrl).toBe();
         // expect(nn.config.dataOptions.inputs).toBe(NN_DEFAULTS.inputs);
