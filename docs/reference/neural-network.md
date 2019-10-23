@@ -454,7 +454,21 @@ neuralNetwork.load(?filesOrPath, ?callback)
 - [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
-* coming soon
+- [NeuralNetwork_Simple-Classification](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple-Classification)
+- [NeuralNetwork_Simple-Regression](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple-Regression)
+- [NeuralNetwork_XOR](https://editor.p5js.org/ml5/sketches/NeuralNetwork_XOR)
+- [NeuralNetwork_basics](https://editor.p5js.org/ml5/sketches/NeuralNetwork_basics)
+- [NeuralNetwork_co2net](https://editor.p5js.org/ml5/sketches/NeuralNetwork_co2net)
+- [NeuralNetwork_color_classifier](https://editor.p5js.org/ml5/sketches/NeuralNetwork_color_classifier)
+- [NeuralNetwork_load_model](https://editor.p5js.org/ml5/sketches/NeuralNetwork_load_model)
+- [NeuralNetwork_load_saved_data](https://editor.p5js.org/ml5/sketches/NeuralNetwork_load_saved_data)
+- [NeuralNetwork_lowres_pixels](https://editor.p5js.org/ml5/sketches/NeuralNetwork_lowres_pixels)
+- [NeuralNetwork_multiple-layers](https://https://editor.p5js.org/ml5/sketches/NeuralNetwork_multiple-layer)
+- [NeuralNetwork_musical_face](https://editor.p5js.org/ml5/sketches/NeuralNetwork_musical_face)
+- [NeuralNetwork_musical_mouse](https://editor.p5js.org/ml5/sketches/NeuralNetwork_musical_mouse)
+- [NeuralNetwork_pose_classifier](https://editor.p5js.org/ml5/sketches/NeuralNetwork_pose_classifier)
+- [NeuralNetwork_titanic](https://editor.p5js.org/ml5/sketches/NeuralNetwork_titanic)
+- [NeuralNetwork_xy_classifier](https://editor.p5js.org/ml5/sketches/NeuralNetwork_xy_classifier)
 
 **plain javascript**
 

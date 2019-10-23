@@ -137,14 +137,15 @@ classifier.classify(?numberOfClasses ,?callback)
 
 **p5.js Web Editor**
 
-* [ImageClassification](https://editor.p5js.org/ml5/sketches/DUxe1Z0DXG)
-* [ImageClassification_DoodleNet_Canvas]() - coming soon
-* [ImageClassification_DoodleNet_Video]() - coming soon
-* [ImageClassification_MultipleImages](https://editor.p5js.org/ml5/sketches/f3rqIqNey5)
-* [ImageClassification_Teachable-Machine]() - coming soon
-* [ImageClassification_Video](https://editor.p5js.org/ml5/sketches/IlF1JFvWjc)
-* [ImageClassification_VideoScavengerHunt](https://editor.p5js.org/ml5/sketches/APzpeXOuEQ)
-* [ImageClassification_VideoSound](https://editor.p5js.org/ml5/sketches/Ry7EL4JvA3)
+* [ImageClassification](https://editor.p5js.org/ml5/sketches/ImageClassification)
+* [ImageClassification_DoodleNet_Canvas](https://editor.p5js.org/ml5/sketches/ImageClassification_DoodleNet_Canvas)
+* [ImageClassification_DoodleNet_Video](https://editor.p5js.org/ml5/sketches/ImageClassification_DoodleNet_Video)
+* [ImageClassification_MultipleImages](https://editor.p5js.org/ml5/sketches/ImageClassification_MultipleImages)
+* [ImageClassification_Teachable-Machine](https://editor.p5js.org/ml5/sketches/ImageClassification_Teachable-Machine)
+* [ImageClassification_Video](https://editor.p5js.org/ml5/sketches/ImageClassification_Video)
+* [ImageClassification_VideoScavengerHunt](https://editor.p5js.org/ml5/sketches/ImageClassification_VideoScavengerHunt)
+* [ImageClassification_VideoSound](https://editor.p5js.org/ml5/sketches/ImageClassification_VideoSound)
+* [ImageClassification_VideoSoundTranslate](https://editor.p5js.org/ml5/sketches/ImageClassification_VideoSoundTranslate)
 
 **plain javascript**
 * [ImageClassification](https://github.com/ml5js/ml5-examples/tree/development/javascript/ImageClassification/ImageClassification)
