@@ -34,7 +34,7 @@ In an **index.html** file, copy and paste the following and open up that file in
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Getting Started with ml5.js and p5.js</title>
+    <title>Getting Started with ml5.js</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/ml5@0.4.0/dist/ml5.min.js"></script>
   </head>
