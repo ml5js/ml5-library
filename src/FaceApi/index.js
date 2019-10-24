@@ -78,13 +78,15 @@ class FaceApiBase {
         } = this.config.MODEL_URLS;
 
         this.model = faceapi;
-        
-        const SsdMobilenetv1Options = this.model.SsdMobilenetv1Options({ minConfidence: this.minConfidence })
+
+        const SsdMobilenetv1Options = this.model.SsdMobilenetv1Options({
+            minConfidence: this.minConfidence
+        })
         await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model, SsdMobilenetv1Options)
         await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
         // await this.model.loadFaceLandmarkTinyModel(FaceLandmark68TinyNet) 
         await this.model.loadFaceRecognitionModel(FaceRecognitionModel)
-        
+
         this.modelReady = true;
         return this;
     }
@@ -101,18 +103,20 @@ class FaceApiBase {
         let callback;
         let faceApiOptions = this.config;
 
-         // Handle the image to predict
-         if (typeof optionsOrCallback === 'function') {
+        // Handle the image to predict
+        if (typeof optionsOrCallback === 'function') {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof ImageData) {
-                imgToClassify = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
@@ -199,13 +203,15 @@ class FaceApiBase {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof ImageData) {
-                imgToClassify = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
