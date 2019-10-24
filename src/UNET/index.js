@@ -116,7 +116,7 @@ class UNET extends Video {
     let image;
 
     if (p5Utils.checkP5()) {
-        const blob1 = await p5Utils.rawToBlob(raw, imageSize, imageSize);
+        const blob1 = await p5Utils.rawToBlob(raw, this.config.imageSize, this.config.imageSize);
         const p5Image1 = await p5Utils.blobToP5Image(blob1);
         image = p5Image1;
     }
