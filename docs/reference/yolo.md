@@ -106,8 +106,8 @@ yolo.detect(?callback)
 * [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_webcam)
 
 **p5 web editor**
-* [YOLO_single_image](https://editor.p5js.org/ml5/sketches/3cfHZs_0HcL)
-* [YOLO_webcam](https://editor.p5js.org/ml5/sketches/IE_P4q2m0LV)
+* [YOLO_single_image](https://editor.p5js.org/ml5/sketches/YOLO_single_image)
+* [YOLO_webcam](https://editor.p5js.org/ml5/sketches/YOLO_webcam)
 
 **plain javascript**
 * [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/javascript/YOLO/YOLO_single_image)

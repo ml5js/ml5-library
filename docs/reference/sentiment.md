@@ -83,7 +83,7 @@ sentiment.predict(text)
 * [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Sentiment/Sentiment_Interactive)
 
 **p5 web editor**
-* [Sentiment_Interactive]() - coming soon
+* [Sentiment_Interactive](https://editor.p5js.org/ml5/sketches/Sentiment_Interactive)
 
 **plain javascript**
 * [Sentiment_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Sentiment/Sentiment_Interactive)
