@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import p5Utils from './p5Utils';
 
 // Resize video elements
 const processVideo = (input, size, callback = () => {}) => {
@@ -61,7 +62,7 @@ const cropImage = (img) => {
   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
 };
 
-const flipImage = (img, options) => {
+const flipImage = (img) => {
   // image image, bitmap, or canvas
   let imgWidth;
   let imgHeight;
@@ -77,7 +78,7 @@ const flipImage = (img, options) => {
       img.elt instanceof HTMLCanvasElement ||
       img.elt instanceof HTMLVideoElement ||
       img.elt instanceof ImageData)) {
-        
+
     inputImg = img.elt; // Handle p5.js image
   } else if (typeof img === 'object' &&
     img.canvas instanceof HTMLCanvasElement) {
@@ -86,7 +87,7 @@ const flipImage = (img, options) => {
     inputImg = img;
   }
 
-  if(inputImg instanceof HTMLVideoElement){
+  if (inputImg instanceof HTMLVideoElement) {
     // should be videoWidth, videoHeight?
     imgWidth = inputImg.width;
     imgHeight = inputImg.height;
@@ -96,19 +97,27 @@ const flipImage = (img, options) => {
   }
 
 
+  if (p5Utils.checkP5()) {
+    const p5Canvas = p5Utils.p5Instance.createGraphics(imgWidth, imgHeight);
+    p5Canvas.push()
+    p5Canvas.translate(imgWidth, 0);
+    p5Canvas.scale(-1, 1);
+    p5Canvas.image(img, 0, 0, imgWidth, imgHeight);
+    p5Canvas.pop()
+
+    return p5Canvas;
+  }
   const canvas = document.createElement('canvas');
   canvas.width = imgWidth;
   canvas.height = imgHeight;
 
   const ctx = canvas.getContext('2d');
   ctx.drawImage(inputImg, 0, 0, imgWidth, imgHeight);
-  
-  if (options.flipped) {
-    ctx.scale(-1, 1);
-    ctx.drawImage(canvas, imgWidth * -1, 0);
-  } 
+  ctx.translate(imgWidth, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(canvas, imgWidth * -1, 0, imgWidth, imgHeight);
+  return canvas;
 
-  return {canvas, ctx};
 }
 
 // Static Method: image to tf tensor
