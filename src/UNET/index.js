@@ -82,7 +82,10 @@ class UNET extends Video {
   async segmentInternal(imgToPredict) {
     // Wait for the model to be ready
     await this.ready;
-    await tf.nextFrame();
+    // skip asking for next frame if it's not video
+    if (imgToPredict instanceof HTMLVideoElement){
+      await tf.nextFrame();
+    }
     this.isPredicting = true;
 
     const tensor = tf.tidy(() => {
