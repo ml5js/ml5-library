@@ -249,7 +249,7 @@ We’re still rolling out all of our unit tests, but if you want to contribute t
    ```npm run test:single```
 
  - To run a test on a single model
-   ```npm run test -- --model:YourModelNameHere```
+   ```npm run test -- --model=YourModelNameHere```
 
 This last one is case sensitive!
 

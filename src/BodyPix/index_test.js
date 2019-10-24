@@ -47,7 +47,7 @@ describe('bodyPix', () => {
     return img;
   }
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
     bp = await bodyPix();
   });
