@@ -26,15 +26,17 @@ There are several ways you can use the ml5.js library:
 
 
 
+
 <p id="latest-version">
 
-* You can use the latest version (0.4.0) by adding it to the head section of your HTML document:
+* You can use the latest version (0.4.1) by adding it to the head section of your HTML document:
 
-**v0.4.0**
+**v0.4.1**
 
-    <script src="https://unpkg.com/ml5@0.4.0/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.4.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
     
     
     
@@ -49,7 +51,7 @@ There are several ways you can use the ml5.js library:
 
 For example:
 ```js
-<script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/ml5@0.4.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
