@@ -84,15 +84,14 @@ cvae.generate(label, callback);
 
 ## Examples
 
-**plain javascript**
-* [CVAE_QuickDraw](https://github.com/ml5js/ml5-examples/tree/development/javascript/CVAE/CVAE_QuickDraw)
-
 **p5.js**
 * [CVAE_QuickDraw](https://github.com/ml5js/ml5-examples/tree/development/p5js/CVAE/CVAE_QuickDraw)
 
 **p5 web editor**
-* [CVAE_QuickDraw]()
+* [CVAE_QuickDraw](https://editor.p5js.org/ml5/sketches/CVAE_QuickDraw)
 
+**plain javascript**
+* [CVAE_QuickDraw](https://github.com/ml5js/ml5-examples/tree/development/javascript/CVAE/CVAE_QuickDraw)
 
 
 ## Demo
@@ -106,8 +105,7 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Wenhe Li & Dingsu (Derek) Wang
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

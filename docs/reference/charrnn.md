@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="image of book with text that says, 'you are designing for humans not machines'" src="_media/reference__header-charrnn.png">
 </center>
 
 
@@ -152,20 +152,21 @@ charrnn.reset()
 
 ## Examples
 
-**plain javascript**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text_Stateful)
-
-
 **p5.js**
 * [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Interactive)
 * [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text)
 * [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+
+* [CharRNN_Interactive](https://editor.p5js.org/ml5/sketches/CharRNN_Interactive)
+* [CharRNN_Text](https://editor.p5js.org/ml5/sketches/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://editor.p5js.org/ml5/sketches/CharRNN_Text_Stateful)
+
+**plain javascript**
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text_Stateful)
 
 ## Demo
 
@@ -178,8 +179,7 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Cristobal Valenzuela and Memo Atken
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

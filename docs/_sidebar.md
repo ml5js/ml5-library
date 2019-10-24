@@ -1,33 +1,38 @@
 <style>
 .Sidebar__section-divider{
   height:1px; 
-  width:95%; 
+  width:90%; 
   border-top:2px solid #A15FFB; 
   display:block; 
-  margin:0 auto;
+  margin:0 0px 0 -2px;
   box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
 }
 </style>
 
 * **Welcome** 🌈
+<div class="Sidebar__section-divider">&nbsp;</div>
+
   * [Getting Started](/)
   * [FAQ](/faq.md)
 
-<div class="Sidebar__section-divider">&nbsp;</div>
+
 
 * **Tutorials** 🧠
+<div class="Sidebar__section-divider">&nbsp;</div>
+
   * [Introduction to ml5.js](/tutorials/hello-ml5.md)
   * [Running a local web server](/tutorials/local-web-server)
   * [Promises and Callbacks in ml5](/tutorials/promises-and-callbacks.md)
 
+* **Reference** 📝
 <div class="Sidebar__section-divider">&nbsp;</div>
 
-* **Reference** 📝
   * [Overview](/reference/index.md)
   * **Helpers** ✨
     * [NeuralNetwork](/reference/neural-network.md)
     * [FeatureExtractor](/reference/feature-extractor.md)
     * [KNNClassifier](/reference/knn-classifier.md)
+    * [kmeans](/reference/kmeans.md)
   * **Image** 🖼
     * [ImageClassifier](/reference/image-classifier.md)
     * [PoseNet](/reference/posenet.md)
@@ -41,20 +46,19 @@
     * [SketchRNN](/reference/sketchrnn.md)
     * [YOLO](/reference/yolo.md)
   * **Sound** 📻
-    * [SpeechClassification](/reference/speech-classifier.md)
+    * [SoundClassification](/reference/sound-classifier.md)
     * [PitchDetection](/reference/pitch-detection.md)
   * **Text** 📕
     * [CharRNN](/reference/charrnn.md)
     * [Sentiment](/reference/sentiment.md)
     * [Word2Vec](/reference/word2vec.md)
-    * [SketchRNN](/reference/sketchrnn.md)
-
-<div class="Sidebar__section-divider">&nbsp;</div>
 
 * **Contributing** 🏗 
-  * [Contributor Notes]()
-  * [Maintainer Notes]()
-  * [Style Guide]()
+<div class="Sidebar__section-divider">&nbsp;</div>
+
+  * [Contributor Notes](/styleguide/contributor-notes.md)
+  * [Maintenance Notes](/styleguide/maintenance-notes.md)
+  * Style Guide
     * [Reference guidelines](/styleguide/reference-guidelines.md)
     * [Development guidelines](/styleguide/development-guidelines.md)
     * [Design guidelines](/styleguide/design-guidelines.md)

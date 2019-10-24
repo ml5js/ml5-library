@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="Illustration of a background masked behind a person" src="_media/reference__header-unet.png">
 </center>
 
 
@@ -10,7 +10,9 @@
 
 The U-Net is a convolutional neural network that was developed for biomedical image segmentation at the Computer Science Department of the University of Freiburg, Germany.[1] The network is based on the fully convolutional network [2] and its architecture was modified and extended to work with fewer training images and to yield more precise segmentations.
 
-UNET allows you to segment an image, removing, for example, the background from video of you while sitting at your desk.
+UNET allows you to segment an image. 
+
+The ml5 unet `face` allows you to remove, for example, the background from video of the upper body of person.
 
 
 ## Quickstart
@@ -86,14 +88,15 @@ unet.segment(?video, ?callback);
 
 ## Examples
 
-**plain javascript**
-* [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/UNET/UNET_webcam)
-
 **p5.js**
 * [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/UNET/UNET_webcam)
 
 **p5 web editor**
-* [UNET_webcam]()
+* [UNET_webcam](https://editor.p5js.org/ml5/sketches/UNET_webcam)
+
+**plain javascript**
+* [UNET_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/UNET/UNET_webcam)
+
 
 ## Demo
 
@@ -107,8 +110,8 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * [Zaid Alyafeai](https://github.com/zaidalyafeai)
-  * [Joey Lee](https://github.com/joeyklee)
+  * Developed by [Zaid Alyafeai](https://github.com/zaidalyafeai)
+  * Additional contributions by [Joey Lee](https://github.com/joeyklee)
 
 **Credits**:
   * UNET 'face' was trained by [Zaid Alyafeai](https://github.com/zaidalyafeai) using [mut1ny - Face/Head segmentation dataset](http://www.mut1ny.com/face-headsegmentation-dataset).

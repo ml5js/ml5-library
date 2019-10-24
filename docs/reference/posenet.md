@@ -241,16 +241,20 @@ poseNet.multiPose(?input)
 
 ## Examples
 
-**plain javascript**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_webcam)
-
-
 **p5.js**
 * [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_image_single)
 * [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_part_selection)
 * [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_webcam)
+
+**p5 web editor**
+* [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/PoseNet_image_single)
+* [PoseNet_part_selection](https://editor.p5js.org/ml5/sketches/PoseNet_part_selection)
+* [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/PoseNet_webcam)
+
+**plain javascript**
+* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_webcam)
 
 ## Demo
 
@@ -265,8 +269,7 @@ No demos yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Cristobal Valenzuela, Maya Man, Dan Oved
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc

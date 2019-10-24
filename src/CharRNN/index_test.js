@@ -21,7 +21,7 @@ const RNN_DEFAULTS = {
 
 const RNN_OPTIONS = {
   seed: 'the meaning of pizza is: ',
-  length: 30,
+  length: 10,
   temperature: 0.7
 }
 
@@ -33,20 +33,20 @@ describe('charRnn', () => {
     rnn  = await charRNN(RNN_MODEL_URL, undefined);
   });
 
-  it('instantiates an rnn with all the defaults', async () => {
-    expect(rnn.ready).toBeTruthy();
-    expect(rnn.defaults.seed).toBe(RNN_DEFAULTS.seed);
-    expect(rnn.defaults.length).toBe(RNN_DEFAULTS.length);
-    expect(rnn.defaults.temperature).toBe(RNN_DEFAULTS.temperature);
-    expect(rnn.defaults.stateful).toBe(RNN_DEFAULTS.stateful);
-  });
-
   //  it('loads the model with all the defaults', async () => {
   //    expect(rnn.cellsAmount).toBe(RNN_MODEL_DEFAULTS.cellsAmount);
   //    expect(rnn.vocabSize).toBe(RNN_MODEL_DEFAULTS.vocabSize);
   //  });
 
   describe('generate', () => {
+    it('instantiates an rnn with all the defaults', async () => {
+      expect(rnn.ready).toBeTruthy();
+      expect(rnn.defaults.seed).toBe(RNN_DEFAULTS.seed);
+      expect(rnn.defaults.length).toBe(RNN_DEFAULTS.length);
+      expect(rnn.defaults.temperature).toBe(RNN_DEFAULTS.temperature);
+      expect(rnn.defaults.stateful).toBe(RNN_DEFAULTS.stateful);
+    });
+    
     it('Should generate content that follows default options if given an empty object', async() => {
       const result = await rnn.generate({});
       expect(result.sample.length).toBe(20);
@@ -54,7 +54,7 @@ describe('charRnn', () => {
 
     it('generates content that follows the set options', async() => {
       const result = await rnn.generate(RNN_OPTIONS);
-      expect(result.sample.length).toBe(30);
+      expect(result.sample.length).toBe(RNN_OPTIONS.length);
     });
   });
 });

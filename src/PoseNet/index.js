@@ -109,8 +109,6 @@ class PoseNet extends EventEmitter {
       } else {
         this.multiPose();
       }
-
-      
     }
     return this;
   }

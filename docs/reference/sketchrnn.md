@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="AI generated cat drawings" src="_media/reference__header-sketchrnn.png">
 </center>
 
 
@@ -18,7 +18,7 @@ The ml5 library includes [a list of supported SketchRNN models](https://github.c
 
 ```js
 // Create a new SketchRNN Instance
-const model = ml5.SketchRNN("cat", modelReady);
+const model = ml5.sketchRNN("cat", modelReady);
 
 // When the model is loaded
 function modelReady() {
@@ -40,7 +40,7 @@ function gotSketch(err, result) {
 ### Initialize
 
 ```js
-const sketchrnn = ml5.SketchRNN(model, ?callback)
+const sketchrnn = ml5.sketchRNN(model, ?callback)
 ```
 
 #### Parameters
@@ -106,18 +106,18 @@ sketchrnn.generate(?seed, ?options, ?callback)
 
 ## Examples
 
-**plain javascript**
-* [SketchRNN_basic](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/_basic)
-* [SketchRNN_interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/SketchRNN_interactive)
-
-
 **p5.js**
 * [SketchRNN_basic](https://github.com/ml5js/ml5-examples/tree/development/p5js/SketchRNN/SketchRNN_basic)
 * [SketchRNN_interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/SketchRNN/SketchRNN_interactive)
 
 **p5 web editor**
-* [SketchRNN_basic]()
-* [SketchRNN_interactive]()
+* [SketchRNN_basic](https://editor.p5js.org/ml5/sketches/SketchRNN_basic)
+* [SketchRNN_interactive](https://editor.p5js.org/ml5/sketches/SketchRNN_interactive)
+
+**plain javascript**
+* [SketchRNN_basic](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/_basic)
+* [SketchRNN_interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/SketchRNN/SketchRNN_interactive)
+
 
 ## Demo
 
