@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="cat detected by yolo" src="_media/reference__header-yolo.png">
 </center>
 
 
@@ -100,17 +100,18 @@ yolo.detect(?callback)
 
 ## Examples
 
-**plain javascript**
-* [YOLO_single_image]()
-* [YOLO_webcam]()
 
 **p5.js**
-* [YOLO_single_image]()
-* [YOLO_webcam]()
+* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_webcam)
 
 **p5 web editor**
-* [YOLO_single_image]()
-* [YOLO_webcam]()
+* [YOLO_single_image](https://editor.p5js.org/ml5/sketches/YOLO_single_image)
+* [YOLO_webcam](https://editor.p5js.org/ml5/sketches/YOLO_webcam)
+
+**plain javascript**
+* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/javascript/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/YOLO/YOLO_webcam)
 
 ## Demo
 
@@ -123,12 +124,11 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Cristobal Valenzuela
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
 
 ## Source Code
 
-* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/release/src/YOLO)
+* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/development/src/YOLO)

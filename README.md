@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-58-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -21,46 +21,36 @@ ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](
 
 There are several ways you can use the ml5.js library:
 
+
+
+
+
+
 <p id="latest-version">
 
-* You can use the latest version (0.3.1) by adding it to the head section of your HTML document:
+* You can use the latest version (0.4.0) by adding it to the head section of your HTML document:
 
-**v0.3.1**
-```javascript
-<script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
-```
+**v0.4.0**
+
+    <script src="https://unpkg.com/ml5@0.4.0/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
-
-
-
-* If you need to use an earlier version for any reason, you can change the version number.
-
-
-
-<p id="legacy-versions">
-
-**v0.3.0**
-
-    <script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+    
+    
+    
     
 
-**v0.3.0**
 
-    <script src="https://unpkg.com/ml5@0.3.0/dist/ml5.min.js" type="text/javascript"></script>
+* If you need to use an earlier version for any reason, you can change the version number. The [previous versions of ml5 can be found here](https://www.npmjs.com/package/ml5). You can use those previous versions by replacing `<version>` with the ml5 version of interest:
 
+```js
+<script src="https://unpkg.com/ml5@<version>/dist/ml5.min.js" type="text/javascript"></script>
+```
 
-**v0.2.3**
-
-    <script src="https://unpkg.com/ml5@0.2.3/dist/ml5.min.js" type="text/javascript"></script>
-
-
-**v0.1.3**
-
-    <script src="https://unpkg.com/ml5@0.1.3/dist/ml5.min.js" type="text/javascript"></script>
-
-
-</p data-id="legacy-versions">
+For example:
+```js
+<script src="https://unpkg.com/ml5@0.3.1/dist/ml5.min.js" type="text/javascript"></script>
+```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
 
@@ -177,7 +167,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/tezzutezzu"><img src="https://avatars2.githubusercontent.com/u/135866?v=4" width="100px;" alt="danilo"/><br /><sub><b>danilo</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=tezzutezzu" title="Code">💻</a> <a href="#ideas-tezzutezzu" title="Ideas, Planning, & Feedback">🤔</a></td>
-    <td align="center"><a href="https://github.com/EmmaGoodliffe"><img src="https://avatars1.githubusercontent.com/u/32788926?v=4" width="100px;" alt="Emma Goodliffe"/><br /><sub><b>Emma Goodliffe</b></sub></a><br /><a href="#ideas-EmmaGoodliffe" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/EmmaGoodliffe"><img src="https://avatars1.githubusercontent.com/u/32788926?v=4" width="100px;" alt="Emma Goodliffe"/><br /><sub><b>Emma Goodliffe</b></sub></a><br /><a href="#ideas-EmmaGoodliffe" title="Ideas, Planning, & Feedback">🤔</a> <a href="#question-EmmaGoodliffe" title="Answering Questions">💬</a> <a href="#maintenance-EmmaGoodliffe" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="http://yangyang.blog"><img src="https://avatars3.githubusercontent.com/u/9332910?v=4" width="100px;" alt="Yang"/><br /><sub><b>Yang</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=EonYang" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3AEonYang" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/lydiajessup"><img src="https://avatars3.githubusercontent.com/u/26204298?v=4" width="100px;" alt="Lydia Jessup"/><br /><sub><b>Lydia Jessup</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lydiajessup" title="Code">💻</a> <a href="#ideas-lydiajessup" title="Ideas, Planning, & Feedback">🤔</a> <a href="#example-lydiajessup" title="Examples">💡</a></td>
+    <td align="center"><a href="https://coding.garden"><img src="https://avatars0.githubusercontent.com/u/14241866?v=4" width="100px;" alt="CJ R."/><br /><sub><b>CJ R.</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=w3cj" title="Documentation">📖</a> <a href="#content-w3cj" title="Content">🖋</a></td>
   </tr>
 </table>
 

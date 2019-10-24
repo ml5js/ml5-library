@@ -1,10 +1,11 @@
-# NameOfFeature
+# Pix2Pix
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="image of drawing converted to the Pokemon character, Pikachu using Pix2Pix" src="_media/reference__header-pix2pix.png">
 </center>
 
+Image: Image of drawing converted to the Pokemon character, Pikachu using Pix2Pix trained on Pikachu images. Trained by [Yining Shi](https://1023.io);
 
 ## Description
 
@@ -80,18 +81,19 @@ styleTransfer.transfer(canvas, ?callback)
 
 ## Examples
 
-**plain javascript**
-* [Pix2Pix_callback]()
-* [Pix2Pix_promise]()
-
 
 **p5.js**
-* [Pix2Pix_callback]()
-* [Pix2Pix_promise]()
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-examples/tree/development/p5js/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-examples/tree/development/p5js/Pix2Pix/Pix2Pix_promise)
 
 **p5 web editor**
-* [Pix2Pix_callback]()
-* [Pix2Pix_promise]()
+* [Pix2Pix_callback](https://editor.p5js.org/ml5/sketches/Pix2Pix_callback)
+* [Pix2Pix_promise](https://editor.p5js.org/ml5/sketches/Pix2Pix_promise)
+
+**plain javascript**
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-examples/tree/development/javascript/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-examples/tree/development/javascript/Pix2Pix/Pix2Pix_promise)
+
 
 ## Demo
 
@@ -104,12 +106,11 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Yining Shi
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
 
 ## Source Code
 
-[/src/Pix2pix](https://github.com/ml5js/ml5-library/tree/release/src/Pix2pix)
+[/src/Pix2pix](https://github.com/ml5js/ml5-library/tree/development/src/Pix2pix)

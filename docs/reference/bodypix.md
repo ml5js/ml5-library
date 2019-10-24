@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="BodyPix Header Image of Harriet Tubman" src="/../images/reference__header-bodypix.png">
+    <img style="display:block; max-height:20rem" alt="BodyPix Header Image of Harriet Tubman" src="_media/reference__header-bodypix.png">
 </center>
 
 
@@ -191,7 +191,7 @@ bodyPix.segment(?input, ?options, callback)
 
 📥 **Inputs**
 
-* **input**: HTMLImageElement | ImageData | HTMLCanvasElement. NOTE: Videos should be added in the constructor.
+* **input**: HTMLImageElement | | HTMLVideoElement | ImageData | HTMLCanvasElement. NOTE: Videos can be added in the constructor.
 * **options**: Object. You can change the `outputStride  and   `segmentationThreshold`
 * **callback**: Function. A function to handle the results of `.segment()`. Likely a function to do something with the segmented image.
 
@@ -214,7 +214,7 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 📥 **Inputs**
 
-* **input**: HTMLImageElement | ImageData | HTMLCanvasElement. NOTE: Videos should be added in the constructor.
+* **input**: HTMLImageElement | HTMLVideoElement | ImageData | HTMLCanvasElement. NOTE: Videos can be added in the constructor.
 * **options**: Object. You can change the `outputStride  and   `segmentationThreshold`
 * **callback**: Function. A function to handle the results of `.segment()`. Likely a function to do something with the segmented image.
 
@@ -227,19 +227,22 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 ## Examples
 
-**plain javascript**
-* [Segmentation on Image]()
-* [Segmentation on Video]()
-* [SegmentationWithParts on Video]()
-
 **p5.js**
-* [Segmentation on Image]()
-* [Segmentation on Video]()
-* [SegmentationWithParts on Video]()
+* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Image)
+* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_Webcam_Parts)
+* [BodyPix_p5Instance](https://github.com/ml5js/ml5-examples/tree/development/p5js/BodyPix/BodyPix_p5Instance)
 
 **p5 web editor**
-* [Example 1]()
-* [Example 2]()
+* [BodyPix_Image](https://editor.p5js.org/ml5/sketches/BodyPix_Image)
+* [BodyPix_Webcam](https://editor.p5js.org/ml5/sketches/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://editor.p5js.org/ml5/sketches/BodyPix_Webcam_Parts)
+* [BodyPix_p5Instance](https://editor.p5js.org/ml5/sketches/BodyPix_p5Instance)
+
+**plain javascript**
+* [BodyPix_Image](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Image)
+* [BodyPix_Webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam)
+* [BodyPix_Webcam_Parts](https://github.com/ml5js/ml5-examples/tree/development/javascript/BodyPix/BodyPix_Webcam_Parts)
 
 ## Demo
 
@@ -252,13 +255,14 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Ported to ml5.js by [Joey Lee](https://jk-lee.com).
 
 **Credits**:
-  * Paper Reference | Website URL | Github Repo | Book reference | etc
+  * The BodyPix model was developed by [Dan Oved](https://www.danioved.com/) and [Tyler Zhu](https://ai.google/research/people/TylerZhu) and their [additional contributors](https://github.com/tensorflow/tfjs-models/tree/master/body-pix#acknowledgement). Learn more about BodyPix:
+    * [BodyPix on Github](https://github.com/tensorflow/tfjs-models/tree/master/body-pix#acknowledgement)
+    * [BodyPix blog post release](https://medium.com/tensorflow/introducing-bodypix-real-time-person-segmentation-in-the-browser-with-tensorflow-js-f1948126c2a0)
 
 
 ## Source Code
 
-* [/src/BodyPix]()
+* [/src/BodyPix](https://github.com/ml5js/ml5-library/tree/development/src/BodyPix)

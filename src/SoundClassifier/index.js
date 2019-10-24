@@ -59,7 +59,7 @@ class SoundClassifier {
 
   /**
    * Classifies the audio from microphone and takes a callback to handle the results
-   * @param {function | number} numOrCallback - 
+   * @param {function | number} numOrCallback -
    *    takes any of the following params
    * @param {function} cb - a callback function that handles the results of the function.
    * @return {function} a promise or the results of a given callback, cb.
@@ -82,14 +82,14 @@ class SoundClassifier {
 }
 
 const soundClassifier = (modelName, optionsOrCallback, cb) => {
-  let model;
   let options = {};
   let callback = cb;
 
-  if (typeof modelName === 'string') {
-    model = modelName.toLowerCase();
-  } else {
+  let model = modelName;
+  if (typeof model !== 'string') {
     throw new Error('Please specify a model to use. E.g: "SpeechCommands18w"');
+  } else if (model.indexOf('http') === -1) {
+    model = modelName.toLowerCase();
   }
 
   if (typeof optionsOrCallback === 'object') {

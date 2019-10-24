@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="image classification of bird" src="https://via.placeholder.com/150">
+    <img style="display:block; max-height:20rem" alt="illustration of an equation with egg plus cat equals kitten" src="_media/reference__header-word2vec.png">
 </center>
 
 
@@ -175,16 +175,18 @@ word2vec.getRandomWord(?callback)
 ***
 
 
+
+
 ## Examples
 
-**plain javascript**
-* [Word2Vec_Interactive]()
-
 **p5.js**
-* [Word2Vec_Interactive]()
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Word2Vec/Word2Vec_Interactive)
 
 **p5 web editor**
-* [Word2Vec_Interactive]()
+* [Word2Vec_Interactive](https://editor.p5js.org/ml5/sketches/Word2Vec_Interactive)
+
+**plain javascript**
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Word2Vec/Word2Vec_Interactive)
 
 ## Demo
 
@@ -197,12 +199,11 @@ No tutorials yet - contribute one today!
 ## Acknowledgements
 
 **Contributors**:
-  * Name 1
-  * Name 2
+  * Cristobal Valenzuela, Dan Shiffman, and Jenna Xu
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
 
 ## Source Code
 
-* [/src/Word2vec/](https://github.com/ml5js/ml5-library/tree/release/src/Word2vec)
+* [/src/Word2vec/](https://github.com/ml5js/ml5-library/tree/development/src/Word2vec)
