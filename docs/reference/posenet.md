@@ -247,9 +247,9 @@ poseNet.multiPose(?input)
 * [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_webcam)
 
 **p5 web editor**
-* [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/MmUoz2_thEa)
-* [PoseNet_part_selection](https://editor.p5js.org/ml5/sketches/I-alLCVhX3S)
-* [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/5FZeotHo76R)
+* [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/PoseNet_image_single)
+* [PoseNet_part_selection](https://editor.p5js.org/ml5/sketches/PoseNet_part_selection)
+* [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/PoseNet_webcam)
 
 **plain javascript**
 * [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)

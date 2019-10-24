@@ -93,7 +93,7 @@ const kmeans = ml5.kmeans(data, ?options, ?callback);
 * [KMeans_imageSegmentation](https://github.com/ml5js/ml5-examples/tree/development/p5js/KMeans/KMeans_imageSegmentation/)
 
 **p5 web editor**
-* coming soon
+* [KMeans_imageSegmentation](https://editor.p5js.org/ml5/sketches/KMeans_imageSegmentation/)
 
 **plain javascript**
 * coming soon
