@@ -55,7 +55,6 @@ describe('imageClassifier', () => {
 
     describe('instantiate', () => {
       it('Should create a classifier with all the defaults', async () => {
-        console.log(classifier)
         expect(classifier.modelUrl).toBe(TM_URL);
       });
     });
