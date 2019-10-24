@@ -16,7 +16,8 @@ const KMEANS_DEFAULTS = {
 describe('kMeans', () => {
     let kmeansModel;
     const dataurl = 'https://raw.githubusercontent.com/ml5js/ml5-examples/development/d3/KMeans/KMeans_GaussianClusterDemo/data/gaussian2d_2clusters.csv'
-    beforeEach(async () => {
+
+    beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
         kmeansModel = await kmeans(dataurl, KMEANS_DEFAULTS, (err, result) => {
             return;
@@ -42,12 +43,5 @@ describe('kMeans', () => {
         const unique = [...new Set(centroids)].length
         expect(unique).toBe(2);
     });
-
-
-
-
-
-
-
 
 });
