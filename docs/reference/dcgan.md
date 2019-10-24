@@ -101,13 +101,6 @@ dcgan.generate(callback, ?latentVector);
 
 ## Examples
 
-**plain javascript**
-* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector)
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_Slider)
-* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_Random)
-
-
 **p5.js**
 * [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector)
 * [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
@@ -115,10 +108,19 @@ dcgan.generate(callback, ?latentVector);
 * [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_Random)
 
 **p5 web editor**
-* [DCGAN_LatentVector]()
-* [DCGAN_LatentVector_RandomWalk]()
-* [DCGAN_LatentVector_Slider]()
-* [DCGAN_Random]()
+* [DCGAN_LatentVector](https://editor.p5js.org/ml5/sketches/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://editor.p5js.org/ml5/sketches/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://editor.p5js.org/ml5/sketches/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://editor.p5js.org/ml5/sketches/DCGAN_Random)
+
+
+**plain javascript**
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_Random)
+
+
 
 ## Demo
 

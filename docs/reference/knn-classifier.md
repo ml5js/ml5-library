@@ -233,10 +233,10 @@ knnClassifier.load(path, callback?)
 * [KNNClassification_VideoSquare](https://github.com/ml5js/ml5-examples/tree/development/p5js/KNNClassification/KNNClassification_VideoSquare)
 
 **p5 web editor**
-* [KNNClassification_PoseNet](https://editor.p5js.org/ml5/sketches/4c7Fgs7baz)
-* [KNNClassification_Video](https://editor.p5js.org/ml5/sketches/ZIDZyjW5LM)
-* [KNNClassification_VideoSound](https://editor.p5js.org/ml5/sketches/It5-jyEY2R)
-* [KNNClassification_VideoSquare](https://editor.p5js.org/ml5/sketches/S3JfKStZ8I)
+* [KNNClassification_PoseNet](https://editor.p5js.org/ml5/sketches/KNNClassification_PoseNet)
+* [KNNClassification_Video](https://editor.p5js.org/ml5/sketches/KNNClassification_Video)
+* [KNNClassification_VideoSound](https://editor.p5js.org/ml5/sketches/It5-KNNClassification_VideoSound)
+* [KNNClassification_VideoSquare](https://editor.p5js.org/ml5/sketches/KNNClassification_VideoSquare)
 
 
 **plain javascript**

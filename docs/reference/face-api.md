@@ -147,8 +147,8 @@ faceapi.detectSingle(optionsOrCallback, configOrCallback, cb)
 * [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
 
 **p5 web editor**
-* [FaceApi_Image_Landmarks]() - coming soon
-* [FaceApi_Video_Landmarks]() - coming soon
+* [FaceApi_Image_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Image_Landmarks)
+* [FaceApi_Video_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Video_Landmarks)
 
 **plain javascript**
 * [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Image_Landmarks/)

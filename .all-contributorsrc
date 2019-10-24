@@ -649,6 +649,16 @@
         "ideas",
         "example"
       ]
+    },
+    {
+      "login": "w3cj",
+      "name": "CJ R.",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14241866?v=4",
+      "profile": "https://coding.garden",
+      "contributions": [
+        "doc",
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,

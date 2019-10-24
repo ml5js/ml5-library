@@ -41,17 +41,18 @@ describe('faceApi', () => {
     //     return canvas;
     // }
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
         faceapi = await faceApi();
     });
-
-    it('Should create faceApi with all the defaults', async () => {
-        expect(faceapi.config.withLandmarks).toBe(FACEAPI_DEFAULTS.withLandmarks);
-        expect(faceapi.config.withDescriptors).toBe(FACEAPI_DEFAULTS.withDescriptors);
-    });
  
     describe('landmarks', () => {
+
+        it('Should create faceApi with all the defaults', async () => {
+            expect(faceapi.config.withLandmarks).toBe(FACEAPI_DEFAULTS.withLandmarks);
+            expect(faceapi.config.withDescriptors).toBe(FACEAPI_DEFAULTS.withDescriptors);
+        });
+
         it('Should get landmarks for Frida', async () => {
             const img = await getImage();
             await faceapi.detectSingle(img)
