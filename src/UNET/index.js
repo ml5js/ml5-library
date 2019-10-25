@@ -40,12 +40,6 @@ class UNET extends Video {
     return this;
   }
 
-  // check if p5js
-  // static checkP5() {
-  //   if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
-  //   return false;
-  // }
-
   async segment(inputOrCallback, cb) {
     await this.ready;
     let imgToPredict;
