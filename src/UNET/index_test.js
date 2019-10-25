@@ -1,5 +1,12 @@
+// Copyright (c) 2018 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 const { uNet } = ml5;
 
+// test image is stored in a base64 string so that this script can be self-contained.
+// test image is a portrait of a woman, and is royalty free.
 let testImage = new Image();
 testImage.src = returnTestImageData();
 
@@ -13,14 +20,21 @@ describe('UNET', ()=>{
     segmentationImage = await model.segment(testImage);
   });
 
-  it("Model should be ready",()=> expect(model.ready).toBeTruthy());
+  it("Model is ready",()=> expect(model.ready).toBeTruthy());
 
-  it("Pixel 0 should be black since it's background", ()=>{
-    expect(segmentationImage.raw[10000]).toBeLessThan(10);
+  it("Segmentation image has 16384 pixels", ()=>{
+    expect(segmentationImage.raw.length / 4 ).toBe(16384);
   });
 
-  it("Pixel 29984 should be above 200 since it's between her eyebrows", ()=>{
-    expect(segmentationImage.raw[29984]).toBeGreaterThan(200);
+  it("Pixel 0 should be 0 since it's in the background", ()=>{
+    expect(segmentationImage.raw[0]).toBe(0);
+    expect(segmentationImage.raw[1]).toBe(0);
+    expect(segmentationImage.raw[2]).toBe(0);
+  });
+
+  it("R channel of Pixel 7496 should be above 200", ()=>{
+    // since it's between her eyebrows
+    expect(segmentationImage.raw[7496*4]).toBeGreaterThan(200);
   });
 });
 
