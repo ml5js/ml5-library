@@ -10,13 +10,12 @@ Image Classifier using pre-trained networks
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import { array3DToImage } from '../utils/imageUtilities';
-import Video from '../utils/Video';
 import p5Utils from '../utils/p5Utils';
 
 const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json';
 const imageSize = 128;
 
-class UNET extends Video {
+class UNET {
   /**
    * Create UNET class. 
    * @param {HTMLVideoElement | HTMLImageElement} video - The video or image to be used for segmentation.
@@ -25,26 +24,16 @@ class UNET extends Video {
    *    that will be resolved once the model has loaded.
    */
   constructor(video, options, callback) {
-    super(video, imageSize);
     this.modelReady = false;
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
-    if (this.videoElt && !this.video) {
-      this.video = await this.loadVideo();
-    }
     this.model = await tf.loadLayersModel(URL);
     this.modelReady = true;
     return this;
   }
-
-  // check if p5js
-  // static checkP5() {
-  //   if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
-  //   return false;
-  // }
 
   async segment(inputOrCallback, cb) {
     await this.ready;
@@ -82,7 +71,10 @@ class UNET extends Video {
   async segmentInternal(imgToPredict) {
     // Wait for the model to be ready
     await this.ready;
-    await tf.nextFrame();
+    // skip asking for next frame if it's not video
+    if (imgToPredict instanceof HTMLVideoElement){
+      await tf.nextFrame();
+    }
     this.isPredicting = true;
 
     const tensor = tf.tidy(() => {
