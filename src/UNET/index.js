@@ -36,7 +36,7 @@ class UNET {
   }
 
   async loadModel() {
-    this.model = await tf.loadLayersModel(URL);
+    this.model = await tf.loadLayersModel(this.config.modelPath);
     this.modelReady = true;
     return this;
   }
