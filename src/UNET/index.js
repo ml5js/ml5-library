@@ -83,7 +83,7 @@ class UNET {
     }
     this.isPredicting = true;
 
-    const {tensor, bgMask} = tf.tidy(() => {
+    const {featureMask, backgroundMask} = tf.tidy(() => {
       // preprocess
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
@@ -94,39 +94,57 @@ class UNET {
       const pred = this.model.predict(batchedImage);
 
       // postprocess
-      let mask = pred.squeeze([0]);
-      mask = mask.tile([1, 1, 3]);
-      mask = mask.sub(0.3).sign().relu();
-      const maskedImg = mask.mul(normTensor);
-      return {tensor:maskedImg, bgMask:mask};
+      let maskBackgroundInternal = pred.squeeze([0]);
+      maskBackgroundInternal = maskBackgroundInternal.tile([1, 1, 3]);
+      maskBackgroundInternal = maskBackgroundInternal.sub(0.3).sign().relu().neg().add(1);
+      const featureMaskInternal = maskBackgroundInternal.mul(normTensor);
+
+      let maskFeature = pred.squeeze([0]);
+      maskFeature = maskFeature.tile([1, 1, 3]);
+      maskFeature = maskFeature.sub(0.3).sign().relu();
+      const backgroundMaskInternal = maskFeature.mul(normTensor);
+      
+      return {featureMask: featureMaskInternal, backgroundMask: backgroundMaskInternal};
     });
 
     this.isPredicting = false;
-    const dom = array3DToImage(tensor);
-    const blob = UNET.dataURLtoBlob(dom.src);
-    const raw = await tf.browser.toPixels(tensor);
-    const myMask = await tf.browser.toPixels(bgMask);
-    // let tensorMask = tensor.mult( tf.scalar() )
-    let image;
-    let backgroundMask;
+    
+    const maskFeatDom = array3DToImage(featureMask);
+    const maskBgDom = array3DToImage(backgroundMask);
+    const maskFeatBlob = UNET.dataURLtoBlob(maskFeatDom.src);
+    const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
+    const maskFeat = await tf.browser.toPixels(featureMask);
+    const maskBg = await tf.browser.toPixels(backgroundMask);
+
+    let pFeatureMask;
+    let pBgMask;
 
     if (p5Utils.checkP5()) {
-        const blob1 = await p5Utils.rawToBlob(raw, this.config.imageSize, this.config.imageSize);
+        const blob1 = await p5Utils.rawToBlob(maskFeat, this.config.imageSize, this.config.imageSize);
         const p5Image1 = await p5Utils.blobToP5Image(blob1);
-        image = p5Image1;
+        pFeatureMask = p5Image1;
 
-
-        const blob2 = await p5Utils.rawToBlob(myMask, this.config.imageSize, this.config.imageSize);
+        const blob2 = await p5Utils.rawToBlob(maskBg, this.config.imageSize, this.config.imageSize);
         const p5Image2 = await p5Utils.blobToP5Image(blob2);
-        backgroundMask = p5Image2;
+        pBgMask = p5Image2;
+
     }
 
     return {
-      blob,
-      tensor,
-      raw,
-      image,
-      backgroundMask
+      blob:{
+        featureMask: maskFeatBlob,
+        backgroundMask: maskBgBlob
+      },
+      tensor:{
+        featureMask,
+        backgroundMask,
+      },
+      raw: {
+        featureMask: maskFeat,
+        backgroundMask: maskBg
+      },
+      featureMask: pFeatureMask,
+      backgroundMask: pBgMask,
     };
   }
 }
