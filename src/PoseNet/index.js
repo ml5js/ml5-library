@@ -61,6 +61,7 @@ class PoseNet extends EventEmitter {
      * @type {String}
      * @public
      */
+    this.modelUrl = options.modelUrl || null;
     this.architecture = options.architecture || DEFAULTS.architecture;
     this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
     this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
@@ -85,7 +86,8 @@ class PoseNet extends EventEmitter {
         outputStride: this.outputStride,
         inputResolution: this.inputResolution,
         multiplier: this.multiplier,
-        quantBytes: this.quantBytes
+        quantBytes: this.quantBytes,
+        modelUrl: this.modelUrl
       }
     } else {
       modelJson = {

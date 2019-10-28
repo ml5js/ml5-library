@@ -12,8 +12,10 @@ import callCallback from '../utils/callcallback';
 import { array3DToImage } from '../utils/imageUtilities';
 import p5Utils from '../utils/p5Utils';
 
-const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json';
-const imageSize = 128;
+const DEFAULTS = {
+  modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
+  imageSize: 128
+}
 
 class UNET {
   /**
@@ -26,11 +28,15 @@ class UNET {
   constructor(video, options, callback) {
     this.modelReady = false;
     this.isPredicting = false;
+    this.config = {
+      modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
+      imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize
+    };
     this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
-    this.model = await tf.loadLayersModel(URL);
+    this.model = await tf.loadLayersModel(this.config.modelPath);
     this.modelReady = true;
     return this;
   }
@@ -80,7 +86,7 @@ class UNET {
     const tensor = tf.tidy(() => {
       // preprocess
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
-      const resizedImg = tf.image.resizeBilinear(tfImage, [imageSize, imageSize]);
+      const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
       const normTensor = resizedImg.div(tf.scalar(255));
 
       const batchedImage = normTensor.expandDims(0);
@@ -102,7 +108,7 @@ class UNET {
     let image;
 
     if (p5Utils.checkP5()) {
-        const blob1 = await p5Utils.rawToBlob(raw, imageSize, imageSize);
+        const blob1 = await p5Utils.rawToBlob(raw, this.config.imageSize, this.config.imageSize);
         const p5Image1 = await p5Utils.blobToP5Image(blob1);
         image = p5Image1;
     }
@@ -129,7 +135,7 @@ const uNet = (videoOr, optionsOr, cb) => {
     callback = videoOr;
   } else if (typeof videoOr === 'object') {
     options = videoOr;
-  }
+  } 
 
   if (typeof optionsOr === 'object') {
     options = optionsOr;
