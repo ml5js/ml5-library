@@ -78,6 +78,13 @@ class UNET {
       type: mime
     });
   }
+
+  async convertToP5Image(tfBrowserPixelImage){
+      const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, this.config.imageSize, this.config.imageSize);
+      const p5Image1 = await p5Utils.blobToP5Image(blob1);
+      return p5Image1
+  }
+
   async segmentInternal(imgToPredict) {
     // Wait for the model to be ready
     await this.ready;
@@ -92,19 +99,19 @@ class UNET {
       backgroundMask,
       segmentation
     } = tf.tidy(() => {
-      // preprocess
+      // preprocess the input image
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
       let normTensor = resizedImg.div(tf.scalar(255));
-
       const batchedImage = normTensor.expandDims(0);
-      
+      // get the segmentation
       const pred = this.model.predict(batchedImage);
       
       // add back the alpha channel to the normalized input image
       const alpha = tf.ones([128, 128, 1]).tile([1,1,1])
       normTensor = normTensor.concat(alpha, 2)
 
+      // TODO: optimize these redundancies below, e.g. repetitive squeeze() etc
       // get the background mask;
       let maskBackgroundInternal = pred.squeeze([0]);
       maskBackgroundInternal = maskBackgroundInternal.tile([1, 1, 4]);
@@ -139,27 +146,18 @@ class UNET {
     const maskBg = await tf.browser.toPixels(backgroundMask);
     const mask = await tf.browser.toPixels(segmentation);
 
-
     let pFeatureMask;
     let pBgMask;
     let pMask;
 
     if (p5Utils.checkP5()) {
-      const blob1 = await p5Utils.rawToBlob(maskFeat, this.config.imageSize, this.config.imageSize);
-      const p5Image1 = await p5Utils.blobToP5Image(blob1);
-      pFeatureMask = p5Image1;
-
-      const blob2 = await p5Utils.rawToBlob(maskBg, this.config.imageSize, this.config.imageSize);
-      const p5Image2 = await p5Utils.blobToP5Image(blob2);
-      pBgMask = p5Image2;
-
-      const blob3 = await p5Utils.rawToBlob(mask, this.config.imageSize, this.config.imageSize);
-      const p5Image3 = await p5Utils.blobToP5Image(blob3);
-      pMask = p5Image3;
-
+      pFeatureMask = await this.convertToP5Image(maskFeat);
+      pBgMask = await this.convertToP5Image(maskBg)
+      pMask = await this.convertToP5Image(mask)
     }
 
     return {
+      segmentation:mask, 
       blob: {
         featureMask: maskFeatBlob,
         backgroundMask: maskBgBlob
@@ -172,10 +170,9 @@ class UNET {
         featureMask: maskFeat,
         backgroundMask: maskBg
       },
+      // returns if p5 is available
       featureMask: pFeatureMask,
       backgroundMask: pBgMask,
-      // TODO: add b/w mask
-      segmentation:mask, 
       mask: pMask
     };
   }
