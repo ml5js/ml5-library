@@ -94,20 +94,25 @@ class UNET {
       // preprocess
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
-      const normTensor = resizedImg.div(tf.scalar(255));
+      let normTensor = resizedImg.div(tf.scalar(255));
 
       const batchedImage = normTensor.expandDims(0);
-
+      
       const pred = this.model.predict(batchedImage);
+      
+      // add back the alpha channel to the normalized input image
+      const alpha = tf.ones([128, 128, 1]).tile([1,1,1])
+      normTensor = normTensor.concat(alpha, 2)
 
-      // postprocess
+      // get the background mask;
       let maskBackgroundInternal = pred.squeeze([0]);
-      maskBackgroundInternal = maskBackgroundInternal.tile([1, 1, 3]);
+      maskBackgroundInternal = maskBackgroundInternal.tile([1, 1, 4]);
       maskBackgroundInternal = maskBackgroundInternal.sub(0.3).sign().relu().neg().add(1);
       const featureMaskInternal = maskBackgroundInternal.mul(normTensor);
 
+      // get the feature mask;
       let maskFeature = pred.squeeze([0]);
-      maskFeature = maskFeature.tile([1, 1, 3]);
+      maskFeature = maskFeature.tile([1, 1, 4]);
       maskFeature = maskFeature.sub(0.3).sign().relu();
       const backgroundMaskInternal = maskFeature.mul(normTensor);
 
@@ -125,28 +130,6 @@ class UNET {
     const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
     const maskFeat = await tf.browser.toPixels(featureMask);
     const maskBg = await tf.browser.toPixels(backgroundMask);
-
-    for (let i = 0; i < maskFeat.length - 4; i += 4) {
-      const r = maskFeat[i]
-      const g = maskFeat[i + 1]
-      const b = maskFeat[i + 2]
-
-      if (r === 0 && g === 0 && b === 0) {
-        maskFeat[i + 3] = 0;
-      }
-
-    }
-
-    for (let i = 0; i < maskBg.length - 4; i += 4) {
-      const r = maskBg[i]
-      const g = maskBg[i + 1]
-      const b = maskBg[i + 2]
-
-      if (r === 0 && g === 0 && b === 0) {
-        maskBg[i + 3] = 0;
-      }
-
-    }
 
 
     let pFeatureMask;
@@ -178,6 +161,8 @@ class UNET {
       },
       featureMask: pFeatureMask,
       backgroundMask: pBgMask,
+      // TODO: add b/w mask
+      // mask: p5Mask
     };
   }
 }
