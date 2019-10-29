@@ -89,7 +89,8 @@ class UNET {
 
     const {
       featureMask,
-      backgroundMask
+      backgroundMask,
+      segmentation
     } = tf.tidy(() => {
       // preprocess
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
@@ -116,9 +117,15 @@ class UNET {
       maskFeature = maskFeature.sub(0.3).sign().relu();
       const backgroundMaskInternal = maskFeature.mul(normTensor);
 
+      const alpha255 = tf.ones([128, 128, 1]).tile([1,1,1]).mul(255);
+      let newpred = pred.squeeze([0]);
+      newpred = tf.cast(newpred.tile([1,1,3]).sub(0.3).sign().relu().mul(255), 'int32') 
+      newpred = newpred.concat(alpha255, 2)
+
       return {
         featureMask: featureMaskInternal,
-        backgroundMask: backgroundMaskInternal
+        backgroundMask: backgroundMaskInternal,
+        segmentation: newpred
       };
     });
 
@@ -130,10 +137,12 @@ class UNET {
     const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
     const maskFeat = await tf.browser.toPixels(featureMask);
     const maskBg = await tf.browser.toPixels(backgroundMask);
+    const mask = await tf.browser.toPixels(segmentation);
 
 
     let pFeatureMask;
     let pBgMask;
+    let pMask;
 
     if (p5Utils.checkP5()) {
       const blob1 = await p5Utils.rawToBlob(maskFeat, this.config.imageSize, this.config.imageSize);
@@ -143,6 +152,10 @@ class UNET {
       const blob2 = await p5Utils.rawToBlob(maskBg, this.config.imageSize, this.config.imageSize);
       const p5Image2 = await p5Utils.blobToP5Image(blob2);
       pBgMask = p5Image2;
+
+      const blob3 = await p5Utils.rawToBlob(mask, this.config.imageSize, this.config.imageSize);
+      const p5Image3 = await p5Utils.blobToP5Image(blob3);
+      pMask = p5Image3;
 
     }
 
@@ -162,7 +175,8 @@ class UNET {
       featureMask: pFeatureMask,
       backgroundMask: pBgMask,
       // TODO: add b/w mask
-      // mask: p5Mask
+      segmentation:mask, 
+      mask: pMask
     };
   }
 }
