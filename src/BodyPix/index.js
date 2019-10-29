@@ -70,6 +70,16 @@ class BodyPix {
     }
 
     /**
+     * Returns a p5Image
+     * @param {*} tfBrowserPixelImage 
+     */
+    async convertToP5Image(tfBrowserPixelImage, segmentationWidth, segmentationHeight){
+        const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, segmentationWidth, segmentationHeight);
+        const p5Image1 = await p5Utils.blobToP5Image(blob1);
+        return p5Image1
+    }
+
+    /**
      * Returns a bodyPartsSpec object 
      * @param {Array} an array of [r,g,b] colors
      * @return {object} an object with the bodyParts by color and id
@@ -127,9 +137,7 @@ class BodyPix {
         result.bodyParts = bodyPartsMeta;
 
         if (p5Utils.checkP5()) {
-            const blob1 = await p5Utils.rawToBlob(result.image.data, segmentation.width, segmentation.height);
-            const p5Image1 = await p5Utils.blobToP5Image(blob1);
-            result.image = p5Image1;
+            result.image = await this.convertToP5Image(result.image.data, segmentation.width, segmentation.height)
         }
 
         return result;
@@ -218,14 +226,24 @@ class BodyPix {
         result.maskPerson = bp.toMaskImageData(segmentation, false);
         result.raw = segmentation;
 
-        if (p5Utils.checkP5()) {
-            const blob1 = await p5Utils.rawToBlob(result.maskBackground.data, segmentation.width, segmentation.height);
-            const blob2 = await p5Utils.rawToBlob(result.maskPerson.data, segmentation.width, segmentation.height);
-            const p5Image1 = await p5Utils.blobToP5Image(blob1);
-            const p5Image2 = await p5Utils.blobToP5Image(blob2);
+        const bgMaskCanvas = document.createElement('canvas');
+        bgMaskCanvas.width = segmentation.width;
+        bgMaskCanvas.height = segmentation.height;
+        
+        // const iImage = imgToSegment;
+        // iImage.width = segmentation.width;
+        // iImage.height = segmentation.height;
+        // console.log(imgToSegment);
+        bp.drawMask(bgMaskCanvas, bgMaskCanvas, result.maskPerson, 1, 3, false);
 
-            result.maskBackground = p5Image1;
-            result.maskPerson = p5Image2;
+        result.test = bgMaskCanvas;
+
+        if (p5Utils.checkP5()) {
+            result.maskBackground = await this.convertToP5Image(result.maskBackground.data, segmentation.width, segmentation.height);
+            result.maskPerson = await this.convertToP5Image(result.maskPerson.data, segmentation.width, segmentation.height);
+
+            const test2 = await p5Utils.blobToP5Image( await p5Utils.getBlob(bgMaskCanvas) );
+            result.test2 = test2;
         }
 
         return result;
