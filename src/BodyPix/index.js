@@ -237,6 +237,7 @@ class BodyPix {
         result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
         result.raw.personMask = bp.toMaskImageData(segmentation, false);
 
+        // TODO: consider returning the canvas with the bp.drawMask()
         // const bgMaskCanvas = document.createElement('canvas');
         // bgMaskCanvas.width = segmentation.width;
         // bgMaskCanvas.height = segmentation.height;
@@ -278,18 +279,15 @@ class BodyPix {
         const personMaskPixels = await tf.browser.toPixels(personMask);
         const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
 
+        // otherwise, return the pixels 
+        result.personMask = personMaskPixels;
+        result.backgroundMask = bgMaskPixels;
+
         // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
-            // result.maskBackground = await this.convertToP5Image(result.maskBackground.data, segmentation.width, segmentation.height);
-            // result.maskPerson = await this.convertToP5Image(result.maskPerson.data, segmentation.width, segmentation.height);
-            // result.featureMask = await p5Utils.blobToP5Image( await p5Utils.getBlob(featureMaskCanvas) );
-            // result.backgroundMask = await p5Utils.blobToP5Image( await p5Utils.getBlob(bgMaskCanvas) );
-            result.featureMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
+            result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
             result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
         }
-        // otherwise, return the pixels 
-        result.featureMask = personMaskPixels;
-        result.backgroundMask = bgMaskPixels;
 
         return result;
 
