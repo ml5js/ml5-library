@@ -73,7 +73,7 @@ class BodyPix {
      * Returns a p5Image
      * @param {*} tfBrowserPixelImage 
      */
-    async convertToP5Image(tfBrowserPixelImage, segmentationWidth, segmentationHeight){
+    async convertToP5Image(tfBrowserPixelImage, segmentationWidth, segmentationHeight) {
         const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, segmentationWidth, segmentationHeight);
         const p5Image1 = await p5Utils.blobToP5Image(blob1);
         return p5Image1
@@ -163,14 +163,14 @@ class BodyPix {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof HTMLVideoElement
-            || optionsOrCallback instanceof ImageData) {
-                imgToSegment = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
@@ -221,30 +221,75 @@ class BodyPix {
 
         const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
 
-        const result = {};
-        result.maskBackground = bp.toMaskImageData(segmentation, true);
-        result.maskPerson = bp.toMaskImageData(segmentation, false);
-        result.raw = segmentation;
+        const result = {
+            segmentation,
+            raw:{
+                personMask: null,
+                backgroundMask:null,
+            },
+            tensor:{
+                personMask:null,
+                backgroundMask:null,
+            },
+            personMask:null,
+            backgroundMask:null,
+        };
+        result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
+        result.raw.personMask = bp.toMaskImageData(segmentation, false);
 
-        const bgMaskCanvas = document.createElement('canvas');
-        bgMaskCanvas.width = segmentation.width;
-        bgMaskCanvas.height = segmentation.height;
-        
-        // const iImage = imgToSegment;
-        // iImage.width = segmentation.width;
-        // iImage.height = segmentation.height;
-        // console.log(imgToSegment);
-        bp.drawMask(bgMaskCanvas, bgMaskCanvas, result.maskPerson, 1, 3, false);
+        // const bgMaskCanvas = document.createElement('canvas');
+        // bgMaskCanvas.width = segmentation.width;
+        // bgMaskCanvas.height = segmentation.height;
+        // bp.drawMask(bgMaskCanvas, imgToSegment, result.maskBackground, 1, 3, false);
 
-        result.test = bgMaskCanvas;
+        // const featureMaskCanvas = document.createElement('canvas');
+        // featureMaskCanvas.width = segmentation.width;
+        // featureMaskCanvas.height = segmentation.height;
+        // bp.drawMask(featureMaskCanvas, imgToSegment, result.maskPerson, 1, 3, false);
 
+        // result.backgroundMask = bgMaskCanvas;
+        // result.featureMask = featureMaskCanvas;
+
+        let normTensor = await tf.browser.fromPixels(imgToSegment);
+
+        const {
+            personMask,
+            backgroundMask
+        } = tf.tidy(() => {
+            // create a tensor from the input image
+            const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
+            normTensor = normTensor.concat(alpha, 2)
+            // normTensor.print();
+
+            // create a tensor from the segmentation
+            let segmentationTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let bgTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+
+            // multiply the segmentation and the inputImage
+            segmentationTensor = tf.cast(segmentationTensor.mul(normTensor), 'int32')
+            bgTensor = tf.cast(bgTensor.neg().add(1).mul(normTensor), 'int32')
+
+            return {
+                personMask: segmentationTensor,
+                backgroundMask: bgTensor,
+            }
+        })
+
+        const personMaskPixels = await tf.browser.toPixels(personMask);
+        const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
+
+        // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
-            result.maskBackground = await this.convertToP5Image(result.maskBackground.data, segmentation.width, segmentation.height);
-            result.maskPerson = await this.convertToP5Image(result.maskPerson.data, segmentation.width, segmentation.height);
-
-            const test2 = await p5Utils.blobToP5Image( await p5Utils.getBlob(bgMaskCanvas) );
-            result.test2 = test2;
+            // result.maskBackground = await this.convertToP5Image(result.maskBackground.data, segmentation.width, segmentation.height);
+            // result.maskPerson = await this.convertToP5Image(result.maskPerson.data, segmentation.width, segmentation.height);
+            // result.featureMask = await p5Utils.blobToP5Image( await p5Utils.getBlob(featureMaskCanvas) );
+            // result.backgroundMask = await p5Utils.blobToP5Image( await p5Utils.getBlob(bgMaskCanvas) );
+            result.featureMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
+            result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
         }
+        // otherwise, return the pixels 
+        result.featureMask = personMaskPixels;
+        result.backgroundMask = bgMaskPixels;
 
         return result;
 
@@ -263,20 +308,20 @@ class BodyPix {
         let imgToSegment = this.video;
         let callback;
         let segmentationOptions = this.config;
-        
+
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof HTMLVideoElement
-            || optionsOrCallback instanceof ImageData) {
-                imgToSegment = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
