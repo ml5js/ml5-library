@@ -116,6 +116,27 @@ class UNET {
     const maskFeat = await tf.browser.toPixels(featureMask);
     const maskBg = await tf.browser.toPixels(backgroundMask);
 
+    for(let i = 0; i < maskFeat.length - 4; i+=4){
+      const r = maskFeat[i]
+      const g = maskFeat[i+1]
+      const b = maskFeat[i+2]
+      // const a = maskFeat[i+3]
+      if(r === 0 && g === 0 && b === 0){
+        maskFeat[i+3] = 0;
+      }
+    }
+
+    for(let i = 0; i < maskBg.length - 4; i+=4){
+      const r = maskBg[i]
+      const g = maskBg[i+1]
+      const b = maskBg[i+2]
+      // const a = maskFeat[i+3]
+      if(r === 0 && g === 0 && b === 0){
+        maskBg[i+3] = 0;
+      }
+    }
+    
+
     let pFeatureMask;
     let pBgMask;
 
