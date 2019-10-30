@@ -126,18 +126,78 @@ class BodyPix {
         this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
         this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-        const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
+        // const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
         const segmentation = await this.model.estimatePartSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold);
 
+        const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
         const colorsArray = Object.keys(bodyPartsMeta).map(part => bodyPartsMeta[part].color)
 
-        const result = {};
-        result.image = bp.toColoredPartImageData(segmentation, colorsArray);
-        result.raw = segmentation;
-        result.bodyParts = bodyPartsMeta;
+        const result = {
+            segmentation,
+            raw:{
+                personMask: null,
+                backgroundMask:null,
+                partMask: null
+            },
+            tensor:{
+                personMask:null,
+                backgroundMask:null,
+                partMask: null,
+            },
+            personMask:null,
+            backgroundMask:null,
+            partMask: null,
+            bodyParts: bodyPartsMeta
+        };
+        result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
+        result.raw.personMask = bp.toMaskImageData(segmentation, false);
+        result.raw.partMask = bp.toColoredPartImageData(segmentation, colorsArray);
 
+        let normTensor = await tf.browser.fromPixels(imgToSegment);
+        
+        const {
+            personMask,
+            backgroundMask,
+            partMask,
+        } = tf.tidy(() => {
+            // create a tensor from the input image
+            const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
+            normTensor = normTensor.concat(alpha, 2)
+
+            // create a tensor from the segmentation
+            let segmentationTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let bgTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let partTensor = tf.tensor([...result.raw.partMask.data], [segmentation.height, segmentation.width, 4]);
+            // partTensor.max().print();
+
+            // multiply the segmentation and the inputImage
+            segmentationTensor = tf.cast(segmentationTensor.add(0.2).sign().relu().mul(normTensor), 'int32')
+            // segmentationTensor.print()
+            bgTensor = tf.cast(bgTensor.add(0.2).sign().neg().relu().mul(normTensor), 'int32')
+            // bgTensor.print()
+            partTensor = tf.cast(partTensor, 'int32')
+
+            return {
+                personMask: segmentationTensor,
+                backgroundMask: bgTensor,
+                partMask: partTensor
+            }
+        })
+
+        const personMaskPixels = await tf.browser.toPixels(personMask);
+        const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
+        const partMaskPixels = await tf.browser.toPixels(partMask);
+
+        // otherwise, return the pixels 
+        result.personMask = personMaskPixels;
+        result.backgroundMask = bgMaskPixels;
+        result.partMask = partMaskPixels;
+
+        // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
-            result.image = await this.convertToP5Image(result.image.data, segmentation.width, segmentation.height)
+            result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
+            result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
+            result.partMask = await this.convertToP5Image(partMaskPixels , segmentation.width, segmentation.height)
         }
 
         return result;
