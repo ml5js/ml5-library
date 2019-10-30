@@ -18,6 +18,7 @@
     "test-travis": "./scripts/test-travis.sh",
     "serve:docs": "docsify serve docs",
     "update:readme": "node ./scripts/updateReadme.js",
+    "update:docs": "node ./scripts/updateDocVersions.js $oldversion",
     "publish:npm": "npm run build && npm publish"
   },
   "repository": {
