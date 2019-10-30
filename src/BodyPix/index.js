@@ -134,18 +134,18 @@ class BodyPix {
 
         const result = {
             segmentation,
-            raw:{
+            raw: {
                 personMask: null,
-                backgroundMask:null,
+                backgroundMask: null,
                 partMask: null
             },
-            tensor:{
-                personMask:null,
-                backgroundMask:null,
+            tensor: {
+                personMask: null,
+                backgroundMask: null,
                 partMask: null,
             },
-            personMask:null,
-            backgroundMask:null,
+            personMask: null,
+            backgroundMask: null,
             partMask: null,
             bodyParts: bodyPartsMeta
         };
@@ -154,7 +154,7 @@ class BodyPix {
         result.raw.partMask = bp.toColoredPartImageData(segmentation, colorsArray);
 
         let normTensor = await tf.browser.fromPixels(imgToSegment);
-        
+
         const {
             personMask,
             backgroundMask,
@@ -168,13 +168,11 @@ class BodyPix {
             let segmentationTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
             let bgTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
             let partTensor = tf.tensor([...result.raw.partMask.data], [segmentation.height, segmentation.width, 4]);
-            // partTensor.max().print();
 
             // multiply the segmentation and the inputImage
             segmentationTensor = tf.cast(segmentationTensor.add(0.2).sign().relu().mul(normTensor), 'int32')
-            // segmentationTensor.print()
             bgTensor = tf.cast(bgTensor.add(0.2).sign().neg().relu().mul(normTensor), 'int32')
-            // bgTensor.print()
+            // TODO: handle removing background 
             partTensor = tf.cast(partTensor, 'int32')
 
             return {
@@ -197,7 +195,7 @@ class BodyPix {
         if (p5Utils.checkP5()) {
             result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
             result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
-            result.partMask = await this.convertToP5Image(partMaskPixels , segmentation.width, segmentation.height)
+            result.partMask = await this.convertToP5Image(partMaskPixels, segmentation.width, segmentation.height)
         }
 
         return result;
@@ -283,16 +281,16 @@ class BodyPix {
 
         const result = {
             segmentation,
-            raw:{
+            raw: {
                 personMask: null,
-                backgroundMask:null,
+                backgroundMask: null,
             },
-            tensor:{
-                personMask:null,
-                backgroundMask:null,
+            tensor: {
+                personMask: null,
+                backgroundMask: null,
             },
-            personMask:null,
-            backgroundMask:null,
+            personMask: null,
+            backgroundMask: null,
         };
         result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
         result.raw.personMask = bp.toMaskImageData(segmentation, false);
