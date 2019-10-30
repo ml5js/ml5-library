@@ -165,19 +165,19 @@ class BodyPix {
             normTensor = normTensor.concat(alpha, 2)
 
             // create a tensor from the segmentation
-            let segmentationTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
-            let bgTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskPersonTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskBackgroundTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
             let partTensor = tf.tensor([...result.raw.partMask.data], [segmentation.height, segmentation.width, 4]);
 
             // multiply the segmentation and the inputImage
-            segmentationTensor = tf.cast(segmentationTensor.add(0.2).sign().relu().mul(normTensor), 'int32')
-            bgTensor = tf.cast(bgTensor.add(0.2).sign().neg().relu().mul(normTensor), 'int32')
+            maskPersonTensor = tf.cast(maskPersonTensor.add(0.2).sign().relu().mul(normTensor), 'int32')
+            maskBackgroundTensor = tf.cast(maskBackgroundTensor.add(0.2).sign().neg().relu().mul(normTensor), 'int32')
             // TODO: handle removing background 
             partTensor = tf.cast(partTensor, 'int32')
 
             return {
-                personMask: segmentationTensor,
-                backgroundMask: bgTensor,
+                personMask: maskPersonTensor,
+                backgroundMask: maskBackgroundTensor,
                 partMask: partTensor
             }
         })
@@ -321,16 +321,16 @@ class BodyPix {
             // normTensor.print();
 
             // create a tensor from the segmentation
-            let segmentationTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
-            let bgTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskPersonTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskBackgroundTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
 
             // multiply the segmentation and the inputImage
-            segmentationTensor = tf.cast(segmentationTensor.mul(normTensor), 'int32')
-            bgTensor = tf.cast(bgTensor.neg().add(1).mul(normTensor), 'int32')
+            maskPersonTensor = tf.cast(maskPersonTensor.neg().add(1).mul(normTensor), 'int32')
+            maskBackgroundTensor = tf.cast(maskBackgroundTensor.mul(normTensor), 'int32')
 
             return {
-                personMask: segmentationTensor,
-                backgroundMask: bgTensor,
+                personMask: maskPersonTensor,
+                backgroundMask: maskBackgroundTensor,
             }
         })
 
