@@ -249,9 +249,109 @@ We’re still rolling out all of our unit tests, but if you want to contribute t
    ```npm run test:single```
 
  - To run a test on a single model
-   ```npm run test -- --model:YourModelNameHere```
+   ```npm run test -- --model=YourModelNameHere```
 
 This last one is case sensitive!
+
+
+## Making Releases (For the ml5 core team)
+
+Work in progress - we are working on making a few scripts to make it easier to make releases and deployments. For now, to address the long-winded process noted in https://github.com/ml5js/ml5-library/issues/387, we are experimenting with some devOps scripts.
+
+In the instance you're ready to make a new release from `development` to `release`:
+
+Steps:
+
+1. change the version number and checkout a new branch:
+
+```
+newversion=0.3.2 npm run release:prep
+```
+
+you'll be now in: `v0.3.2`
+
+2. update the readme
+
+```
+pversion=0.3.1 npm run update:readme
+```
+
+3. Run install & build
+
+```
+npm run release:build
+```
+
+4. Add and commit and push changes
+
+```
+npm run release:commitAndPush
+```
+
+5. Add tags and push 
+
+```
+npm run release:tag
+```
+
+Go to Github and wait for tests to pass, then `squash and merge` the newly created `v0.3.2` branch to `development`;
+
+6. Go back to your terminal:
+
+  ```
+  npm run development:sync
+  ```
+
+7. Now go back to github and make a PR from `development` to `release`, wait for tests to pass, then `squash and merge` `development` into `release`
+
+8. Go back to your terminal:
+
+  ```
+  npm run release:sync
+  ```
+
+
+9. publish to npm
+
+```
+npm run publish:npm
+```
+
+7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+8. Your new npm version should be released! 
+
+Now what is important is that you: 
+
+1. go to Github and document that new release with `release notes`.
+2. go to `ml5-examples` and make sure you have the latest development branch stuff:
+
+  ```
+  git checkout development
+  git fetch
+  git pull
+  ```
+
+3. then make a new branch for deployment e.g. `new-release-v0.3.2` and update the ml5 references on all examples:
+
+  ```
+  git checkout -b new-release-v0.3.2
+  npm run update-ml5 0.3.2
+  git add .
+  git commit -m "update examples to v0.3.2"
+  ```
+
+4. Fix any merge conflicts if necessary
+
+  ```
+  git push origin new-release-v0.3.2
+  git tag v0.3.2
+  git push --tags
+  ```
+
+5. Merge `new-release-v0.3.2` with `release`
+6. Add release notes to the latest release
+7. Merge `release` with `master` (for the github pages & website)
+
 
 ## Additional Resources
 

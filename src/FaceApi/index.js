@@ -7,7 +7,7 @@
 /* eslint no-await-in-loop: "off" */
 
 /*
- * FaceApi: real-time face recognition, expressions, and landmark detection
+ * FaceApi: real-time face recognition, and landmark detection
  * Ported and integrated from all the hard work by: https://github.com/justadudewhohacks/face-api.js?files=1
  */
 
@@ -17,14 +17,13 @@ import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
     withLandmarks: true,
-    withExpressions: true,
     withDescriptors: true,
+    minConfidence: 0.5,
     MODEL_URLS: {
         Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
         FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
         FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
         FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
-        FaceExpressionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_expression_model-weights_manifest.json'
     }
 }
 
@@ -40,15 +39,14 @@ class FaceApiBase {
         this.model = null;
         this.modelReady = false;
         this.config = {
+            minConfidence: this.checkUndefined(options.minConfidence, DEFAULTS.minConfidence),
             withLandmarks: this.checkUndefined(options.withLandmarks, DEFAULTS.withLandmarks),
-            withExpressions: this.checkUndefined(options.withExpressions, DEFAULTS.withExpressions),
             withDescriptors: this.checkUndefined(options.withDescriptors, DEFAULTS.withDescriptors),
             MODEL_URLS: {
                 Mobilenetv1Model: this.checkUndefined(options.Mobilenetv1Model, DEFAULTS.MODEL_URLS.Mobilenetv1Model),
                 FaceLandmarkModel: this.checkUndefined(options.FaceLandmarkModel, DEFAULTS.MODEL_URLS.FaceLandmarkModel),
                 FaceLandmark68TinyNet: this.checkUndefined(options.FaceLandmark68TinyNet, DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet),
                 FaceRecognitionModel: this.checkUndefined(options.FaceRecognitionModel, DEFAULTS.MODEL_URLS.FaceRecognitionModel),
-                FaceExpressionModel: this.checkUndefined(options.FaceExpressionModel, DEFAULTS.MODEL_URLS.FaceExpressionModel),
             }
         }
 
@@ -65,7 +63,6 @@ class FaceApiBase {
             "FaceLandmarkModel",
             "FaceLandmark68TinyNet",
             "FaceRecognitionModel",
-            "FaceExpressionModel",
         ];
 
         Object.keys(this.config.MODEL_URLS).forEach(item => {
@@ -78,15 +75,18 @@ class FaceApiBase {
             Mobilenetv1Model,
             FaceLandmarkModel,
             FaceRecognitionModel,
-            FaceExpressionModel
         } = this.config.MODEL_URLS;
 
         this.model = faceapi;
-        await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model)
+
+        const SsdMobilenetv1Options = this.model.SsdMobilenetv1Options({
+            minConfidence: this.minConfidence
+        })
+        await this.model.loadSsdMobilenetv1Model(Mobilenetv1Model, SsdMobilenetv1Options)
         await this.model.loadFaceLandmarkModel(FaceLandmarkModel)
         // await this.model.loadFaceLandmarkTinyModel(FaceLandmark68TinyNet) 
         await this.model.loadFaceRecognitionModel(FaceRecognitionModel)
-        await this.model.loadFaceExpressionModel(FaceExpressionModel)
+
         this.modelReady = true;
         return this;
     }
@@ -103,18 +103,20 @@ class FaceApiBase {
         let callback;
         let faceApiOptions = this.config;
 
-         // Handle the image to predict
-         if (typeof optionsOrCallback === 'function') {
+        // Handle the image to predict
+        if (typeof optionsOrCallback === 'function') {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof ImageData) {
-                imgToClassify = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
@@ -158,27 +160,22 @@ class FaceApiBase {
 
         const {
             withLandmarks,
-            withExpressions,
-            withDescriptors
+            withDescriptors,
         } = this.config
 
         let result;
 
         if (withLandmarks) {
-            if (withExpressions && withDescriptors) {
-                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
-            } else if (withExpressions) {
-                result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions();
-            } else if (withDescriptors) {
+            if (withDescriptors) {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceDescriptors();
             } else {
                 result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks()
             }
 
-        } else if (withLandmarks === false) {
-            result = await this.model.detectAllFaces(imgToClassify).withFaceExpressions()
+        } else if (!withLandmarks) {
+            result = await this.model.detectAllFaces(imgToClassify)
         } else {
-            result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptors();
+            result = await this.model.detectAllFaces(imgToClassify).withFaceLandmarks().withFaceDescriptors();
         }
 
 
@@ -206,13 +203,15 @@ class FaceApiBase {
             imgToClassify = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof ImageData) {
-                imgToClassify = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToClassify = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof HTMLVideoElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToClassify = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
@@ -256,26 +255,21 @@ class FaceApiBase {
 
         const {
             withLandmarks,
-            withExpressions,
             withDescriptors
         } = this.config
 
         let result;
         if (withLandmarks) {
-            if (withExpressions && withDescriptors) {
-                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
-            } else if (withExpressions) {
-                result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions();
-            } else if (withDescriptors) {
+            if (withDescriptors) {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceDescriptor();
             } else {
                 result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks()
             }
 
-        } else if (withLandmarks === false) {
-            result = await this.model.detectSingleFace(imgToClassify).withFaceExpressions()
+        } else if (!withLandmarks) {
+            result = await this.model.detectSingleFace(imgToClassify)
         } else {
-            result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceExpressions().withFaceDescriptor();
+            result = await this.model.detectSingleFace(imgToClassify).withFaceLandmarks().withFaceDescriptor();
         }
 
         // always resize the results to the input image size
@@ -312,7 +306,7 @@ class FaceApiBase {
      */
     setReturnOptions(faceApiOptions) {
         const output = Object.assign({}, this.config);
-        const options = ["withLandmarks", "withLandmarks", "withDescriptors"];
+        const options = ["withLandmarks", "withDescriptors"];
 
         options.forEach(prop => {
             if (faceApiOptions[prop] !== undefined) {

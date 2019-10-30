@@ -24,8 +24,11 @@ import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
+import neuralNetwork from './NeuralNetwork';
 import faceApi from './FaceApi';
+import kmeans from './KMeans';
 import cartoon from './CartoonGan';
+import p5Utils from './utils/p5Utils';
 
 const withPreload = {
   charRNN,
@@ -34,6 +37,7 @@ const withPreload = {
   DCGAN,
   featureExtractor,
   imageClassifier,
+  kmeans,
   soundClassifier,
   pitchDetection,
   pix2pix,
@@ -43,14 +47,15 @@ const withPreload = {
   word2vec,
   YOLO,
   uNet,
+  sentiment,
+  bodyPix,
+  faceApi,
 };
 
-module.exports = Object.assign({}, preloadRegister(withPreload), {
+module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
   tf,
   version,
-  sentiment,
-  bodyPix,
-  faceApi,
+  neuralNetwork,
 });

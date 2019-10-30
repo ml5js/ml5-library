@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.3.1",
+  "version": "0.4.1",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
@@ -15,7 +15,11 @@
     "build": "webpack --config webpack.prod.babel.js",
     "test": "./node_modules/karma/bin/karma start karma.conf.js ",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
-    "test-travis": "./scripts/test-travis.sh"
+    "test-travis": "./scripts/test-travis.sh",
+    "serve:docs": "docsify serve docs",
+    "update:readme": "node ./scripts/updateReadme.js",
+    "update:docs": "node ./scripts/updateDocVersions.js $oldversion",
+    "publish:npm": "npm run build && npm publish"
   },
   "repository": {
     "type": "git",
@@ -39,8 +43,9 @@
     "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
-    "commitizen": "2.9.6",
+    "commitizen": "4.0.3",
     "cz-conventional-changelog": "2.1.0",
+    "docsify-cli": "^4.3.0",
     "eslint": "4.18.2",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-config-prettier": "^4.1.0",
@@ -51,20 +56,20 @@
     "html-webpack-plugin": "^3.0.7",
     "jasmine-core": "3.1.0",
     "karma": "2.0.0",
-    "karma-browserstack-launcher": "~1.3.0",
+    "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "2.2.0",
     "karma-jasmine": "1.1.1",
     "karma-mocha-reporter": "^2.2.5",
     "karma-safari-launcher": "1.0.0",
     "karma-webpack": "3.0.0",
-    "npm-run-all": "4.1.2",
+    "npm-run-all": "^4.1.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
-    "semantic-release": "15.0.2",
+    "semantic-release": "^15.13.26",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "4.1.1",
     "webpack-cli": "2.0.10",
-    "webpack-dev-server": "3.1.0",
+    "webpack-dev-server": "3.1.11",
     "webpack-merge": "^4.1.2"
   },
   "config": {
@@ -89,13 +94,14 @@
   },
   "dependencies": {
     "@magenta/sketch": "0.2.0",
-    "@tensorflow-models/body-pix": "1.0.1",
-    "@tensorflow-models/knn-classifier": "1.0.0",
-    "@tensorflow-models/mobilenet": "1.0.0",
-    "@tensorflow-models/posenet": "1.0.0",
-    "@tensorflow-models/speech-commands": "0.3.8",
-    "@tensorflow/tfjs": "1.1.2",
+    "@tensorflow-models/body-pix": "1.1.2",
+    "@tensorflow-models/knn-classifier": "1.2.1",
+    "@tensorflow-models/mobilenet": "2.0.3",
+    "@tensorflow-models/posenet": "2.1.3",
+    "@tensorflow-models/speech-commands": "0.3.9",
+    "@tensorflow/tfjs": "~1.2.1",
+    "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
-    "face-api.js": "^0.20.0"
+    "face-api.js": "0.20.1"
   }
 }

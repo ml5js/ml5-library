@@ -8,11 +8,18 @@ const { poseNet } = ml5;
 const POSENET_IMG = 'https://github.com/ml5js/ml5-adjacent/raw/master/02_ImageClassification_Video/starter.png';
 
 const POSENET_DEFAULTS = {
+  architecture: 'MobileNetV1',
   imageScaleFactor: 0.3,
+  outputStride: 16,
   flipHorizontal: false,
   minConfidence: 0.5,
+  maxPoseDetections: 5,
+  scoreThreshold: 0.5,
+  nmsRadius: 20,
   detectionType: 'multiple',
+  inputResolution: 513,
   multiplier: 0.75,
+  quantBytes: 2
 };
 
 describe('PoseNet', () => {
@@ -32,11 +39,12 @@ describe('PoseNet', () => {
   });
 
   it('instantiates poseNet', () => {
+    expect(net.architecture).toBe(POSENET_DEFAULTS.architecture);
     expect(net.imageScaleFactor).toBe(POSENET_DEFAULTS.imageScaleFactor);
-    expect(net.flipHorizontal).toBe(POSENET_DEFAULTS.flipHorizontal);
-    expect(net.minConfidence).toBe(POSENET_DEFAULTS.minConfidence);
-    expect(net.detectionType).toBe(POSENET_DEFAULTS.detectionType);
+    expect(net.outputStride).toBe(POSENET_DEFAULTS.outputStride);
+    expect(net.inputResolution).toBe(POSENET_DEFAULTS.inputResolution);
     expect(net.multiplier).toBe(POSENET_DEFAULTS.multiplier);
+    expect(net.quantBytes).toBe(POSENET_DEFAULTS.quantBytes);
   });
 
   // it('detects poses in image', async () => {

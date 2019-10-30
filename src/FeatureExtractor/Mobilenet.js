@@ -74,8 +74,17 @@ class Mobilenet {
       learningRate: options.learningRate || DEFAULTS.learningRate,
       batchSize: options.batchSize || DEFAULTS.batchSize,
       layer: options.layer || DEFAULTS.layer,
-      alpha: options.alpha || DEFAULTS.alpha
+      alpha: options.alpha || DEFAULTS.alpha,
     }
+
+    // for graph model
+    this.model = null;
+    this.url = MODEL_INFO[this.config.version][this.config.alpha];
+    this.normalizationOffset = tf.scalar(127.5);
+
+    // check if a mobilenet URL is given
+    this.mobilenetURL = options.mobilenetURL || `${BASE_URL}${this.config.version}_${this.config.alpha}_${IMAGE_SIZE}/model.json`; 
+    this.graphModelURL = options.graphModelURL || this.url;
     /**
      * Boolean value to check if the model is predicting.
      * @public
@@ -92,15 +101,17 @@ class Mobilenet {
     this.usageType = null;
     this.ready = callCallback(this.loadModel(), callback);
 
-    // for graph model
-    this.model = null;
-    this.url = MODEL_INFO[this.config.version][this.config.alpha];
-    this.normalizationOffset = tf.scalar(127.5);
+    
   }
 
   async loadModel() {
-    this.mobilenet = await tf.loadLayersModel(`${BASE_URL}${this.config.version}_${this.config.alpha}_${IMAGE_SIZE}/model.json`);
-    this.model = await tf.loadGraphModel(this.url, {fromTFHub: true});
+    this.mobilenet = await tf.loadLayersModel(this.mobilenetURL);
+    if(this.graphModelURL.includes('https://tfhub.dev/')){
+      this.model = await tf.loadGraphModel(this.graphModelURL, {fromTFHub: true});
+    } else {
+      this.model = await tf.loadGraphModel(this.graphModelURL, {fromTFHub: false});
+    }
+    
 
 
     const layer = this.mobilenet.getLayer(this.config.layer);

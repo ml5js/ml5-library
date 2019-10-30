@@ -596,6 +596,78 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "jwilber",
+      "name": "Jared Wilber",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8595819?v=4",
+      "profile": "https://www.jwilber.me/",
+      "contributions": [
+        "example",
+        "ideas",
+        "code"
+      ]
+    },
+    {
+      "login": "tezzutezzu",
+      "name": "danilo",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/135866?v=4",
+      "profile": "https://github.com/tezzutezzu",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "EmmaGoodliffe",
+      "name": "Emma Goodliffe",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/32788926?v=4",
+      "profile": "https://github.com/EmmaGoodliffe",
+      "contributions": [
+        "ideas",
+        "question",
+        "maintenance"
+      ]
+    },
+    {
+      "login": "EonYang",
+      "name": "Yang",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/9332910?v=4",
+      "profile": "http://yangyang.blog",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "lydiajessup",
+      "name": "Lydia Jessup",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/26204298?v=4",
+      "profile": "https://github.com/lydiajessup",
+      "contributions": [
+        "code",
+        "ideas",
+        "example"
+      ]
+    },
+    {
+      "login": "w3cj",
+      "name": "CJ R.",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14241866?v=4",
+      "profile": "https://coding.garden",
+      "contributions": [
+        "doc",
+        "content"
+      ]
+    },
+    {
+      "login": "badunit",
+      "name": "Fabio Corona",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/44651201?v=4",
+      "profile": "https://github.com/badunit",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
