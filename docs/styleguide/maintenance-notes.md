@@ -123,11 +123,33 @@ The following **Parts 1 - 4** go through the process of making a new ml5 release
 ***
 ### Part 3: `ml5-website`
 ***
-coming soon.
+1. Create a new branch from `master` with a name that matches the new release version: `v<#>.<#>.<#>` 
+   ```sh
+   $ (master): git checkout -b v0.4.2
+   ```
+2. Update the **version reference** and the **date last updated** in the file `ml5-website/docs/index.md`. Add and commit and push your changes.
+   ```sh
+   $ (v0.4.2): git add .
+   $ (v0.4.2): git commit -m "bumps version"
+   $ (v0.4.2): git push origin v0.4.2
+   ```
+3. On Github: Make a **Pull Request** to merge `v0.4.2` to `master`. Wait for tests to pass, then squash and merge.
 
 
 ***
 ### Part 4: `ml5-boilerplate`
 ***
-coming soon.
-
+1. Checkout `with-p5` update the version, add and commit your changes, and push up to the remote branch.
+   ```sh
+   # update the ml5 version to version 0.4.2 in index.html
+   $ (with-p5): git add .
+   $ (with-p5): git commit -m "bumps version"
+   $ (with-p5): git push origin with-p5
+   ```
+2. Checkout `withoutp5` update the version, add and commit your changes, and push up to the remote branch.
+   ```sh
+   # update the ml5 version to version 0.4.2 in index.html
+   $ (without-p5): git add .
+   $ (without-p5): git commit -m "bumps version"
+   $ (without-p5): git push origin without-p5
+   ```
