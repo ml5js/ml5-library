@@ -10,6 +10,7 @@
 */
 
 import * as cocoSsd from '@tensorflow-models/coco-ssd';
+import callCallback from '../../utils/callcallback';
 
 class CocoSsd {
     /**
@@ -37,7 +38,7 @@ class CocoSsd {
     */
     async detect(subject, callback) {
         if (this.isModelReady) {
-            this.cocoSsdModel.detect(subject).then((predictions) => {
+            return this.cocoSsdModel.detect(subject).then((predictions) => {
                 const formattedPredictions = [];
                 for (let i = 0; i < predictions.length; i += 1) {
                     const prediction = predictions[i];
@@ -50,9 +51,12 @@ class CocoSsd {
                         h: prediction.bbox[3],
                     });
                 }
-                return callback(false, formattedPredictions);
+                return callCallback(new Promise((resolve) => {
+                    resolve(formattedPredictions);
+                }), callback);
             })
         }
+        return false;
     }
 }
 
