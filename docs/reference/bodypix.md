@@ -197,7 +197,23 @@ bodyPix.segment(?input, ?options, callback)
 
 📤 **Outputs**
 
-* **Object**: Returns an Object. "{raw}", "{maskBackground}", and "{maskPerson}". The returns will either be a UInt8 array corresponding to the image array or a p5Image if p5.js is available.
+* **Object**: Returns an Object. The returns will either be a UInt8 array corresponding to the image array or a p5Image if p5.js is available.
+* 
+  ```js
+  {
+      segmentation,
+      raw: {
+          personMask: null,
+          backgroundMask: null,
+      },
+      tensor: {
+          personMask: null,
+          backgroundMask: null,
+      },
+      personMask: null,
+      backgroundMask: null,
+  };
+  ```
 
 ***
 
@@ -220,7 +236,27 @@ bodyPix.segmentWithParts(?input, ?options, callback)
 
 📤 **Outputs**
 
-* **Object**: Returns an Object. "{raw}". The returns will either be a UInt8 array corresponding to the image array or a p5Image if p5.js is available.
+* **Object**: Returns an Object. The returns will either be a UInt8 array corresponding to the image array or a p5Image if p5.js is available.
+
+    ```js
+    {
+        segmentation: *ImageData*,
+        raw: {
+            personMask: *ImageData*,
+            backgroundMask: *ImageData*,
+            partMask: *ImageData*
+        },
+        tensor: {
+            personMask: *Tensor*,
+            backgroundMask: *Tensor*,
+            partMask: *Tensor*,
+        },
+        personMask: *P5Image*,
+        backgroundMask: *P5Image*,
+        partMask: *P5Image*,
+        bodyParts: *JSONObject*
+    }
+    ```
 
 ***
 

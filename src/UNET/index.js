@@ -9,14 +9,17 @@ Image Classifier using pre-trained networks
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import { array3DToImage } from '../utils/imageUtilities';
-import Video from '../utils/Video';
+import {
+  array3DToImage
+} from '../utils/imageUtilities';
 import p5Utils from '../utils/p5Utils';
 
-const URL = 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json';
-const imageSize = 128;
+const DEFAULTS = {
+  modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
+  imageSize: 128
+}
 
-class UNET extends Video {
+class UNET {
   /**
    * Create UNET class. 
    * @param {HTMLVideoElement | HTMLImageElement} video - The video or image to be used for segmentation.
@@ -25,39 +28,33 @@ class UNET extends Video {
    *    that will be resolved once the model has loaded.
    */
   constructor(video, options, callback) {
-    super(video, imageSize);
     this.modelReady = false;
     this.isPredicting = false;
+    this.config = {
+      modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
+      imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize
+    };
     this.ready = callCallback(this.loadModel(), callback);
   }
 
   async loadModel() {
-    if (this.videoElt && !this.video) {
-      this.video = await this.loadVideo();
-    }
-    this.model = await tf.loadLayersModel(URL);
+    this.model = await tf.loadLayersModel(this.config.modelPath);
     this.modelReady = true;
     return this;
   }
-
-  // check if p5js
-  // static checkP5() {
-  //   if (typeof window !== 'undefined' && window.p5 && window.p5.Image && typeof window.p5.Image === 'function') return true;
-  //   return false;
-  // }
 
   async segment(inputOrCallback, cb) {
     await this.ready;
     let imgToPredict;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement
-      || inputOrCallback instanceof HTMLVideoElement
-      || inputOrCallback instanceof ImageData) {
+    if (inputOrCallback instanceof HTMLImageElement ||
+      inputOrCallback instanceof HTMLVideoElement ||
+      inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
-      || inputOrCallback.elt instanceof HTMLVideoElement
-      || inputOrCallback.elt instanceof ImageData)) {
+    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement ||
+        inputOrCallback.elt instanceof HTMLVideoElement ||
+        inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;
@@ -77,49 +74,106 @@ class UNET extends Video {
       u8arr[n] = bstr.charCodeAt(n);
       n -= 1;
     }
-    return new Blob([u8arr], { type: mime });
+    return new Blob([u8arr], {
+      type: mime
+    });
   }
+
+  async convertToP5Image(tfBrowserPixelImage){
+      const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, this.config.imageSize, this.config.imageSize);
+      const p5Image1 = await p5Utils.blobToP5Image(blob1);
+      return p5Image1
+  }
+
   async segmentInternal(imgToPredict) {
     // Wait for the model to be ready
     await this.ready;
-    await tf.nextFrame();
+    // skip asking for next frame if it's not video
+    if (imgToPredict instanceof HTMLVideoElement) {
+      await tf.nextFrame();
+    }
     this.isPredicting = true;
 
-    const tensor = tf.tidy(() => {
-      // preprocess
+    const {
+      featureMask,
+      backgroundMask,
+      segmentation
+    } = tf.tidy(() => {
+      // preprocess the input image
       const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
-      const resizedImg = tf.image.resizeBilinear(tfImage, [imageSize, imageSize]);
-      const normTensor = resizedImg.div(tf.scalar(255));
-
+      const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
+      let normTensor = resizedImg.div(tf.scalar(255));
       const batchedImage = normTensor.expandDims(0);
-
+      // get the segmentation
       const pred = this.model.predict(batchedImage);
+      
+      // add back the alpha channel to the normalized input image
+      const alpha = tf.ones([128, 128, 1]).tile([1,1,1])
+      normTensor = normTensor.concat(alpha, 2)
 
-      // postprocess
-      let mask = pred.squeeze([0]);
-      mask = mask.tile([1, 1, 3]);
-      mask = mask.sub(0.3).sign().relu();
-      const maskedImg = mask.mul(normTensor);
-      return maskedImg;
+      // TODO: optimize these redundancies below, e.g. repetitive squeeze() etc
+      // get the background mask;
+      let maskBackgroundInternal = pred.squeeze([0]);
+      maskBackgroundInternal = maskBackgroundInternal.tile([1, 1, 4]);
+      maskBackgroundInternal = maskBackgroundInternal.sub(0.3).sign().relu().neg().add(1);
+      const featureMaskInternal = maskBackgroundInternal.mul(normTensor);
+
+      // get the feature mask;
+      let maskFeature = pred.squeeze([0]);
+      maskFeature = maskFeature.tile([1, 1, 4]);
+      maskFeature = maskFeature.sub(0.3).sign().relu();
+      const backgroundMaskInternal = maskFeature.mul(normTensor);
+
+      const alpha255 = tf.ones([128, 128, 1]).tile([1,1,1]).mul(255);
+      let newpred = pred.squeeze([0]);
+      newpred = tf.cast(newpred.tile([1,1,3]).sub(0.3).sign().relu().mul(255), 'int32') 
+      newpred = newpred.concat(alpha255, 2)
+
+      return {
+        featureMask: featureMaskInternal,
+        backgroundMask: backgroundMaskInternal,
+        segmentation: newpred
+      };
     });
 
     this.isPredicting = false;
-    const dom = array3DToImage(tensor);
-    const blob = UNET.dataURLtoBlob(dom.src);
-    const raw = await tf.browser.toPixels(tensor);
-    let image;
+
+    const maskFeatDom = array3DToImage(featureMask);
+    const maskBgDom = array3DToImage(backgroundMask);
+    const maskFeatBlob = UNET.dataURLtoBlob(maskFeatDom.src);
+    const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
+    const maskFeat = await tf.browser.toPixels(featureMask);
+    const maskBg = await tf.browser.toPixels(backgroundMask);
+    const mask = await tf.browser.toPixels(segmentation);
+
+    let pFeatureMask;
+    let pBgMask;
+    let pMask;
 
     if (p5Utils.checkP5()) {
-        const blob1 = await p5Utils.rawToBlob(raw, imageSize, imageSize);
-        const p5Image1 = await p5Utils.blobToP5Image(blob1);
-        image = p5Image1;
+      pFeatureMask = await this.convertToP5Image(maskFeat);
+      pBgMask = await this.convertToP5Image(maskBg)
+      pMask = await this.convertToP5Image(mask)
     }
 
     return {
-      blob,
-      tensor,
-      raw,
-      image,
+      segmentation:mask, 
+      blob: {
+        featureMask: maskFeatBlob,
+        backgroundMask: maskBgBlob
+      },
+      tensor: {
+        featureMask,
+        backgroundMask,
+      },
+      raw: {
+        featureMask: maskFeat,
+        backgroundMask: maskBg
+      },
+      // returns if p5 is available
+      featureMask: pFeatureMask,
+      backgroundMask: pBgMask,
+      mask: pMask
     };
   }
 }

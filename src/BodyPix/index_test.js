@@ -62,8 +62,8 @@ describe('bodyPix', () => {
     const img = await getImageData();
     const results = await bp.segment(img);
     // 200 * 50 == 10,000 * 4 == 40,000 the size of the array
-    expect(results.raw.width).toBe(200);
-    expect(results.raw.height).toBe(50);
+    expect(results.segmentation.width).toBe(200);
+    expect(results.segmentation.height).toBe(50);
   });
 
   describe('segmentation', () => {
@@ -71,14 +71,14 @@ describe('bodyPix', () => {
       const img = await getImage();
       await bp.segment(img)
         .then(results => {
-            expect(results.maskBackground.width).toBe(128);
-            expect(results.maskBackground.height).toBe(128);
+            expect(results.segmentation.width).toBe(128);
+            expect(results.segmentation.height).toBe(128);
 
-            expect(results.maskPerson.width).toBe(128);
-            expect(results.maskPerson.height).toBe(128);
+            expect(results.segmentation.width).toBe(128);
+            expect(results.segmentation.height).toBe(128);
 
-            expect(results.raw.width).toBe(128);
-            expect(results.raw.height).toBe(128);
+            expect(results.segmentation.width).toBe(128);
+            expect(results.segmentation.height).toBe(128);
 
         })
     });

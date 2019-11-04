@@ -14,6 +14,7 @@ import Video from '../utils/Video';
 import { imgToTensor } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 import CLASS_NAMES from './../utils/COCO_CLASSES';
+import modelLoader from '../utils/modelLoader';
 
 import {
   nonMaxSuppression,
@@ -23,9 +24,8 @@ import {
   ANCHORS,
 } from './postprocess';
 
-const URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/YOLO/model.json';
-
 const DEFAULTS = {
+  modelUrl: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-training/master/models/YOLO/model.json',
   filterBoxesThreshold: 0.01,
   IOUThreshold: 0.4,
   classProbThreshold: 0.4,
@@ -51,6 +51,7 @@ class YOLOBase extends Video {
   constructor(video, options, callback) {
     super(video, imageSize);
 
+    this.modelUrl = options.modelUrl || DEFAULTS.modelUrl;
     this.filterBoxesThreshold = options.filterBoxesThreshold || DEFAULTS.filterBoxesThreshold;
     this.IOUThreshold = options.IOUThreshold || DEFAULTS.IOUThreshold;
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
@@ -64,7 +65,15 @@ class YOLOBase extends Video {
     if (this.videoElt && !this.video) {
       this.video = await this.loadVideo();
     }
-    this.model = await tf.loadLayersModel(URL);
+
+    if(modelLoader.isAbsoluteURL(this.modelUrl) === true){
+      this.model = await tf.loadLayersModel(this.modelUrl);
+    } else {
+      const modelPath = modelLoader.getModelPath(this.modelUrl);
+      this.modelUrl = `${modelPath}/model.json`;
+      this.model = await tf.loadLayersModel(this.modelUrl);
+    }
+    
     this.modelReady = true;
     return this;
   }

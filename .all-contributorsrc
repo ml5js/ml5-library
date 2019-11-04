@@ -659,6 +659,15 @@
         "doc",
         "content"
       ]
+    },
+    {
+      "login": "badunit",
+      "name": "Fabio Corona",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/44651201?v=4",
+      "profile": "https://github.com/badunit",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

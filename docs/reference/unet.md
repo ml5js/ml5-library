@@ -81,7 +81,28 @@ unet.segment(?video, ?callback);
 
 📤 **Outputs**
 
-* **Object**: Returns an array of objects. Each object contains `{something, anotherThing}`.
+* **Object**: Returns an Object.
+  ```js
+  {
+    segmentation:mask, 
+    blob: {
+      featureMask: *Blob*,
+      backgroundMask: *Blob*
+    },
+    tensor: {
+      featureMask: *Tensor*,
+      backgroundMask: *Tensor*,
+    },
+    raw: {
+      featureMask: *ImageData*,
+      backgroundMask: *ImageData*
+    },
+    // returns if p5 is available
+    featureMask: *p5Image*,
+    backgroundMask: *p5Image*,
+    mask: *p5Image*
+  };
+  ```
 
 ***
 

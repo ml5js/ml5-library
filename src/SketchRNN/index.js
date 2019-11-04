@@ -12,10 +12,21 @@ SketchRNN
 import * as ms from '@magenta/sketch';
 import callCallback from '../utils/callcallback';
 import modelPaths from './models';
+import modelLoader from '../utils/modelLoader';
 
-const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/';
-const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/';
-const PATH_END = '.gen.json';
+// const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/';
+// const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/';
+// const PATH_END = '.gen.json';
+
+
+const DEFAULTS = {
+  modelPath: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/',
+  modelPath_large: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/',
+  modelPath_small: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/',
+  PATH_END: '.gen.json',
+  temperature: 0.65,
+  pixelFactor: 3.0,
+}
 
 class SketchRNN {
   /**
@@ -27,21 +38,37 @@ class SketchRNN {
    */
   constructor(model, callback, large = true) {
     let checkpointUrl = model;
-    if (modelPaths.has(checkpointUrl)) {
-      checkpointUrl = (large ? PATH_START_LARGE : PATH_START_SMALL) + checkpointUrl + PATH_END;
-    }
-    this.defaults = {
+
+    this.config = {
       temperature: 0.65,
       pixelFactor: 3.0,
+      modelPath: DEFAULTS.modelPath,
+      modelPath_small: DEFAULTS.modelPath_small,
+      modelPath_large: DEFAULTS.modelPath_large,
+      PATH_END: DEFAULTS.PATH_END,
     };
-    this.model = new ms.SketchRNN(checkpointUrl);
+    
+    
+    if(modelLoader.isAbsoluteURL(checkpointUrl) === true){
+      const modelPath = modelLoader.getModelPath(checkpointUrl);
+      this.config.modelPath = modelPath;
+
+    } else if(modelPaths.has(checkpointUrl)) {
+        checkpointUrl = (large ? this.config.modelPath : this.config.modelPath_small) + checkpointUrl + this.config.PATH_END;
+        this.config.modelPath = checkpointUrl;
+    } else {
+      console.log('no model found!');
+      return this;
+    }
+
+    this.model = new ms.SketchRNN(this.config.modelPath);
     this.penState = this.model.zeroInput();
     this.ready = callCallback(this.model.initialize(), callback);
   }
 
   async generateInternal(options, strokes) {
-    const temperature = +options.temperature || this.defaults.temperature;
-    const pixelFactor = +options.pixelFactor || this.defaults.pixelFactor;
+    const temperature = +options.temperature || this.config.temperature;
+    const pixelFactor = +options.pixelFactor || this.config.pixelFactor;
 
     await this.ready;
     if (!this.rnnState) {
