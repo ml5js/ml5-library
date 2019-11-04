@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-62-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-63-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -174,6 +174,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/lydiajessup"><img src="https://avatars3.githubusercontent.com/u/26204298?v=4" width="100px;" alt="Lydia Jessup"/><br /><sub><b>Lydia Jessup</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lydiajessup" title="Code">💻</a> <a href="#ideas-lydiajessup" title="Ideas, Planning, & Feedback">🤔</a> <a href="#example-lydiajessup" title="Examples">💡</a></td>
     <td align="center"><a href="https://coding.garden"><img src="https://avatars0.githubusercontent.com/u/14241866?v=4" width="100px;" alt="CJ R."/><br /><sub><b>CJ R.</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=w3cj" title="Documentation">📖</a> <a href="#content-w3cj" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/badunit"><img src="https://avatars2.githubusercontent.com/u/44651201?v=4" width="100px;" alt="Fabio Corona"/><br /><sub><b>Fabio Corona</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Abadunit" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://tnickel.de/"><img src="https://avatars3.githubusercontent.com/u/4189801?v=4" width="100px;" alt="Tobias Nickel"/><br /><sub><b>Tobias Nickel</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3ATobiasNickel" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=TobiasNickel" title="Code">💻</a></td>
   </tr>
 </table>
 
