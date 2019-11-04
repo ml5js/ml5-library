@@ -318,8 +318,8 @@ class NeuralNetwork {
    */
   async trainInternal(options, whileTrainingCallback) {
     // get batch size and epochs
-    const batchSize = options.batchSize || this.config.batchSize;
-    const epochs = options.epochs || this.config.epochs;
+    const batchSize = options.batchSize || this.config.training.batchSize;
+    const epochs = options.epochs || this.config.training.epochs;
 
     // placeholder for whiletraining callback;
     let whileTraining;
