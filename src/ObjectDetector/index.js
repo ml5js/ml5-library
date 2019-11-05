@@ -51,6 +51,21 @@ class ObjectDetector {
     }
   }
 
+  /**
+  * @typedef {Object} ObjectDetectorPrediction
+  * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+  * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+  * @property {number} w - width of the prediction box (0 to 1).
+  * @property {number} h - height of the prediction box (0 to 1).
+  * @property {string} label - the label given.
+  * @property {number} confidence - the confidence score (0 to 1).
+  */
+  /**
+  * Returns an rgb array
+  * @param {function} callback - Optional. A callback that deliver the result. If no callback is
+  *                              given, a promise is will be returned.
+  * @return {ObjectDetectorPrediction[]} an array of the prediction result
+  */
   detect(callback) {
     return this.model.detect(this.video, callback);
   }
