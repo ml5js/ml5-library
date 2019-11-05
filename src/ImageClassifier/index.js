@@ -27,11 +27,7 @@ const MODEL_OPTIONS = ['mobilenet', 'darknet', 'darknet-tiny', 'doodlenet'];
 class ImageClassifier {
   /**
    * Create an ImageClassifier.
-<<<<<<< HEAD
    * @param {string} modelNameOrUrl - The name or the URL of the model to use. Current model name options 
-=======
-   * @param {modelNameOrUrl} modelNameOrUrl - The name or the URL of the model to use. Current model name options
->>>>>>> 2d35106a7ebacb0bf9ad2e00374c4558abc6781a
    *    are: 'mobilenet', 'darknet', 'darknet-tiny', and 'doodlenet'.
    * @param {HTMLVideoElement} video - An HTMLVideoElement.
    * @param {object} options - An object with options.
