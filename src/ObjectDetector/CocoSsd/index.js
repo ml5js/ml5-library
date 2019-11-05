@@ -45,10 +45,10 @@ class CocoSsd {
                 formattedPredictions.push({
                     label: prediction.class,
                     confidence: prediction.score,
-                    x: prediction.bbox[0],
-                    y: prediction.bbox[1],
-                    w: prediction.bbox[2],
-                    h: prediction.bbox[3],
+                    x: prediction.bbox[0] / subject.width,
+                    y: prediction.bbox[1] / subject.height,
+                    w: prediction.bbox[2] / subject.width,
+                    h: prediction.bbox[3] / subject.height,
                 });
             }
             return callCallback(new Promise((resolve) => {
