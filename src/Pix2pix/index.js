@@ -12,7 +12,9 @@ This version is heavily based on Christopher Hesse TensorFlow.js implementation:
 
 import * as tf from '@tensorflow/tfjs';
 import CheckpointLoaderPix2pix from '../utils/checkpointLoaderPix2pix';
-import { array3DToImage } from '../utils/imageUtilities';
+import {
+  array3DToImage
+} from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 class Pix2pix {
@@ -46,13 +48,14 @@ class Pix2pix {
   }
 
   async transferInternal(inputElement) {
-    const input = tf.browser.fromPixels(inputElement);
-    const inputData = input.dataSync();
-    const floatInput = tf.tensor3d(inputData, input.shape);
-    const normalizedInput = tf.div(floatInput, tf.scalar(255));
-
+    
     const result = array3DToImage(tf.tidy(() => {
+      const input = tf.browser.fromPixels(inputElement);
+      const inputData = input.dataSync();
+      const floatInput = tf.tensor3d(inputData, input.shape);
+      const normalizedInput = tf.div(floatInput, tf.scalar(255));
       const preprocessedInput = Pix2pix.preprocess(normalizedInput);
+      
       const layers = [];
       let filter = this.variables['generator/encoder_1/conv2d/kernel'];
       let bias = this.variables['generator/encoder_1/conv2d/bias'];
@@ -101,6 +104,7 @@ class Pix2pix {
 
       const output = layers[layers.length - 1];
       const deprocessedOutput = Pix2pix.deprocess(output);
+
       return deprocessedOutput;
     }));
 
@@ -109,27 +113,51 @@ class Pix2pix {
   }
 
   static preprocess(inputPreproc) {
-    return tf.sub(tf.mul(inputPreproc, tf.scalar(2)), tf.scalar(1));
+    const result = tf.tidy(() => {
+      return tf.sub(tf.mul(inputPreproc, tf.scalar(2)), tf.scalar(1));
+    });
+    inputPreproc.dispose();
+    return result;
   }
 
   static deprocess(inputDeproc) {
-    return tf.div(tf.add(inputDeproc, tf.scalar(1)), tf.scalar(2));
+    const result = tf.tidy(() => {
+      return tf.div(tf.add(inputDeproc, tf.scalar(1)), tf.scalar(2));
+    });
+    inputDeproc.dispose();
+    return result;
   }
 
   static batchnorm(inputBat, scale, offset) {
-    const moments = tf.moments(inputBat, [0, 1]);
-    const varianceEpsilon = 1e-5;
-    return tf.batchNorm(inputBat, moments.mean, moments.variance, offset, scale, varianceEpsilon);
+    const result = tf.tidy(() => {
+      const moments = tf.moments(inputBat, [0, 1]);
+      const varianceEpsilon = 1e-5;
+      return tf.batchNorm(inputBat, moments.mean, moments.variance, offset, scale, varianceEpsilon);
+    });
+    inputBat.dispose();
+    return result;
   }
 
   static conv2d(inputCon, filterCon) {
-    return tf.conv2d(inputCon, filterCon, [2, 2], 'same');
+    const tempFilter = filterCon.clone()
+    const result = tf.tidy(() => {
+      return tf.conv2d(inputCon, tempFilter, [2, 2], 'same');
+    });
+    inputCon.dispose();
+    tempFilter.dispose();
+    return result;
   }
 
   static deconv2d(inputDeconv, filterDeconv, biasDecon) {
-    const convolved = tf.conv2dTranspose(inputDeconv, filterDeconv, [inputDeconv.shape[0] * 2, inputDeconv.shape[1] * 2, filterDeconv.shape[2]], [2, 2], 'same');
-    const biased = tf.add(convolved, biasDecon);
-    return biased;
+    const result = tf.tidy(() => {
+      const convolved = tf.conv2dTranspose(inputDeconv, filterDeconv, [inputDeconv.shape[0] * 2, inputDeconv.shape[1] * 2, filterDeconv.shape[2]], [2, 2], 'same');
+      const biased = tf.add(convolved, biasDecon);
+      return biased;
+    })
+    inputDeconv.dispose();
+    filterDeconv.dispose();
+    biasDecon.dispose();
+    return result;
   }
 }
 

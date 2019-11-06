@@ -21,7 +21,8 @@ const DEFAULTS = {
     "multiplier": 0.75,
     "outputStride": 16,
     "segmentationThreshold": 0.5,
-    "palette": BODYPIX_PALETTE
+    "palette": BODYPIX_PALETTE,
+    "returnTensors": false,
 }
 
 class BodyPix {
@@ -40,7 +41,8 @@ class BodyPix {
             multiplier: options.multiplier || DEFAULTS.multiplier,
             outputStride: options.outputStride || DEFAULTS.outputStride,
             segmentationThreshold: options.segmentationThreshold || DEFAULTS.segmentationThreshold,
-            palette: options.palette || DEFAULTS.palette
+            palette: options.palette || DEFAULTS.palette,
+            returnTensors: options.returnTensors || DEFAULTS.returnTensors
         }
 
         this.ready = callCallback(this.loadModel(), callback);
@@ -126,7 +128,6 @@ class BodyPix {
         this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
         this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-        // const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
         const segmentation = await this.model.estimatePartSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold);
 
         const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
@@ -153,13 +154,12 @@ class BodyPix {
         result.raw.personMask = bp.toMaskImageData(segmentation, false);
         result.raw.partMask = bp.toColoredPartImageData(segmentation, colorsArray);
 
-        let normTensor = await tf.browser.fromPixels(imgToSegment);
-
         const {
             personMask,
             backgroundMask,
             partMask,
         } = tf.tidy(() => {
+            let normTensor = tf.browser.fromPixels(imgToSegment);
             // create a tensor from the input image
             const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
             normTensor = normTensor.concat(alpha, 2)
@@ -196,6 +196,17 @@ class BodyPix {
             result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
             result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
             result.partMask = await this.convertToP5Image(partMaskPixels, segmentation.width, segmentation.height)
+        }
+
+        if (!this.config.returnTensors) {
+            personMask.dispose();
+            backgroundMask.dispose();
+            partMask.dispose();
+        } else {
+            // return tensors
+            result.tensor.personMask = personMask;
+            result.tensor.backgroundMask = backgroundMask;
+            result.tensor.partMask = partMask;
         }
 
         return result;
@@ -309,12 +320,11 @@ class BodyPix {
         // result.backgroundMask = bgMaskCanvas;
         // result.featureMask = featureMaskCanvas;
 
-        let normTensor = await tf.browser.fromPixels(imgToSegment);
-
         const {
             personMask,
             backgroundMask
         } = tf.tidy(() => {
+            let normTensor = tf.browser.fromPixels(imgToSegment);
             // create a tensor from the input image
             const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
             normTensor = normTensor.concat(alpha, 2)
@@ -337,15 +347,24 @@ class BodyPix {
         const personMaskPixels = await tf.browser.toPixels(personMask);
         const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
 
-        // otherwise, return the pixels 
-        result.personMask = personMaskPixels;
-        result.backgroundMask = bgMaskPixels;
-
         // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
             result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
             result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
+        } else {
+            // otherwise, return the pixels 
+            result.personMask = personMaskPixels;
+            result.backgroundMask = bgMaskPixels;
         }
+
+        if (!this.config.returnTensors) {
+            personMask.dispose();
+            backgroundMask.dispose();
+        } else {
+            result.tensor.personMask = personMask;
+            result.tensor.backgroundMask = backgroundMask;
+        }
+
 
         return result;
 
