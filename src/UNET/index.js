@@ -141,13 +141,16 @@ class UNET {
 
     this.isPredicting = false;
 
+    // these come first because array3DToImage() will dispose of the input tensor
+    const maskFeat = await tf.browser.toPixels(featureMask);
+    const maskBg = await tf.browser.toPixels(backgroundMask);
+    const mask = await tf.browser.toPixels(segmentation);
+
     const maskFeatDom = array3DToImage(featureMask);
     const maskBgDom = array3DToImage(backgroundMask);
     const maskFeatBlob = UNET.dataURLtoBlob(maskFeatDom.src);
     const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
-    const maskFeat = await tf.browser.toPixels(featureMask);
-    const maskBg = await tf.browser.toPixels(backgroundMask);
-    const mask = await tf.browser.toPixels(segmentation);
+    
 
     let pFeatureMask;
     let pBgMask;
