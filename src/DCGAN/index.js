@@ -27,12 +27,15 @@ class DCGANBase {
      * @param {modelName} modelName - The name of the model to use.
      * @param {function} readyCb - A callback to be called when the model is ready.
      */
-    constructor(modelPath, callback) {
+    constructor(modelPath, options, callback) {
         this.model = {};
         this.modelPath = modelPath;
         this.modelInfo = {};
         this.modelPathPrefix = '';
         this.modelReady = false;
+        this.config = {
+            returnTensors: options.returnTensors || false,
+        }
         this.ready = callCallback(this.loadModel(), callback);
     }
 
@@ -98,6 +101,7 @@ class DCGANBase {
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
     async generateInternal(latentVector) {
+        
         const {
             modelLatentDim
         } = this.modelInfo;
@@ -119,10 +123,17 @@ class DCGANBase {
         const result = {};
         result.blob = blob;
         result.raw = raw;
-        result.tensor = imageTensor;
+        
 
         if (p5Utils.checkP5()) {
             result.image = p5Image;
+        }
+
+        if(!this.config.returnTensors){
+            result.tensor = null;
+            imageTensor.dispose();
+        } else {
+            result.tensor = imageTensor;
         }
 
         return result;
@@ -138,7 +149,9 @@ class DCGANBase {
 
 }
 
-const DCGAN = (modelPath, cb) => {
+const DCGAN = (modelPath, optionsOrCb, cb) => {
+    let callback;
+    let options = {};
     if (typeof modelPath !== 'string') {
         throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
@@ -151,10 +164,17 @@ const DCGAN = (modelPath, cb) => {
          }
          `);
     }
+
+    if(typeof optionsOrCb === 'function'){
+        callback = optionsOrCb;
+    } else if (typeof optionsOrCb === 'object'){
+        options = optionsOrCb;
+        callback = cb;
+    }
     
 
-    const instance = new DCGANBase(modelPath, cb);
-    return cb ? instance : instance.ready;
+    const instance = new DCGANBase(modelPath, options, callback);
+    return callback ? instance : instance.ready;
     
 }
 
