@@ -97,8 +97,10 @@ class Cvae {
       const temp = this.model.predict([this.latentDim, input]);
       return temp.reshape([temp.shape[1], temp.shape[2], temp.shape[3]]);
     });
+  
 
     const raws = await tf.browser.toPixels(res);
+    res.dispose();
 
     const canvas = document.createElement('canvas'); // consider using offScreneCanvas
     const ctx = canvas.getContext('2d');
