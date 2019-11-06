@@ -49,6 +49,7 @@ const array3DToImage = (tensor) => {
   outputImg.src = dataUrl;
   outputImg.style.width = imgWidth;
   outputImg.style.height = imgHeight;
+  tensor.dispose();
   return outputImg;
 };
 

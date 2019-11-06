@@ -58,16 +58,18 @@ class StyleTransfer extends Video {
   }
 
   instanceNorm(input, id) {
-    const [height, width, inDepth] = input.shape;
-    const moments = tf.moments(input, [0, 1]);
-    const mu = moments.mean;
-    const sigmaSq = moments.variance;
-    const shift = this.variables[StyleTransfer.getVariableName(id)];
-    const scale = this.variables[StyleTransfer.getVariableName(id + 1)];
-    const epsilon = this.epsilonScalar;
-    const normalized = tf.div(tf.sub(input.asType('float32'), mu), tf.sqrt(tf.add(sigmaSq, epsilon)));
-    const shifted = tf.add(tf.mul(scale, normalized), shift);
-    return shifted.as3D(height, width, inDepth);
+    return tf.tidy( () => {
+      const [height, width, inDepth] = input.shape;
+      const moments = tf.moments(input, [0, 1]);
+      const mu = moments.mean;
+      const sigmaSq = moments.variance;
+      const shift = this.variables[StyleTransfer.getVariableName(id)];
+      const scale = this.variables[StyleTransfer.getVariableName(id + 1)];
+      const epsilon = this.epsilonScalar;
+      const normalized = tf.div(tf.sub(input.asType('float32'), mu), tf.sqrt(tf.add(sigmaSq, epsilon)));
+      const shifted = tf.add(tf.mul(scale, normalized), shift);
+      return shifted.as3D(height, width, inDepth);
+    });
   }
 
   convLayer(input, strides, relu, id) {
@@ -142,6 +144,7 @@ class StyleTransfer extends Video {
       const normalized = tf.div(clamped, tf.scalar(255.0));
       return normalized;
     }));
+    image.dispose();
     await tf.nextFrame();
     return result;
   }

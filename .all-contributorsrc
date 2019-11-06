@@ -659,6 +659,25 @@
         "doc",
         "content"
       ]
+    },
+    {
+      "login": "badunit",
+      "name": "Fabio Corona",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/44651201?v=4",
+      "profile": "https://github.com/badunit",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "TobiasNickel",
+      "name": "Tobias Nickel",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4189801?v=4",
+      "profile": "http://tnickel.de/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -15,113 +15,14 @@ import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
+import BODYPIX_PALETTE from './BODYPIX_PALETTE';
 
 const DEFAULTS = {
     "multiplier": 0.75,
     "outputStride": 16,
     "segmentationThreshold": 0.5,
-    "palette": {
-        // "none": {
-        //     "id": -1,
-        //     "color": [0, 0, 0]
-        // },
-        "leftFace": {
-            "id": 0,
-            "color": [110, 64, 170]
-        },
-        "rightFace": {
-            "id": 1,
-            "color": [106, 72, 183]
-        },
-        "rightUpperLegFront": {
-            "id": 2,
-            "color": [100, 81, 196]
-        },
-        "rightLowerLegBack": {
-            "id": 3,
-            "color": [92, 91, 206]
-        },
-        "rightUpperLegBack": {
-            "id": 4,
-            "color": [84, 101, 214]
-        },
-        "leftLowerLegFront": {
-            "id": 5,
-            "color": [75, 113, 221]
-        },
-        "leftUpperLegFront": {
-            "id": 6,
-            "color": [66, 125, 224]
-        },
-        "leftUpperLegBack": {
-            "id": 7,
-            "color": [56, 138, 226]
-        },
-        "leftLowerLegBack": {
-            "id": 8,
-            "color": [48, 150, 224]
-        },
-        "rightFeet": {
-            "id": 9,
-            "color": [40, 163, 220]
-        },
-        "rightLowerLegFront": {
-            "id": 10,
-            "color": [33, 176, 214]
-        },
-        "leftFeet": {
-            "id": 11,
-            "color": [29, 188, 205]
-        },
-        "torsoFront": {
-            "id": 12,
-            "color": [26, 199, 194]
-        },
-        "torsoBack": {
-            "id": 13,
-            "color": [26, 210, 182]
-        },
-        "rightUpperArmFront": {
-            "id": 14,
-            "color": [28, 219, 169]
-        },
-        "rightUpperArmBack": {
-            "id": 15,
-            "color": [33, 227, 155]
-        },
-        "rightLowerArmBack": {
-            "id": 16,
-            "color": [41, 234, 141]
-        },
-        "leftLowerArmFront": {
-            "id": 17,
-            "color": [51, 240, 128]
-        },
-        "leftUpperArmFront": {
-            "id": 18,
-            "color": [64, 243, 116]
-        },
-        "leftUpperArmBack": {
-            "id": 19,
-            "color": [79, 246, 105]
-        },
-        "leftLowerArmBack": {
-            "id": 20,
-            "color": [96, 247, 97]
-        },
-        "rightHand": {
-            "id": 21,
-            "color": [115, 246, 91]
-        },
-        "rightLowerArmFront": {
-            "id": 22,
-            "color": [134, 245, 88]
-        },
-        "leftHand": {
-            "id": 23,
-            "color": [155, 243, 88]
-        }
-    }
+    "palette": BODYPIX_PALETTE,
+    "returnTensors": false,
 }
 
 class BodyPix {
@@ -140,7 +41,8 @@ class BodyPix {
             multiplier: options.multiplier || DEFAULTS.multiplier,
             outputStride: options.outputStride || DEFAULTS.outputStride,
             segmentationThreshold: options.segmentationThreshold || DEFAULTS.segmentationThreshold,
-            palette: options.palette || DEFAULTS.palette
+            palette: options.palette || DEFAULTS.palette,
+            returnTensors: options.returnTensors || DEFAULTS.returnTensors
         }
 
         this.ready = callCallback(this.loadModel(), callback);
@@ -167,6 +69,16 @@ class BodyPix {
         const match = regExp.exec(p5ColorObj.toString('rgb'));
         const [r, g, b] = match[1].split(',')
         return [r, g, b]
+    }
+
+    /**
+     * Returns a p5Image
+     * @param {*} tfBrowserPixelImage 
+     */
+    async convertToP5Image(tfBrowserPixelImage, segmentationWidth, segmentationHeight) {
+        const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, segmentationWidth, segmentationHeight);
+        const p5Image1 = await p5Utils.blobToP5Image(blob1);
+        return p5Image1
     }
 
     /**
@@ -216,20 +128,85 @@ class BodyPix {
         this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
         this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-        const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
         const segmentation = await this.model.estimatePartSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold);
 
+        const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
         const colorsArray = Object.keys(bodyPartsMeta).map(part => bodyPartsMeta[part].color)
 
-        const result = {};
-        result.image = bp.toColoredPartImageData(segmentation, colorsArray);
-        result.raw = segmentation;
-        result.bodyParts = bodyPartsMeta;
+        const result = {
+            segmentation,
+            raw: {
+                personMask: null,
+                backgroundMask: null,
+                partMask: null
+            },
+            tensor: {
+                personMask: null,
+                backgroundMask: null,
+                partMask: null,
+            },
+            personMask: null,
+            backgroundMask: null,
+            partMask: null,
+            bodyParts: bodyPartsMeta
+        };
+        result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
+        result.raw.personMask = bp.toMaskImageData(segmentation, false);
+        result.raw.partMask = bp.toColoredPartImageData(segmentation, colorsArray);
 
+        const {
+            personMask,
+            backgroundMask,
+            partMask,
+        } = tf.tidy(() => {
+            let normTensor = tf.browser.fromPixels(imgToSegment);
+            // create a tensor from the input image
+            const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
+            normTensor = normTensor.concat(alpha, 2)
+
+            // create a tensor from the segmentation
+            let maskPersonTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskBackgroundTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let partTensor = tf.tensor([...result.raw.partMask.data], [segmentation.height, segmentation.width, 4]);
+
+            // multiply the segmentation and the inputImage
+            maskPersonTensor = tf.cast(maskPersonTensor.add(0.2).sign().relu().mul(normTensor), 'int32')
+            maskBackgroundTensor = tf.cast(maskBackgroundTensor.add(0.2).sign().neg().relu().mul(normTensor), 'int32')
+            // TODO: handle removing background 
+            partTensor = tf.cast(partTensor, 'int32')
+
+            return {
+                personMask: maskPersonTensor,
+                backgroundMask: maskBackgroundTensor,
+                partMask: partTensor
+            }
+        })
+
+        const personMaskPixels = await tf.browser.toPixels(personMask);
+        const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
+        const partMaskPixels = await tf.browser.toPixels(partMask);
+
+        // otherwise, return the pixels 
+        result.personMask = personMaskPixels;
+        result.backgroundMask = bgMaskPixels;
+        result.partMask = partMaskPixels;
+
+        // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
-            const blob1 = await p5Utils.rawToBlob(result.image.data, segmentation.width, segmentation.height);
-            const p5Image1 = await p5Utils.blobToP5Image(blob1);
-            result.image = p5Image1;
+            result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
+            result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
+            result.partMask = await this.convertToP5Image(partMaskPixels, segmentation.width, segmentation.height)
+        }
+
+        if (!this.config.returnTensors) {
+            personMask.dispose();
+            backgroundMask.dispose();
+            partMask.dispose();
+        } else {
+            // return tensors
+            result.tensor.personMask = personMask;
+            result.tensor.backgroundMask = backgroundMask;
+            result.tensor.partMask = partMask;
         }
 
         return result;
@@ -255,14 +232,14 @@ class BodyPix {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof HTMLVideoElement
-            || optionsOrCallback instanceof ImageData) {
-                imgToSegment = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
@@ -313,20 +290,81 @@ class BodyPix {
 
         const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
 
-        const result = {};
-        result.maskBackground = bp.toMaskImageData(segmentation, true);
-        result.maskPerson = bp.toMaskImageData(segmentation, false);
-        result.raw = segmentation;
+        const result = {
+            segmentation,
+            raw: {
+                personMask: null,
+                backgroundMask: null,
+            },
+            tensor: {
+                personMask: null,
+                backgroundMask: null,
+            },
+            personMask: null,
+            backgroundMask: null,
+        };
+        result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
+        result.raw.personMask = bp.toMaskImageData(segmentation, false);
 
+        // TODO: consider returning the canvas with the bp.drawMask()
+        // const bgMaskCanvas = document.createElement('canvas');
+        // bgMaskCanvas.width = segmentation.width;
+        // bgMaskCanvas.height = segmentation.height;
+        // bp.drawMask(bgMaskCanvas, imgToSegment, result.maskBackground, 1, 3, false);
+
+        // const featureMaskCanvas = document.createElement('canvas');
+        // featureMaskCanvas.width = segmentation.width;
+        // featureMaskCanvas.height = segmentation.height;
+        // bp.drawMask(featureMaskCanvas, imgToSegment, result.maskPerson, 1, 3, false);
+
+        // result.backgroundMask = bgMaskCanvas;
+        // result.featureMask = featureMaskCanvas;
+
+        const {
+            personMask,
+            backgroundMask
+        } = tf.tidy(() => {
+            let normTensor = tf.browser.fromPixels(imgToSegment);
+            // create a tensor from the input image
+            const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
+            normTensor = normTensor.concat(alpha, 2)
+            // normTensor.print();
+
+            // create a tensor from the segmentation
+            let maskPersonTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+            let maskBackgroundTensor = tf.tensor(segmentation.data, [segmentation.height, segmentation.width, 1]);
+
+            // multiply the segmentation and the inputImage
+            maskPersonTensor = tf.cast(maskPersonTensor.neg().add(1).mul(normTensor), 'int32')
+            maskBackgroundTensor = tf.cast(maskBackgroundTensor.mul(normTensor), 'int32')
+
+            return {
+                personMask: maskPersonTensor,
+                backgroundMask: maskBackgroundTensor,
+            }
+        })
+
+        const personMaskPixels = await tf.browser.toPixels(personMask);
+        const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
+
+        // if p5 exists, convert to p5 image
         if (p5Utils.checkP5()) {
-            const blob1 = await p5Utils.rawToBlob(result.maskBackground.data, segmentation.width, segmentation.height);
-            const blob2 = await p5Utils.rawToBlob(result.maskPerson.data, segmentation.width, segmentation.height);
-            const p5Image1 = await p5Utils.blobToP5Image(blob1);
-            const p5Image2 = await p5Utils.blobToP5Image(blob2);
-
-            result.maskBackground = p5Image1;
-            result.maskPerson = p5Image2;
+            result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
+            result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
+        } else {
+            // otherwise, return the pixels 
+            result.personMask = personMaskPixels;
+            result.backgroundMask = bgMaskPixels;
         }
+
+        if (!this.config.returnTensors) {
+            personMask.dispose();
+            backgroundMask.dispose();
+        } else {
+            result.tensor.personMask = personMask;
+            result.tensor.backgroundMask = backgroundMask;
+        }
+
 
         return result;
 
@@ -345,20 +383,20 @@ class BodyPix {
         let imgToSegment = this.video;
         let callback;
         let segmentationOptions = this.config;
-        
+
         // Handle the image to predict
         if (typeof optionsOrCallback === 'function') {
             imgToSegment = this.video;
             callback = optionsOrCallback;
             // clean the following conditional statement up!
-        } else if (optionsOrCallback instanceof HTMLImageElement 
-            || optionsOrCallback instanceof HTMLCanvasElement 
-            || optionsOrCallback instanceof HTMLVideoElement
-            || optionsOrCallback instanceof ImageData) {
-                imgToSegment = optionsOrCallback;
-        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement 
-            || optionsOrCallback.elt instanceof HTMLCanvasElement 
-            || optionsOrCallback.elt instanceof ImageData)){
+        } else if (optionsOrCallback instanceof HTMLImageElement ||
+            optionsOrCallback instanceof HTMLCanvasElement ||
+            optionsOrCallback instanceof HTMLVideoElement ||
+            optionsOrCallback instanceof ImageData) {
+            imgToSegment = optionsOrCallback;
+        } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
+                optionsOrCallback.elt instanceof HTMLCanvasElement ||
+                optionsOrCallback.elt instanceof ImageData)) {
             imgToSegment = optionsOrCallback.elt; // Handle p5.js image
         } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
             imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
