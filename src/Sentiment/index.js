@@ -123,6 +123,7 @@ class Sentiment {
     const predictOut = this.model.predict(input);
     const score = predictOut.dataSync()[0];
     predictOut.dispose();
+    input.dispose();
 
     return {
       score
