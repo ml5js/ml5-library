@@ -75,32 +75,36 @@ The following **Parts 1 - 4** go through the process of making a new ml5 release
 
 ***
 ### Part 2: `ml5-examples`
+
+In `ml5-examples` the **release** branch is our source of truth. Any fixes or new examples based on the **current ml5 version** will be directly merged into the **release** branch. 
+
+The **development** branch is used in conjunction with the ml5-library **development** branch. What is different from the **release** branch is that all of the `index.html` files have their ml5 set to `localhost:8080` rather than the ml5 CDN.
+
+If we are doing a new release, this means that the new examples and features added to the **development** branch of `ml5-examples` needs to be merged with the **release** branch.
+
+The one thing to note is that the following steps are to handle merge conflicts that arise from running `npm run update:ml5-dev` to convert the ml5 script src.
+
 ***
-1. Create a new branch from `development` with a name that matches the new release version: `v<#>.<#>.<#>` 
+1. Create a new branch from `release` with a name that matches the new release version: `v<#>.<#>.<#>` 
    ```sh
    $ (development): git checkout -b v0.4.2
    ```
 2. Update the `version` in **package.json**. Update all of the `localhost` references to the ml5 CDN and create the new examples index.
   ```sh
   # Step 0: change the version in package.json from 0.4.1 to 0.4.2
-  # Step 1: update all of the localhost references to ml5 cdn
-  $ (v0.4.2): npm run update:ml5
-  # Step 2: create the examples index
-  $ (v0.4.2): npm run create:example-index
+  # Step 1: update all of the localhost references to from ml5 CDN to localhosy
+  $ (v0.4.2): npm run update:ml5-dev
+  $ (v0.4.2): git add .
   ```
-3. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `development`. Wait for tests to pass. **Squash and merge**.
+3. Merge the changes from **release** into `v<#>.<#>.<#>` branch. 
+  ```sh
+  $ (v0.4.2): git merge development
+  ```
+4. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `release`. Wait for tests to pass. **Squash and merge**.
   ```sh
   # Once you've squashed and merged `v0.4.2` to `development`...
   # Step 1: switch to your development branch and pull in those changes
-  $ (v0.4.2): git checkout development
-  $ (development): git fetch
-  $ (development): git pull
-  ```
-4. With these changes now in `development` make a new **Pull Request** to merge `development` into `release`. Wait for tests to pass. **Squash and merge**.
-  ```sh
-  # Once you've squashed and merged `development` to `release`...
-  # Step 1: switch to your release branch and pull in those changes
-  $ (development): git checkout release
+  $ (v0.4.2): git checkout release
   $ (release): git fetch
   $ (release): git pull
   ```
@@ -110,10 +114,14 @@ The following **Parts 1 - 4** go through the process of making a new ml5 release
   $ (gh-pages): git merge release
   $ (gh-pages): git push origin gh-pages
   ```
-6. Revert all of the ml5 URLs in `development` back to `localhost`:
+6. Merge all the latest changes from **release** to **development** and revert all of the ml5 URLs in `development` back to `localhost`:
   ```sh
   $ (gh-pages): git checkout development
-  $ (development): git merge update:ml5-dev
+  $ (development): npm run update:ml5
+  $ (development): git add .
+  $ (development): git merge release 
+  # merge 
+  $ (development): npm run update:ml5-dev
   $ (development): git add .
   $ (development): git commit -m "sets ml5 to localhost"
   $ (development): git push origin development
