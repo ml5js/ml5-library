@@ -87,7 +87,7 @@ The options that can be specified are:
     const options = {
       inputs: 1,
       outputs: 1,
-      type:'regression'
+      task:'regression'
     }
     const neuralNetwork = ml5.neuralNetwork(options)
     ```
@@ -97,7 +97,7 @@ The options that can be specified are:
       dataUrl: 'weather.csv'
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type:'classification'
+      task:'classification'
     }
     const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
     ```
@@ -114,7 +114,7 @@ The options that can be specified are:
       dataUrl: 'weather.json'
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type:'classification'
+      task:'classification'
     }
     const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
     ```
@@ -123,7 +123,7 @@ The options that can be specified are:
     const options = {
       inputs: ['x', 'y'],
       outputs: ['label'],
-      type:'classification'
+      task:'classification'
     }
     const neuralNetwork = ml5.neuralNetwork(options)
     ```
