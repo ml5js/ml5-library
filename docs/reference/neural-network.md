@@ -172,9 +172,9 @@ function handleResults(error, result) {
     const options = {
       inputs: 1,
       outputs: 1,
-      type: 'regression',
-    };
-    const nn = ml5.neuralNetwork(options);
+      task:'regression'
+    }
+    const nn = ml5.neuralNetwork(options)
     ```
   * Example 2: loading data as a csv
     ```js
@@ -182,9 +182,9 @@ function handleResults(error, result) {
       dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
-    };
-    const nn = ml5.neuralNetwork(options, modelLoaded);
+      task:'classification'
+    }
+    const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
   * Example 3: loading data as a json
     ```js
@@ -199,16 +199,16 @@ function handleResults(error, result) {
       dataUrl: 'weather.json',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
-    };
-    const nn = ml5.neuralNetwork(options, modelLoaded);
+      task:'classification'
+    }
+    const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
   * Example 4: specifying labels for a blank neural network
     ```js
     const options = {
       inputs: ['x', 'y'],
       outputs: ['label'],
-      type: 'classification',
+      task: 'classification',
     };
     const nn = ml5.neuralNetwork(options);
     ```
