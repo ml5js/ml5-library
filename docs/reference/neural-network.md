@@ -1,7 +1,5 @@
 # NeuralNetwork
 
-**currently in development - coming soon to the ml5 release**
-
 
 <center>
     <img style="display:block; max-height:20rem" alt="Illustration of brain" src="_media/reference__header-neural-network.png">
