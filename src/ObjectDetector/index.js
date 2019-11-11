@@ -44,7 +44,7 @@ class ObjectDetector {
         this.model = new YOLO({ disableDeprecationNotice: true, ...options }, callback);
         break;
       case 'CocoSsd':
-        this.model = new CocoSsd(options, callback);
+        this.model = new CocoSsd(callback);
         break;
       default:
         throw new Error('Model name not supported')

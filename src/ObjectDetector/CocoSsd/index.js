@@ -1,4 +1,4 @@
-// Copyright (c) 2018 ml5
+// Copyright (c) 2019 ml5
 //
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
@@ -14,12 +14,10 @@ import callCallback from '../../utils/callcallback';
 class CocoSsd {
     /**
      * Create CocoSsd model. Works on video and images. 
-     * @param {Object} options - Optional. A set of options.
      * @param {function} constructorCallback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
      *    that will be resolved once the model has loaded.
      */
-    constructor(options, constructorCallback) {
-        this.options = options;
+    constructor(constructorCallback) {
         this.constructorCallback = constructorCallback;
         this.ready = callCallback(this.loadModel(), constructorCallback);
     }
