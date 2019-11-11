@@ -16,7 +16,8 @@ import p5Utils from '../utils/p5Utils';
 
 const DEFAULTS = {
   modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
-  imageSize: 128
+  imageSize: 128,
+  returnTensors: false,
 }
 
 class UNET {
@@ -32,7 +33,9 @@ class UNET {
     this.isPredicting = false;
     this.config = {
       modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
-      imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize
+      imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize,
+      returnTensors: typeof options.returnTensors !== 'undefined' ? options.returnTensors : DEFAULTS.returnTensors,
+
     };
     this.ready = callCallback(this.loadModel(), callback);
   }
@@ -138,13 +141,16 @@ class UNET {
 
     this.isPredicting = false;
 
+    // these come first because array3DToImage() will dispose of the input tensor
+    const maskFeat = await tf.browser.toPixels(featureMask);
+    const maskBg = await tf.browser.toPixels(backgroundMask);
+    const mask = await tf.browser.toPixels(segmentation);
+
     const maskFeatDom = array3DToImage(featureMask);
     const maskBgDom = array3DToImage(backgroundMask);
     const maskFeatBlob = UNET.dataURLtoBlob(maskFeatDom.src);
     const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
-    const maskFeat = await tf.browser.toPixels(featureMask);
-    const maskBg = await tf.browser.toPixels(backgroundMask);
-    const mask = await tf.browser.toPixels(segmentation);
+    
 
     let pFeatureMask;
     let pBgMask;
@@ -155,6 +161,12 @@ class UNET {
       pBgMask = await this.convertToP5Image(maskBg)
       pMask = await this.convertToP5Image(mask)
     }
+
+    if(!this.config.returnTensors){
+      featureMask.dispose();
+      backgroundMask.dispose();
+      segmentation.dispose();
+    } 
 
     return {
       segmentation:mask, 
