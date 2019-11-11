@@ -15,7 +15,7 @@ ml5.js is machine learning _for the web_ in your web browser. Through some cleve
 The fastest way to get started exploring the creative possibilities of ml5.js are to either:
 
 1. Download a ml5.js project boilerplate. You can download a zip file here: [ml5 project boilerplate](https://github.com/ml5js/ml5-boilerplate/releases). <br/> Or...
-2. Open this [p5 web editor sketch with ml5.js added](https://editor.p5js.org/ml5/sketches/oYweRi2H7).
+2. Open this [p5 web editor sketch with ml5.js added](https://editor.p5js.org/ml5/sketches/).
 3. You can also copy and paste the cdn link to the ml5 library here:
 
   ```
@@ -123,5 +123,4 @@ Feel free to reach out at <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>.
 ml5.js is supported by the time and dedication of open source developers from all over the world. Funding and support is generously provided by a [Google Education grant](https://edu.google.com/why-google/our-commitment/?modal_active=none%2F) at [NYU's ITP/IMA program](https://itp.nyu.edu/).
 
 Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing support.
-
 
