@@ -130,10 +130,12 @@ class ImageClassifier {
    * @return {object} an object with {label, confidence}.
    */
   async classifyInternal(imgToPredict, numberOfClasses) {
+
     // Wait for the model to be ready
     await this.ready;
     await tf.nextFrame();
 
+    
     if (imgToPredict instanceof HTMLVideoElement && imgToPredict.readyState === 0) {
       const video = imgToPredict;
       // Wait for the video to be ready
@@ -168,9 +170,13 @@ class ImageClassifier {
       return results;
     }
 
-    return this.model
+    const result = this.model
       .classify(processedImg, numberOfClasses)
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
+
+    processedImg.dispose();
+
+    return result;
   }
 
   /**
