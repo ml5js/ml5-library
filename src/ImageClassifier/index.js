@@ -171,12 +171,13 @@ class ImageClassifier {
       return results;
     } 
 
-
-
+    const processedImg = imgToTensor(imgToPredict, imageResize);
     const results = this.model
-      .classify(imgToPredict, numberOfClasses)
+      .classify(processedImg, numberOfClasses)
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
 
+    processedImg.dispose();
+    
     return results;
   }
 
