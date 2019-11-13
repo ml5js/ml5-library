@@ -171,17 +171,13 @@ class ImageClassifier {
       return results;
     } 
 
-    const predictedClasses = tf.tidy( () => {
-      const processedImg = imgToTensor(imgToPredict, imageResize);
-      const predictions = this.model.classify(processedImg, numberOfClasses);
-        return Array.from(predictions.as1D().dataSync());
-    })
 
-    const results = await predictedClasses.map( c => ({
-      label: c.className, confidence: c.probability
-    }))
 
-    return results
+    const results = this.model
+      .classify(imgToPredict, numberOfClasses)
+      .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
+
+    return results;
   }
 
   /**
