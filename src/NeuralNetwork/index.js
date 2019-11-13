@@ -27,6 +27,7 @@ class NeuralNetwork {
     this.config = {
       // debugging
       debug: options.debug || DEFAULTS.debug,
+      returnTensors: options.returnTensors || DEFAULTS.returnTensors,
       // architecture
       architecture: {
         task: options.task || DEFAULTS.task,
@@ -540,12 +541,18 @@ class NeuralNetwork {
       // setting an array as results, then adding
       // .tensor as a property of that array object
       results = outputData;
-      results.tensor = ys;
+
+      // conditionally return the tensors if specified in options
+      if(this.config.returnTensors){
+        results.tensor = ys;
+      } else {
+        results.tensor = null;
+        ys.dispose();
+      }
+      
 
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.array();
-
-
 
       const outputData = predictions.map(prediction => {
         return Object.entries(this.data.meta.outputs).map((item, idx) => {
@@ -573,7 +580,14 @@ class NeuralNetwork {
       // setting an array as results, then adding
       // .tensor as a property of that array object
       results = outputData;
-      results.tensor = ys;
+
+      // conditionally return the tensors if specified in options
+      if(this.config.returnTensors){
+        results.tensor = ys;
+      } else {
+        results.tensor = null;
+        ys.dispose();
+      }
     }
 
     xs.dispose();
@@ -672,7 +686,13 @@ class NeuralNetwork {
       // setting an array as results, then adding
       // .tensor as a property of that array object
       results = outputData;
-      results.tensor = ys;
+      // conditionally return the tensors if specified in options
+      if(this.config.returnTensors){
+        results.tensor = ys;
+      } else {
+        results.tensor = null;
+        ys.dispose();
+      }
 
     } else if (this.config.architecture.task === 'regression') {
       const predictions = await ys.data();
@@ -702,7 +722,13 @@ class NeuralNetwork {
       // setting an array as results, then adding
       // .tensor as a property of that array object
       results = outputData;
-      results.tensor = ys;
+      // conditionally return the tensors if specified in options
+      if(this.config.returnTensors){
+        results.tensor = ys;
+      } else {
+        results.tensor = null;
+        ys.dispose();
+      }
     }
 
     xs.dispose();
