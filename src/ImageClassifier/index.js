@@ -130,7 +130,7 @@ class ImageClassifier {
    * @return {object} an object with {label, confidence}.
    */
   async classifyInternal(imgToPredict, numberOfClasses) {
-    
+
     // Wait for the model to be ready
     await this.ready;
     await tf.nextFrame();
