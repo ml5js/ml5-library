@@ -21,7 +21,6 @@ import {
   boxesToCorners,
   head,
   filterBoxes,
-  ANCHORS,
 } from './postprocess';
 
 const DEFAULTS = {
@@ -85,10 +84,12 @@ class YOLOBase extends Video {
 
     if (inputOrCallback instanceof HTMLImageElement 
       || inputOrCallback instanceof HTMLVideoElement
+      || inputOrCallback instanceof HTMLCanvasElement
       || inputOrCallback instanceof ImageData) {
       imgToPredict = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
       || inputOrCallback.elt instanceof HTMLVideoElement
+      || inputOrCallback.elt instanceof HTMLCanvasElement
       || inputOrCallback.elt instanceof ImageData)) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
     } else if (typeof inputOrCallback === 'function') {
@@ -103,6 +104,14 @@ class YOLOBase extends Video {
     await this.ready;
     await tf.nextFrame();
 
+    const ANCHORS = tf.tensor2d([
+      [0.57273, 0.677385],
+      [1.87446, 2.06253],
+      [3.33843, 5.47434],
+      [7.88282, 3.52778],
+      [9.77052, 9.16828],
+    ]);
+
     this.isPredicting = true;
     const [allBoxes, boxConfidence, boxClassProbs] = tf.tidy(() => {
       const input = imgToTensor(imgToPredict, [imageSize, imageSize]);
@@ -114,58 +123,73 @@ class YOLOBase extends Video {
 
     const [boxes, scores, classes] = await filterBoxes(allBoxes, boxConfidence, boxClassProbs, this.filterBoxesThreshold);
 
+    allBoxes.dispose();
+    boxConfidence.dispose();
+    boxClassProbs.dispose();
     // If all boxes have been filtered out
     if (boxes == null) {
       return [];
     }
+    return tf.tidy(() => {
+      const width = tf.scalar(imageSize);
+      const height = tf.scalar(imageSize);
+      const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
+      const boxesModified = tf.mul(boxes, imageDims);
 
-    const width = tf.scalar(imageSize);
-    const height = tf.scalar(imageSize);
-    const imageDims = tf.stack([height, width, height, width]).reshape([1, 4]);
-    const boxesModified = tf.mul(boxes, imageDims);
+      const preKeepBoxesArr = boxesModified.dataSync();
+      const scoresArr = scores.dataSync();
+  
+      const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
+        preKeepBoxesArr,
+        scoresArr,
+        this.IOUThreshold,
+      );
+  
+      const classesIndxArr = classes.gather(tf.tensor1d(keepIndx, 'int32')).dataSync();
+  
+      const results = [];
+  
+      classesIndxArr.forEach((classIndx, i) => {
+        const classProb = keepScores[i];
+        if (classProb < this.classProbThreshold) {
+          return;
+        }
+  
+        const className = CLASS_NAMES[classIndx];
+        let [y, x, h, w] = boxesArr[i];
+  
+        y = Math.max(0, y);
+        x = Math.max(0, x);
+        h = Math.min(imageSize, h) - y;
+        w = Math.min(imageSize, w) - x;
+  
+        const resultObj = {
+          label: className,
+          confidence: classProb,
+          x: x / imageSize,
+          y: y / imageSize,
+          w: w / imageSize,
+          h: h / imageSize,
+        };
+  
+        results.push(resultObj);
+      });
+  
+      this.isPredicting = false;
+  
+      width.dispose()
+      height.dispose()
+      imageDims.dispose()
+      boxesModified.dispose()
+      boxes.dispose();
+      scores.dispose();
+      classes.dispose();
+      ANCHORS.dispose();
 
-    const [preKeepBoxesArr, scoresArr] = await Promise.all([
-      boxesModified.data(), scores.data(),
-    ]);
-
-    const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
-      preKeepBoxesArr,
-      scoresArr,
-      this.IOUThreshold,
-    );
-
-    const classesIndxArr = await classes.gather(tf.tensor1d(keepIndx, 'int32')).data();
-
-    const results = [];
-
-    classesIndxArr.forEach((classIndx, i) => {
-      const classProb = keepScores[i];
-      if (classProb < this.classProbThreshold) {
-        return;
-      }
-
-      const className = CLASS_NAMES[classIndx];
-      let [y, x, h, w] = boxesArr[i];
-
-      y = Math.max(0, y);
-      x = Math.max(0, x);
-      h = Math.min(imageSize, h) - y;
-      w = Math.min(imageSize, w) - x;
-
-      const resultObj = {
-        label: className,
-        confidence: classProb,
-        x: x / imageSize,
-        y: y / imageSize,
-        w: w / imageSize,
-        h: h / imageSize,
-      };
-
-      results.push(resultObj);
-    });
-
-    this.isPredicting = false;
-    return results;
+  
+      return results;
+    })
+    
   }
 }
 
