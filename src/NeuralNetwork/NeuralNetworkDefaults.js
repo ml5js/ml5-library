@@ -13,6 +13,7 @@ const DEFAULTS = {
   modelOptimizer: null,
   batchSize: 64,
   epochs: 32,
+  returnTensors: false,
 }
 
 export default DEFAULTS;
