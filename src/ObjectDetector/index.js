@@ -20,48 +20,61 @@ class ObjectDetector {
    */
   /**
    * Create ObjectDetector model. Works on video and images.
-   * @param {string} modelName - The name or the URL of the model to use. Current model name options
-   *    are: 'YOLO'.
-   * @param {HTMLVideoElement} video - The video to be used for object detection and classification.
+   * @param {string} modelNameOrUrl - The name or the URL of the model to use. Current model name options
+   *    are: 'YOLO' and 'CocoSsd'.
    * @param {Object} options - Optional. A set of options.
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    *    If no callback is provided, it will return a promise that will be resolved once the model has loaded.
    */
-  constructor(modelName, video, options, callback) {
-    this.modelName = modelName;
+  constructor(modelNameOrUrl, video, options, callback) {
+    this.modelNameOrUrl = modelNameOrUrl;
     this.video = video;
     this.options = options || {};
     this.callback = callback;
 
     if (isInstanceOfSupportedElement(video)) {
       this.video = video;
-    } else if (typeof video === 'object' && isInstanceOfSupportedElement(video.elt)) {
+    } else if (
+      typeof video === "object" &&
+      isInstanceOfSupportedElement(video.elt)
+    ) {
       this.video = video.elt; // Handle p5.js video and image
     }
 
-    switch (modelName) {
-      case 'YOLO':
-        this.model = new YOLO({ disableDeprecationNotice: true, ...options }, callback);
+    switch (modelNameOrUrl) {
+      case "YOLO":
+        this.model = new YOLO(
+          { disableDeprecationNotice: true, ...options },
+          callback
+        );
         break;
-      case 'CocoSsd':
+      case "CocoSsd":
         this.model = new CocoSsd(callback);
         break;
       default:
-        throw new Error('Model name not supported')
+        // Uses custom model url
+        this.model = new YOLO(
+          {
+            disableDeprecationNotice: true,
+            modelUrl: modelNameOrUrl,
+            ...options
+          },
+          callback
+        );
     }
   }
 
   /**
-  * @typedef {Object} ObjectDetectorPrediction
-  * @property {number} x - top left x coordinate of the prediction box (0 to 1).
-  * @property {number} y - top left y coordinate of the prediction box (0 to 1).
-  * @property {number} w - width of the prediction box (0 to 1).
-  * @property {number} h - height of the prediction box (0 to 1).
-  * @property {string} label - the label given.
-  * @property {number} confidence - the confidence score (0 to 1).
-  */
+   * @typedef {Object} ObjectDetectorPrediction
+   * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+   * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+   * @property {number} w - width of the prediction box (0 to 1).
+   * @property {number} h - height of the prediction box (0 to 1).
+   * @property {string} label - the label given.
+   * @property {number} confidence - the confidence score (0 to 1).
+   */
   /**
-  * Returns an rgb array
+  * Returns an array of predicted objects
   * @param {function} callback - Optional. A callback that deliver the result. If no callback is
   *                              given, a promise is will be returned.
   * @return {ObjectDetectorPrediction[]} an array of the prediction result
