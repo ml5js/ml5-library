@@ -24,22 +24,11 @@ class ObjectDetector {
    *    are: 'YOLO' and 'CocoSsd'.
    * @param {Object} options - Optional. A set of options.
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
-   *    If no callback is provided, it will return a promise that will be resolved once the model has loaded.
    */
-  constructor(modelNameOrUrl, video, options, callback) {
+  constructor(modelNameOrUrl, options, callback) {
     this.modelNameOrUrl = modelNameOrUrl;
-    this.video = video;
     this.options = options || {};
     this.callback = callback;
-
-    if (isInstanceOfSupportedElement(video)) {
-      this.video = video;
-    } else if (
-      typeof video === "object" &&
-      isInstanceOfSupportedElement(video.elt)
-    ) {
-      this.video = video.elt; // Handle p5.js video and image
-    }
 
     switch (modelNameOrUrl) {
       case "YOLO":
@@ -79,8 +68,13 @@ class ObjectDetector {
   *                              given, a promise is will be returned.
   * @return {ObjectDetectorPrediction[]} an array of the prediction result
   */
-  detect(callback) {
-    return this.model.detect(this.video, callback);
+  detect(subject, callback) {
+    if (isInstanceOfSupportedElement(subject)) {
+      return this.model.detect(subject, callback);
+    } else if (typeof subject === "object" && isInstanceOfSupportedElement(subject.elt)) {
+      return this.model.detect(subject.elt, callback); // Handle p5.js video and image
+    }
+    throw new Error('Detection subject not supported'); 
   }
 }
 

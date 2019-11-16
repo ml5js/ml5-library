@@ -11,7 +11,10 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 
 import * as tf from '@tensorflow/tfjs';
 import Video from './../../utils/Video';
-import { imgToTensor } from './../../utils/imageUtilities';
+import {
+  imgToTensor,
+  isInstanceOfSupportedElement
+} from "./../../utils/imageUtilities";
 import callCallback from './../../utils/callcallback';
 import CLASS_NAMES from './../../utils/COCO_CLASSES';
 import modelLoader from './../../utils/modelLoader';
@@ -46,10 +49,9 @@ class YOLOBase extends Video {
    */
   /**
    * Create YOLO model. Works on video and images. 
-   * @param {HTMLVideoElement} video - Optional. The video to be used for object detection and classification.
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} video - Optional. The video to be used for object detection and classification.
    * @param {Object} options - Optional. A set of options.
-   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
-   *    that will be resolved once the model has loaded.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
   constructor(video, options, callback) {
     super(video, imageSize);
@@ -84,21 +86,22 @@ class YOLOBase extends Video {
     return this;
   }
 
+  /**
+  * Detect objects that are in video, returns bounding box, label, and confidence scores
+  * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} inputOrCallback - Subject of the detection, or callback
+  * @param {function} cb - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+  *    that will be resolved once the prediction is done.
+  */
   async detect(inputOrCallback, cb) {
     await this.ready;
     let imgToPredict;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement 
-      || inputOrCallback instanceof HTMLVideoElement
-      || inputOrCallback instanceof HTMLCanvasElement
-      || inputOrCallback instanceof ImageData) {
+    if (isInstanceOfSupportedElement(inputOrCallback)) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
-      || inputOrCallback.elt instanceof HTMLVideoElement
-      || inputOrCallback.elt instanceof ImageData)) {
+    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === 'function') {
+    } else if (typeof inputOrCallback === "function") {
       imgToPredict = this.video;
       callback = inputOrCallback;
     }
