@@ -1,4 +1,4 @@
-# NameOfFeature
+# CharRNN
 
 
 <center>
