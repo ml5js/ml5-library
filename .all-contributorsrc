@@ -854,6 +854,15 @@
         "content",
         "bug"
       ]
+    },
+    {
+      "login": "fdb",
+      "name": "Frederik De Bleser",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8477?v=4",
+      "profile": "https://www.enigmeta.com",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
