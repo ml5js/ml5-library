@@ -863,6 +863,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "violetcraze",
+      "name": "Violet",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43045568?v=4",
+      "profile": "https://github.com/violetcraze",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
