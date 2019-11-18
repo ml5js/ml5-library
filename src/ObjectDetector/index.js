@@ -9,7 +9,9 @@
 
 import YOLO from './YOLO/index';
 import CocoSsd from './CocoSsd/index';
-import { isInstanceOfSupportedElement } from '../utils/imageUtilities';
+import {
+  isInstanceOfSupportedElement
+} from '../utils/imageUtilities';
 
 class ObjectDetector {
   /**
@@ -25,31 +27,29 @@ class ObjectDetector {
    * @param {Object} options - Optional. A set of options.
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
-  constructor(modelNameOrUrl, options, callback) {
+  constructor(modelNameOrUrl, video, options, callback) {
+    console.log(modelNameOrUrl, options, callback);
+
+    this.video = video;
     this.modelNameOrUrl = modelNameOrUrl;
     this.options = options || {};
     this.callback = callback;
 
     switch (modelNameOrUrl) {
-      case "YOLO":
-        this.model = new YOLO(
-          { disableDeprecationNotice: true, ...options },
-          callback
-        );
-        break;
-      case "CocoSsd":
-        this.model = new CocoSsd(callback);
-        break;
-      default:
-        // Uses custom model url
-        this.model = new YOLO(
-          {
+      case "yolo":
+        this.model = new YOLO({
             disableDeprecationNotice: true,
-            modelUrl: modelNameOrUrl,
-            ...options
+            ...this.options
           },
           callback
         );
+        break;
+      case "cocossd":
+        this.model = new CocoSsd(this.options, callback);
+        break;
+      default:
+        // use cocossd as default
+        this.model = new CocoSsd(this.options, callback);
     }
   }
 
@@ -63,23 +63,58 @@ class ObjectDetector {
    * @property {number} confidence - the confidence score (0 to 1).
    */
   /**
-  * Returns an array of predicted objects
-  * @param {function} callback - Optional. A callback that deliver the result. If no callback is
-  *                              given, a promise is will be returned.
-  * @return {ObjectDetectorPrediction[]} an array of the prediction result
-  */
+   * Returns an array of predicted objects
+   * @param {function} callback - Optional. A callback that deliver the result. If no callback is
+   *                              given, a promise is will be returned.
+   * @return {ObjectDetectorPrediction[]} an array of the prediction result
+   */
   detect(subject, callback) {
     if (isInstanceOfSupportedElement(subject)) {
       return this.model.detect(subject, callback);
     } else if (typeof subject === "object" && isInstanceOfSupportedElement(subject.elt)) {
       return this.model.detect(subject.elt, callback); // Handle p5.js video and image
+    } else if (typeof subject === "object" && isInstanceOfSupportedElement(subject.canvas)) {
+      return this.model.detect(subject.canvas, callback); // Handle p5.js video and image
     }
-    throw new Error('Detection subject not supported'); 
+    throw new Error('Detection subject not supported');
   }
 }
 
-const objectDetector = (modelName, video, options, callback) => {
-  return new ObjectDetector(modelName, video, options, callback)
+const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
+
+  let video;
+  let options = {};
+  let callback = cb;
+
+  let model = modelName;
+  if (typeof model !== 'string') {
+    throw new Error('Please specify a model to use. E.g: "YOLO"');
+  } else if (model.indexOf('http') === -1) {
+    model = modelName.toLowerCase();
+  }
+
+  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
+    video = videoOrOptionsOrCallback;
+  } else if (
+    typeof videoOrOptionsOrCallback === 'object' &&
+    videoOrOptionsOrCallback.elt instanceof HTMLVideoElement
+  ) {
+    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
+  } else if (typeof videoOrOptionsOrCallback === 'object') {
+    options = videoOrOptionsOrCallback;
+  } else if (typeof videoOrOptionsOrCallback === 'function') {
+    callback = videoOrOptionsOrCallback;
+  }
+
+  if (typeof optionsOrCallback === 'object') {
+    options = optionsOrCallback;
+  } else if (typeof optionsOrCallback === 'function') {
+    callback = optionsOrCallback;
+  }
+
+  const instance = new ObjectDetector(model, video, options, callback);
+  return callback ? instance : instance.ready;
+
 }
 
 export default objectDetector;
