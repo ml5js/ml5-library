@@ -33,19 +33,18 @@ class ObjectDetector {
 
     switch (modelNameOrUrl) {
       case "yolo":
-        this.model = new YOLO({
-            disableDeprecationNotice: true,
-            ...this.options
-          },
+        this.model = new YOLO(this.video, { 
+          disableDeprecationNotice: true, 
+          ...this.options },
           callback
         );
         return this;
       case "cocossd":
-        this.model = new CocoSsd(this.options, callback);
+        this.model = new CocoSsd(this.video, this.options, callback);
         return this;
       default:
         // use cocossd as default
-        this.model = new CocoSsd(this.options, callback);
+        this.model = new CocoSsd(this.video, this.options, callback);
         return this;
     }
   }
@@ -85,6 +84,7 @@ const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, 
   }
 
   const instance = new ObjectDetector(model, video, options, callback);
+
   return callback ? instance.model : instance.model.ready;
 
 }

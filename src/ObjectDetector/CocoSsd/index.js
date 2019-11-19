@@ -19,13 +19,14 @@ const DEFAULTS = {
     modelUrl: undefined,
 }
 
-class CocoSsd {
+class CocoSsdBase {
     /**
      * Create CocoSsd model. Works on video and images. 
      * @param {function} constructorCallback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
      *    that will be resolved once the model has loaded.
      */
-    constructor(options, constructorCallback) {
+    constructor(video, options, constructorCallback) {
+        this.video = video || null;
         this.config = {
             base: options.base || DEFAULTS.base,
             modelUrl: options.modelUrl || DEFAULTS.modelUrl
@@ -34,7 +35,11 @@ class CocoSsd {
         this.ready = callCallback(this.loadModel(), constructorCallback);
     }
 
+    /**
+     * load model
+     */
     async loadModel() {
+
         this.cocoSsdModel = await cocoSsd.load(this.config);
 
         this.modelReady = true;
@@ -98,5 +103,32 @@ class CocoSsd {
         return callCallback(this.detectInternal(imgToPredict), callback);
     }
 }
+
+const CocoSsd = (videoOr, optionsOr, cb) => {
+    let video = null;
+    let options = {};
+    let callback = cb;
+    
+    if (videoOr instanceof HTMLVideoElement) {
+        video = videoOr;
+      } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
+        video = videoOr.elt; // Handle p5.js image
+      } else if (typeof videoOr === 'function') {
+        callback = videoOr;
+      } else if (typeof videoOr === 'object') {
+        options = videoOr;
+      }
+    
+      if (typeof optionsOr === 'object') {
+        options = optionsOr;
+      } else if (typeof optionsOr === 'function') {
+        callback = optionsOr;
+      }
+    
+      return new CocoSsdBase(video, options, callback);
+}
+
+
+
 
 export default CocoSsd;
