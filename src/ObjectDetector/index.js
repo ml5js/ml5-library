@@ -9,9 +9,6 @@
 
 import YOLO from './YOLO/index';
 import CocoSsd from './CocoSsd/index';
-import {
-  isInstanceOfSupportedElement
-} from '../utils/imageUtilities';
 
 class ObjectDetector {
   /**
@@ -28,7 +25,6 @@ class ObjectDetector {
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
   constructor(modelNameOrUrl, video, options, callback) {
-    console.log(modelNameOrUrl, options, callback);
 
     this.video = video;
     this.modelNameOrUrl = modelNameOrUrl;
@@ -43,41 +39,17 @@ class ObjectDetector {
           },
           callback
         );
-        break;
+        return this;
       case "cocossd":
         this.model = new CocoSsd(this.options, callback);
-        break;
+        return this;
       default:
         // use cocossd as default
         this.model = new CocoSsd(this.options, callback);
+        return this;
     }
   }
 
-  /**
-   * @typedef {Object} ObjectDetectorPrediction
-   * @property {number} x - top left x coordinate of the prediction box (0 to 1).
-   * @property {number} y - top left y coordinate of the prediction box (0 to 1).
-   * @property {number} w - width of the prediction box (0 to 1).
-   * @property {number} h - height of the prediction box (0 to 1).
-   * @property {string} label - the label given.
-   * @property {number} confidence - the confidence score (0 to 1).
-   */
-  /**
-   * Returns an array of predicted objects
-   * @param {function} callback - Optional. A callback that deliver the result. If no callback is
-   *                              given, a promise is will be returned.
-   * @return {ObjectDetectorPrediction[]} an array of the prediction result
-   */
-  detect(subject, callback) {
-    if (isInstanceOfSupportedElement(subject)) {
-      return this.model.detect(subject, callback);
-    } else if (typeof subject === "object" && isInstanceOfSupportedElement(subject.elt)) {
-      return this.model.detect(subject.elt, callback); // Handle p5.js video and image
-    } else if (typeof subject === "object" && isInstanceOfSupportedElement(subject.canvas)) {
-      return this.model.detect(subject.canvas, callback); // Handle p5.js video and image
-    }
-    throw new Error('Detection subject not supported');
-  }
 }
 
 const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
@@ -113,7 +85,7 @@ const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, 
   }
 
   const instance = new ObjectDetector(model, video, options, callback);
-  return callback ? instance : instance.ready;
+  return callback ? instance.model : instance.model.ready;
 
 }
 

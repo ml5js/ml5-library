@@ -26,7 +26,7 @@ class CocoSsd {
      *    that will be resolved once the model has loaded.
      */
     constructor(options, constructorCallback) {
-        this.options = {
+        this.config = {
             base: options.base || DEFAULTS.base,
             modelUrl: options.modelUrl || DEFAULTS.modelUrl
         }
@@ -35,9 +35,21 @@ class CocoSsd {
     }
 
     async loadModel() {
-        this.cocoSsdModel = await cocoSsd.load(this.options);
+        this.cocoSsdModel = await cocoSsd.load(this.config);
+
+        this.modelReady = true;
+        return this;
     }
 
+    /**
+     * @typedef {Object} ObjectDetectorPrediction
+     * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+     * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+     * @property {number} w - width of the prediction box (0 to 1).
+     * @property {number} h - height of the prediction box (0 to 1).
+     * @property {string} label - the label given.
+     * @property {number} confidence - the confidence score (0 to 1).
+     */
     /**
      * Detect objects that are in video, returns bounding box, label, and confidence scores
      * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
