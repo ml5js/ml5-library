@@ -26,6 +26,7 @@ import { version } from '../package.json';
 import sentiment from './Sentiment';
 import bodyPix from './BodyPix';
 import neuralNetwork from './NeuralNetwork';
+import diyNeuralNetwork from './DiyNeuralNetwork';
 import faceApi from './FaceApi';
 import kmeans from './KMeans';
 import p5Utils from './utils/p5Utils';
@@ -58,4 +59,5 @@ module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   tf,
   version,
   neuralNetwork,
+  diyNeuralNetwork,
 });
