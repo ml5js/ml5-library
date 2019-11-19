@@ -863,6 +863,17 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "tirtawr",
+      "name": "Tirta Wening Rachman",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6989378?v=4",
+      "profile": "http://tirtawr.com",
+      "contributions": [
+        "code",
+        "content",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
