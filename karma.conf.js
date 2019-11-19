@@ -8,6 +8,7 @@ module.exports = (config) => {
     files: [
       'src/index.js',
       `src/${config.model ? config.model : '**'}/*_test.js`,
+      `src/${config.model ? config.model : '**'}/**/*_test.js`,
     ],
     preprocessors: {
       'src/index.js': ['webpack'],

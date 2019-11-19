@@ -10,11 +10,14 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 
 import * as tf from '@tensorflow/tfjs';
-import Video from '../utils/Video';
-import { imgToTensor } from '../utils/imageUtilities';
-import callCallback from '../utils/callcallback';
-import CLASS_NAMES from './../utils/COCO_CLASSES';
-import modelLoader from '../utils/modelLoader';
+import Video from './../../utils/Video';
+import {
+  imgToTensor,
+  isInstanceOfSupportedElement
+} from "./../../utils/imageUtilities";
+import callCallback from './../../utils/callcallback';
+import CLASS_NAMES from './../../utils/COCO_CLASSES';
+import modelLoader from './../../utils/modelLoader';
 
 import {
   nonMaxSuppression,
@@ -35,6 +38,9 @@ const imageSize = 416;
 
 class YOLOBase extends Video {
   /**
+   * @deprecated Please use ObjectDetector class instead
+   */
+  /**
    * @typedef {Object} options
    * @property {number} filterBoxesThreshold - default 0.01
    * @property {number} IOUThreshold - default 0.4
@@ -42,10 +48,9 @@ class YOLOBase extends Video {
    */
   /**
    * Create YOLO model. Works on video and images. 
-   * @param {HTMLVideoElement} video - Optional. The video to be used for object detection and classification.
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} video - Optional. The video to be used for object detection and classification.
    * @param {Object} options - Optional. A set of options.
-   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
-   *    that will be resolved once the model has loaded.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
   constructor(video, options, callback) {
     super(video, imageSize);
@@ -57,7 +62,10 @@ class YOLOBase extends Video {
     this.modelReady = false;
     this.isPredicting = false;
     this.ready = callCallback(this.loadModel(), callback);
-    // this.then = this.ready.then;
+
+    if (!options.disableDeprecationNotice) {
+      console.warn("WARNING! Function YOLO has been deprecated, please use the new ObjectDetector function instead");
+    }
   }
 
   async loadModel() {
@@ -65,34 +73,36 @@ class YOLOBase extends Video {
       this.video = await this.loadVideo();
     }
 
-    if(modelLoader.isAbsoluteURL(this.modelUrl) === true){
+    if (modelLoader.isAbsoluteURL(this.modelUrl) === true) {
       this.model = await tf.loadLayersModel(this.modelUrl);
     } else {
       const modelPath = modelLoader.getModelPath(this.modelUrl);
       this.modelUrl = `${modelPath}/model.json`;
       this.model = await tf.loadLayersModel(this.modelUrl);
     }
-    
+
     this.modelReady = true;
     return this;
   }
 
+  /**
+   * Detect objects that are in video, returns bounding box, label, and confidence scores
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} inputOrCallback - Subject of the detection, or callback
+   * @param {function} cb - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+   *    that will be resolved once the prediction is done.
+   */
   async detect(inputOrCallback, cb) {
     await this.ready;
     let imgToPredict;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement 
-      || inputOrCallback instanceof HTMLVideoElement
-      || inputOrCallback instanceof HTMLCanvasElement
-      || inputOrCallback instanceof ImageData) {
+    if (isInstanceOfSupportedElement(inputOrCallback)) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement 
-      || inputOrCallback.elt instanceof HTMLVideoElement
-      || inputOrCallback.elt instanceof HTMLCanvasElement
-      || inputOrCallback.elt instanceof ImageData)) {
+    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === 'function') {
+    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.canvas)) {
+      imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
+    } else if (typeof inputOrCallback === "function") {
       imgToPredict = this.video;
       callback = inputOrCallback;
     }
@@ -138,31 +148,31 @@ class YOLOBase extends Video {
 
       const preKeepBoxesArr = boxesModified.dataSync();
       const scoresArr = scores.dataSync();
-  
+
       const [keepIndx, boxesArr, keepScores] = nonMaxSuppression(
         preKeepBoxesArr,
         scoresArr,
         this.IOUThreshold,
       );
-  
+
       const classesIndxArr = classes.gather(tf.tensor1d(keepIndx, 'int32')).dataSync();
-  
+
       const results = [];
-  
+
       classesIndxArr.forEach((classIndx, i) => {
         const classProb = keepScores[i];
         if (classProb < this.classProbThreshold) {
           return;
         }
-  
+
         const className = CLASS_NAMES[classIndx];
         let [y, x, h, w] = boxesArr[i];
-  
+
         y = Math.max(0, y);
         x = Math.max(0, x);
         h = Math.min(imageSize, h) - y;
         w = Math.min(imageSize, w) - x;
-  
+
         const resultObj = {
           label: className,
           confidence: classProb,
@@ -171,12 +181,12 @@ class YOLOBase extends Video {
           w: w / imageSize,
           h: h / imageSize,
         };
-  
+
         results.push(resultObj);
       });
-  
+
       this.isPredicting = false;
-  
+
       width.dispose()
       height.dispose()
       imageDims.dispose()
@@ -186,10 +196,10 @@ class YOLOBase extends Video {
       classes.dispose();
       ANCHORS.dispose();
 
-  
+
       return results;
     })
-    
+
   }
 }
 

@@ -41,7 +41,7 @@ describe('YOLO', () => {
 
   beforeEach(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-    yolo = await YOLO();
+    yolo = await YOLO({ disableDeprecationNotice: true });
   });
 
   it('instantiates the YOLO classifier with defaults', () => {

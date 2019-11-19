@@ -134,10 +134,18 @@ function imgToTensor(input, size = null) {
   });
 }
 
+function isInstanceOfSupportedElement(subject) {
+  return (subject instanceof HTMLVideoElement
+    || subject instanceof HTMLImageElement
+    || subject instanceof HTMLCanvasElement
+    || subject instanceof ImageData)
+}
+
 export {
   array3DToImage,
   processVideo,
   cropImage,
   imgToTensor,
+  isInstanceOfSupportedElement,
   flipImage
 };
