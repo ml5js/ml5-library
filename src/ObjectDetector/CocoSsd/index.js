@@ -26,7 +26,7 @@ class CocoSsd {
      *    that will be resolved once the model has loaded.
      */
     constructor(options, constructorCallback) {
-        this.options = {
+        this.config = {
             base: options.base || DEFAULTS.base,
             modelUrl: options.modelUrl || DEFAULTS.modelUrl
         }
@@ -35,7 +35,10 @@ class CocoSsd {
     }
 
     async loadModel() {
-        this.cocoSsdModel = await cocoSsd.load(this.options);
+        this.cocoSsdModel = await cocoSsd.load(this.config);
+        
+        this.modelReady = true;
+        return this;
     }
 
     /**

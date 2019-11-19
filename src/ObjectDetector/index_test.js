@@ -6,17 +6,17 @@
 const { objectDetector } = ml5;
 
 xdescribe('ObjectDetector', () => {
-    let cocoSsd;
+    let detector;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-        cocoSsd = await objectDetector('CocoSsd');
+        detector = await objectDetector('CocoSsd');
     });
 
     it('throws error when a non image is trying to be detected', async () => {
         const notAnImage = 'not_an_image'
         try {
-            await cocoSsd.detect(notAnImage);
+            await detector.detect(notAnImage);
             fail('Error should have been thrown');
         }
         catch (error) {

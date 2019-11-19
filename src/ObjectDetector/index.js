@@ -28,7 +28,6 @@ class ObjectDetector {
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
   constructor(modelNameOrUrl, video, options, callback) {
-    console.log(modelNameOrUrl, options, callback);
 
     this.video = video;
     this.modelNameOrUrl = modelNameOrUrl;
@@ -43,13 +42,14 @@ class ObjectDetector {
           },
           callback
         );
-        break;
+        return this;
       case "cocossd":
         this.model = new CocoSsd(this.options, callback);
-        break;
+        return this;
       default:
         // use cocossd as default
         this.model = new CocoSsd(this.options, callback);
+        return this;
     }
   }
 
@@ -113,7 +113,7 @@ const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, 
   }
 
   const instance = new ObjectDetector(model, video, options, callback);
-  return callback ? instance : instance.ready;
+  return callback ? instance.model : instance.model.ready;
 
 }
 
