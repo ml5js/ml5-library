@@ -205,6 +205,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://about.me/joshuaweinstein/"><img src="https://avatars0.githubusercontent.com/u/175075?v=4" width="100px;" alt="josher19"/><br /><sub><b>josher19</b></sub></a><br /><a href="#content-josher19" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ajosher19" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://www.enigmeta.com"><img src="https://avatars3.githubusercontent.com/u/8477?v=4" width="100px;" alt="Frederik De Bleser"/><br /><sub><b>Frederik De Bleser</b></sub></a><br /><a href="#content-fdb" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/violetcraze"><img src="https://avatars1.githubusercontent.com/u/43045568?v=4" width="100px;" alt="Violet"/><br /><sub><b>Violet</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Avioletcraze" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://tirtawr.com"><img src="https://avatars1.githubusercontent.com/u/6989378?v=4" width="100px;" alt="Tirta Wening Rachman"/><br /><sub><b>Tirta Wening Rachman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=tirtawr" title="Code">💻</a> <a href="#content-tirtawr" title="Content">🖋</a> <a href="#ideas-tirtawr" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
