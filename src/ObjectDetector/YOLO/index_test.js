@@ -11,7 +11,7 @@ const YOLO_DEFAULTS = {
   size: 416,
 };
 
-xdescribe('YOLO', () => {
+describe('YOLO', () => {
   let yolo;
 
   async function getRobin() {
@@ -41,7 +41,7 @@ xdescribe('YOLO', () => {
   describe('object detector with yolo', () =>{
     beforeAll(async () => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-      yolo = await ml5.objectDetector('yolo', { disableDeprecationNotice: true });
+      yolo = await ml5.objectDetector('yolo', { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
   
     it('instantiates the YOLO classifier with defaults', () => {

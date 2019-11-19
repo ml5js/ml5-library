@@ -6,11 +6,11 @@
 // const { objectDetector } = ml5;
 
 const COCOSSD_DEFAULTS = {
-    base: 'mobilenet_v2',
+    base: 'lite_mobilenet_v2',
     modelUrl: undefined,
 }
 
-xdescribe('objectDetector with cocossd', () => {
+describe('objectDetector with cocossd', () => {
     let detector;
 
     async function getRobin() {
@@ -42,8 +42,8 @@ xdescribe('objectDetector with cocossd', () => {
     describe('cocossd', () => {
 
         beforeAll(async () => {
-            jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-            detector = await ml5.objectDetector('cocossd');
+            jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
+            detector = await ml5.objectDetector('cocossd', COCOSSD_DEFAULTS);
         });
 
 
