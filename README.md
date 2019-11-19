@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-82-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-83-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -204,6 +204,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://twitter.com/maxdevjs"><img src="https://avatars2.githubusercontent.com/u/22229196?v=4" width="100px;" alt="maxdevjs"/><br /><sub><b>maxdevjs</b></sub></a><br /><a href="#content-maxdevjs" title="Content">🖋</a></td>
     <td align="center"><a href="http://about.me/joshuaweinstein/"><img src="https://avatars0.githubusercontent.com/u/175075?v=4" width="100px;" alt="josher19"/><br /><sub><b>josher19</b></sub></a><br /><a href="#content-josher19" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ajosher19" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://www.enigmeta.com"><img src="https://avatars3.githubusercontent.com/u/8477?v=4" width="100px;" alt="Frederik De Bleser"/><br /><sub><b>Frederik De Bleser</b></sub></a><br /><a href="#content-fdb" title="Content">🖋</a></td>
+    <td align="center"><a href="http://tirtawr.com"><img src="https://avatars1.githubusercontent.com/u/6989378?v=4" width="100px;" alt="Tirta Wening Rachman"/><br /><sub><b>Tirta Wening Rachman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=tirtawr" title="Code">💻</a> <a href="#content-tirtawr" title="Content">🖋</a> <a href="#ideas-tirtawr" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
