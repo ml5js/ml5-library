@@ -3,7 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { YOLO } = ml5;
 
 const YOLO_DEFAULTS = {
   IOUThreshold: 0.4,
@@ -12,7 +11,7 @@ const YOLO_DEFAULTS = {
   size: 416,
 };
 
-describe('YOLO', () => {
+xdescribe('YOLO', () => {
   let yolo;
 
   async function getRobin() {
@@ -39,27 +38,30 @@ describe('YOLO', () => {
     return img;
   }
 
-  beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-    yolo = await YOLO({ disableDeprecationNotice: true });
-  });
-
-  it('instantiates the YOLO classifier with defaults', () => {
-    expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
-    expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
-    expect(yolo.filterBoxesThreshold).toBe(YOLO_DEFAULTS.filterBoxesThreshold);
-    expect(yolo.size).toBe(YOLO_DEFAULTS.size);
-  });
-
-  it('detects a robin', async () => {
-    const robin = await getRobin();
-    const detection = await yolo.detect(robin);
-    expect(detection[0].label).toBe('bird');
-  });
-
-  it('detects takes ImageData', async () => {
-    const img = await getImageData();
-    const detection = await yolo.detect(img);
-    expect(detection).toEqual([]);
-  });
+  describe('object detector with yolo', () =>{
+    beforeAll(async () => {
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+      yolo = await ml5.objectDetector('yolo', { disableDeprecationNotice: true });
+    });
+  
+    it('instantiates the YOLO classifier with defaults', () => {
+      expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
+      expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
+      expect(yolo.filterBoxesThreshold).toBe(YOLO_DEFAULTS.filterBoxesThreshold);
+      expect(yolo.size).toBe(YOLO_DEFAULTS.size);
+    });
+  
+    it('detects a robin', async () => {
+      const robin = await getRobin();
+      const detection = await yolo.detect(robin);
+      expect(detection[0].label).toBe('bird');
+    });
+  
+    it('detects takes ImageData', async () => {
+      const img = await getImageData();
+      const detection = await yolo.detect(img);
+      expect(detection).toEqual([]);
+    });
+  })
+  
 });
