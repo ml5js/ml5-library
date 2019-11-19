@@ -61,7 +61,8 @@ class YOLOBase extends Video {
     this.classProbThreshold = options.classProbThreshold || DEFAULTS.classProbThreshold;
     this.modelReady = false;
     this.isPredicting = false;
-    this.ready = callCallback(this.loadModel(), callback);
+    this.callback = callback;
+    this.ready = callCallback(this.loadModel(), this.callback);
 
     if (!options.disableDeprecationNotice) {
       console.warn("WARNING! Function YOLO has been deprecated, please use the new ObjectDetector function instead");

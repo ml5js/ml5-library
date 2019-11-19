@@ -85,7 +85,7 @@ const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, 
 
   const instance = new ObjectDetector(model, video, options, callback);
 
-  return callback ? instance.model : instance.model.ready;
+  return instance.model.callback ? instance.model : instance.model.ready;
 
 }
 

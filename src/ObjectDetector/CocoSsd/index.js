@@ -27,12 +27,13 @@ class CocoSsdBase {
      */
     constructor(video, options, constructorCallback) {
         this.video = video || null;
+        this.modelReady = false;
         this.config = {
             base: options.base || DEFAULTS.base,
             modelUrl: options.modelUrl || DEFAULTS.modelUrl
         }
-        this.constructorCallback = constructorCallback;
-        this.ready = callCallback(this.loadModel(), constructorCallback);
+        this.callback = constructorCallback;
+        this.ready = callCallback(this.loadModel(), this.callback);
     }
 
     /**
@@ -40,7 +41,7 @@ class CocoSsdBase {
      */
     async loadModel() {
 
-        this.cocoSsdModel = await cocoSsd.load(this.config);
+        this.model = await cocoSsd.load(this.config);
 
         this.modelReady = true;
         return this;
@@ -61,7 +62,7 @@ class CocoSsdBase {
      */
     async detectInternal(imgToPredict) {
 
-        const predictions = await this.cocoSsdModel.detect(imgToPredict);
+        const predictions = await this.model.detect(imgToPredict);
         const formattedPredictions = predictions.map(prediction => {
             return {
                 label: prediction.class,
@@ -108,24 +109,24 @@ const CocoSsd = (videoOr, optionsOr, cb) => {
     let video = null;
     let options = {};
     let callback = cb;
-    
+
     if (videoOr instanceof HTMLVideoElement) {
         video = videoOr;
-      } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
+    } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
         video = videoOr.elt; // Handle p5.js image
-      } else if (typeof videoOr === 'function') {
+    } else if (typeof videoOr === 'function') {
         callback = videoOr;
-      } else if (typeof videoOr === 'object') {
+    } else if (typeof videoOr === 'object') {
         options = videoOr;
-      }
-    
-      if (typeof optionsOr === 'object') {
+    }
+
+    if (typeof optionsOr === 'object') {
         options = optionsOr;
-      } else if (typeof optionsOr === 'function') {
+    } else if (typeof optionsOr === 'function') {
         callback = optionsOr;
-      }
-    
-      return new CocoSsdBase(video, options, callback);
+    }
+
+    return new CocoSsdBase(video, options, callback);
 }
 
 
