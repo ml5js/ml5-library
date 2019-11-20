@@ -1,77 +1,53 @@
 import * as tf from '@tensorflow/tfjs';
 import NeuralNetwork from './NeuralNetwork';
+import NeuralNetworkData from './NeuralNetworkData';
 
-class DiyNeuralNetwork extends NeuralNetwork {
+class DiyNeuralNetwork{
   
   constructor(options, cb){
-    super(options);
     this.callback = cb;
- 
+    this.options = options || {};
+
+    this.neuralNetwork = new NeuralNetwork();
+    this.neuralNetworkData = new NeuralNetworkData();
+    
   }
 
-
-
-
-
   /**
-   * 
+   * createDenseLayer
+   * @param {*} _options 
    */
-  defineDefaultModelLayers(){
-    if(!this.config.architecture.layers.length > 0){
-      this.config.architecture.layers = [];
+  // eslint-disable-next-line class-methods-use-this
+  createDenseLayer(_options){
 
-      const {
-        hiddenUnits
-      } = this.config.architecture;
-
-      const hidden = tf.layers.dense({
-        units: hiddenUnits,
-        inputShape: [this.config.architecture.inputUnits],
-        activation: 'relu',
-      });
-
-      const output = tf.layers.dense({
-        units: this.config.architecture.outputUnits,
-        activation: 'sigmoid',
-      });
-
-      this.config.architecture.layers = [hidden, output];
-    }
-  }
-
-
-  /**
-   * 
-   */
-  createModelInternal() {
-
-    // add the layers to the model as defined in config.architecture.layers
-    this.config.architecture.layers.forEach(layer => {
-      this.addLayer(layer);
+    const options = Object.assign({}, {
+      units: 16,
+      activation: 'relu',
+      ..._options
     });
-
-    // compile the model
-    const {
-      modelOptimizer,
-      modelLoss,
-      modelMetrics
-    } = this.config.modelOptions;
-
-    this.compile({
-      optimizer: modelOptimizer,
-      loss: modelLoss,
-      metrics: modelMetrics,
-    });
-
+    
+    return tf.layers.dense(options);
   }
 
   /**
-   * 
+   * createConv2dLayer
+   * @param {*} _options 
    */
-  createModel(){
-    this.defineDefaultModelLayers();
-    this.createModelInternal();
+  // eslint-disable-next-line class-methods-use-this
+  createConv2dLayer(_options){
+    const options = Object.assign({},{
+      kernelSize: 5,
+      filters: 8,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling',
+      ..._options
+    })
+
+    return tf.layers.conv2d(options);
   }
+
+
 
 }
 
