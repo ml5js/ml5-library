@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-// import callCallback from '../utils/callcallback';
+import callCallback from '../utils/callcallback';
 
 class NeuralNetwork {
 
@@ -54,9 +54,35 @@ class NeuralNetwork {
     this.model.compile(MODEL_OPTIONS);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  train() {
+  /**
+   * train(_options, _cb){ 
+   * @param {*} _options 
+   * @param {*} _cb 
+   */
+  train(_options, _cb){
+    return callCallback(this.trainInternal(_options), _cb);
+  }
 
+  /**
+   * trainInternal
+   * @param {*} _options 
+   */
+  async trainInternal(_options) {
+    const TRAINING_OPTIONS = _options;
+    const xs = TRAINING_OPTIONS.inputs;
+    const ys = TRAINING_OPTIONS.outputs;
+    const {batchSize, epochs, shuffle, whileTraining} = TRAINING_OPTIONS;
+
+    await this.model.fit(xs, ys, {
+      batchSize, 
+      epochs, 
+      shuffle,
+      callbacks: [
+        {
+          onEpochEnd: whileTraining
+        }
+      ]
+    })
   }
 
   // eslint-disable-next-line class-methods-use-this

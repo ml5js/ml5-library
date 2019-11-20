@@ -13,6 +13,18 @@ class DiyNeuralNetwork{
     
   }
 
+  
+
+  /**
+   * train
+   * @param {*} _options 
+   * @param {*} _cb 
+   */
+  train(_options, _cb){
+    this.neuralNetwork.train(_options, _cb);
+  }
+
+
   /**
    * 
    * @param {*} _options 
