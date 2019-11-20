@@ -85,7 +85,6 @@ const neuralNetwork = (inputsOrOptions, outputsOrCallback, callback) => {
   }
 
   const instance = new DiyNeuralNetwork(options, cb);
-  console.log(instance);
   return instance;
 }
 
