@@ -49,7 +49,8 @@ class NeuralNetwork {
    * @param {*} _trainingOptions 
    */
   compile(_modelOptions) {
-    const MODEL_OPTIONS = _modelOptions || this.config.modelOptions;
+    const MODEL_OPTIONS = _modelOptions;
+    console.log(MODEL_OPTIONS)
     this.model.compile(MODEL_OPTIONS);
   }
 
