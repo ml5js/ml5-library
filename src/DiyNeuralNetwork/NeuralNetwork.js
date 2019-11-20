@@ -86,8 +86,11 @@ class NeuralNetwork {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  predict() {
-
+  predict(_inputs) {
+    return tf.tidy( () => {
+      const output = this.model.predict(_inputs);
+      return output.arraySync();
+    })
   }
 
   // eslint-disable-next-line class-methods-use-this
