@@ -190,9 +190,42 @@ class NeuralNetworkData {
 
   }
 
+  /**
+   * addData
+   * nn.neuralNetworkData.addData([255, 0,0], ['red-ish'], {
+   * inputLabels:['r', 'g', 'b'], outputLabels:['label']
+   * })
+   * @param {*} xInputs 
+   * @param {*} yInputs 
+   * @param {*} options 
+   */
   // eslint-disable-next-line class-methods-use-this
-  addData() {
+  addData(xInputs, yInputs, options) {
+    const {inputLabels, outputLabels} = options;
 
+    function formatIncomingData(incoming, labels){
+      let result = {};
+      if (Array.isArray(incoming)) {
+        incoming.forEach((item, idx) => {
+          const label = labels[idx];
+          result[label] = item;
+        });
+        return result;
+      } else if (typeof xInputs === 'object') {
+        result = xInputs;
+        return result;
+      } 
+
+      throw new Error('input provided is not supported or does not match your output label specifications')
+    }
+
+    const inputs = formatIncomingData(xInputs, inputLabels);
+    const outputs = formatIncomingData(yInputs, outputLabels);
+
+    this.data.raw.push({
+      xs: inputs,
+      ys: outputs
+    });
   }
 
 
@@ -252,6 +285,9 @@ class NeuralNetworkData {
     }
     return true;
   }
+
+
+  
 
 
 }
