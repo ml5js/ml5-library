@@ -68,46 +68,66 @@ class NeuralNetworkData {
         json = await data.json();
       }
 
-      // Recurse through the json object to find 
-      // an array containing `entries` or `data`
-      const dataArray = this.findEntries(json);
+      // format the data.raw array
+      this.formatRawData(json, inputLabels, outputLabels);
 
-      if(!dataArray.length > 0){
-        console.log(`your data must be contained in an array in \n
-        a property called 'entries' or 'data' of your json object`);
-      }
-
-      this.data.raw = dataArray.map((item) => {
-
-        const output = {
-          xs: {},
-          ys: {}
-        }
-
-        // TODO: keep an eye on the order of the
-        // property name order if you use the order
-        // later on in the code!
-        const props = Object.keys(item);
-
-        props.forEach(prop => {
-          if (inputLabels.includes(prop)) {
-            output.xs[prop] = item[prop]
-          }
-
-          if (outputLabels.includes(prop)) {
-            output.ys[prop] = item[prop]
-            // convert ys into strings, if the task is classification
-            // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
-            //   output.ys[prop] += "";
-            // }
-          }
-        })
-
-        return output;
-      })
     } catch (err) {
       console.error("error loading json", err);
     }
+  }
+
+  /**
+   * formatRawData
+   * takes a json and set the this.data.raw
+   * @param {*} _json 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
+  formatRawData(_json, _inputLabelsArray, _outputLabelsArray) {
+    const outputLabels = _outputLabelsArray;
+    const inputLabels = _inputLabelsArray;
+    // Recurse through the json object to find 
+    // an array containing `entries` or `data`
+    const dataArray = this.findEntries(_json);
+
+    if (!dataArray.length > 0) {
+      console.log(`your data must be contained in an array in \n
+        a property called 'entries' or 'data' of your json object`);
+    }
+
+    // create an array of json objects [{xs,ys}]
+    const result = dataArray.map((item, idx) => {
+      const output = {
+        xs: {},
+        ys: {}
+      }
+
+      inputLabels.forEach(k => {
+        if(item[k] !== undefined){
+          output.xs[k] = item[k];
+        } else {
+          console.error(`the input label ${k} does not exist at row ${idx}`)
+        }
+      })
+
+      outputLabels.forEach(k => {
+        if(item[k] !== undefined){
+          output.ys[k] = item[k];
+          // TODO: convert ys into strings, if the task is classification
+          // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
+          //   output.ys[prop] += "";
+          // }
+        }else {
+          console.error(`the output label ${k} does not exist at row ${idx}`)
+        }
+      })
+
+      return output;
+    });
+
+    // set this.data.raw
+    this.data.raw = result;
+
   }
 
   /**
