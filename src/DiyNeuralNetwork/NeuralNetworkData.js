@@ -85,6 +85,7 @@ class NeuralNetworkData {
     meta.inputUnits = this.calculateInputUnitsFromData(meta.inputs, _dataRaw)
     meta.outputUnits = this.calculateInputUnitsFromData(meta.outputs, _dataRaw)
 
+    this.meta = {...meta};
     // outputs
     return meta;
 
