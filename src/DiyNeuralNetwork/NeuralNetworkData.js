@@ -5,7 +5,7 @@ import * as tf from '@tensorflow/tfjs';
 // import callCallback from '../utils/callcallback';
 
 class NeuralNetworkData {
-  constructor(){
+  constructor() {
     this.config = {
       dataUrl: null,
     }
@@ -15,13 +15,26 @@ class NeuralNetworkData {
 
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  normalizeData(){
-    
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  normalizeData(_input) {
+
   }
 
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  oneHotEncode(_input) {
+
+  }
+
+  /**
+   * loadCSV
+   * @param {*} _dataUrl 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
   // eslint-disable-next-line class-methods-use-this
-  async loadCSV(_dataUrl, _inputLabelsArray, _outputLabelsArray){
+  async loadCSV(_dataUrl, _inputLabelsArray, _outputLabelsArray) {
+    try {
       const path = _dataUrl;
       const myCsv = tf.data.csv(path);
       const loadedData = await myCsv.toArray();
@@ -29,93 +42,196 @@ class NeuralNetworkData {
         entries: loadedData
       }
       this.loadJSON(json, _inputLabelsArray, _outputLabelsArray);
+    } catch (err) {
+      console.error('error loading csv', err);
+    }
   }
 
+  /**
+   * loadJSON
+   * @param {*} _dataUrlOrJson 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
   // eslint-disable-next-line class-methods-use-this
-  async loadJSON(_dataUrlOrJson, _inputLabelsArray, _outputLabelsArray){
-    const outputLabels = _outputLabelsArray;
-    const inputLabels = _inputLabelsArray;
+  async loadJSON(_dataUrlOrJson, _inputLabelsArray, _outputLabelsArray) {
+    try {
+      const outputLabels = _outputLabelsArray;
+      const inputLabels = _inputLabelsArray;
 
-    let json;
-    // handle loading parsedJson
-    if (_dataUrlOrJson instanceof Object) {
-      json = _dataUrlOrJson;
-    } else {
-      const data = await fetch(_dataUrlOrJson);
-      json = await data.json();
-    }
-
-    // TODO: recurse through the object to find
-    // which object contains the
-    let parentProp;
-    if (Object.keys(json).includes('entries')) {
-      parentProp = 'entries'
-    } else if (Object.keys(json).includes('data')) {
-      parentProp = 'data'
-    } else {
-      console.log(`your data must be contained in an array in \n
-      a property called 'entries' or 'data'`);
-      return;
-    }
-
-    const dataArray = json[parentProp];
-
-    this.data.raw = dataArray.map((item) => {
-
-      const output = {
-        xs: {},
-        ys: {}
+      let json;
+      // handle loading parsedJson
+      if (_dataUrlOrJson instanceof Object) {
+        json = _dataUrlOrJson;
+      } else {
+        const data = await fetch(_dataUrlOrJson);
+        json = await data.json();
       }
-      // TODO: keep an eye on the order of the
-      // property name order if you use the order
-      // later on in the code!
-      const props = Object.keys(item);
 
-      props.forEach(prop => {
-        if (inputLabels.includes(prop)) {
-          output.xs[prop] = item[prop]
+      // Recurse through the json object to find 
+      // an array containing `entries` or `data`
+      const dataArray = this.findEntries(json);
+
+      if(!dataArray.length > 0){
+        console.log(`your data must be contained in an array in \n
+        a property called 'entries' or 'data' of your json object`);
+      }
+
+      this.data.raw = dataArray.map((item) => {
+
+        const output = {
+          xs: {},
+          ys: {}
         }
 
-        if (outputLabels.includes(prop)) {
-          output.ys[prop] = item[prop]
-          // convert ys into strings, if the task is classification
-          // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
-          //   output.ys[prop] += "";
-          // }
-        }
+        // TODO: keep an eye on the order of the
+        // property name order if you use the order
+        // later on in the code!
+        const props = Object.keys(item);
+
+        props.forEach(prop => {
+          if (inputLabels.includes(prop)) {
+            output.xs[prop] = item[prop]
+          }
+
+          if (outputLabels.includes(prop)) {
+            output.ys[prop] = item[prop]
+            // convert ys into strings, if the task is classification
+            // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
+            //   output.ys[prop] += "";
+            // }
+          }
+        })
+
+        return output;
       })
+    } catch (err) {
+      console.error("error loading json", err);
+    }
+  }
 
-      return output;
+  /**
+   * loadBlob
+   * @param {*} _dataUrlOrJson 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async loadBlob(_dataUrlOrJson, _inputLabelsArray, _outputLabelsArray) {
+    try {
+      const data = await fetch(_dataUrlOrJson);
+      const text = await data.text();
+
+      if (this.isJsonOrString(text)) {
+        const json = JSON.parse(text);
+        await this.loadJSON(json, _inputLabelsArray, _outputLabelsArray);
+      } else {
+        const json = this.csvToJSON(text);
+        await this.loadJSON(json, _inputLabelsArray, _outputLabelsArray);
+      }
+
+    } catch (err) {
+      console.log('mmm might be passing in a string or something!', err)
+    }
+  }
+
+  /**
+   * csvToJSON
+   * Creates a csv from a string
+   * @param {*} csv
+   */
+  // via: http://techslides.com/convert-csv-to-json-in-javascript
+  // eslint-disable-next-line class-methods-use-this
+  csvToJSON(csv) {
+    // split the string by linebreak
+    const lines = csv.split("\n");
+    const result = [];
+    // get the header row as an array
+    const headers = lines[0].split(",");
+
+    // iterate through every row
+    for (let i = 1; i < lines.length; i += 1) {
+      // create a json object for each row
+      const row = {};
+      // split the current line into an array
+      const currentline = lines[i].split(",");
+
+      // for each header, create a key/value pair 
+      headers.forEach((k, idx) => {
+        row[k] = currentline[idx]
+      });
+      // add this to the result array
+      result.push(row);
+    }
+
+    return {
+      entries: result
+    }
+
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  addData() {
+
+  }
+
+
+  // eslint-disable-next-line class-methods-use-this
+  saveData() {
+
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  loadData() {
+
+  }
+
+  /*
+   * helper functions 
+   * **************** 
+   */
+
+  /**
+   * findEntries
+   * recursively attempt to find the entries
+   * or data array for the given json object
+   * @param {*} _data 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  findEntries(_data) {
+
+    const parentCopy = Object.assign({}, _data);
+
+    if (parentCopy.entries && parentCopy.entries instanceof Array) {
+      return parentCopy.entries
+    } else if (parentCopy.data && parentCopy.data instanceof Array) {
+      return parentCopy.data
+    }
+
+    const keys = Object.keys(parentCopy);
+    // eslint-disable-next-line consistent-return
+    keys.forEach(k => {
+      if (typeof parentCopy[k] === 'object') {
+        return this.findEntries(parentCopy[k])
+      }
     })
+
+    return parentCopy;
   }
 
+  /**
+   * checks whether or not a string is a json
+   * @param {*} str
+   */
   // eslint-disable-next-line class-methods-use-this
-  loadBlob(){
-
+  isJsonOrString(str) {
+    try {
+      JSON.parse(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
   }
-
-  // eslint-disable-next-line class-methods-use-this
-  csvToJSON(){
-    
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  addData(){
-    
-  }
-
-
-  // eslint-disable-next-line class-methods-use-this
-  saveData(){
-
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  loadData(){
-    
-  }
-
-
 
 
 }
