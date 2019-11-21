@@ -9,6 +9,17 @@ class NeuralNetworkData {
     this.config = {
       dataUrl: null,
     }
+
+    this.meta = {
+      // number of units - varies depending on input data type
+      inputUnits: null,
+      outputUnits: null,
+      // objects describing input/output data by property name
+      inputs: {}, // { name1: {dtype}, name2: {dtype}  }
+      outputs: {}, // { name1: {dtype} }
+      isNormalized: false,
+    }
+
     this.data = {
       raw: []
     }
@@ -22,8 +33,143 @@ class NeuralNetworkData {
   }
 
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  oneHotEncode(_input) {
+  convertRawToTensors() {
 
+  }
+
+  /**
+   * Returns a legend mapping the 
+   * data values to oneHot encoded values
+   */
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  createOneHotEncodings(_uniqueValuesArray) {
+    return tf.tidy(() => {
+      const output = {
+        uniqueValues: _uniqueValuesArray,
+        legend: {}
+      }
+
+      const uniqueVals = _uniqueValuesArray // [...new Set(this.data.raw.map(obj => obj.xs[prop]))]
+      // get back values from 0 to the length of the uniqueVals array
+      const onehotValues = uniqueVals.map((item, idx) => idx);
+      // oneHot encode the values in the 1d tensor
+      const oneHotEncodedValues = tf.oneHot(tf.tensor1d(onehotValues, 'int32'), uniqueVals.length);
+      // convert them from tensors back out to an array
+      const oneHotEncodedValuesArray = oneHotEncodedValues.arraySync();
+
+      // populate the legend with the key/values
+      uniqueVals.forEach((uVal, uIdx) => {
+        output.legend[uVal] = oneHotEncodedValuesArray[uIdx]
+      });
+
+      return output
+    })
+  }
+
+  /**
+   * 
+   */
+  createDataMetaData(_dataRaw) {
+    // get dtypes
+    const meta = this.getDTypesFromData(_dataRaw);
+    meta.inputs = this.getOneHotMeta(meta.inputs, _dataRaw, 'xs');
+    meta.outputs = this.getOneHotMeta(meta.outputs, _dataRaw, 'ys');
+    meta.inputUnits = this.calculateInputUnitsFromData(meta.inputs, _dataRaw)
+    meta.outputUnits = this.calculateInputUnitsFromData(meta.outputs, _dataRaw)
+
+    // outputs
+    return meta;
+
+  }
+
+  /**
+   * getOneHotMeta
+   * @param {*} _inputsMeta 
+   * @param {*} _dataRaw 
+   * @param {*} xsOrYs 
+   */
+  getOneHotMeta(_inputsMeta, _dataRaw, xsOrYs) {
+
+    const inputsMeta = Object.assign({}, _inputsMeta);
+
+    Object.entries(inputsMeta).forEach(arr => {
+      const key = arr[0];
+      const {
+        dtype
+      } = arr[1];
+
+      if (dtype === 'string') {
+        const uniqueVals = [...new Set(_dataRaw.map(obj => obj[xsOrYs][key]))]
+        const oneHotMeta = this.createOneHotEncodings(uniqueVals);
+        inputsMeta[key] = {
+          ...inputsMeta[key],
+          ...oneHotMeta
+        }
+      }
+    })
+
+    return inputsMeta;
+  }
+
+
+  /**
+   * calculateInputUnitsFromData
+   * @param {*} _inputsMeta 
+   * @param {*} _dataRaw 
+   */
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  calculateInputUnitsFromData(_inputsMeta, _dataRaw) {
+    let units = 0;
+
+    const inputsMeta = Object.assign({}, _inputsMeta);
+
+    Object.entries(inputsMeta).forEach(arr => {
+      const {dtype} = arr[1];
+      if(dtype === 'number'){
+        units += 1;
+      } else if (dtype === 'string'){
+        const uniqueCount = arr[1].uniqueValues.length;
+        units += uniqueCount
+      }
+    })
+
+    return units;
+  }
+
+  /**
+   * getDTypesFromData
+   * gets the data types of the data we're using
+   * important for handling oneHot
+   */
+
+  // eslint-disable-next-line class-methods-use-this
+  getDTypesFromData(_dataRaw) {
+    const meta = {
+      inputs: {},
+      outputs: {}
+    }
+
+    // TODO: check if all entries have the
+    // same dtype.
+    // for now assume that the first row of 
+    // data represents the dtype for all
+    const sample = _dataRaw[0];
+    const xs = Object.keys(sample.xs);
+    const ys = Object.keys(sample.ys);
+
+    xs.forEach((prop) => {
+      meta.inputs[prop] = {
+        dtype: typeof sample.xs[prop]
+      }
+    });
+
+    ys.forEach((prop) => {
+      meta.outputs[prop] = {
+        dtype: typeof sample.ys[prop]
+      }
+    });
+
+    return meta;
   }
 
   /**
@@ -103,7 +249,7 @@ class NeuralNetworkData {
       }
 
       inputLabels.forEach(k => {
-        if(item[k] !== undefined){
+        if (item[k] !== undefined) {
           output.xs[k] = item[k];
         } else {
           console.error(`the input label ${k} does not exist at row ${idx}`)
@@ -111,13 +257,13 @@ class NeuralNetworkData {
       })
 
       outputLabels.forEach(k => {
-        if(item[k] !== undefined){
+        if (item[k] !== undefined) {
           output.ys[k] = item[k];
           // TODO: convert ys into strings, if the task is classification
           // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
           //   output.ys[prop] += "";
           // }
-        }else {
+        } else {
           console.error(`the output label ${k} does not exist at row ${idx}`)
         }
       })
@@ -201,9 +347,12 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line class-methods-use-this
   addData(xInputs, yInputs, options) {
-    const {inputLabels, outputLabels} = options;
+    const {
+      inputLabels,
+      outputLabels
+    } = options;
 
-    function formatIncomingData(incoming, labels){
+    function formatIncomingData(incoming, labels) {
       let result = {};
       if (Array.isArray(incoming)) {
         incoming.forEach((item, idx) => {
@@ -214,7 +363,7 @@ class NeuralNetworkData {
       } else if (typeof xInputs === 'object') {
         result = xInputs;
         return result;
-      } 
+      }
 
       throw new Error('input provided is not supported or does not match your output label specifications')
     }
@@ -295,7 +444,7 @@ class NeuralNetworkData {
   }
 
 
-  
+
 
 
 }
