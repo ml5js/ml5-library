@@ -67,7 +67,15 @@ class NeuralNetworkData {
   }
 
   /**
-   * 
+   * createDataMetaData
+   * returns an object with:
+    * {
+    *  inputUnits: Number
+    *  outputUnits: Number
+    *  inputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
+    *  outputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
+    * }
+   * @param {*} _dataRaw 
    */
   createDataMetaData(_dataRaw) {
     // get dtypes
