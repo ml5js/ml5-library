@@ -13,7 +13,7 @@ class NeuralNetworkData {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  loadCsv(){
+  loadCSV(){
 
   }
 

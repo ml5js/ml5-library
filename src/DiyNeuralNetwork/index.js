@@ -13,7 +13,7 @@ class DiyNeuralNetwork{
     
   }
 
-  
+
 
   /**
    * train
@@ -30,15 +30,7 @@ class DiyNeuralNetwork{
    * @param {*} _options 
    */
   compile(_options){
-    const DEFAULT_LEARNING_RATE = 0.2;
-    const options = Object.assign({}, {
-      loss: 'categoricalCrossentropy',
-      optimizer: tf.train.sgd(DEFAULT_LEARNING_RATE), 
-      metrics: ['accuracy'],
-      ..._options
-    })
-
-    this.neuralNetwork.compile(options);
+    this.neuralNetwork.compile(_options);
   }
 
 
