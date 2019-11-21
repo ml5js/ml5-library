@@ -49,9 +49,28 @@ class NeuralNetwork {
    * @param {*} _trainingOptions 
    */
   compile(_modelOptions) {
-    const MODEL_OPTIONS = _modelOptions;
-    console.log(MODEL_OPTIONS)
-    this.model.compile(MODEL_OPTIONS);
+    const DEFAULT_LEARNING_RATE = 0.2;
+    
+    const options = Object.assign({}, {
+      loss: 'categoricalCrossentropy',
+      metrics: ['accuracy'],
+      ..._modelOptions
+    })
+
+    options.optimizer = options.optimizer ? 
+    NeuralNetwork.setOptimizerFunction(DEFAULT_LEARNING_RATE, options.optimizer) : 
+    NeuralNetwork.setOptimizerFunction(DEFAULT_LEARNING_RATE, tf.train.sgd) 
+
+    this.model.compile(options);
+  }
+
+  /**
+   * 
+   * @param {*} learningRate 
+   * @param {*} optimizer 
+   */
+  static setOptimizerFunction(learningRate, optimizer){
+    return optimizer.call(this, learningRate);
   }
 
   /**
@@ -69,8 +88,10 @@ class NeuralNetwork {
    */
   async trainInternal(_options) {
     const TRAINING_OPTIONS = _options;
+
     const xs = TRAINING_OPTIONS.inputs;
     const ys = TRAINING_OPTIONS.outputs;
+    
     const {
       batchSize,
       epochs,
