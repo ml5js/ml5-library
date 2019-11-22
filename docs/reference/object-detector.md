@@ -1,4 +1,4 @@
-# YOLO
+# Object Detector
 
 
 <center>
