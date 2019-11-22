@@ -8,25 +8,15 @@
 
 ## Description
 
-Note: the YOLO module is being deprecated, please refer to the [ObjectDetector](object-detector.md) module.
-
-You only look once ([YOLO](https://pjreddie.com/darknet/yolo/)) is a state-of-the-art, real-time object detection system.
-
-From the [creators](https://pjreddie.com/darknet/yolo/) website:
-
-*Prior detection systems repurpose classifiers or localizers to perform detection. They apply the model to an image at multiple locations and scales. High scoring regions of the image are considered detections.*
-
-*We use a totally different approach. We apply a single neural network to the full image. This network divides the image into regions and predicts bounding boxes and probabilities for each region. These bounding boxes are weighted by the predicted probabilities. [Source](https://pjreddie.com/darknet/yolo/)*
-
-This implementation is heavily derived from [ModelDepot](https://github.com/ModelDepot/tfjs-yolo-tiny).
+Real-time object detection system using either [YOLO](https://pjreddie.com/darknet/yolo/) or [CocoSsd](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd) model.
 
 ## Quickstart
 
 ```js
 const video = document.getElementById("video");
 
-// Create a YOLO method
-const yolo = ml5.YOLO(video, modelLoaded);
+// Create a ObjectDetector method
+const objectDetector = ml5.ObjectDetector('cocossd', {}, modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
@@ -34,7 +24,7 @@ function modelLoaded() {
 }
 
 // Detect objects in the video element
-yolo.detect(function(err, results) {
+yolo.detect(video, function(err, results) {
   console.log(results); // Will output bounding boxes of detected objects
 });
 ```
@@ -45,35 +35,15 @@ yolo.detect(function(err, results) {
 ### Initialize
 
 ```js
-const yolo = ml5.YOLO();
+const objectDetector = ml5.ObjectDetector(modelNameOrUrl);
 // OR
-const yolo = ml5.YOLO(video);
-// OR
-const yolo = ml5.YOLO(video, ?options, ?callback)
-// OR
-const yolo = ml5.YOLO(?options, ?callback)
+const objectDetector = ml5.ObjectDetector(modelNameOrUrl, ?options, ?callback)
 ```
 
 #### Parameters
-* **video**: Optional. A HTML video element or a p5 video element.
-* **options**: Optional. An object describing a model accuracy and performance. For MobileNet this are: `{ filterBoxesThreshold: 0.01, IOUThreshold: 0.4, classProbThreshold: 0.4 }`
+* **modelNameOrUrl**: A String value of a valid model OR a url to a `model.json` that contains a pre-trained model. Models available are: ['cocossd'](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd), ['yolo'](https://pjreddie.com/darknet/yolo/)
+* **options**: Optional. An object describing a model accuracy and performance. For YOLO this are: `{ filterBoxesThreshold: 0.01, IOUThreshold: 0.4, classProbThreshold: 0.4 }`
 * **callback**: Optional. A function to run once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
-
-
-### Properties
-
-
-***
-#### .isPredicting
-> *Boolean*. Boolean to check if the model is currently predicting
-***
-
-
-***
-#### .modelReady
-> *Object*. Boolean to check if the model has loaded
-***
-
 
 ### Methods
 
@@ -83,9 +53,7 @@ const yolo = ml5.YOLO(?options, ?callback)
 > Given an image or video, returns an array of objects containing class names, bounding boxes and probabilities.
 
 ```js
-yolo.detect(input, ?callback)
-// OR
-yolo.detect(?callback)
+objectDetector.detect(input, ?callback)
 ```
 
 📥 **Inputs**
@@ -104,8 +72,9 @@ yolo.detect(?callback)
 
 
 **p5.js**
-* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_single_image)
-* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/YOLO/YOLO_webcam)
+* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/YOLO_single_image)
+* [YOLO_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/YOLO_Video)
+* [COCOSSD_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/COCOSSD_Video)
 
 **p5 web editor**
 * [YOLO_single_image](https://editor.p5js.org/ml5/sketches/YOLO_single_image)
@@ -133,4 +102,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/development/src/YOLO)
+* [/src/ObjectDetector](https://github.com/ml5js/ml5-library/tree/development/src/ObjectDetector)
