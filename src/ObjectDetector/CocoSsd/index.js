@@ -67,10 +67,10 @@ class CocoSsdBase {
             return {
                 label: prediction.class,
                 confidence: prediction.score,
-                x: prediction.bbox[0],
-                y: prediction.bbox[1],
-                w: prediction.bbox[2],
-                h: prediction.bbox[3],
+                x: prediction.bbox[0] / imgToPredict.width,
+                y: prediction.bbox[1] / imgToPredict.height,
+                w: prediction.bbox[2] / imgToPredict.width,
+                h: prediction.bbox[3] / imgToPredict.height,
             }
         })
 
