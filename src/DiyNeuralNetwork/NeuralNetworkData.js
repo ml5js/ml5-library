@@ -34,7 +34,40 @@ class NeuralNetworkData {
 
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
   convertRawToTensors() {
+    return tf.tidy(() => {
 
+      const inputArr = [];
+      const outputArr = [];
+
+      this.data.raw.forEach(row => {
+        // get xs
+        // const xs = ['r', 'g', 'b'].map(k => row.xs[k]);
+        const xs = Object.keys(this.meta.inputs).map(k => {
+          if (this.meta.inputs[k].legend) {
+            return this.meta.inputs[k].legend[row.xs[k]]
+          }
+          return row.xs[k]
+        });
+        inputArr.push(...xs)
+
+        // get ys
+        const ys = Object.keys(this.meta.outputs).map(k => {
+          if (this.meta.outputs[k].legend) {
+            return this.meta.outputs[k].legend[row.ys[k]]
+          }
+          return row.ys[k]
+        })
+        outputArr.push(...ys)
+
+      })
+      const inputs = tf.tensor(inputArr, [this.data.raw.length, this.meta.inputUnits])
+      const outputs = tf.tensor(outputArr, [this.data.raw.length, this.meta.outputUnits])
+
+      return {
+        inputs,
+        outputs
+      };
+    })
   }
 
   /**
@@ -69,12 +102,12 @@ class NeuralNetworkData {
   /**
    * createMetaDataFromData
    * returns an object with:
-    * {
-    *  inputUnits: Number
-    *  outputUnits: Number
-    *  inputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
-    *  outputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
-    * }
+   * {
+   *  inputUnits: Number
+   *  outputUnits: Number
+   *  inputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
+   *  outputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
+   * }
    * @param {*} _dataRaw 
    */
   createMetaDataFromData(_dataRaw) {
@@ -85,7 +118,9 @@ class NeuralNetworkData {
     meta.inputUnits = this.calculateInputUnitsFromData(meta.inputs, _dataRaw)
     meta.outputUnits = this.calculateInputUnitsFromData(meta.outputs, _dataRaw)
 
-    this.meta = {...meta};
+    this.meta = {
+      ...meta
+    };
     // outputs
     return meta;
 
@@ -133,10 +168,12 @@ class NeuralNetworkData {
     const inputsMeta = Object.assign({}, _inputsMeta);
 
     Object.entries(inputsMeta).forEach(arr => {
-      const {dtype} = arr[1];
-      if(dtype === 'number'){
+      const {
+        dtype
+      } = arr[1];
+      if (dtype === 'number') {
         units += 1;
-      } else if (dtype === 'string'){
+      } else if (dtype === 'string') {
         const uniqueCount = arr[1].uniqueValues.length;
         units += uniqueCount
       }
