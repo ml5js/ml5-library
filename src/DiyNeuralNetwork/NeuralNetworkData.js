@@ -67,7 +67,7 @@ class NeuralNetworkData {
   }
 
   /**
-   * createDataMetaData
+   * createMetaDataFromData
    * returns an object with:
     * {
     *  inputUnits: Number
@@ -77,7 +77,7 @@ class NeuralNetworkData {
     * }
    * @param {*} _dataRaw 
    */
-  createDataMetaData(_dataRaw) {
+  createMetaDataFromData(_dataRaw) {
     // get dtypes
     const meta = this.getDTypesFromData(_dataRaw);
     meta.inputs = this.getOneHotMeta(meta.inputs, _dataRaw, 'xs');
