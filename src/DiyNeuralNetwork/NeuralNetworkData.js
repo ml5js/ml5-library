@@ -51,31 +51,98 @@ class NeuralNetworkData {
   }
 
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  zipArrays(arr1, arr2){
+    if(arr1.length !== arr2.length){
+      console.error('arrays do not have the same length')
+      return [];
+    }
+
+    const output = [...new Array(arr1.length).fill(null)].map( (item, idx) => {
+      return {...arr1[idx], ...arr2[idx] }
+    })
+
+    return output;
+
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
   normalizeRaws(dataRaw, inputOrOutputMeta, xsOrYs){
-    
+    const meta = Object.assign({}, inputOrOutputMeta);
+    const dataLength = dataRaw.length;
+
+    const normalized = {};
+    Object.keys(meta).forEach(k => {
+      const dataAsArray = this.arrayFromLabel(dataRaw, xsOrYs, k);
+      const options = {min:meta[k].min, max:meta[k].max}
+      if (meta[k].legend) options.legend = meta[k].legend;
+
+      normalized[k] = this.normalizeArray(dataAsArray, options);
+    });
+
+    const output = [...new Array(dataLength).fill(null)].map( (item, idx) => {
+      const row = {[xsOrYs]: {}};
+      Object.keys(meta).forEach(k => {
+        row[xsOrYs][k] = normalized[k][idx];
+      });
+      return row;
+    })
+
+    return output;
   }
   
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   normalizeArray(_input, _options) {
-    if( !_input.every(v => typeof v === 'number') ) {
-      console.error({err:'not a numeric array'})
-      return [];
-    }
     const {min, max} = _options;
     const inputArray = [..._input];
-    const normalized = inputArray.map(v => ( v - min ) / (max -  min) )
+    let normalized;
+
+    if( !_input.every(v => typeof v === 'number') ) {
+      console.log({err:'not a numeric array, returning given value'})
+
+      // if the data are onehot encoded, replace the string
+      // value with the onehot array
+      if(_options.legend){
+        normalized = inputArray.map(v => _options.legend[v]);
+        return normalized
+      }
+
+      return inputArray;
+    }
+    
+    normalized = inputArray.map(v => ( v - min ) / (max -  min) )
     return normalized;
   }
 
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   unNormalizeArray(_input, _options) {
-    if( !_input.every(v => typeof v === 'number') ) {
-      console.error({err:'not a numeric array'})
-      return [];
-    }
     const {min, max} = _options;
     const inputArray = [..._input];
-    const unNormalized = inputArray.map(v => (  (v  * (max -  min)) + min ) )
+    let unNormalized;
+
+    if( !_input.every(v => typeof v === 'number') ) {
+      console.log({err:'not a numeric array, returning given value'})
+
+      if(_options.legend){
+        console.log("yes!")
+        unNormalized = inputArray.map(v => {
+          let res;
+          Object.entries(_options.legend).forEach(item => {
+            const key = item[0];
+            const val = item[1];
+            const matches = v.map( (num, idx) => num === val[idx]).every( truthy => truthy === true );
+            if(matches) res = key;
+          })
+          return res;
+        })
+        
+        // unNormalized = inputArray.map(v => _options.legend[v]);
+        return unNormalized
+      }
+
+      return inputArray;
+    }
+    
+    unNormalized = inputArray.map(v => (  (v  * (max -  min)) + min ) )
     return unNormalized;
   }
 
@@ -127,35 +194,38 @@ class NeuralNetworkData {
 
 
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  convertRawToTensors() {
+  convertRawToTensors(_dataRaw = null, meta) {
+    const dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
+    const dataLength = dataRaw.length;
+
     return tf.tidy(() => {
 
       const inputArr = [];
       const outputArr = [];
 
-      this.data.raw.forEach(row => {
+      dataRaw.forEach(row => {
         // get xs
         // const xs = ['r', 'g', 'b'].map(k => row.xs[k]);
-        const xs = Object.keys(this.meta.inputs).map(k => {
-          if (this.meta.inputs[k].legend) {
-            return this.meta.inputs[k].legend[row.xs[k]]
-          }
+        const xs = Object.keys(meta.inputs).map(k => {
+          // if (meta.inputs[k].legend) {
+          //   return meta.inputs[k].legend[row.xs[k]]
+          // }
           return row.xs[k]
         });
         inputArr.push(...xs)
 
         // get ys
-        const ys = Object.keys(this.meta.outputs).map(k => {
-          if (this.meta.outputs[k].legend) {
-            return this.meta.outputs[k].legend[row.ys[k]]
-          }
+        const ys = Object.keys(meta.outputs).map(k => {
+          // if (meta.outputs[k].legend) {
+          //   return meta.outputs[k].legend[row.ys[k]]
+          // }
           return row.ys[k]
         })
         outputArr.push(...ys)
 
       })
-      const inputs = tf.tensor(inputArr, [this.data.raw.length, this.meta.inputUnits])
-      const outputs = tf.tensor(outputArr, [this.data.raw.length, this.meta.outputUnits])
+      const inputs = tf.tensor(inputArr, [dataLength, meta.inputUnits])
+      const outputs = tf.tensor(outputArr, [dataLength, meta.outputUnits])
 
       return {
         inputs,
