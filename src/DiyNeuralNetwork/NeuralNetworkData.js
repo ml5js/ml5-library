@@ -193,6 +193,12 @@ class NeuralNetworkData {
 
 
 
+  /**
+   * convertRawToTensors
+   * converts array of {xs, ys} to tensors
+   * @param {*} _dataRaw 
+   * @param {*} meta 
+   */
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
   convertRawToTensors(_dataRaw = null, meta) {
     const dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;

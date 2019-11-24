@@ -13,6 +13,11 @@ class DiyNeuralNetwork{
     
   }
 
+  summarizeData(){
+    const {data, meta} = this.neuralNetworkData;
+    meta.inputs = this.neuralNetworkData.getRawStats(data.raw, meta.inputs, 'xs');
+    meta.outputs = this.neuralNetworkData.getRawStats(data.raw, meta.outputs, 'ys');
+  }
 
 
   /**
