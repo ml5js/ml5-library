@@ -13,10 +13,29 @@ class DiyNeuralNetwork{
     
   }
 
+  /**
+   * summarizeData
+   * adds min and max to the meta of each input and output property
+   */
   summarizeData(){
     const {data, meta} = this.neuralNetworkData;
     meta.inputs = this.neuralNetworkData.getRawStats(data.raw, meta.inputs, 'xs');
     meta.outputs = this.neuralNetworkData.getRawStats(data.raw, meta.outputs, 'ys');
+  }
+
+  /**
+   * normalizeData
+   * @param {*} _dataRaw 
+   * @param {*} _meta 
+   */
+  normalizeData(_dataRaw = null, _meta = null){
+    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+    const normalizedInputs  = this.neuralNetworkData.normalizeRaws(dataRaw, meta.inputs, 'xs');
+    const normalizedOutputs  = this.neuralNetworkData.normalizeRaws(dataRaw, meta.outputs, 'ys');
+    const trainingData = this.neuralNetworkData.zipArrays(normalizedInputs, normalizedOutputs)
+
+    return trainingData
   }
 
 
