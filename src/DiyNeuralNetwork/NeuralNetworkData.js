@@ -21,16 +21,110 @@ class NeuralNetworkData {
     }
 
     this.data = {
-      raw: []
+      raw: [], // array of {xs:{}, ys:{}}
     }
 
   }
 
 
+  /**
+   * normalizeTensor
+   * converts a tensor with data to normalized values ranging from 0-1.
+   * @param {*} _input 
+   * @param {*} _options 
+   */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  normalizeData(_input) {
+  normalizeTensor(_input, _options) {
 
   }
+
+  /**
+   * unNormalizeTensor
+   * converts a normalized tensor from 0 to 1 back to the "natural" units
+   * @param {*} _input 
+   * @param {*} _options 
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  unNormalizeTensor(_input, _options) {
+
+
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  normalizeRaws(dataRaw, inputOrOutputMeta, xsOrYs){
+    
+  }
+  
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  normalizeArray(_input, _options) {
+    if( !_input.every(v => typeof v === 'number') ) {
+      console.error({err:'not a numeric array'})
+      return [];
+    }
+    const {min, max} = _options;
+    const inputArray = [..._input];
+    const normalized = inputArray.map(v => ( v - min ) / (max -  min) )
+    return normalized;
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  unNormalizeArray(_input, _options) {
+    if( !_input.every(v => typeof v === 'number') ) {
+      console.error({err:'not a numeric array'})
+      return [];
+    }
+    const {min, max} = _options;
+    const inputArray = [..._input];
+    const unNormalized = inputArray.map(v => (  (v  * (max -  min)) + min ) )
+    return unNormalized;
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  getMin(_array){
+    return Math.min(..._array)
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  getMax(_array){
+    return Math.max(..._array)
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  arrayFromLabel( dataRaw, xsOrYs, label){
+    return dataRaw.map( item =>  item[xsOrYs][label]);
+  }
+
+  /**
+   * getRawStats
+   * get back the min and max of each label
+   * @param {*} dataRaw 
+   * @param {*} inputOrOutputMeta 
+   * @param {*} xsOrYs 
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  getRawStats(dataRaw, inputOrOutputMeta, xsOrYs){
+    const meta = Object.assign({}, inputOrOutputMeta);
+    
+    Object.keys(meta).forEach(k => {
+      const dataAsArray = this.arrayFromLabel(dataRaw, xsOrYs, k);
+      if(meta[k].dtype !== 'number'){
+        meta[k].min = 0;
+        meta[k].max = 1;
+      } else {
+        meta[k].min = this.getMin(dataAsArray);
+        meta[k].max = this.getMax(dataAsArray);
+      }
+    });
+    
+    return meta;
+  }
+
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  getTensorStats(){
+
+  }
+
+
 
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
   convertRawToTensors() {
