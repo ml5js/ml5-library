@@ -157,6 +157,7 @@ class NeuralNetwork {
     })
     const result = await output.array();
     output.dispose();
+    _inputs.dispose();
 
     return result;
 
@@ -169,6 +170,7 @@ class NeuralNetwork {
     })
     const result = await output.array();
     output.dispose();
+    _inputs.dispose();
     return result;
   }
 
