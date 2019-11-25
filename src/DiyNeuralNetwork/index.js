@@ -10,6 +10,10 @@ class DiyNeuralNetwork{
 
     this.neuralNetwork = new NeuralNetwork();
     this.neuralNetworkData = new NeuralNetworkData();
+
+    this.data = {
+      training: []
+    }
     
   }
 
@@ -17,14 +21,51 @@ class DiyNeuralNetwork{
    * summarizeData
    * adds min and max to the meta of each input and output property
    */
-  summarizeData(){
-    const {data, meta} = this.neuralNetworkData;
-    const inputMeta = this.neuralNetworkData.getRawStats(data.raw, meta.inputs, 'xs');
-    const outputMeta = this.neuralNetworkData.getRawStats(data.raw, meta.outputs, 'ys');
+  summarizeData(_dataRaw = null, _meta = null){
+    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+    
+    const inputMeta = this.neuralNetworkData.getRawStats(dataRaw, meta.inputs, 'xs');
+    const outputMeta = this.neuralNetworkData.getRawStats(dataRaw, meta.outputs, 'ys');
 
     this.neuralNetworkData.meta.inputs = inputMeta;
     this.neuralNetworkData.meta.outputs = outputMeta;
 
+    return this.neuralNetworkData.meta;
+  }
+
+  /**
+   * warmUp
+   * @param {*} _dataRaw 
+   * @param {*} _meta 
+   */
+  warmUp(_dataRaw = null, _meta = null){
+    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+
+    // summarize data
+    const updatedMeta = this.summarizeData(dataRaw, meta);
+    // apply one hot encodings
+    const encodedData = this.neuralNetworkData.applyOneHotEncodingsToDataRaw(dataRaw, meta);
+
+
+    // set this equal to the training data
+    this.data.training = encodedData;
+
+    return {meta:updatedMeta, data:{raw:encodedData} }
+  }
+
+
+  /**
+   * convertTrainingDataToTensors
+   * @param {*} _trainingData 
+   * @param {*} _meta 
+   */
+  convertTrainingDataToTensors(_trainingData = null, _meta = null){
+    const trainingData = _trainingData === null ? this.data.training : _trainingData;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+
+    return this.neuralNetworkData.convertRawToTensors(trainingData, meta);
   }
 
   /**
@@ -35,11 +76,15 @@ class DiyNeuralNetwork{
   normalizeData(_dataRaw = null, _meta = null){
     const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
     const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+
     const normalizedInputs  = this.neuralNetworkData.normalizeRaws(dataRaw, meta.inputs, 'xs');
     const normalizedOutputs  = this.neuralNetworkData.normalizeRaws(dataRaw, meta.outputs, 'ys');
     const trainingData = this.neuralNetworkData.zipArrays(normalizedInputs, normalizedOutputs)
 
-    return trainingData
+    // set this equal to the training data
+    this.data.training = trainingData;
+
+    return trainingData;
   }
 
 
@@ -49,7 +94,16 @@ class DiyNeuralNetwork{
    * @param {*} _cb 
    */
   train(_options, _cb){
-    this.neuralNetwork.train(_options, _cb);
+    
+    const options = {..._options};
+
+    if(!options.inputs && !options.outputs){
+      const {inputs, outputs} = this.convertTrainingDataToTensors(); 
+      options.inputs = inputs;
+      options.outputs = outputs;
+    }
+    
+    this.neuralNetwork.train(options, _cb);
   }
 
 

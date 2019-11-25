@@ -49,7 +49,7 @@ class NeuralNetwork {
    * @param {*} _trainingOptions 
    */
   compile(_modelOptions) {
-    const DEFAULT_LEARNING_RATE = 0.2;
+    const DEFAULT_LEARNING_RATE = 0.25;
     
     const options = Object.assign({}, {
       loss: 'categoricalCrossentropy',
@@ -96,6 +96,7 @@ class NeuralNetwork {
       batchSize,
       epochs,
       shuffle,
+      validationSplit,
       whileTraining
     } = TRAINING_OPTIONS;
 
@@ -103,10 +104,14 @@ class NeuralNetwork {
       batchSize,
       epochs,
       shuffle,
+      validationSplit,
       callbacks: [{
         onEpochEnd: whileTraining
       }]
     })
+
+    xs.dispose();
+    ys.dispose();
   }
 
   /**
