@@ -8,6 +8,8 @@
 
 ## Description
 
+Note: the YOLO module is being deprecated, please refer to the [ObjectDetector](object-detector.md) module.
+
 You only look once ([YOLO](https://pjreddie.com/darknet/yolo/)) is a state-of-the-art, real-time object detection system.
 
 From the [creators](https://pjreddie.com/darknet/yolo/) website:
