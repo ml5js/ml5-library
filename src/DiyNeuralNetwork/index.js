@@ -25,7 +25,6 @@ class DiyNeuralNetwork {
       training: []
     }
 
-
     this.ready = false;
     this.init(this.callback);
 
@@ -90,6 +89,7 @@ class DiyNeuralNetwork {
 
     const meta = this.neuralNetworkData.createMetaDataFromData(dataRaw)
     this.neuralNetworkData.meta = meta;
+    this.neuralNetworkData.isMetadataReady = true;
     return meta;
   }
 
@@ -129,6 +129,7 @@ class DiyNeuralNetwork {
 
     // set this equal to the training data
     this.data.training = encodedData;
+    this.neuralNetworkData.isWarmedUp = true;
 
     return {
       meta: updatedMeta,
@@ -207,13 +208,11 @@ class DiyNeuralNetwork {
    * @param {*} _cb 
    */
   trainInternal(_options, whileTrainingCb, finishedTrainingCb) {
-
     const options = {
       epochs: 10,
       batchSize: 32,
       validationSplit: 0.1,
       whileTraining: null,
-      compile: true,
       ..._options
     };
 
@@ -221,6 +220,16 @@ class DiyNeuralNetwork {
       (epoch, loss) => {
         console.log(epoch, loss.loss)
       } : whileTrainingCb;
+
+    // if metadata needs to be generated about the data
+    if (!this.neuralNetworkData.isMetadataReady) {
+      this.createMetaDataFromData();
+    }
+
+    // if the data still need to be summarized, onehotencoded, etc
+    if (!this.neuralNetworkData.isWarmedUp) {
+      this.warmUp();
+    }
 
     // if inputs and outputs are not specified
     // in the options, then create the tensors
@@ -240,7 +249,7 @@ class DiyNeuralNetwork {
       this.addDefaultLayers(this.options.task);
     }
 
-    if (options.compile) {
+    if (!this.neuralNetwork.isCompiled) {
       // compile the model with defaults
       this.compile()
     }

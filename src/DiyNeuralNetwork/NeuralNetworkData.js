@@ -20,6 +20,10 @@ class NeuralNetworkData {
       isNormalized: false,
     }
 
+    this.isMetadataReady = false;
+    this.isWarmedUp = false;
+
+
     this.data = {
       raw: [], // array of {xs:{}, ys:{}}
     }
