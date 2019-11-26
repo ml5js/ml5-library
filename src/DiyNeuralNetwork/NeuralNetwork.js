@@ -8,9 +8,18 @@ class NeuralNetwork {
     const options = _options || {};
     // config
     this.config = options;
+
     this.isTrained = false;
+    this.isCompiled = false;
+    this.isLayered = false;
+
     this.model = null;
 
+    this.init();
+  }
+
+  init(){
+    this.createModel();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -18,10 +27,10 @@ class NeuralNetwork {
     switch (_type.toLowerCase()) {
       case 'sequential':
         this.model = tf.sequential();
-        break;
+        return this.model;
       default:
         this.model = tf.sequential();
-        break;
+        return this.model;
     }
   }
 
@@ -39,6 +48,12 @@ class NeuralNetwork {
   addLayer(_layerOptions) {
     const LAYER_OPTIONS = _layerOptions || {};
     this.model.add(LAYER_OPTIONS);
+
+    // check if it has at least an input and output layer
+    if(this.model.layers.length >=2){
+      this.isLayered = true;
+    }
+    
   }
 
   /**
@@ -49,20 +64,9 @@ class NeuralNetwork {
    *  } 
    * @param {*} _trainingOptions 
    */
-  compile(_modelOptions, _learningRate = null) {
-    const LEARNING_RATE = _learningRate === null ? 0.25 : _learningRate;
-
-    const options = Object.assign({}, {
-      loss: 'categoricalCrossentropy',
-      metrics: ['accuracy'],
-      ..._modelOptions
-    })
-
-    options.optimizer = options.optimizer ?
-      NeuralNetwork.setOptimizerFunction(LEARNING_RATE, options.optimizer) :
-      NeuralNetwork.setOptimizerFunction(LEARNING_RATE, tf.train.sgd)
-
-    this.model.compile(options);
+  compile(_modelOptions) {
+    this.model.compile(_modelOptions);
+    this.isCompiled = true;
   }
 
   /**
@@ -70,7 +74,7 @@ class NeuralNetwork {
    * @param {*} learningRate 
    * @param {*} optimizer 
    */
-  static setOptimizerFunction(learningRate, optimizer) {
+  setOptimizerFunction(learningRate, optimizer) {
     return optimizer.call(this, learningRate);
   }
 
@@ -113,6 +117,8 @@ class NeuralNetwork {
 
     xs.dispose();
     ys.dispose();
+
+    this.isTrained = true;
   }
 
   /**
