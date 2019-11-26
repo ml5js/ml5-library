@@ -1,12 +1,19 @@
 import * as tf from '@tensorflow/tfjs';
 import NeuralNetwork from './NeuralNetwork';
 import NeuralNetworkData from './NeuralNetworkData';
+import callCallback from '../utils/callcallback';
 
+const DEFAULTS = {
+  inputs: [],
+  outputs: [],
+  dataUrl: null,
+  task: null
+} 
 class DiyNeuralNetwork{
   
   constructor(options, cb){
     this.callback = cb;
-    this.options = options || {};
+    this.options = {...DEFAULTS, ...options} || DEFAULTS;
 
     this.neuralNetwork = new NeuralNetwork();
     this.neuralNetworkData = new NeuralNetworkData();
@@ -14,7 +21,59 @@ class DiyNeuralNetwork{
     this.data = {
       training: []
     }
+
+    this.ready = false;
+    this.init(this.callback);
     
+  }
+
+  /**
+   * init
+   * @param {*} callback 
+   */
+  init(callback){
+    if (this.options.dataUrl !== null) {
+      this.ready = this.loadData(this.options, callback);
+    } else {
+      this.ready = true;
+    }
+  }
+
+
+  /**
+   * loadData
+   * @param {*} options 
+   * @param {*} callback 
+   */
+  loadData(options,callback){
+    return callCallback(this.loadDataInternal(options), callback)
+  }
+
+  /**
+   * loadDataInternal
+   * @param {*} options 
+   */
+  async loadDataInternal(options){
+    const {
+      dataUrl,
+      inputs,
+      outputs
+    } = options;
+
+    if (dataUrl.endsWith('.csv')) {
+      await this.neuralNetworkData.loadCSV(dataUrl, inputs, outputs);
+    } else if (dataUrl.endsWith('.json')) {
+      await this.neuralNetworkData.loadJSON(dataUrl, inputs, outputs);
+    } else if (dataUrl.includes('blob')) {
+      await this.neuralNetworkData.loadBlob(dataUrl, inputs, outputs);
+    } else {
+      console.log('Not a valid data format. Must be csv or json')
+    }
+
+    // once the data are loaded, create the metadata 
+    // and prep the data for training
+    this.createMetaDataFromData();
+    this.warmUp();
   }
 
   /**

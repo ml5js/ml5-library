@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
+
 class NeuralNetwork {
 
   constructor(_options) {
