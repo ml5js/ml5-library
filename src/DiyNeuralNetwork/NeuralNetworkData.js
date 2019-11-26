@@ -610,8 +610,8 @@ class NeuralNetworkData {
           result[label] = item;
         });
         return result;
-      } else if (typeof xInputs === 'object') {
-        result = xInputs;
+      } else if (typeof incoming === 'object') {
+        result = incoming;
         return result;
       }
 

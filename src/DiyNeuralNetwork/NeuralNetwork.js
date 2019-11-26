@@ -48,18 +48,18 @@ class NeuralNetwork {
    *  } 
    * @param {*} _trainingOptions 
    */
-  compile(_modelOptions) {
-    const DEFAULT_LEARNING_RATE = 0.25;
-    
+  compile(_modelOptions, _learningRate = null) {
+    const LEARNING_RATE = _learningRate === null ? 0.25 : _learningRate;
+
     const options = Object.assign({}, {
       loss: 'categoricalCrossentropy',
       metrics: ['accuracy'],
       ..._modelOptions
     })
 
-    options.optimizer = options.optimizer ? 
-    NeuralNetwork.setOptimizerFunction(DEFAULT_LEARNING_RATE, options.optimizer) : 
-    NeuralNetwork.setOptimizerFunction(DEFAULT_LEARNING_RATE, tf.train.sgd) 
+    options.optimizer = options.optimizer ?
+      NeuralNetwork.setOptimizerFunction(LEARNING_RATE, options.optimizer) :
+      NeuralNetwork.setOptimizerFunction(LEARNING_RATE, tf.train.sgd)
 
     this.model.compile(options);
   }
@@ -69,7 +69,7 @@ class NeuralNetwork {
    * @param {*} learningRate 
    * @param {*} optimizer 
    */
-  static setOptimizerFunction(learningRate, optimizer){
+  static setOptimizerFunction(learningRate, optimizer) {
     return optimizer.call(this, learningRate);
   }
 
@@ -91,7 +91,7 @@ class NeuralNetwork {
 
     const xs = TRAINING_OPTIONS.inputs;
     const ys = TRAINING_OPTIONS.outputs;
-    
+
     const {
       batchSize,
       epochs,
@@ -119,10 +119,10 @@ class NeuralNetwork {
    * @param {*} _inputs 
    * @param {*} _cb 
    */
-  predict(_inputs, _cb) {
-    return callCallback(this.predictInternal(_inputs), _cb);
+  predict(_inputs, _meta = null, _cb) {
+    return callCallback(this.predictInternal(_inputs, _meta), _cb);
   }
-  
+
 
   /**
    * predictMultiple
@@ -138,7 +138,7 @@ class NeuralNetwork {
    * @param {*} _inputs 
    * @param {*} _cb 
    */
-  classify(_inputs, _meta, _cb) {
+  classify(_inputs, _meta = null, _cb) {
     return callCallback(this.classifyInternal(_inputs, _meta), _cb);
   }
 
@@ -151,36 +151,52 @@ class NeuralNetwork {
     this.predictMultiple(_inputs, _cb);
   }
 
-  async classifyInternal(_inputs, _meta){
+  async classifyInternal(_inputs, _meta) {
+
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
     })
     const result = await output.array();
 
-    const label = Object.keys(_meta.outputs)[0]
-    const vals = Object.entries(_meta.outputs[label].legend);
+    if (_meta !== null) {
+      const label = Object.keys(_meta.outputs)[0]
+      const vals = Object.entries(_meta.outputs[label].legend);
 
-    const results = vals.map((item, idx) => {
-      return{label:item[0], confidence:result[0][idx]};
-    })
-    
+      const results = vals.map((item, idx) => {
+        return {
+          label: item[0],
+          confidence: result[0][idx]
+        };
+      })
+
+      return results;
+    }
+
     output.dispose();
     _inputs.dispose();
 
-    return results;
+    return result;
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async predictInternal(_inputs) {
+  async predictInternal(_inputs, _meta) {
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
     })
     const result = await output.array();
 
-    // const results = result[0].map( val => {
-    //   {value: val, confidence: }
-    // })
-    
+    if (_meta !== null) {
+      const labels = Object.keys(_meta.outputs);
+      const results = labels.map((item, idx) => {
+        return {
+          label: item,
+          value: result[0][idx]
+        };
+      })
+
+      return results;
+    }
+
     output.dispose();
     _inputs.dispose();
 

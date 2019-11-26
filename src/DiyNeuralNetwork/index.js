@@ -18,6 +18,21 @@ class DiyNeuralNetwork{
   }
 
   /**
+   * createMetaDataFromData
+   * create your meta data about your data
+   * @param {*} _dataRaw 
+   */
+  createMetaDataFromData(_dataRaw = null){
+    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
+    
+    const meta = this.neuralNetworkData.createMetaDataFromData(dataRaw)
+    this.neuralNetworkData.meta = meta;
+    return meta;
+  }
+
+  
+
+  /**
    * summarizeData
    * adds min and max to the meta of each input and output property
    */
@@ -130,7 +145,7 @@ class DiyNeuralNetwork{
     }
 
     inputData = tf.tensor([inputData])
-    this.neuralNetwork.predict(inputData, _cb)
+    this.neuralNetwork.predict(inputData, this.neuralNetwork.meta, _cb)
   }
 
   classify(_input, _cb){
