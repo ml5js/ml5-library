@@ -133,8 +133,20 @@ class DiyNeuralNetwork{
     this.neuralNetwork.predict(inputData, _cb)
   }
 
-  classify(_input){
-    this.predict(_input);
+  classify(_input, _cb){
+    let inputData = [];
+    if (_input instanceof Array) {
+      inputData = _input;
+    } else if (_input instanceof Object) {
+      // TODO: make sure that the input order is preserved!
+      const headers = Object.keys(this.neuralNetworkData.meta.inputs);
+      inputData = headers.map(prop => {
+        return _input[prop]
+      });
+    }
+
+    inputData = tf.tensor([inputData])
+    this.neuralNetwork.classify(inputData, this.neuralNetworkData.meta, _cb);
   }
 
 

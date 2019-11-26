@@ -122,6 +122,7 @@ class NeuralNetwork {
   predict(_inputs, _cb) {
     return callCallback(this.predictInternal(_inputs), _cb);
   }
+  
 
   /**
    * predictMultiple
@@ -137,8 +138,8 @@ class NeuralNetwork {
    * @param {*} _inputs 
    * @param {*} _cb 
    */
-  classify(_inputs, _cb) {
-    this.predict(_inputs, _cb);
+  classify(_inputs, _meta, _cb) {
+    return callCallback(this.classifyInternal(_inputs, _meta), _cb);
   }
 
   /**
@@ -150,17 +151,40 @@ class NeuralNetwork {
     this.predictMultiple(_inputs, _cb);
   }
 
+  async classifyInternal(_inputs, _meta){
+    const output = tf.tidy(() => {
+      return this.model.predict(_inputs);
+    })
+    const result = await output.array();
+
+    const label = Object.keys(_meta.outputs)[0]
+    const vals = Object.entries(_meta.outputs[label].legend);
+
+    const results = vals.map((item, idx) => {
+      return{label:item[0], confidence:result[0][idx]};
+    })
+    
+    output.dispose();
+    _inputs.dispose();
+
+    return results;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   async predictInternal(_inputs) {
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
     })
     const result = await output.array();
+
+    // const results = result[0].map( val => {
+    //   {value: val, confidence: }
+    // })
+    
     output.dispose();
     _inputs.dispose();
 
     return result;
-
   }
 
   // eslint-disable-next-line class-methods-use-this
