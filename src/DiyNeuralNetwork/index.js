@@ -391,7 +391,7 @@ class DiyNeuralNetwork {
       const headers = Object.keys(this.neuralNetworkData.meta.inputs);
       inputData = headers.map(prop => {
         return _input[prop]
-      });
+      }).flat();
     }
 
     inputData = tf.tensor([inputData])
@@ -412,7 +412,7 @@ class DiyNeuralNetwork {
       const headers = Object.keys(this.neuralNetworkData.meta.inputs);
       inputData = headers.map(prop => {
         return _input[prop]
-      });
+      }).flat();
     }
 
     inputData = tf.tensor([inputData])
