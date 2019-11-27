@@ -602,32 +602,6 @@ class NeuralNetworkData {
   // eslint-disable-next-line class-methods-use-this
   addData(xInputs, yInputs, options) {
     
-    function getLabelsFromIncoming(incoming, prefix){
-      let labels;
-      if (Array.isArray(incoming)) {
-        labels = incoming.map( (v,idx) => `${prefix}_${idx}` )
-      } else if (typeof incoming === 'object'){
-        labels = Object.keys(incoming).map( (v,idx) => `${prefix}_${idx}` )
-      }
-      return labels;
-    }
-    
-    function formatIncomingData(incoming, labels) {
-      let result = {};
-      if (Array.isArray(incoming)) {
-        incoming.forEach((item, idx) => {
-          const label = labels[idx];
-          result[label] = item;
-        });
-        return result;
-      } else if (typeof incoming === 'object') {
-        result = incoming;
-        return result;
-      }
-
-      throw new Error('input provided is not supported or does not match your output label specifications')
-    }
-
     let inputLabels;
     let outputLabels;
 
@@ -637,12 +611,12 @@ class NeuralNetworkData {
       // eslint-disable-next-line prefer-destructuring
       outputLabels = options.outputLabels;
     } else {
-      inputLabels = getLabelsFromIncoming(xInputs, 'input')
-      outputLabels = getLabelsFromIncoming(yInputs, 'output')
+      inputLabels = NeuralNetworkData.createLabelsFromArrayValues(xInputs, 'input')
+      outputLabels = NeuralNetworkData.createLabelsFromArrayValues(yInputs, 'output')
     }
 
-    const inputs = formatIncomingData(xInputs, inputLabels);
-    const outputs = formatIncomingData(yInputs, outputLabels);
+    const inputs = NeuralNetworkData.formatIncomingData(xInputs, inputLabels);
+    const outputs = NeuralNetworkData.formatIncomingData(yInputs, outputLabels);
 
     this.data.raw.push({
       xs: inputs,
@@ -677,6 +651,42 @@ class NeuralNetworkData {
    * helper functions 
    * **************** 
    */
+
+   /**
+    * 
+    * @param {*} incoming 
+    * @param {*} prefix 
+    */
+  static createLabelsFromArrayValues(incoming, prefix){
+    let labels;
+    if (Array.isArray(incoming)) {
+      labels = incoming.map( (v,idx) => `${prefix}_${idx}` )
+    } 
+    return labels;
+  }
+  
+  /**
+   * takes an array and turns it into a json object 
+   * where the labels are the keys and the array values
+   * are the object values
+   * @param {*} incoming 
+   * @param {*} labels 
+   */
+  static formatIncomingData(incoming, labels) {
+    let result = {};
+    if (Array.isArray(incoming)) {
+      incoming.forEach((item, idx) => {
+        const label = labels[idx];
+        result[label] = item;
+      });
+      return result;
+    } else if (typeof incoming === 'object') {
+      result = incoming;
+      return result;
+    }
+
+    throw new Error('input provided is not supported or does not match your output label specifications')
+  }
 
   /**
    * findEntries
