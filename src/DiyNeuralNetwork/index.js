@@ -171,6 +171,12 @@ class DiyNeuralNetwork {
     return trainingData;
   }
 
+  /**
+   * train
+   * @param {*} optionsOrCallback 
+   * @param {*} optionsOrWhileTraining 
+   * @param {*} callback 
+   */
   train(optionsOrCallback, optionsOrWhileTraining, callback) {
     let options;
     let whileTrainingCb;
@@ -259,6 +265,10 @@ class DiyNeuralNetwork {
   }
 
 
+  /**
+   * addDefaultLayers
+   * @param {*} _task 
+   */
   addDefaultLayers(_task) {
     const {
       inputUnits,
@@ -293,6 +303,36 @@ class DiyNeuralNetwork {
     }
   }
 
+  /**
+   * addData
+   * @param {*} xInputs 
+   * @param {*} yInputs 
+   * @param {*} options 
+   */
+  addData(xInputs, yInputs, options = null){
+    const {inputs, outputs} = this.options;
+ 
+    let inputLabels;
+    let outputLabels;
+ 
+    // const DATA_OPTIONS = options === null ? {} : options;
+    
+    if(options !== null){
+      // eslint-disable-next-line prefer-destructuring
+      inputLabels = options.inputLabels;
+      // eslint-disable-next-line prefer-destructuring
+      outputLabels = options.outputLabels;
+    } else if ( (inputs instanceof Array) && (outputs instanceof Array) ){
+      // if the inputs and outputs labels have been defined
+      // in the constructor
+      inputLabels = inputs;
+      outputLabels = outputs;
+    } 
+
+    const DATA_OPTIONS = {inputLabels, outputLabels}
+
+    this.neuralNetworkData.addData(xInputs, yInputs, DATA_OPTIONS);
+  }
 
   /**
    * 
@@ -329,6 +369,11 @@ class DiyNeuralNetwork {
   }
 
 
+  /**
+   * predict
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
   predict(_input, _cb) {
 
     let inputData = [];
@@ -346,6 +391,11 @@ class DiyNeuralNetwork {
     this.neuralNetwork.predict(inputData, this.neuralNetwork.meta, _cb)
   }
 
+  /**
+   * classify
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
   classify(_input, _cb) {
     let inputData = [];
     if (_input instanceof Array) {
