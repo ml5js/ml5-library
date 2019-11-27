@@ -823,10 +823,25 @@ class NeuralNetwork {
    * @param {*} callback
    * @param {*} name
    */
-  async save(callback, name) {
+  async save(nameOrCallback, callback) {
+    let cb;
+    let outputName;
+
+    // check the inputs
+    if (typeof nameOrCallback === 'string' && callback) {
+      outputName = nameOrCallback
+      cb = callback;
+    } else if (typeof nameOrCallback === 'string' && !callback) {
+      cb = null;
+      outputName = nameOrCallback
+    } else if (typeof nameOrCallback === 'function') {
+      cb = nameOrCallback
+      outputName = undefined;
+    }
+
     this.model.save(tf.io.withSaveHandler(async (data) => {
       let modelName = 'model';
-      if (name) modelName = name;
+      if (outputName) modelName = outputName;
 
       this.weightsManifest = {
         modelTopology: data.modelTopology,
@@ -849,8 +864,9 @@ class NeuralNetwork {
       await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
       await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
       await saveBlob(JSON.stringify(dataMeta), `${modelName}_meta.json`, 'text/plain');
-      if (callback) {
-        callback();
+
+      if (typeof cb === 'function') {
+        cb();
       }
     }));
   }
