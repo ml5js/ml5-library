@@ -259,15 +259,17 @@ class NeuralNetworkData {
         // get xs
         const xs = Object.keys(meta.inputs).map(k => {
           return row.xs[k]
-        });
+        }).flat();
+
         inputArr.push(...xs)
 
         // get ys
         const ys = Object.keys(meta.outputs).map(k => {
           return row.ys[k]
-        })
+        }).flat();
         outputArr.push(...ys)
       })
+
 
       const inputs = tf.tensor(inputArr, [dataLength, meta.inputUnits])
       const outputs = tf.tensor(outputArr, [dataLength, meta.outputUnits])

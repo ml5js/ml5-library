@@ -377,6 +377,11 @@ class DiyNeuralNetwork {
    * @param {*} _cb 
    */
   predict(_input, _cb) {
+    // TODO: check
+    // if neuralNetworkData.isNormalized, then normalize inputs
+    // if !neuralNetworkData.isNormalized, then do not normalize
+    // if data are oneHot encoded, then check this and 
+
 
     let inputData = [];
     if (_input instanceof Array) {
