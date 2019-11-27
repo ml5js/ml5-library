@@ -128,7 +128,7 @@ class NeuralNetworkData {
       return inputArray;
     }
 
-    normalized = inputArray.map(v => (v - min) / (max - min))
+    normalized = inputArray.map(v => this.normalizeValue(v, min, max))
     return normalized;
   }
 
@@ -171,7 +171,7 @@ class NeuralNetworkData {
       return inputArray;
     }
 
-    unNormalized = inputArray.map(v => ((v * (max - min)) + min))
+    unNormalized = inputArray.map(v => this.unNormalizeValue(v, min, max))
     return unNormalized;
   }
 
@@ -782,6 +782,16 @@ class NeuralNetworkData {
 
     return output;
 
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  normalizeValue(value, min, max){
+    return ( (value - min) / (max - min) )
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  unNormalizeValue(value, min, max){
+    return ((value * (max - min)) + min)
   }
 
 }

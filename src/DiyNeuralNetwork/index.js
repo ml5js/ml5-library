@@ -394,7 +394,7 @@ class DiyNeuralNetwork {
       });
     }
 
-    inputData = tf.tensor([inputData])
+    inputData = tf.tensor([inputData.flat()])
     this.neuralNetwork.predict(inputData, this.neuralNetwork.meta, _cb)
   }
 
@@ -405,18 +405,56 @@ class DiyNeuralNetwork {
    */
   classify(_input, _cb) {
     let inputData = [];
+    const headers = Object.keys(this.neuralNetworkData.meta.inputs);
+
     if (_input instanceof Array) {
-      inputData = _input;
+      inputData = headers.map( (prop, idx) => {
+        return this.isOneHotEncodedOrNormalized(_input[idx], prop, this.neuralNetworkData.meta.inputs);
+      });
     } else if (_input instanceof Object) {
       // TODO: make sure that the input order is preserved!
-      const headers = Object.keys(this.neuralNetworkData.meta.inputs);
       inputData = headers.map(prop => {
-        return _input[prop]
+        return this.isOneHotEncodedOrNormalized(_input[prop], prop, this.neuralNetworkData.meta.inputs);
       });
     }
 
     inputData = tf.tensor([inputData.flat()])
     this.neuralNetwork.classify(inputData, this.neuralNetworkData.meta, _cb);
+  }
+
+  /**
+   * check if the input needs to be onehot encoded or 
+   * normalized
+   * @param {*} _input 
+   * @param {*} _meta 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  isOneHotEncodedOrNormalized(_input, _key, _meta){
+    const input = _input;
+    const key = _key;
+
+    let output;
+    if(typeof _input !== 'number'){
+      output = _meta[key].legend[input];
+    } else {
+      output = _input;
+      if(this.neuralNetworkData.meta.isNormalized){
+        output = this.normalizeInput(_input, key, _meta);
+      } 
+    }
+    return output;
+  }
+
+  /**
+   * normalize the input value
+   * @param {*} value 
+   * @param {*} _key 
+   * @param {*} _meta 
+   */
+  normalizeInput(value, _key ,_meta){
+    const key = _key;
+    const {min, max} = _meta[key];
+    return this.neuralNetworkData.normalizeValue(value, min, max);
   }
 
 
