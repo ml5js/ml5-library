@@ -171,6 +171,7 @@ class NeuralNetwork {
 
       const results = vals.map((item, idx) => {
         return {
+          [label]: item[0],
           label: item[0],
           confidence: result[0][idx]
         };

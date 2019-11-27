@@ -42,7 +42,6 @@ class DiyNeuralNetwork {
     }
   }
 
-
   /**
    * loadData
    * @param {*} options 
@@ -312,24 +311,27 @@ class DiyNeuralNetwork {
   addData(xInputs, yInputs, options = null){
     const {inputs, outputs} = this.options;
  
+    let DATA_OPTIONS;
     let inputLabels;
     let outputLabels;
- 
-    // const DATA_OPTIONS = options === null ? {} : options;
     
     if(options !== null){
       // eslint-disable-next-line prefer-destructuring
       inputLabels = options.inputLabels;
       // eslint-disable-next-line prefer-destructuring
       outputLabels = options.outputLabels;
-    } else if ( (inputs instanceof Array) && (outputs instanceof Array) ){
+    } else if ( (inputs.length > 0) && (outputs.length > 0) ){
       // if the inputs and outputs labels have been defined
       // in the constructor
       inputLabels = inputs;
       outputLabels = outputs;
     } 
 
-    const DATA_OPTIONS = {inputLabels, outputLabels}
+    if(inputLabels && outputLabels){
+      DATA_OPTIONS = {inputLabels, outputLabels}
+    } else {
+      DATA_OPTIONS = null
+    }
 
     this.neuralNetworkData.addData(xInputs, yInputs, DATA_OPTIONS);
   }

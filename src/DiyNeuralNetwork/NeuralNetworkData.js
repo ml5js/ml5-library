@@ -601,11 +601,17 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line class-methods-use-this
   addData(xInputs, yInputs, options) {
-    const {
-      inputLabels,
-      outputLabels
-    } = options;
-
+    
+    function getLabelsFromIncoming(incoming, prefix){
+      let labels;
+      if (Array.isArray(incoming)) {
+        labels = incoming.map( (v,idx) => `${prefix}_${idx}` )
+      } else if (typeof incoming === 'object'){
+        labels = Object.keys(incoming).map( (v,idx) => `${prefix}_${idx}` )
+      }
+      return labels;
+    }
+    
     function formatIncomingData(incoming, labels) {
       let result = {};
       if (Array.isArray(incoming)) {
@@ -620,6 +626,19 @@ class NeuralNetworkData {
       }
 
       throw new Error('input provided is not supported or does not match your output label specifications')
+    }
+
+    let inputLabels;
+    let outputLabels;
+
+    if(options && options !== null ){
+      // eslint-disable-next-line prefer-destructuring
+      inputLabels = options.inputLabels;
+      // eslint-disable-next-line prefer-destructuring
+      outputLabels = options.outputLabels;
+    } else {
+      inputLabels = getLabelsFromIncoming(xInputs, 'input')
+      outputLabels = getLabelsFromIncoming(yInputs, 'output')
     }
 
     const inputs = formatIncomingData(xInputs, inputLabels);
