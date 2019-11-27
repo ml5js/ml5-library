@@ -1,5 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-63-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-81-orange.svg?style=flat-square)](#contributors)
 
 
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
@@ -28,15 +28,17 @@ There are several ways you can use the ml5.js library:
 
 
 
+
 <p id="latest-version">
 
-* You can use the latest version (0.4.2) by adding it to the head section of your HTML document:
+* You can use the latest version (0.4.3) by adding it to the head section of your HTML document:
 
-**v0.4.2**
+**v0.4.3**
 
-    <script src="https://unpkg.com/ml5@0.4.2/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
     
     
     
@@ -177,6 +179,30 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://coding.garden"><img src="https://avatars0.githubusercontent.com/u/14241866?v=4" width="100px;" alt="CJ R."/><br /><sub><b>CJ R.</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=w3cj" title="Documentation">📖</a> <a href="#content-w3cj" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/badunit"><img src="https://avatars2.githubusercontent.com/u/44651201?v=4" width="100px;" alt="Fabio Corona"/><br /><sub><b>Fabio Corona</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Abadunit" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://tnickel.de/"><img src="https://avatars3.githubusercontent.com/u/4189801?v=4" width="100px;" alt="Tobias Nickel"/><br /><sub><b>Tobias Nickel</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3ATobiasNickel" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=TobiasNickel" title="Code">💻</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://wakatime.com/@barakplasma"><img src="https://avatars0.githubusercontent.com/u/62937?v=4" width="100px;" alt="Michael Salaverry"/><br /><sub><b>Michael Salaverry</b></sub></a><br /><a href="#content-barakplasma" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Abarakplasma" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://sankeybuilder.com"><img src="https://avatars2.githubusercontent.com/u/1794620?v=4" width="100px;" alt="Rob"/><br /><sub><b>Rob</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Aeformx" title="Bug reports">🐛</a> <a href="#question-eformx" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="http://pujaa.rajan@gmail.com"><img src="https://avatars3.githubusercontent.com/u/10352446?v=4" width="100px;" alt="Pujaa Rajan"/><br /><sub><b>Pujaa Rajan</b></sub></a><br /><a href="#example-pujaarajan" title="Examples">💡</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Apujaarajan" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://mcintyre.io"><img src="https://avatars3.githubusercontent.com/u/3719176?v=4" width="100px;" alt="Nick McIntyre"/><br /><sub><b>Nick McIntyre</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=nickmcintyre" title="Tests">⚠️</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Anickmcintyre" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://waxy.org/"><img src="https://avatars2.githubusercontent.com/u/6759?v=4" width="100px;" alt="Andy Baio"/><br /><sub><b>Andy Baio</b></sub></a><br /><a href="#content-waxpancake" title="Content">🖋</a> <a href="#maintenance-waxpancake" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://www.wenqi.li"><img src="https://avatars1.githubusercontent.com/u/22087042?v=4" width="100px;" alt="Wenqi Li"/><br /><sub><b>Wenqi Li</b></sub></a><br /><a href="#content-wenqili" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/commits?author=wenqili" title="Code">💻</a> <a href="#infra-wenqili" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#maintenance-wenqili" title="Maintenance">🚧</a> <a href="#ideas-wenqili" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/garym140"><img src="https://avatars1.githubusercontent.com/u/30574513?v=4" width="100px;" alt="garym140"/><br /><sub><b>garym140</b></sub></a><br /><a href="#design-garym140" title="Design">🎨</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/nicoleflloyd"><img src="https://avatars3.githubusercontent.com/u/35693567?v=4" width="100px;" alt="nicoleflloyd"/><br /><sub><b>nicoleflloyd</b></sub></a><br /><a href="#design-nicoleflloyd" title="Design">🎨</a></td>
+    <td align="center"><a href="http://ixora.io"><img src="https://avatars3.githubusercontent.com/u/4044283?v=4" width="100px;" alt="Jim"/><br /><sub><b>Jim</b></sub></a><br /><a href="#content-hx2A" title="Content">🖋</a> <a href="#maintenance-hx2A" title="Maintenance">🚧</a> <a href="#ideas-hx2A" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://medium.com/@s1thsv"><img src="https://avatars1.githubusercontent.com/u/855011?v=4" width="100px;" alt="Yeswanth "/><br /><sub><b>Yeswanth </b></sub></a><br /><a href="#maintenance-yeswanth" title="Maintenance">🚧</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ayeswanth" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://psherlock.com.br"><img src="https://avatars0.githubusercontent.com/u/6400794?v=4" width="100px;" alt="Pettrus Sherlock"/><br /><sub><b>Pettrus Sherlock</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3APettrus" title="Bug reports">🐛</a> <a href="#maintenance-Pettrus" title="Maintenance">🚧</a></td>
+    <td align="center"><a href="https://github.com/tezzutezzu"><img src="https://avatars2.githubusercontent.com/u/135866?v=4" width="100px;" alt="danilo"/><br /><sub><b>danilo</b></sub></a><br /><a href="#content-tezzutezzu" title="Content">🖋</a></td>
+    <td align="center"><a href="http://andreasrefsgaard.dk"><img src="https://avatars2.githubusercontent.com/u/9645568?v=4" width="100px;" alt="Andreas Refsgaard"/><br /><sub><b>Andreas Refsgaard</b></sub></a><br /><a href="#content-AndreasRef" title="Content">🖋</a></td>
+    <td align="center"><a href="http://bcjordan.com"><img src="https://avatars2.githubusercontent.com/u/206973?v=4" width="100px;" alt="Brian Jordan"/><br /><sub><b>Brian Jordan</b></sub></a><br /><a href="#content-bcjordan" title="Content">🖋</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://bradley.im"><img src="https://avatars0.githubusercontent.com/u/8131020?v=4" width="100px;" alt="bradley inniss"/><br /><sub><b>bradley inniss</b></sub></a><br /><a href="#content-ratley" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/Kaushl2208"><img src="https://avatars0.githubusercontent.com/u/41343571?v=4" width="100px;" alt="Kaushlendra Pratap"/><br /><sub><b>Kaushlendra Pratap</b></sub></a><br /><a href="#content-Kaushl2208" title="Content">🖋</a></td>
+    <td align="center"><a href="http://twitter.com/maxdevjs"><img src="https://avatars2.githubusercontent.com/u/22229196?v=4" width="100px;" alt="maxdevjs"/><br /><sub><b>maxdevjs</b></sub></a><br /><a href="#content-maxdevjs" title="Content">🖋</a></td>
+    <td align="center"><a href="http://about.me/joshuaweinstein/"><img src="https://avatars0.githubusercontent.com/u/175075?v=4" width="100px;" alt="josher19"/><br /><sub><b>josher19</b></sub></a><br /><a href="#content-josher19" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ajosher19" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

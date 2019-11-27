@@ -83,7 +83,7 @@ class PitchDetection {
      * @public
      */
     this.results = {};
-    const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
+    
     PitchDetection.resample(event.inputBuffer, (resampled) => {
       tf.tidy(() => {
         /**
@@ -91,6 +91,8 @@ class PitchDetection {
          * @type {boolean}
          * @public
          */
+        const centMapping = tf.add(tf.linspace(0, 7180, 360), tf.tensor(1997.3794084376191));
+        
         this.running = true;
         const frame = tf.tensor(resampled.slice(0, 1024));
         const zeromean = tf.sub(frame, tf.mean(frame));
