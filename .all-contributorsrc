@@ -871,9 +871,9 @@
       "profile": "https://github.com/violetcraze",
       "contributions": [
         "bug"
-       ]
-     },
-     {
+      ]
+    },
+    {
       "login": "tirtawr",
       "name": "Tirta Wening Rachman",
       "avatar_url": "https://avatars1.githubusercontent.com/u/6989378?v=4",
@@ -883,7 +883,17 @@
         "content",
         "ideas"
       ]
-     }
+    },
+    {
+      "login": "mikakruschel",
+      "name": "Miká Kruschel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20423069?v=4",
+      "profile": "http://kruschel.dev",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    }
   ],
   "contributorsPerLine": 7,
   "projectName": "ml5-library",
