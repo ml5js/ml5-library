@@ -500,6 +500,33 @@ class DiyNeuralNetwork {
     return tf.layers.conv2d(options);
   }
 
+  save(nameOrCb, cb){
+    let modelName;
+    let callback;
+
+    if(typeof nameOrCb === 'function'){
+      modelName = 'model';
+      callback = nameOrCb;
+    } else if (typeof nameOrCb === 'string'){
+      modelName = nameOrCb
+
+      if(typeof cb === 'function'){
+        callback = cb
+      } 
+
+    } else {
+      modelName = 'model';
+    }
+
+    // save the model
+    this.neuralNetwork.save(modelName, () =>{
+      this.neuralNetworkData.saveMeta(modelName, callback);
+    });
+    // save the metadata
+    
+
+  }
+
 
 
 }

@@ -1,5 +1,8 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import {
+  saveBlob
+} from '../utils/io';
 
 
 class NeuralNetwork {
@@ -249,8 +252,39 @@ class NeuralNetwork {
 
 
   // eslint-disable-next-line class-methods-use-this
-  save() {
+  async save(nameOrCb, cb) {
+    let modelName;
+    let callback;
 
+    if(typeof nameOrCb === 'function'){
+      modelName = 'model';
+      callback = nameOrCb;
+    } else if (typeof nameOrCb === 'string'){
+      modelName = nameOrCb
+
+      if(typeof cb === 'function'){
+        callback = cb
+      } 
+    } else{
+      modelName = 'model';
+    }
+
+    this.model.save(tf.io.withSaveHandler(async (data) => {
+      
+      this.weightsManifest = {
+        modelTopology: data.modelTopology,
+        weightsManifest: [{
+          paths: [`./${modelName}.weights.bin`],
+          weights: data.weightSpecs,
+        }]
+      };
+
+      await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
+      await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
+      if (callback) {
+        callback();
+      }
+    }));
   }
 
   // eslint-disable-next-line class-methods-use-this

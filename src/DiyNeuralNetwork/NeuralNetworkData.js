@@ -33,7 +33,7 @@ class NeuralNetworkData {
   /**
    * toggles meta.isNormalized
    */
-  isNormalized(){
+  isNormalized() {
     this.meta.isNormalized = !this.meta.isNormalized;
   }
 
@@ -178,14 +178,18 @@ class NeuralNetworkData {
   }
 
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  applyOneHotEncodingsToDataRaw(_dataRaw = null, _meta = null){
+  applyOneHotEncodingsToDataRaw(_dataRaw = null, _meta = null) {
     let dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
     const meta = _meta === null ? this.meta : _meta;
 
     dataRaw = dataRaw.map(row => {
 
-      const xs = {...row.xs}
-      const ys = {...row.ys}
+      const xs = {
+        ...row.xs
+      }
+      const ys = {
+        ...row.ys
+      }
       // get xs
       Object.keys(meta.inputs).forEach(k => {
         if (meta.inputs[k].legend) {
@@ -199,7 +203,10 @@ class NeuralNetworkData {
         }
       });
 
-      return {xs, ys}
+      return {
+        xs,
+        ys
+      }
     })
 
     // this.data.raw = dataRaw;
@@ -214,7 +221,7 @@ class NeuralNetworkData {
    * @param {*} meta 
    */
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  convertRawToTensors(_dataRaw = null, _meta = null ) {
+  convertRawToTensors(_dataRaw = null, _meta = null) {
     const dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
     const meta = _meta === null ? this.meta : _meta;
     const dataLength = dataRaw.length;
@@ -572,11 +579,11 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line class-methods-use-this
   addData(xInputs, yInputs, options) {
-    
+
     let inputLabels;
     let outputLabels;
 
-    if(options && options !== null ){
+    if (options && options !== null) {
       // eslint-disable-next-line prefer-destructuring
       inputLabels = options.inputLabels;
       // eslint-disable-next-line prefer-destructuring
@@ -616,6 +623,36 @@ class NeuralNetworkData {
     await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
   }
 
+  /**
+   * Saves metadata of the data
+   * @param {*} nameOrCb 
+   * @param {*} cb 
+   */
+  async saveMeta(nameOrCb, cb) {
+    let modelName;
+    let callback;
+
+    if (typeof nameOrCb === 'function') {
+      modelName = 'model';
+      callback = nameOrCb;
+    } else if (typeof nameOrCb === 'string') {
+      modelName = nameOrCb
+
+      if (typeof cb === 'function') {
+        callback = cb
+      }
+
+    } else {
+      modelName = 'model'
+    }
+
+    await saveBlob(JSON.stringify(this.meta), `${modelName}_meta.json`, 'text/plain');
+    if (callback) {
+      callback();
+    }
+
+  }
+
 
   /*
    * ****************
@@ -623,19 +660,19 @@ class NeuralNetworkData {
    * **************** 
    */
 
-   /**
-    * 
-    * @param {*} incoming 
-    * @param {*} prefix 
-    */
-  static createLabelsFromArrayValues(incoming, prefix){
+  /**
+   * 
+   * @param {*} incoming 
+   * @param {*} prefix 
+   */
+  static createLabelsFromArrayValues(incoming, prefix) {
     let labels;
     if (Array.isArray(incoming)) {
-      labels = incoming.map( (v,idx) => `${prefix}_${idx}` )
-    } 
+      labels = incoming.map((v, idx) => `${prefix}_${idx}`)
+    }
     return labels;
   }
-  
+
   /**
    * takes an array and turns it into a json object 
    * where the labels are the keys and the array values
@@ -754,12 +791,12 @@ class NeuralNetworkData {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  normalizeValue(value, min, max){
-    return ( (value - min) / (max - min) )
+  normalizeValue(value, min, max) {
+    return ((value - min) / (max - min))
   }
 
   // eslint-disable-next-line class-methods-use-this
-  unNormalizeValue(value, min, max){
+  unNormalizeValue(value, min, max) {
     return ((value * (max - min)) + min)
   }
 
