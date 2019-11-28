@@ -287,11 +287,5 @@ class NeuralNetwork {
     }));
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  load() {
-
-  }
-
-
 }
 export default NeuralNetwork;
