@@ -377,25 +377,23 @@ class DiyNeuralNetwork {
    * @param {*} _cb 
    */
   predict(_input, _cb) {
-    // TODO: check
-    // if neuralNetworkData.isNormalized, then normalize inputs
-    // if !neuralNetworkData.isNormalized, then do not normalize
-    // if data are oneHot encoded, then check this and 
-
-
     let inputData = [];
+    const {meta} = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
+
     if (_input instanceof Array) {
-      inputData = _input;
+      inputData = headers.map( (prop, idx) => {
+        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
+      });
     } else if (_input instanceof Object) {
       // TODO: make sure that the input order is preserved!
-      const headers = Object.keys(this.neuralNetworkData.meta.inputs);
       inputData = headers.map(prop => {
-        return _input[prop]
+        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
       });
     }
 
     inputData = tf.tensor([inputData.flat()])
-    this.neuralNetwork.predict(inputData, this.neuralNetwork.meta, _cb)
+    this.neuralNetwork.predict(inputData, meta, _cb);
   }
 
   /**
@@ -405,21 +403,22 @@ class DiyNeuralNetwork {
    */
   classify(_input, _cb) {
     let inputData = [];
-    const headers = Object.keys(this.neuralNetworkData.meta.inputs);
+    const {meta} = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
 
     if (_input instanceof Array) {
       inputData = headers.map( (prop, idx) => {
-        return this.isOneHotEncodedOrNormalized(_input[idx], prop, this.neuralNetworkData.meta.inputs);
+        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
       });
     } else if (_input instanceof Object) {
       // TODO: make sure that the input order is preserved!
       inputData = headers.map(prop => {
-        return this.isOneHotEncodedOrNormalized(_input[prop], prop, this.neuralNetworkData.meta.inputs);
+        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
       });
     }
 
     inputData = tf.tensor([inputData.flat()])
-    this.neuralNetwork.classify(inputData, this.neuralNetworkData.meta, _cb);
+    this.neuralNetwork.classify(inputData, meta, _cb);
   }
 
   /**
