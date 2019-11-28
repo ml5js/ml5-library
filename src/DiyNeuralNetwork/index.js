@@ -522,8 +522,6 @@ class DiyNeuralNetwork {
     this.neuralNetwork.save(modelName, () =>{
       this.neuralNetworkData.saveMeta(modelName, callback);
     });
-    // save the metadata
-    
 
   }
 
