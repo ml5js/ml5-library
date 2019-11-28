@@ -126,18 +126,17 @@ class NeuralNetwork {
    * @param {*} _inputs 
    * @param {*} _cb 
    */
-  predict(_inputs, _meta = null, _cb) {
-    return callCallback(this.predictInternal(_inputs, _meta), _cb);
-  }
-
-
-  /**
-   * predictMultiple
-   * @param {*} _inputs 
-   * @param {*} _cb 
-   */
-  predictMultiple(_inputs, _cb) {
-    return callCallback(this.predictMultipleInternal(_inputs), _cb);
+  predict(_inputs, _metaOrCb = null, _cb) {
+    let cb;
+    let meta;
+    if(typeof _metaOrCb === 'function'){
+      cb = _metaOrCb;
+      meta = null;
+    } else if(_metaOrCb instanceof Object ){
+      meta = _metaOrCb;
+      cb = _cb;
+    }
+    return callCallback(this.predictInternal(_inputs, meta), cb);
   }
 
   /**
@@ -145,20 +144,25 @@ class NeuralNetwork {
    * @param {*} _inputs 
    * @param {*} _cb 
    */
-  classify(_inputs, _meta = null, _cb) {
-    return callCallback(this.classifyInternal(_inputs, _meta), _cb);
-  }
+  classify(_inputs, _metaOrCb = null, _cb) {
+    let cb;
+    let meta;
+    if(typeof _metaOrCb === 'function'){
+      cb = _metaOrCb;
+      meta = null;
+    } else if(_metaOrCb instanceof Object ){
+      meta = _metaOrCb;
+      cb = _cb;
+    }
+    return callCallback(this.classifyInternal(_inputs, meta), cb);
+  }  
 
   /**
-   * classifyMultiple
+   * 
    * @param {*} _inputs 
-   * @param {*} _cb 
+   * @param {*} _meta 
    */
-  classifyMultiple(_inputs, _cb) {
-    this.predictMultiple(_inputs, _cb);
-  }
-
-  async classifyInternal(_inputs, _meta) {
+  async classifyInternal(_inputs, _meta = null) {
 
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
@@ -212,16 +216,36 @@ class NeuralNetwork {
     return result;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async predictMultipleInternal(_inputs) {
-    const output = tf.tidy(() => {
-      return this.model.predict(_inputs);
-    })
-    const result = await output.array();
-    output.dispose();
-    _inputs.dispose();
-    return result;
-  }
+  // TODO: 
+  
+  //  /**
+  //  * predictMultiple
+  //  * @param {*} _inputs 
+  //  * @param {*} _cb 
+  //  */
+  // predictMultiple(_inputs, _cb) {
+  //   return callCallback(this.predictMultipleInternal(_inputs), _cb);
+  // }
+
+  // /**
+  //  * classifyMultiple
+  //  * @param {*} _inputs 
+  //  * @param {*} _cb 
+  //  */
+  // classifyMultiple(_inputs, _cb) {
+  //   this.predictMultiple(_inputs, _cb);
+  // }
+
+  // // eslint-disable-next-line class-methods-use-this
+  // async predictMultipleInternal(_inputs) {
+  //   const output = tf.tidy(() => {
+  //     return this.model.predict(_inputs);
+  //   })
+  //   const result = await output.array();
+  //   output.dispose();
+  //   _inputs.dispose();
+  //   return result;
+  // }
 
 
   // eslint-disable-next-line class-methods-use-this
