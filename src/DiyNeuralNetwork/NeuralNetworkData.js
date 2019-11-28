@@ -30,35 +30,12 @@ class NeuralNetworkData {
 
   }
 
-
   /**
-   * normalizeTensor
-   * converts a tensor with data to normalized values ranging from 0-1.
-   * @param {*} _input 
-   * @param {*} _options 
+   * toggles meta.isNormalized
    */
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  normalizeTensor(_input, _options) {
-
-  }
-
-  /**
-   * unNormalizeTensor
-   * converts a normalized tensor from 0 to 1 back to the "natural" units
-   * @param {*} _input 
-   * @param {*} _options 
-   */
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  unNormalizeTensor(_input, _options) {
-
-
-  }
-
-
   isNormalized(){
-    return !this.meta.isNormalized;
+    this.meta.isNormalized = !this.meta.isNormalized;
   }
-
 
   /**
    * normalizeRaws
@@ -175,12 +152,6 @@ class NeuralNetworkData {
     return unNormalized;
   }
 
-
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  getTensorStats() {
-
-  }
-
   /**
    * getRawStats
    * get back the min and max of each label
@@ -232,11 +203,9 @@ class NeuralNetworkData {
     })
 
     // this.data.raw = dataRaw;
-
     return dataRaw;
 
   }
-
 
   /**
    * convertRawToTensors
