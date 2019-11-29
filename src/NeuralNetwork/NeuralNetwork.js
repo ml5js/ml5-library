@@ -195,6 +195,11 @@ class NeuralNetwork {
   }
 
   // eslint-disable-next-line class-methods-use-this
+  unNormalizeValue(value, min, max) {
+    return ((value * (max - min)) + min)
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   async predictInternal(_inputs, _meta) {
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
@@ -204,10 +209,22 @@ class NeuralNetwork {
     if (_meta !== null) {
       const labels = Object.keys(_meta.outputs);
       const results = labels.map((item, idx) => {
+        
+        // check to see if the data were normalized
+        // if not, then send back the values, otherwise
+        // unnormalize then return
+        let val;
+        if(_meta.isNormalized){
+          const { min, max} = _meta.outputs[item];
+          val = this.unNormalizeValue(result[0][idx], min, max)
+        } else{
+          val = result[0][idx]
+        }
+        
         return {
-          [labels[idx]]: result[0][idx],
+          [labels[idx]]: val,
           label: item,
-          value: result[0][idx]
+          value: val
         };
       })
 
