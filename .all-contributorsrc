@@ -893,6 +893,15 @@
         "code",
         "bug"
       ]
+    },
+    {
+      "login": "tasanuma",
+      "name": "Takanobu Asanuma",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11712443?v=4",
+      "profile": "https://github.com/tasanuma",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
