@@ -72,12 +72,10 @@ class DiyNeuralNetwork {
       console.log('Not a valid data format. Must be csv or json')
     }
 
-    console.log(this.neuralNetworkData.meta)
     // once the data are loaded, create the metadata 
     // and prep the data for training
     this.createMetaDataFromData();
     this.warmUp();
-    console.log(this.neuralNetworkData.meta)
   }
 
   /**

@@ -81,9 +81,9 @@ class NeuralNetworkData {
     let normalized;
 
     if (!_input.every(v => typeof v === 'number')) {
-      console.log({
-        warn: 'not a numeric array, returning given value'
-      })
+      // console.log({
+      //   warn: 'not a numeric array, returning given value'
+      // })
 
       // if the data are onehot encoded, replace the string
       // value with the onehot array
@@ -117,12 +117,11 @@ class NeuralNetworkData {
     let unNormalized;
 
     if (!_input.every(v => typeof v === 'number')) {
-      console.log({
-        warn: 'not a numeric array, returning given value'
-      })
+      // console.log({
+      //   warn: 'not a numeric array, returning given value'
+      // })
 
       if (_options.legend) {
-        console.log("yes!")
         unNormalized = inputArray.map(v => {
           let res;
           Object.entries(_options.legend).forEach(item => {
