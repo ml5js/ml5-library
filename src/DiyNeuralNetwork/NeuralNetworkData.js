@@ -31,13 +31,6 @@ class NeuralNetworkData {
   }
 
   /**
-   * toggles meta.isNormalized
-   */
-  isNormalized() {
-    this.meta.isNormalized = !this.meta.isNormalized;
-  }
-
-  /**
    * normalizeRaws
    * @param {*} dataRaw 
    * @param {*} inputOrOutputMeta 
@@ -374,9 +367,9 @@ class NeuralNetworkData {
    * gets the data types of the data we're using
    * important for handling oneHot
    */
-  // eslint-disable-next-line class-methods-use-this
   getDTypesFromData(_dataRaw) {
     const meta = {
+      ...this.meta,
       inputs: {},
       outputs: {}
     }

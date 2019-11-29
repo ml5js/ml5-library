@@ -72,10 +72,12 @@ class DiyNeuralNetwork {
       console.log('Not a valid data format. Must be csv or json')
     }
 
+    console.log(this.neuralNetworkData.meta)
     // once the data are loaded, create the metadata 
     // and prep the data for training
     this.createMetaDataFromData();
     this.warmUp();
+    console.log(this.neuralNetworkData.meta)
   }
 
   /**
@@ -166,7 +168,10 @@ class DiyNeuralNetwork {
 
     // set this equal to the training data
     this.data.training = trainingData;
-
+    
+    // set isNormalized to true
+    this.neuralNetworkData.meta.isNormalized = true;
+    
     return trainingData;
   }
 
@@ -541,9 +546,9 @@ class DiyNeuralNetwork {
       
       const files = await Promise.all(
         Array.from(filesOrPath).map( async (file) => {
-          if (file.name.includes('model.json')) {
+          if (file.name.includes('.json') && !file.name.includes('_meta')) {
             return {name:"model", file}
-          } else if (file.name.includes('_meta.json')) {
+          } else if ( file.name.includes('.json') && file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
             return {name: "metadata", file:modelMetadata}
           } else if (file.name.includes('.bin')) {
