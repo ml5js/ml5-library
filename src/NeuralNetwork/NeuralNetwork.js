@@ -166,7 +166,6 @@ class NeuralNetwork {
    * @param {*} _meta 
    */
   async classifyInternal(_inputs, _meta = null) {
-
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
     })
@@ -182,8 +181,10 @@ class NeuralNetwork {
           label: item[0],
           confidence: result[0][idx]
         };
-      })
+      }).sort( (a, b) => b.confidence - a.confidence)
 
+      output.dispose();
+      _inputs.dispose();
       return results;
     }
 
@@ -209,6 +210,9 @@ class NeuralNetwork {
           value: result[0][idx]
         };
       })
+
+      output.dispose();
+      _inputs.dispose();
 
       return results;
     }

@@ -157,6 +157,15 @@ class DiyNeuralNetwork {
    * @param {*} _meta 
    */
   normalizeData(_dataRaw = null, _meta = null) {
+    
+    if(!this.neuralNetworkData.isMetadataReady){
+      this.createMetaDataFromData();
+    }
+
+    if(!this.neuralNetworkData.isWarmedUp){
+      this.warmUp();
+    }
+
     const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
     const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
 
@@ -344,7 +353,7 @@ class DiyNeuralNetwork {
    * @param {*} _options 
    */
   compile(_modelOptions = null, _learningRate = null) {
-    const LEARNING_RATE = _learningRate === null ? 0.25 : _learningRate;
+    const LEARNING_RATE = _learningRate === null ? 0.2 : _learningRate;
 
     let options = {};
 
