@@ -287,5 +287,62 @@ class NeuralNetwork {
     }));
   }
 
+  /**
+   * loads the model and weights
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async load(filesOrPath = null, callback){
+    if (filesOrPath instanceof FileList) {
+      
+      const files = await Promise.all(
+        Array.from(filesOrPath).map( async (file) => {
+          if (file.name.includes('.json') && !file.name.includes('_meta')) {
+            return {name:"model", file}
+          } else if ( file.name.includes('.json') && file.name.includes('_meta.json')) {
+            const modelMetadata = await file.text();
+            return {name: "metadata", file:modelMetadata}
+          } else if (file.name.includes('.bin')) {
+            return {name:"weights", file}
+          }
+          return {name:null, file:null}
+        })
+       )
+
+      const model = files.find(item => item.name === 'model').file;
+      const weights = files.find(item => item.name === 'weights').file;
+
+      // load the model
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
+
+    } else if(filesOrPath instanceof Object){
+      // filesOrPath = {model: URL, metadata: URL, weights: URL}
+
+      let modelJson = await fetch(filesOrPath.model);
+      modelJson = await modelJson.text();
+      const modelJsonFile = new File([modelJson], 'model.json', {type: 'application/json'});
+
+      let weightsBlob = await fetch(filesOrPath.weights);
+      weightsBlob = await weightsBlob.blob();
+      const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', {type: 'application/macbinary'});
+
+      this.model = await tf.loadLayersModel(tf.io.browserFiles([modelJsonFile, weightsBlobFile]));
+
+    } else {
+      this.model = await tf.loadLayersModel(filesOrPath);
+    }
+
+    this.isCompiled = true;
+    this.isLayered = true;
+    this.isTrained = true;
+
+    if (callback) {
+      callback();
+    }
+    return this.model;
+  }
+
+
 }
 export default NeuralNetwork;

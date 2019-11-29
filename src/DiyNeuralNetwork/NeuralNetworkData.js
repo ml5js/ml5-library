@@ -646,6 +646,60 @@ class NeuralNetworkData {
 
   }
 
+
+    /**
+   * load a model and metadata
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
+  async loadMeta(filesOrPath = null, callback) {
+
+    if (filesOrPath instanceof FileList) {
+      
+      const files = await Promise.all(
+        Array.from(filesOrPath).map( async (file) => {
+          if (file.name.includes('.json') && !file.name.includes('_meta')) {
+            return {name:"model", file}
+          } else if ( file.name.includes('.json') && file.name.includes('_meta.json')) {
+            const modelMetadata = await file.text();
+            return {name: "metadata", file:modelMetadata}
+          } else if (file.name.includes('.bin')) {
+            return {name:"weights", file}
+          }
+          return {name:null, file:null}
+        })
+       )
+
+      const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
+
+      this.meta = modelMetadata;
+
+    } else if(filesOrPath instanceof Object){
+      // filesOrPath = {model: URL, metadata: URL, weights: URL}
+
+      let modelMetadata = await fetch(filesOrPath.metadata);
+      modelMetadata = await modelMetadata.text();
+      modelMetadata = JSON.parse(modelMetadata);
+      
+      this.meta = modelMetadata;
+
+    } else {
+      const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
+      let modelMetadata = await fetch(metaPath);
+      modelMetadata = await modelMetadata.json();
+
+      this.meta = modelMetadata;
+    }
+
+    this.isMetadataReady = true;
+    this.isWarmedUp = true;
+
+    if (callback) {
+      callback();
+    }
+    return this.meta;
+  }
+
  
 
 
