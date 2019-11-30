@@ -561,9 +561,17 @@ class DiyNeuralNetwork {
     
   }
 
+  /**
+   * save data
+   * @param {*} name 
+   */
+  saveData(name){
+    this.neuralNetworkData.saveData(name);
+  }
+
 
   /**
-   * 
+   * load data
    * @param {*} filesOrPath 
    * @param {*} callback 
    */
