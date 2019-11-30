@@ -36,7 +36,7 @@ class DiyNeuralNetwork {
    */
   init(callback) {
     if (this.options.dataUrl !== null) {
-      this.ready = this.loadData(this.options, callback);
+      this.ready = this.loadDataFromUrl(this.options, callback);
     } else {
       this.ready = true;
     }
@@ -47,7 +47,7 @@ class DiyNeuralNetwork {
    * @param {*} options 
    * @param {*} callback 
    */
-  loadData(options, callback) {
+  loadDataFromUrl(options, callback) {
     return callCallback(this.loadDataInternal(options), callback)
   }
 
@@ -559,6 +559,16 @@ class DiyNeuralNetwork {
       return this.neuralNetwork.model;
     })
     
+  }
+
+
+  /**
+   * 
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
+  async loadData(filesOrPath = null, callback){
+    this.neuralNetworkData.loadData(filesOrPath, callback);
   }
 
 

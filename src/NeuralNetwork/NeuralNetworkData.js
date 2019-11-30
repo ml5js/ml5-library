@@ -615,6 +615,46 @@ class NeuralNetworkData {
     await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
   }
 
+   /**
+   * loadData from fileinput or path
+   * @param {*} filesOrPath
+   * @param {*} callback
+   */
+  async loadData(filesOrPath = null, callback) {
+
+    let loadedData;
+    if (typeof filesOrPath !== 'string') {
+      const file = filesOrPath[0];
+      const fr = new FileReader();
+      fr.readAsText(file);
+      if (file.name.includes('.json')) {
+        const temp = await file.text();
+        loadedData = JSON.parse(temp);
+      } else {
+        console.log('data must be a json object containing an array called "data" or "entries')
+      }
+    } else {
+      loadedData = await fetch(filesOrPath);
+      const text = await loadedData.text();
+      if (this.isJsonString(text)) {
+        loadedData = JSON.parse(text);
+      } else {
+        console.log('Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData')
+      }
+    }
+
+    this.data.raw = this.findEntries(loadedData);
+
+    // check if a data or entries property exists
+    if (!this.data.raw.length > 0) {
+      console.log('data must be a json object containing an array called "data" ')
+    }
+
+    if (callback) {
+      callback();
+    }
+  }
+
   /**
    * Saves metadata of the data
    * @param {*} nameOrCb 

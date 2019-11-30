@@ -229,6 +229,8 @@ class NeuralNetwork {
           value: val,
         };
 
+        // if unNormalized is not undefined, then
+        // add that to the output 
         if(unNormalized){
           d.unNormalizedValue = unNormalized;
         }
