@@ -214,18 +214,27 @@ class NeuralNetwork {
         // if not, then send back the values, otherwise
         // unnormalize then return
         let val;
+        let unNormalized;
         if(_meta.isNormalized){
           const { min, max} = _meta.outputs[item];
           val = this.unNormalizeValue(result[0][idx], min, max)
+          unNormalized = result[0][idx]
         } else{
           val = result[0][idx]
         }
         
-        return {
+        const d =  {
           [labels[idx]]: val,
           label: item,
-          value: val
+          value: val,
         };
+
+        if(unNormalized){
+          d.unNormalizedValue = unNormalized;
+        }
+
+        return d;
+
       })
 
       output.dispose();
