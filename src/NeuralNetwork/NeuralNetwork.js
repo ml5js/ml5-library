@@ -148,38 +148,9 @@ class NeuralNetwork {
     return this.predict(_inputs);
   }
 
-
-  // TODO: 
-  
-  //  /**
-  //  * predictMultiple
-  //  * @param {*} _inputs 
-  //  * @param {*} _cb 
-  //  */
-  // predictMultiple(_inputs, _cb) {
-  //   return callCallback(this.predictMultipleInternal(_inputs), _cb);
-  // }
-
-  // /**
-  //  * classifyMultiple
-  //  * @param {*} _inputs 
-  //  * @param {*} _cb 
-  //  */
-  // classifyMultiple(_inputs, _cb) {
-  //   this.predictMultiple(_inputs, _cb);
-  // }
-
-  // // eslint-disable-next-line class-methods-use-this
-  // async predictMultipleInternal(_inputs) {
-  //   const output = tf.tidy(() => {
-  //     return this.model.predict(_inputs);
-  //   })
-  //   const result = await output.array();
-  //   output.dispose();
-  //   _inputs.dispose();
-  //   return result;
-  // }
-
+  // predictMultiple
+  // classifyMultiple 
+  // are the same as .predict()
 
   // eslint-disable-next-line class-methods-use-this
   async save(nameOrCb, cb) {

@@ -169,6 +169,11 @@ class NeuralNetworkData {
     return meta;
   }
 
+  /**
+   * applyOneHotEncodingsToDataRaw
+   * @param {*} _dataRaw 
+   * @param {*} _meta 
+   */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   applyOneHotEncodingsToDataRaw(_dataRaw = null, _meta = null) {
     let dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
@@ -615,7 +620,7 @@ class NeuralNetworkData {
     await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
   }
 
-   /**
+  /**
    * loadData from fileinput or path
    * @param {*} filesOrPath
    * @param {*} callback
@@ -686,7 +691,7 @@ class NeuralNetworkData {
   }
 
 
-    /**
+  /**
    * load a model and metadata
    * @param {*} filesOrPath 
    * @param {*} callback 
@@ -694,32 +699,44 @@ class NeuralNetworkData {
   async loadMeta(filesOrPath = null, callback) {
 
     if (filesOrPath instanceof FileList) {
-      
+
       const files = await Promise.all(
-        Array.from(filesOrPath).map( async (file) => {
+        Array.from(filesOrPath).map(async (file) => {
           if (file.name.includes('.json') && !file.name.includes('_meta')) {
-            return {name:"model", file}
-          } else if ( file.name.includes('.json') && file.name.includes('_meta.json')) {
+            return {
+              name: "model",
+              file
+            }
+          } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
-            return {name: "metadata", file:modelMetadata}
+            return {
+              name: "metadata",
+              file: modelMetadata
+            }
           } else if (file.name.includes('.bin')) {
-            return {name:"weights", file}
+            return {
+              name: "weights",
+              file
+            }
           }
-          return {name:null, file:null}
+          return {
+            name: null,
+            file: null
+          }
         })
-       )
+      )
 
       const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
 
       this.meta = modelMetadata;
 
-    } else if(filesOrPath instanceof Object){
+    } else if (filesOrPath instanceof Object) {
       // filesOrPath = {model: URL, metadata: URL, weights: URL}
 
       let modelMetadata = await fetch(filesOrPath.metadata);
       modelMetadata = await modelMetadata.text();
       modelMetadata = JSON.parse(modelMetadata);
-      
+
       this.meta = modelMetadata;
 
     } else {
@@ -739,7 +756,7 @@ class NeuralNetworkData {
     return this.meta;
   }
 
- 
+
 
 
   /*
@@ -749,7 +766,7 @@ class NeuralNetworkData {
    */
 
   /**
-   * 
+   * createLabelsFromArrayValues
    * @param {*} incoming 
    * @param {*} prefix 
    */
@@ -878,11 +895,23 @@ class NeuralNetworkData {
 
   }
 
+  /**
+   * normalizeValue
+   * @param {*} value 
+   * @param {*} min 
+   * @param {*} max 
+   */
   // eslint-disable-next-line class-methods-use-this
   normalizeValue(value, min, max) {
     return ((value - min) / (max - min))
   }
 
+  /**
+   * unNormalizeValue
+   * @param {*} value 
+   * @param {*} min 
+   * @param {*} max 
+   */
   // eslint-disable-next-line class-methods-use-this
   unNormalizeValue(value, min, max) {
     return ((value * (max - min)) + min)
