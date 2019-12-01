@@ -148,11 +148,6 @@ class NeuralNetwork {
     return this.predict(_inputs);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  unNormalizeValue(value, min, max) {
-    return ((value * (max - min)) + min)
-  }
-
 
   // TODO: 
   

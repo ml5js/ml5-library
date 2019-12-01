@@ -469,7 +469,7 @@ class DiyNeuralNetwork {
             min,
             max
           } = meta.outputs[item];
-          val = this.unNormalizeValue(unformattedResults[0][idx], min, max)
+          val = this.neuralNetworkData.unNormalizeValue(unformattedResults[0][idx], min, max)
           unNormalized = unformattedResults[0][idx]
         } else {
           val = unformattedResults[0][idx]
