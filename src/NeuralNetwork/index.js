@@ -393,7 +393,7 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * 
+   * predict
    * @param {*} _input 
    * @param {*} _cb 
    */
@@ -402,11 +402,29 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * 
+   * predictMultiple
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  predictMultiple(_input, _cb) {
+    return callCallback(this.predictInternal(_input), _cb)
+  }
+
+  /**
+   * classify
    * @param {*} _input 
    * @param {*} _cb 
    */
   classify(_input, _cb) {
+    return callCallback(this.classifyInternal(_input), _cb)
+  }
+
+  /**
+   * classifyMultiple
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  classifyMultiple(_input, _cb) {
     return callCallback(this.classifyInternal(_input), _cb)
   }
 
@@ -422,10 +440,14 @@ class DiyNeuralNetwork {
   formatInputsForPrediction(_input, meta, inputHeaders) {
     let inputData = [];
 
+    // TODO: check to see if it is a nested array 
+    // to run predict or classify on a batch of data
+
     if (_input instanceof Array) {
       inputData = inputHeaders.map((prop, idx) => {
         return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
       });
+
     } else if (_input instanceof Object) {
       // TODO: make sure that the input order is preserved!
       inputData = inputHeaders.map(prop => {
@@ -433,9 +455,32 @@ class DiyNeuralNetwork {
       });
     }
 
-    inputData = tf.tensor([inputData.flat()])
+    // inputData = tf.tensor([inputData.flat()])
+    inputData = inputData.flat()
 
     return inputData;
+  }
+
+
+  formatInputsForPredictionAll(_input, meta, inputHeaders) {
+    let output;
+
+    if (_input instanceof Array) {
+      if (_input.every(item => Array.isArray(item))) {
+
+        output = _input.map(item => {
+          return this.formatInputsForPrediction(item, meta, inputHeaders)
+        })
+
+        return tf.tensor(output, [_input.length, inputHeaders.length]);
+
+      }
+      output = this.formatInputsForPrediction(_input, meta, inputHeaders)
+      return tf.tensor(output, [_input.length, inputHeaders.length]);
+    }
+
+    output = this.formatInputsForPrediction(_input, meta, inputHeaders)
+    return tf.tensor([output]);
   }
 
   /**
@@ -450,7 +495,7 @@ class DiyNeuralNetwork {
     } = this.neuralNetworkData;
     const headers = Object.keys(meta.inputs);
 
-    const inputData = this.formatInputsForPrediction(_input, meta, headers);
+    const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
 
     const unformattedResults = await this.neuralNetwork.predict(inputData);
     inputData.dispose();
@@ -458,39 +503,45 @@ class DiyNeuralNetwork {
     if (meta !== null) {
       const labels = Object.keys(meta.outputs);
 
-      const formattedResults = labels.map((item, idx) => {
-        // check to see if the data were normalized
-        // if not, then send back the values, otherwise
-        // unnormalize then return
-        let val;
-        let unNormalized;
-        if (meta.isNormalized) {
-          const {
-            min,
-            max
-          } = meta.outputs[item];
-          val = this.neuralNetworkData.unNormalizeValue(unformattedResults[0][idx], min, max)
-          unNormalized = unformattedResults[0][idx]
-        } else {
-          val = unformattedResults[0][idx]
-        }
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return labels.map((item, idx) => {
+          // check to see if the data were normalized
+          // if not, then send back the values, otherwise
+          // unnormalize then return
+          let val;
+          let unNormalized;
+          if (meta.isNormalized) {
+            const {
+              min,
+              max
+            } = meta.outputs[item];
+            val = this.neuralNetworkData.unNormalizeValue(unformattedResult[idx], min, max)
+            unNormalized = unformattedResult[idx]
+          } else {
+            val = unformattedResult[idx]
+          }
 
-        const d = {
-          [labels[idx]]: val,
-          label: item,
-          value: val,
-        };
+          const d = {
+            [labels[idx]]: val,
+            label: item,
+            value: val,
+          };
 
-        // if unNormalized is not undefined, then
-        // add that to the output 
-        if (unNormalized) {
-          d.unNormalizedValue = unNormalized;
-        }
+          // if unNormalized is not undefined, then
+          // add that to the output 
+          if (unNormalized) {
+            d.unNormalizedValue = unNormalized;
+          }
 
-        return d;
-
+          return d;
+        })
       })
 
+      // return single array if the length is less than 2, 
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
       return formattedResults;
     }
 
@@ -510,7 +561,7 @@ class DiyNeuralNetwork {
     } = this.neuralNetworkData;
     const headers = Object.keys(meta.inputs);
 
-    const inputData = this.formatInputsForPrediction(_input, meta, headers);
+    const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
 
     const unformattedResults = await this.neuralNetwork.classify(inputData);
     inputData.dispose();
@@ -519,14 +570,21 @@ class DiyNeuralNetwork {
       const label = Object.keys(meta.outputs)[0]
       const vals = Object.entries(meta.outputs[label].legend);
 
-      const formattedResults = vals.map((item, idx) => {
-        return {
-          [item[0]]: unformattedResults[0][idx],
-          label: item[0],
-          confidence: unformattedResults[0][idx]
-        };
-      }).sort((a, b) => b.confidence - a.confidence)
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return vals.map((item, idx) => {
+          return {
+            [item[0]]: unformattedResult[idx],
+            label: item[0],
+            confidence: unformattedResult[idx]
+          };
+        }).sort((a, b) => b.confidence - a.confidence)
+      });
 
+      // return single array if the length is less than 2, 
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
       return formattedResults;
     }
 
