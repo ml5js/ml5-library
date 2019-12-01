@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import NeuralNetwork from './NeuralNetwork';
 import NeuralNetworkData from './NeuralNetworkData';
+import NeuralNetworkVis from './NeuralNetworkVis';
 import callCallback from '../utils/callcallback';
 
 const DEFAULTS = {
@@ -22,6 +23,7 @@ class DiyNeuralNetwork {
 
     this.neuralNetwork = new NeuralNetwork();
     this.neuralNetworkData = new NeuralNetworkData();
+    this.neuralNetworkVis = new NeuralNetworkVis();
 
     this.data = {
       training: []
@@ -306,7 +308,7 @@ class DiyNeuralNetwork {
     // set the output units
     this.options.layers[layersLength - 1].units = this.options.layers[layersLength - 1].units ? this.options.layers[layersLength - 1].units : outputUnits;
 
-    
+
     this.options.layers.forEach(layer => {
       this.addLayer(tf.layers[layer.type](layer));
     })
