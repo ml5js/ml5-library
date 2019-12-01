@@ -125,73 +125,27 @@ class NeuralNetwork {
   }
 
   /**
-   * predict
+   * returns the prediction as an array
    * @param {*} _inputs 
-   * @param {*} _cb 
    */
-  predict(_inputs, _metaOrCb = null, _cb) {
-    let cb;
-    let meta;
-    if(typeof _metaOrCb === 'function'){
-      cb = _metaOrCb;
-      meta = null;
-    } else if(_metaOrCb instanceof Object ){
-      meta = _metaOrCb;
-      cb = _cb;
-    }
-    return callCallback(this.predictInternal(_inputs, meta), cb);
-  }
-
-  /**
-   * classify
-   * @param {*} _inputs 
-   * @param {*} _cb 
-   */
-  classify(_inputs, _metaOrCb = null, _cb) {
-    let cb;
-    let meta;
-    if(typeof _metaOrCb === 'function'){
-      cb = _metaOrCb;
-      meta = null;
-    } else if(_metaOrCb instanceof Object ){
-      meta = _metaOrCb;
-      cb = _cb;
-    }
-    return callCallback(this.classifyInternal(_inputs, meta), cb);
-  }  
-
-  /**
-   * 
-   * @param {*} _inputs 
-   * @param {*} _meta 
-   */
-  async classifyInternal(_inputs, _meta = null) {
+  async predict(_inputs){
     const output = tf.tidy(() => {
       return this.model.predict(_inputs);
     })
     const result = await output.array();
 
-    if (_meta !== null) {
-      const label = Object.keys(_meta.outputs)[0]
-      const vals = Object.entries(_meta.outputs[label].legend);
-
-      const results = vals.map((item, idx) => {
-        return {
-          [item[0]]: result[0][idx],
-          label: item[0],
-          confidence: result[0][idx]
-        };
-      }).sort( (a, b) => b.confidence - a.confidence)
-
-      output.dispose();
-      _inputs.dispose();
-      return results;
-    }
-
     output.dispose();
     _inputs.dispose();
 
     return result;
+  }
+
+  /**
+   * classify is the same as .predict()
+   * @param {*} _inputs 
+   */
+  async classify(_inputs){
+    return this.predict(_inputs);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -199,57 +153,6 @@ class NeuralNetwork {
     return ((value * (max - min)) + min)
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  async predictInternal(_inputs, _meta) {
-    const output = tf.tidy(() => {
-      return this.model.predict(_inputs);
-    })
-    const result = await output.array();
-
-    if (_meta !== null) {
-      const labels = Object.keys(_meta.outputs);
-      const results = labels.map((item, idx) => {
-        
-        // check to see if the data were normalized
-        // if not, then send back the values, otherwise
-        // unnormalize then return
-        let val;
-        let unNormalized;
-        if(_meta.isNormalized){
-          const { min, max} = _meta.outputs[item];
-          val = this.unNormalizeValue(result[0][idx], min, max)
-          unNormalized = result[0][idx]
-        } else{
-          val = result[0][idx]
-        }
-        
-        const d =  {
-          [labels[idx]]: val,
-          label: item,
-          value: val,
-        };
-
-        // if unNormalized is not undefined, then
-        // add that to the output 
-        if(unNormalized){
-          d.unNormalizedValue = unNormalized;
-        }
-
-        return d;
-
-      })
-
-      output.dispose();
-      _inputs.dispose();
-
-      return results;
-    }
-
-    output.dispose();
-    _inputs.dispose();
-
-    return result;
-  }
 
   // TODO: 
   

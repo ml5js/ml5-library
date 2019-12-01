@@ -38,7 +38,7 @@ class DiyNeuralNetwork {
   init(callback) {
     if (this.options.dataUrl !== null) {
       this.ready = this.loadDataFromUrl(this.options, callback);
-    } else if(this.options.modelUrl !== null) {
+    } else if (this.options.modelUrl !== null) {
       // will take a URL to model.json, an object, or files array
       this.ready = this.load(this.options.modelUrl, callback);
     } else {
@@ -161,12 +161,12 @@ class DiyNeuralNetwork {
    * @param {*} _meta 
    */
   normalizeData(_dataRaw = null, _meta = null) {
-    
-    if(!this.neuralNetworkData.isMetadataReady){
+
+    if (!this.neuralNetworkData.isMetadataReady) {
       this.createMetaDataFromData();
     }
 
-    if(!this.neuralNetworkData.isWarmedUp){
+    if (!this.neuralNetworkData.isWarmedUp) {
       this.warmUp();
     }
 
@@ -179,7 +179,7 @@ class DiyNeuralNetwork {
 
     // set this equal to the training data
     this.data.training = trainingData;
-    
+
     // set isNormalized to true
     this.neuralNetworkData.meta.isNormalized = true;
 
@@ -324,27 +324,33 @@ class DiyNeuralNetwork {
    * @param {*} yInputs 
    * @param {*} options 
    */
-  addData(xInputs, yInputs, options = null){
-    const {inputs, outputs} = this.options;
- 
+  addData(xInputs, yInputs, options = null) {
+    const {
+      inputs,
+      outputs
+    } = this.options;
+
     let DATA_OPTIONS;
     let inputLabels;
     let outputLabels;
-    
-    if(options !== null){
+
+    if (options !== null) {
       // eslint-disable-next-line prefer-destructuring
       inputLabels = options.inputLabels;
       // eslint-disable-next-line prefer-destructuring
       outputLabels = options.outputLabels;
-    } else if ( (inputs.length > 0) && (outputs.length > 0) ){
+    } else if ((inputs.length > 0) && (outputs.length > 0)) {
       // if the inputs and outputs labels have been defined
       // in the constructor
       inputLabels = inputs;
       outputLabels = outputs;
-    } 
+    }
 
-    if(inputLabels && outputLabels){
-      DATA_OPTIONS = {inputLabels, outputLabels}
+    if (inputLabels && outputLabels) {
+      DATA_OPTIONS = {
+        inputLabels,
+        outputLabels
+      }
     } else {
       DATA_OPTIONS = null
     }
@@ -386,30 +392,111 @@ class DiyNeuralNetwork {
     this.neuralNetwork.compile(options);
   }
 
+  /**
+   * 
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  predict(_input, _cb) {
+    return callCallback(this.predictInternal(_input), _cb)
+  }
+
+  /**
+   * 
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  classify(_input, _cb) {
+    return callCallback(this.classifyInternal(_input), _cb)
+  }
+
+  /**
+   * format the inputs for prediction
+   * this means applying onehot or normalization
+   * so that the user can use original data units rather 
+   * than having to normalize
+   * @param {*} _input 
+   * @param {*} meta 
+   * @param {*} inputHeaders 
+   */
+  formatInputsForPrediction(_input, meta, inputHeaders) {
+    let inputData = [];
+
+    if (_input instanceof Array) {
+      inputData = inputHeaders.map((prop, idx) => {
+        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
+      });
+    } else if (_input instanceof Object) {
+      // TODO: make sure that the input order is preserved!
+      inputData = inputHeaders.map(prop => {
+        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
+      });
+    }
+
+    inputData = tf.tensor([inputData.flat()])
+
+    return inputData;
+  }
 
   /**
    * predict
    * @param {*} _input 
    * @param {*} _cb 
    */
-  predict(_input, _cb) {
-    let inputData = [];
-    const {meta} = this.neuralNetworkData;
+  async predictInternal(_input) {
+
+    const {
+      meta
+    } = this.neuralNetworkData;
     const headers = Object.keys(meta.inputs);
 
-    if (_input instanceof Array) {
-      inputData = headers.map( (prop, idx) => {
-        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
-      });
-    } else if (_input instanceof Object) {
-      // TODO: make sure that the input order is preserved!
-      inputData = headers.map(prop => {
-        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
-      });
+    const inputData = this.formatInputsForPrediction(_input, meta, headers);
+
+    const unformattedResults = await this.neuralNetwork.predict(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const labels = Object.keys(meta.outputs);
+
+      const formattedResults = labels.map((item, idx) => {
+        // check to see if the data were normalized
+        // if not, then send back the values, otherwise
+        // unnormalize then return
+        let val;
+        let unNormalized;
+        if (meta.isNormalized) {
+          const {
+            min,
+            max
+          } = meta.outputs[item];
+          val = this.unNormalizeValue(unformattedResults[0][idx], min, max)
+          unNormalized = unformattedResults[0][idx]
+        } else {
+          val = unformattedResults[0][idx]
+        }
+
+        const d = {
+          [labels[idx]]: val,
+          label: item,
+          value: val,
+        };
+
+        // if unNormalized is not undefined, then
+        // add that to the output 
+        if (unNormalized) {
+          d.unNormalizedValue = unNormalized;
+        }
+
+        return d;
+
+      })
+
+      return formattedResults;
     }
 
-    inputData = tf.tensor([inputData.flat()])
-    this.neuralNetwork.predict(inputData, meta, _cb);
+    // if no meta exists, then return unformatted results;
+    return unformattedResults;
+
   }
 
   /**
@@ -417,24 +504,33 @@ class DiyNeuralNetwork {
    * @param {*} _input 
    * @param {*} _cb 
    */
-  classify(_input, _cb) {
-    let inputData = [];
-    const {meta} = this.neuralNetworkData;
+  async classifyInternal(_input) {
+    const {
+      meta
+    } = this.neuralNetworkData;
     const headers = Object.keys(meta.inputs);
 
-    if (_input instanceof Array) {
-      inputData = headers.map( (prop, idx) => {
-        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
-      });
-    } else if (_input instanceof Object) {
-      // TODO: make sure that the input order is preserved!
-      inputData = headers.map(prop => {
-        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
-      });
+    const inputData = this.formatInputsForPrediction(_input, meta, headers);
+
+    const unformattedResults = await this.neuralNetwork.classify(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const label = Object.keys(meta.outputs)[0]
+      const vals = Object.entries(meta.outputs[label].legend);
+
+      const formattedResults = vals.map((item, idx) => {
+        return {
+          [item[0]]: unformattedResults[0][idx],
+          label: item[0],
+          confidence: unformattedResults[0][idx]
+        };
+      }).sort((a, b) => b.confidence - a.confidence)
+
+      return formattedResults;
     }
 
-    inputData = tf.tensor([inputData.flat()])
-    this.neuralNetwork.classify(inputData, meta, _cb);
+    return unformattedResults;
   }
 
   /**
@@ -444,18 +540,18 @@ class DiyNeuralNetwork {
    * @param {*} _meta 
    */
   // eslint-disable-next-line class-methods-use-this
-  isOneHotEncodedOrNormalized(_input, _key, _meta){
+  isOneHotEncodedOrNormalized(_input, _key, _meta) {
     const input = _input;
     const key = _key;
 
     let output;
-    if(typeof _input !== 'number'){
+    if (typeof _input !== 'number') {
       output = _meta[key].legend[input];
     } else {
       output = _input;
-      if(this.neuralNetworkData.meta.isNormalized){
+      if (this.neuralNetworkData.meta.isNormalized) {
         output = this.normalizeInput(_input, key, _meta);
-      } 
+      }
     }
     return output;
   }
@@ -466,9 +562,12 @@ class DiyNeuralNetwork {
    * @param {*} _key 
    * @param {*} _meta 
    */
-  normalizeInput(value, _key ,_meta){
+  normalizeInput(value, _key, _meta) {
     const key = _key;
-    const {min, max} = _meta[key];
+    const {
+      min,
+      max
+    } = _meta[key];
     return this.neuralNetworkData.normalizeValue(value, min, max);
   }
 
@@ -521,26 +620,26 @@ class DiyNeuralNetwork {
    * @param {*} nameOrCb 
    * @param {*} cb 
    */
-  save(nameOrCb, cb){
+  save(nameOrCb, cb) {
     let modelName;
     let callback;
 
-    if(typeof nameOrCb === 'function'){
+    if (typeof nameOrCb === 'function') {
       modelName = 'model';
       callback = nameOrCb;
-    } else if (typeof nameOrCb === 'string'){
+    } else if (typeof nameOrCb === 'string') {
       modelName = nameOrCb
 
-      if(typeof cb === 'function'){
+      if (typeof cb === 'function') {
         callback = cb
-      } 
+      }
 
     } else {
       modelName = 'model';
     }
 
     // save the model
-    this.neuralNetwork.save(modelName, () =>{
+    this.neuralNetwork.save(modelName, () => {
       this.neuralNetworkData.saveMeta(modelName, callback);
     });
 
@@ -553,23 +652,23 @@ class DiyNeuralNetwork {
    */
   async load(filesOrPath = null, cb) {
     let callback;
-    if(cb){
+    if (cb) {
       callback = cb
     }
 
     this.neuralNetwork.load(filesOrPath, () => {
       this.neuralNetworkData.loadMeta(filesOrPath, callback);
-      
+
       return this.neuralNetwork.model;
     })
-    
+
   }
 
   /**
    * save data
    * @param {*} name 
    */
-  saveData(name){
+  saveData(name) {
     this.neuralNetworkData.saveData(name);
   }
 
@@ -579,7 +678,7 @@ class DiyNeuralNetwork {
    * @param {*} filesOrPath 
    * @param {*} callback 
    */
-  async loadData(filesOrPath = null, callback){
+  async loadData(filesOrPath = null, callback) {
     this.neuralNetworkData.loadData(filesOrPath, callback);
   }
 
