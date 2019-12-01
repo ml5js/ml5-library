@@ -8,6 +8,7 @@ const DEFAULTS = {
   outputs: [],
   dataUrl: null,
   modelUrl: null,
+  layers: [],
   task: null
 }
 class DiyNeuralNetwork {
@@ -264,6 +265,12 @@ class DiyNeuralNetwork {
       options.outputs = outputs;
     }
 
+    // check to see if layers are passed into the constructor
+    // then use those to create your architecture
+    if (!this.neuralNetwork.isLayered) {
+      this.addCustomLayers();
+    }
+
     // if the model does not have any layers defined yet
     // then use the default structure
     if (!this.neuralNetwork.isLayered) {
@@ -277,6 +284,35 @@ class DiyNeuralNetwork {
 
     // train once the model is compiled
     this.neuralNetwork.train(options, finishedTrainingCb);
+  }
+
+
+  /**
+   * add custom layers in options
+   */
+  addCustomLayers() {
+    const {
+      inputUnits,
+      outputUnits
+    } = this.neuralNetworkData.meta;
+    const layersLength = this.options.layers.length;
+
+    if (!this.options.layers.length >= 2) {
+      return false;
+    }
+
+    // set the inputShape
+    this.options.layers[0].inputShape = this.options.layers[0].inputShape ? this.options.layers[0].inputShape : [inputUnits];
+    // set the output units
+    this.options.layers[layersLength - 1].units = this.options.layers[layersLength - 1].units ? this.options.layers[layersLength - 1].units : outputUnits;
+
+    
+    this.options.layers.forEach(layer => {
+      this.addLayer(tf.layers[layer.type](layer));
+    })
+
+    return true;
+
   }
 
 

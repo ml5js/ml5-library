@@ -6,10 +6,7 @@ import {
 
 class NeuralNetworkData {
   constructor() {
-    this.config = {
-      dataUrl: null,
-    }
-
+    
     this.meta = {
       // number of units - varies depending on input data type
       inputUnits: null,
