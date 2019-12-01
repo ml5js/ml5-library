@@ -7,6 +7,7 @@ const DEFAULTS = {
   inputs: [],
   outputs: [],
   dataUrl: null,
+  modelUrl: null,
   task: null
 }
 class DiyNeuralNetwork {
@@ -37,6 +38,9 @@ class DiyNeuralNetwork {
   init(callback) {
     if (this.options.dataUrl !== null) {
       this.ready = this.loadDataFromUrl(this.options, callback);
+    } else if(this.options.modelUrl !== null) {
+      // will take a URL to model.json, an object, or files array
+      this.ready = this.load(this.options.modelUrl, callback);
     } else {
       this.ready = true;
     }
