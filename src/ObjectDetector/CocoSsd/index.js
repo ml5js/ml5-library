@@ -49,16 +49,26 @@ class CocoSsdBase {
 
     /**
      * @typedef {Object} ObjectDetectorPrediction
-     * @property {number} x - top left x coordinate of the prediction box (0 to 1).
-     * @property {number} y - top left y coordinate of the prediction box (0 to 1).
-     * @property {number} w - width of the prediction box (0 to 1).
-     * @property {number} h - height of the prediction box (0 to 1).
+     * @property {number} x - top left x coordinate of the prediction box in pixels.
+     * @property {number} y - top left y coordinate of the prediction box in pixels.
+     * @property {number} width - width of the prediction box in pixels.
+     * @property {number} height - height of the prediction box in pixels.
      * @property {string} label - the label given.
      * @property {number} confidence - the confidence score (0 to 1).
+     * @property {ObjectDetectorPredictionNormalized} normalized - a normalized object of the predicition
      */
+
+    /**
+    * @typedef {Object} ObjectDetectorPredictionNormalized
+    * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+    * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+    * @property {number} width - width of the prediction box (0 to 1).
+    * @property {number} height - height of the prediction box (0 to 1).
+    */
     /**
      * Detect objects that are in video, returns bounding box, label, and confidence scores
      * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+     * @returns {ObjectDetectorPrediction}
      */
     async detectInternal(imgToPredict) {
 
@@ -67,10 +77,16 @@ class CocoSsdBase {
             return {
                 label: prediction.class,
                 confidence: prediction.score,
-                x: prediction.bbox[0] / imgToPredict.width,
-                y: prediction.bbox[1] / imgToPredict.height,
-                w: prediction.bbox[2] / imgToPredict.width,
-                h: prediction.bbox[3] / imgToPredict.height,
+                x: prediction.bbox[0],
+                y: prediction.bbox[1],
+                width: prediction.bbox[2],
+                height: prediction.bbox[3],
+                normalized: {
+                    x: prediction.bbox[0] / imgToPredict.width,
+                    y: prediction.bbox[1] / imgToPredict.height,
+                    width: prediction.bbox[2] / imgToPredict.width,
+                    height: prediction.bbox[3] / imgToPredict.height
+                }
             }
         })
 
@@ -82,6 +98,7 @@ class CocoSsdBase {
      * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
      * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
      *    that will be resolved once the prediction is done.
+     * @returns {ObjectDetectorPrediction}
      */
     async detect(inputOrCallback, cb) {
         await this.ready;
@@ -99,6 +116,8 @@ class CocoSsdBase {
         } else if (typeof inputOrCallback === "function") {
             imgToPredict = this.video;
             callback = inputOrCallback;
+        } else {
+            throw new Error('Detection subject not supported');
         }
 
         return callCallback(this.detectInternal(imgToPredict), callback);
