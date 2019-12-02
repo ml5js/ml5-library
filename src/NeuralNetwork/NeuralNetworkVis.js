@@ -12,6 +12,12 @@ class NeuralNetworkVis {
 
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    modelSummary(_options, _model){
+      const options = {..._options};
+      tfvis.show.modelSummary(options, _model);
+    }
+
     /**
      * creates a scatterplot from 1 input variable and 1 output variable
      * @param {*} inputLabel 

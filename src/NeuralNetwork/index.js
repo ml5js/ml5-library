@@ -448,6 +448,11 @@ class DiyNeuralNetwork {
       this.neuralNetwork.setOptimizerFunction(LEARNING_RATE, tf.train.sgd)
 
     this.neuralNetwork.compile(options);
+
+    // if debug mode is true, then show the model summary
+    if(this.options.debug){
+      this.neuralNetworkVis.modelSummary({name: 'Model Summary'}, this.neuralNetwork.model);
+    }
   }
 
   /**
