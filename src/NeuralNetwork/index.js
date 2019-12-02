@@ -10,7 +10,8 @@ const DEFAULTS = {
   dataUrl: null,
   modelUrl: null,
   layers: [],
-  task: null
+  task: null,
+  debug: false,
 }
 class DiyNeuralNetwork {
 
