@@ -3,24 +3,24 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-// const { objectDetector } = ml5;
+const { objectDetector } = ml5;
 
-// xdescribe('ObjectDetector', () => {
-//     let detector;
+describe('ObjectDetector', () => {
+    let detector;
 
-//     beforeAll(async () => {
-//         jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-//         detector = await objectDetector('CocoSsd');
-//     });
+    beforeAll(async () => {
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+        detector = await objectDetector('CocoSsd');
+    });
 
-//     it('throws error when a non image is trying to be detected', async () => {
-//         const notAnImage = 'not_an_image'
-//         try {
-//             await detector.detect(notAnImage);
-//             fail('Error should have been thrown');
-//         }
-//         catch (error) {
-//             expect(error.message).toBe('Detection subject not supported');
-//         }
-//     });
-// });
+    it('throws error when a non image is trying to be detected', async () => {
+        const notAnImage = 'not_an_image'
+        try {
+            await detector.detect(notAnImage);
+            fail('Error should have been thrown');
+        }
+        catch (error) {
+            expect(error.message).toBe('Detection subject not supported');
+        }
+    });
+});

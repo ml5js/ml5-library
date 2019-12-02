@@ -88,9 +88,10 @@ class YOLOBase extends Video {
 
   /**
    * Detect objects that are in video, returns bounding box, label, and confidence scores
-   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} inputOrCallback - Subject of the detection, or callback
-   * @param {function} cb - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
    *    that will be resolved once the prediction is done.
+   * @returns {ObjectDetectorPrediction}
    */
   async detect(inputOrCallback, cb) {
     await this.ready;
@@ -106,11 +107,36 @@ class YOLOBase extends Video {
     } else if (typeof inputOrCallback === "function") {
       imgToPredict = this.video;
       callback = inputOrCallback;
+    } else {
+      throw new Error('Detection subject not supported')
     }
 
     return callCallback(this.detectInternal(imgToPredict), callback);
   }
 
+  /**
+     * @typedef {Object} ObjectDetectorPrediction
+     * @property {number} x - top left x coordinate of the prediction box in pixels.
+     * @property {number} y - top left y coordinate of the prediction box in pixels.
+     * @property {number} width - width of the prediction box in pixels.
+     * @property {number} height - height of the prediction box in pixels.
+     * @property {string} label - the label given.
+     * @property {number} confidence - the confidence score (0 to 1).
+     * @property {ObjectDetectorPredictionNormalized} normalized - a normalized object of the predicition
+     */
+
+  /**
+  * @typedef {Object} ObjectDetectorPredictionNormalized
+  * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+  * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+  * @property {number} width - width of the prediction box (0 to 1).
+  * @property {number} height - height of the prediction box (0 to 1).
+  */
+  /**
+   * Detect objects that are in video, returns bounding box, label, and confidence scores
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+   * @returns {ObjectDetectorPrediction}
+   */
   async detectInternal(imgToPredict) {
     await this.ready;
     await tf.nextFrame();
@@ -177,10 +203,16 @@ class YOLOBase extends Video {
         const resultObj = {
           label: className,
           confidence: classProb,
-          x: x / imageSize,
-          y: y / imageSize,
-          w: w / imageSize,
-          h: h / imageSize,
+          x,
+          y,
+          width: w,
+          height: h,
+          normalized: {
+            x: x / imageSize,
+            y: y / imageSize,
+            width: w / imageSize,
+            height: h / imageSize,
+          }
         };
 
         results.push(resultObj);
