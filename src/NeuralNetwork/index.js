@@ -241,10 +241,29 @@ class DiyNeuralNetwork {
       ..._options
     };
 
-    options.whileTraining = whileTrainingCb === null ?
-      (epoch, loss) => {
-        console.log(epoch, loss.loss)
-      } : whileTrainingCb;
+    // if debug mode is true, then use tf vis
+    if (this.options.debug === true) {
+      options.whileTraining = [
+        this.neuralNetworkVis.trainingVis(),
+        {
+          onEpochEnd: null
+        }
+      ]
+    } else {
+      // if not use the default training
+      // options.whileTraining = whileTrainingCb === null ? [{
+      //     onEpochEnd: (epoch, loss) => {
+      //       console.log(epoch, loss.loss)
+      //     }
+      //   }] :
+      //   [{
+      //     onEpochEnd: whileTrainingCb
+      //   }];
+      options.whileTraining = [{
+        onEpochEnd: whileTrainingCb
+      }];
+    }
+
 
     // if metadata needs to be generated about the data
     if (!this.neuralNetworkData.isMetadataReady) {
@@ -300,7 +319,7 @@ class DiyNeuralNetwork {
     } = this.neuralNetworkData.meta;
     const layersLength = this.options.layers.length;
 
-    if (!this.options.layers.length >= 2) {
+    if (!(this.options.layers.length >= 2)) {
       return false;
     }
 
@@ -515,7 +534,7 @@ class DiyNeuralNetwork {
 
       }
       output = this.formatInputsForPrediction(_input, meta, inputHeaders)
-      return tf.tensor(output, [_input.length, inputHeaders.length]);
+      return tf.tensor([output]);
     }
 
     output = this.formatInputsForPrediction(_input, meta, inputHeaders)
@@ -601,6 +620,7 @@ class DiyNeuralNetwork {
     const headers = Object.keys(meta.inputs);
 
     const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+    inputData.print()
 
     const unformattedResults = await this.neuralNetwork.classify(inputData);
     inputData.dispose();

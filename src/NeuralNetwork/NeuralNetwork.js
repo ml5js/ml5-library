@@ -113,9 +113,7 @@ class NeuralNetwork {
       epochs,
       shuffle,
       validationSplit,
-      callbacks: [{
-        onEpochEnd: whileTraining
-      }]
+      callbacks: whileTraining
     })
 
     xs.dispose();
