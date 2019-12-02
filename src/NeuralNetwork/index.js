@@ -679,6 +679,81 @@ class DiyNeuralNetwork {
   }
 
   /**
+   * 
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  classifyImage(_input, _cb, _options = null){
+    const options = _options === null ? this.neuralNetworkData.meta.inputUnits : _options;
+    return callCallback(this.classifyImageInternal(_input, options), _cb)
+  }
+
+  async classifyImageInternal(_inputImageArray, _options){
+    
+    const {
+      meta
+    } = this.neuralNetworkData;
+
+    let options = {
+      width:null,
+      height:null,
+      channels:null,
+    };
+
+    if(_options instanceof Array){
+      // eslint-disable-next-line prefer-destructuring
+      options.width = _options[0];
+      // eslint-disable-next-line prefer-destructuring
+      options.height = _options[1];
+      // eslint-disable-next-line prefer-destructuring
+      options.channels = _options[2];
+    } else {
+      options = {..._options}
+    } 
+    
+    const {width, height, channels} = options;
+
+    let inputData;
+
+    if(meta.isNormalized){
+      const {min, max} = meta.inputs.image;
+      inputData = this.neuralNetworkData.normalizeArray( Array.from(_inputImageArray), {min, max});
+    }else {
+      inputData = Array.from(_inputImageArray);
+    }
+
+    inputData = tf.tensor([inputData], [1, width, height, channels])
+    const unformattedResults = await this.neuralNetwork.classify(inputData);
+
+    inputData.dispose();
+
+    if (meta !== null) {
+      const label = Object.keys(meta.outputs)[0]
+      const vals = Object.entries(meta.outputs[label].legend);
+
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return vals.map((item, idx) => {
+          return {
+            [item[0]]: unformattedResult[idx],
+            label: item[0],
+            confidence: unformattedResult[idx]
+          };
+        }).sort((a, b) => b.confidence - a.confidence)
+      });
+
+      // return single array if the length is less than 2, 
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
+      return formattedResults;
+    }
+
+    return unformattedResults;
+
+  }
+
+  /**
    * check if the input needs to be onehot encoded or 
    * normalized
    * @param {*} _input 

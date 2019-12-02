@@ -47,7 +47,13 @@ class NeuralNetworkData {
       }
       if (meta[k].legend) options.legend = meta[k].legend;
 
-      normalized[k] = this.normalizeArray(dataAsArray, options);
+      // check if it is an array of arrays (e.g. for images)
+      if(dataAsArray.every(item=> Array.isArray(item))){
+        normalized[k] = dataAsArray.map(item => this.normalizeArray(item, options));  
+      } else {
+        normalized[k] = this.normalizeArray(dataAsArray, options);
+      }
+      
     });
 
     const output = [...new Array(dataLength).fill(null)].map((item, idx) => {
@@ -154,7 +160,11 @@ class NeuralNetworkData {
 
     Object.keys(meta).forEach(k => {
       const dataAsArray = this.arrayFromLabel(dataRaw, xsOrYs, k);
-      if (meta[k].dtype !== 'number') {
+      if(meta[k].dtype === 'object'){
+        const tempArr = dataRaw.map( item => item[xsOrYs][k]).flat();
+        meta[k].min = this.getMin(tempArr);
+        meta[k].max = this.getMax(tempArr);
+      } else if (meta[k].dtype !== 'number') {
         meta[k].min = 0;
         meta[k].max = 1;
       } else {
@@ -281,7 +291,7 @@ class NeuralNetworkData {
         outputArr.push(ys)
       })
 
-      const inputs = tf.tensor(inputArr, [dataLength, 64, 64, 4])
+      const inputs = tf.tensor(inputArr, [dataLength, ...meta.inputUnits])
       const outputs = tf.tensor(outputArr, [dataLength, meta.outputUnits])
 
       return {
