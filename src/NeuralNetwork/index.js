@@ -160,6 +160,18 @@ class DiyNeuralNetwork {
   }
 
   /**
+   * 
+   * @param {*} _trainingData 
+   * @param {*} _meta 
+   */
+  convertTrainingImageDataToTensors(_trainingData = null, _meta = null) {
+    const trainingData = _trainingData === null ? this.data.training : _trainingData;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+
+    return this.neuralNetworkData.convertImageDataToTensors(trainingData, meta);
+  }
+
+  /**
    * normalizeData
    * @param {*} _dataRaw 
    * @param {*} _meta 
@@ -279,12 +291,22 @@ class DiyNeuralNetwork {
     // in the options, then create the tensors
     // from the this.neuralNetworkData.data.raws
     if (!options.inputs && !options.outputs) {
-      const {
-        inputs,
-        outputs
-      } = this.convertTrainingDataToTensors();
-      options.inputs = inputs;
-      options.outputs = outputs;
+      if(options.onImageData){
+        const {
+          inputs,
+          outputs
+        } = this.convertTrainingImageDataToTensors();
+        options.inputs = inputs;
+        options.outputs = outputs;
+        
+      } else {
+        const {
+          inputs,
+          outputs
+        } = this.convertTrainingDataToTensors();
+        options.inputs = inputs;
+        options.outputs = outputs;
+      }
     }
 
     // check to see if layers are passed into the constructor
@@ -324,7 +346,8 @@ class DiyNeuralNetwork {
     }
 
     // set the inputShape
-    this.options.layers[0].inputShape = this.options.layers[0].inputShape ? this.options.layers[0].inputShape : [inputUnits];
+    this.options.layers[0].inputShape = this.options.layers[0].inputShape ? this.options.layers[0].inputShape : inputUnits;
+    this.options.layers[0].inputShape = Array.isArray(this.options.layers[0].inputShape) ? this.options.layers[0].inputShape : [this.options.layers[0].inputShape]
     // set the output units
     this.options.layers[layersLength - 1].units = this.options.layers[layersLength - 1].units ? this.options.layers[layersLength - 1].units : outputUnits;
 

@@ -6,7 +6,7 @@ import {
 
 class NeuralNetworkData {
   constructor() {
-    
+
     this.meta = {
       // number of units - varies depending on input data type
       inputUnits: null,
@@ -252,6 +252,46 @@ class NeuralNetworkData {
   }
 
   /**
+   * convertImageDataToTensors
+   * @param {*} _dataRaw 
+   * @param {*} _meta 
+   */
+  convertImageDataToTensors(_dataRaw = null, _meta = null) {
+    const dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
+    const meta = _meta === null ? this.meta : _meta;
+    const dataLength = dataRaw.length;
+
+    return tf.tidy(() => {
+
+      const inputArr = [];
+      const outputArr = [];
+
+      dataRaw.forEach(row => {
+        // get xs
+        const xs = Object.keys(meta.inputs).map(k => {
+          return row.xs[k]
+        }).flat();
+
+        inputArr.push(xs)
+
+        // get ys
+        const ys = Object.keys(meta.outputs).map(k => {
+          return row.ys[k]
+        }).flat();
+        outputArr.push(ys)
+      })
+
+      const inputs = tf.tensor(inputArr, [dataLength, 64, 64, 4])
+      const outputs = tf.tensor(outputArr, [dataLength, meta.outputUnits])
+
+      return {
+        inputs,
+        outputs
+      };
+    })
+  }
+
+  /**
    * Returns a legend mapping the 
    * data values to oneHot encoded values
    */
@@ -357,6 +397,8 @@ class NeuralNetworkData {
       } else if (dtype === 'string') {
         const uniqueCount = arr[1].uniqueValues.length;
         units += uniqueCount
+      } else if( dtype === 'object'){
+        units = [64, 64, 4]
       }
     })
 
@@ -582,6 +624,7 @@ class NeuralNetworkData {
       inputLabels = options.inputLabels;
       // eslint-disable-next-line prefer-destructuring
       outputLabels = options.outputLabels;
+
     } else {
       inputLabels = NeuralNetworkData.createLabelsFromArrayValues(xInputs, 'input')
       outputLabels = NeuralNetworkData.createLabelsFromArrayValues(yInputs, 'output')
@@ -592,6 +635,32 @@ class NeuralNetworkData {
 
     this.data.raw.push({
       xs: inputs,
+      ys: outputs
+    });
+  }
+
+
+  /**
+   * 
+   * @param {*} xInputs 
+   * @param {*} yInputs 
+   * @param {*} options 
+   */
+  addImageData(xInputs, yInputs, options) {
+    let outputLabels;
+    if (options && options !== null) {
+      // eslint-disable-next-line prefer-destructuring
+      outputLabels = options.outputLabels;
+    } else {
+      outputLabels = NeuralNetworkData.createLabelsFromArrayValues(yInputs, 'output')
+    }
+
+    const outputs = NeuralNetworkData.formatIncomingData(yInputs, outputLabels);
+
+    this.data.raw.push({
+      xs: {
+        image: xInputs
+      },
       ys: outputs
     });
   }
