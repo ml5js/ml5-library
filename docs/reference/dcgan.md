@@ -10,7 +10,7 @@
 
 You can use neural networks to generate new content. A Generative Adversarial Network (GAN) is a machine learning architecture where two neural networks are adversaries competing. One neural network is a "generator", it makes new images. The other is a "discriminator" and tries to guess if the image is "fake" (made by the generator) or "real" (from the training data). Once the discriminator can no longer guess correctly, the model is trained! A DCGAN is a Deep Convolutional Generative Adversarial Network.
 
-ml5.js provides a few default pre-trained models for DCGAN, but you may consider training your own DCGAN to generate images of things you're interested in. 
+ml5.js provides a few default pre-trained models for DCGAN, but you may consider training your own DCGAN to generate images of things you're interested in.
 ## Quickstart
 
 ```js
@@ -38,7 +38,7 @@ function gotImage(err, result) {
 ### Initialize
 
 ```js
-const dcgan = ml5.DCGAN(modelPath, callback)
+const dcgan = ml5.DCGAN(modelPath, callback);
 ```
 
 #### Parameters
@@ -46,14 +46,14 @@ const dcgan = ml5.DCGAN(modelPath, callback)
 
   ```json
   {
-      "description": "Aerial Images of Santiago, Chile 64x64 (16 MB)",
-      "model": "model/geo/model.json",
-      "modelSize": 64,
-      "modelLatentDim": 128
+    "description": "Aerial Images of Santiago, Chile 64x64 (16 MB)",
+    "model": "model/geo/model.json",
+    "modelSize": 64,
+    "modelLatentDim": 128
   }
   ```
 * **callback**: Required. A function to run once the model has been loaded.
-  
+
 
 ### Properties
 
@@ -89,12 +89,12 @@ dcgan.generate(callback, ?latentVector);
 
 📥 **Inputs**
 
-* **callback**: REQUIRED. Function. A function to handle the results of ".generate()". Likely a function to do something with the generated image data.
+* **callback**: REQUIRED. Function. A function to handle the results of `.generate()`. Likely a function to do something with the generated image data.
 * **latentVector**: OPTIONAL. An array. A vector to explore the latent space of the model. If no latentVector is given, then a random "location" in the latent space is returned.
 
 📤 **Outputs**
 
-* **Object**: Returns "raw", "blob", and "tensor". If p5.js is available, a "p5Image" will be returned as well. 
+* **Object**: Returns "raw", "blob", and "tensor". If p5.js is available, a "p5Image" will be returned as well.
 
 ***
 

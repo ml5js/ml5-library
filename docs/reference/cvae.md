@@ -10,7 +10,7 @@
 
 An autoencoder is an neural network that learns how to encode data (like the pixels of an image) into a smaller representation. This is akin to image compression (although classic image compression algorithms are better!) A Variational Autoencoder (VAE) takes this idea one step further and is trained generate new images in the style of training data by sprinkling in a little bit of randomness. Conditional Variational Autoencoder (CVAE) is an extension of this idea with the ability to be more specific about what is generated. From [Two Minute Papers](https://www.youtube.com/watch?v=Rdpbnd0pCiI), the author explains that: <br/>
 
-*"Autoencoders are neural networks that are capable of creating sparse representations of the input data and can therefore be used for image compression. There are denoising autoencoders that after learning these sparse representations, can be presented with noisy images. What is even better is a variant that is called the variational autoencoder that not only learns these sparse representations, but can also draw new images as well. We can, for instance, ask it to create new handwritten digits and we can actually expect the results to make sense!"*
+*\"Autoencoders are neural networks that are capable of creating sparse representations of the input data and can therefore be used for image compression. There are denoising autoencoders that after learning these sparse representations, can be presented with noisy images. What is even better is a variant that is called the variational autoencoder that not only learns these sparse representations, but can also draw new images as well. We can, for instance, ask it to create new handwritten digits and we can actually expect the results to make sense!"*
 
 
 ## Quickstart
@@ -39,7 +39,7 @@ function gotImage(error, result) {
 ### Initialize
 
 ```js
-const magic = ml5.CVAE(?model, ?callback)
+const magic = ml5.CVAE(?model, ?callback);
 ```
 
 #### Parameters
@@ -73,7 +73,7 @@ cvae.generate(label, callback);
 
 📤 **Outputs**
 
-* **Object**: Returns "raw", "blob", and "tensor". If p5.js is available, a "p5Image" will be returned as well. 
+* **Object**: Returns "raw", "blob", and "tensor". If p5.js is available, a "p5Image" will be returned as well.
 
 ***
 

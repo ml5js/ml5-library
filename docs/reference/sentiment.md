@@ -15,11 +15,11 @@ Sentiment is a model trained to predict the sentiment of any given text. The def
 ```js
 // Create a new Sentiment method
 const sentiment = ml5.sentiment('movieReviews', modelReady);
-      
+
 // When the model is loaded
 function modelReady() {
   // model is ready
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // make the prediction
@@ -33,7 +33,7 @@ console.log(prediction);
 ### Initialize
 
 ```js
-const magic = ml5.Sentiment(model, ?callback )
+const magic = ml5.Sentiment(model, ?callback);
 ```
 
 #### Parameters
@@ -62,12 +62,12 @@ const magic = ml5.Sentiment(model, ?callback )
 > Given a number, will make magicSparkles
 
 ```js
-sentiment.predict(text)
+sentiment.predict(text);
 ```
 
 📥 **Inputs**
 
-* **text**: Required. String. A string of text to predict 
+* **text**: Required. String. A string of text to predict
 
 
 📤 **Outputs**
@@ -109,4 +109,3 @@ No tutorials yet - contribute one today!
 ## Source Code
 
 [/src/Sentiment/](https://github.com/ml5js/ml5-library/tree/development/src/Sentiment)
-
