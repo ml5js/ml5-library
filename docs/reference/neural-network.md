@@ -481,6 +481,16 @@ No demos yet - contribute one today!
 ### ml5.js: Train Your Own Neural Network (Coding Train)
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8HEgeAbYphA"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+### ml5.js: Save Neural Network Training Data (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/q6cwxORPDo8"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### ml5.js: Save Neural Network Trained Model (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wUrg9Hjkhg0"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### ml5.js: Neural Network Regression (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fFzvwdkzr_c"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
 ## Acknowledgements
 
 **Contributors**:
