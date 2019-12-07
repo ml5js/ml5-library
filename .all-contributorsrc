@@ -854,11 +854,69 @@
         "content",
         "bug"
       ]
+    },
+    {
+      "login": "fdb",
+      "name": "Frederik De Bleser",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8477?v=4",
+      "profile": "https://www.enigmeta.com",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "violetcraze",
+      "name": "Violet",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/43045568?v=4",
+      "profile": "https://github.com/violetcraze",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "tirtawr",
+      "name": "Tirta Wening Rachman",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6989378?v=4",
+      "profile": "http://tirtawr.com",
+      "contributions": [
+        "code",
+        "content",
+        "ideas"
+      ]
+    },
+    {
+      "login": "mikakruschel",
+      "name": "Miká Kruschel",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/20423069?v=4",
+      "profile": "http://kruschel.dev",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "tasanuma",
+      "name": "Takanobu Asanuma",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11712443?v=4",
+      "profile": "https://github.com/tasanuma",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "martinloesethjensen",
+      "name": "Martin L. Jensen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/31356774?v=4",
+      "profile": "https://www.linkedin.com/in/martinloesethjensen/",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "ml5-library",
   "projectOwner": "ml5js",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
