@@ -28,11 +28,13 @@ import bodyPix from './BodyPix';
 import neuralNetwork from './NeuralNetwork';
 import faceApi from './FaceApi';
 import kmeans from './KMeans';
+import cartoon from './CartoonGan';
 import p5Utils from './utils/p5Utils';
 
 const withPreload = {
   charRNN,
   CVAE,
+  cartoon,
   DCGAN,
   featureExtractor,
   imageClassifier,
