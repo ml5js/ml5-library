@@ -25,7 +25,7 @@ class Cartoon {
      * @param {function} callback - Required. A function to run once the model has been loaded.
      */
     constructor(modelIdentifier, callback) {
-        this.modelUrl = modelPath[model] ? modelPath[modelIdentifier] : modelIdentifier;
+        this.modelUrl = modelPath[modelIdentifier] ? modelPath[modelIdentifier] : modelIdentifier;
         this.ready = false;
         this.model = {};
         this.ready = callCallback(this.loadModel(this.modelUrl), callback);
@@ -37,13 +37,15 @@ class Cartoon {
         return this;
     }
 
+
+    // todo: add p5 image support as input
     /**
      * generate an img based on input Image.
-     * @param {HTMLImgElement | p5Image | HTMLCanvasElement} src the source img you want to transfer.
+     * @param {HTMLImageElement | HTMLCanvasElement} src the source img you want to transfer.
      * @param {function} callback
      */
     async generate(src, callback) {
-        if( !(src instanceof HTMLImgElement || src instanceof p5Image || src instanceof HTMLCanvasElement) ){
+        if( !(src instanceof HTMLImageElement || src instanceof HTMLCanvasElement) ){
             throw new Error (`Invalid input type: ${typeof(src)}\nExpected HTMLImgElement, p5Image or HTMLCanvasElement`);
         }
         await this.ready;
@@ -60,17 +62,14 @@ class Cartoon {
         }
         img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
 
-        try {
-            let res = this.model.predict(img);
-        } catch(err) {
-            console.error(err); // error handling?
-        } finally {
-            res = res.add(1).mul(127.5).reshape([256, 256, 3]);
-            const result = this.resultFinalize(res);
-            return result;
-        }
+        let res = this.model.predict(img);
+        res = res.add(1).mul(127.5).reshape([256, 256, 3]);
+        const result = this.resultFinalize(res);
+        return result;
+        
     }
 
+    /* eslint class-methods-use-this: "off" */
     async resultFinalize(res){
         const tensor = res;
         const raw = await res.data();
