@@ -61,5 +61,3 @@ module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   version,
   neuralNetwork,
 });
-
-console.log('Hello Test Development!');
