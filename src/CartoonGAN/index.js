@@ -66,7 +66,7 @@ class Cartoon {
             console.error(err); // error handling?
         } finally {
             res = res.add(1).mul(127.5).reshape([256, 256, 3]);
-            const result = this.resultFinalize(res);
+            const result = await this.resultFinalize(res);
             return result;
         }
     }
