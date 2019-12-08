@@ -62,11 +62,23 @@ class Cartoon {
         }
         img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
 
+<<<<<<< HEAD
         let res = this.model.predict(img);
         res = res.add(1).mul(127.5).reshape([256, 256, 3]);
         const result = this.resultFinalize(res);
         return result;
         
+=======
+        try {
+            let res = this.model.predict(img);
+        } catch(err) {
+            console.error(err); // error handling?
+        } finally {
+            res = res.add(1).mul(127.5).reshape([256, 256, 3]);
+            const result = await this.resultFinalize(res);
+            return result;
+        }
+>>>>>>> 01fe3281020213fd5cb809d11a0791338e293644
     }
 
     /* eslint class-methods-use-this: "off" */
