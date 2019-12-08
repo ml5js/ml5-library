@@ -11,35 +11,41 @@
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import p5Utils from '../utils/p5Utils';
 
 const modelPath = {
-    'hosoda': 'https://raw.githubusercontent.com/leemengtaiwan/tfjs-models/master/cartoongan/tfjs_json_models/hosoda/model.json'
+    'hosoda': 'https://raw.githubusercontent.com/leemengtaiwan/tfjs-models/master/cartoongan/tfjs_json_models/hosoda/model.json',
+    'miyazaki': 'https://raw.githubusercontent.com/Derek-Wds/training_CartoonGAN/master/tfModels/Miyazaki/model.json'
 };
 
 class Cartoon {
     /**
      * Create a CartoonGan model.
-     * @param {String} modelPath - Required. The url path to your model.
+     * @param {String} modelIdentifier - Required. The name of pre-inluded model or the url path to your model.
      * @param {function} callback - Required. A function to run once the model has been loaded.
      */
-    constructor(model, callback) {
-        this.modelUrl = modelPath[model] ? modelPath[model] : model;
+    constructor(modelIdentifier, callback) {
+        this.modelUrl = modelPath[model] ? modelPath[modelIdentifier] : modelIdentifier;
         this.ready = false;
         this.model = {};
         this.ready = callCallback(this.loadModel(this.modelUrl), callback);
     }
 
-    // load tfjs model that is converted by tensorflowjs with graph and weights
+    /* load tfjs model that is converted by tensorflowjs with graph and weights */
     async loadModel(modelUrl) {
         this.model = await tf.loadGraphModel(modelUrl);
         return this;
     }
+
     /**
      * generate an img based on input Image.
-     * @param {HTMLImgElement} src the source img you want to transfer.
+     * @param {HTMLImgElement | p5Image | HTMLCanvasElement} src the source img you want to transfer.
      * @param {function} callback
      */
     async generate(src, callback) {
+        if( !(src instanceof HTMLImgElement || src instanceof p5Image || src instanceof HTMLCanvasElement) ){
+            throw new Error (`Invalid input type: ${typeof(src)}\nExpected HTMLImgElement, p5Image or HTMLCanvasElement`);
+        }
         await this.ready;
         return callCallback(this.generateInternal(src), callback);
     }
@@ -49,12 +55,28 @@ class Cartoon {
         let img = tf.browser.fromPixels(src);
         if (img.shape[0] !== 256 || img.shape[1] !== 256) {
             throw new Error(`Input size should be 256*256 but ${img.shape} is found`);
+        } else if (img.shape[2] !== 3) {
+            throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
         }
         img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
-        let res = this.model.predict(img);
-        const blob = tf.browser.fromPixels(res.add(1).mul(2).reshape([256, 256, 3]));
-        res = res.add(1).mul(127.5);
-        return {res, blob};
+
+        try {
+            let res = this.model.predict(img);
+        } catch(err) {
+            console.error(err); // error handling?
+        } finally {
+            res = res.add(1).mul(127.5).reshape([256, 256, 3]);
+            const result = this.resultFinalize(res);
+            return result;
+        }
+    }
+
+    async resultFinalize(res){
+        const tensor = res;
+        const raw = await res.data();
+        const blob = await p5Utils.rawToBlob(res, res.shape[0], res.shape[1]);
+        const image = await p5Utils.blobToP5Image(blob);
+        return {tensor, raw, blob, image};
     }
 } 
 
