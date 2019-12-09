@@ -193,7 +193,7 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
 
   Next, open the `/src/index.js` file and add this after the last line:
 
-  ```javascript
+  ```js
   console.log('Hello Test Development!');
   ```
 
@@ -288,7 +288,7 @@ npm run release:build
 npm run release:commitAndPush
 ```
 
-5. Add tags and push 
+5. Add tags and push
 
 ```
 npm run release:tag
@@ -318,9 +318,9 @@ npm run publish:npm
 ```
 
 7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
-8. Your new npm version should be released! 
+8. Your new npm version should be released!
 
-Now what is important is that you: 
+Now what is important is that you:
 
 1. go to Github and document that new release with `release notes`.
 2. go to `ml5-examples` and make sure you have the latest development branch stuff:

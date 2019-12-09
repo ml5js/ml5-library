@@ -9,25 +9,25 @@
 
 ml5.js has created an API to [face-api.js](https://github.com/justadudewhohacks/face-api.js/blob/master/README.md) that allows you to access face and face landmark detection.  
 
-The ml5.js implementation of face-api does not support `expressions`, `age`, or `gender` estimation.
+The ml5.js implementation of face-api does not support `expressions`, `age` or `gender` estimation.
 
 ## Quickstart
 
 ```js
-const detection_options = {
-    withLandmarks: true,
-    withDescriptors: false,
-}
+const detectionOptions = {
+  withLandmarks: true,
+  withDescriptors: false,
+};
 // Initialize the magicFeature
-const faceapi = ml5.faceApi(detection_options, modelLoaded);
+const faceapi = ml5.faceApi(detectionOptions, modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
   console.log('Model Loaded!');
 
   // Make some sparkles
-  faceapi.detect(myImage, function(err, results) {
-      console.log(results);
+  faceapi.detect(myImage, (err, results) => {
+    console.log(results);
   });
 }
 
@@ -40,27 +40,27 @@ function modelLoaded() {
 ### Initialize
 
 ```js
-const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, cb?)
+const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, callback?);
 ```
 
 #### Parameters
 * **videoOrOptionsOrCallback**: REQUIRED. Notice there is no question mark in front of the input.
 * **optionsOrCallback**: OPTIONAL. Notice the `?` indicates an optional parameter.
-* **cb**: OPTIONAL. A description of some kind of object with some properties. Notice the `?` indicates an optional parameter.
-  
-    ```
-    {
-      withLandmarks: true,
-      withDescriptors: true,
-      minConfidence: 0.5,
-      MODEL_URLS: {
-          Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
-          FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
-          FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
-          FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
-      }
-    }
-    ```
+* **callback**: OPTIONAL. A description of some kind of object with some properties. Notice the `?` indicates an optional parameter.
+
+  ```js
+  {
+    withLandmarks: true,
+    withDescriptors: true,
+    minConfidence: 0.5,
+    MODEL_URLS: {
+      Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
+      FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
+      FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
+      FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
+    },
+  };
+  ```
 
 ### Properties
 
@@ -81,7 +81,7 @@ const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, cb?)
 
 ***
 #### .config
-> **Object** object of configurations of the model 
+> **Object** object of configurations of the model
 ***
 
 ***
@@ -99,14 +99,14 @@ const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, cb?)
 > Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results.
 
 ```js
-faceapi.detect(optionsOrCallback, configOrCallback, cb)
+faceapi.detect(optionsOrCallback, configOrCallback, callback);
 ```
 
 📥 **Inputs**
 
 * **optionsOrCallback**: Required. Image | Object | Function. If given an image, this is the image that the face detection will be applied. If given an object, it is to set the configuration. If given a callback, this is to handle the results of the `.detect()` method.
 * **configOrCallback**: Optional. Object | Function. If an image is given as the first parameter, then this will either be an object or a function. If given an object, it is to set the configuration. If given a callback, this is to handle the results of the `.detect()` method.
-* **cb**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
 
 📤 **Outputs**
 
@@ -119,13 +119,13 @@ faceapi.detect(optionsOrCallback, configOrCallback, cb)
 > Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results. `.detectSingle()` is more accurate.
 
 ```js
-faceapi.detectSingle(optionsOrCallback, configOrCallback, cb)
+faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);
 ```
 
 📥 **Inputs**
 * **optionsOrCallback**: Required. Image | Object | Function. If given an image, this is the image that the face detection will be applied. If given an object, it is to set the configuration. If given a callback, this is to handle the results of the `.detect()` method.
 * **configOrCallback**: Optional. Object | Function. If an image is given as the first parameter, then this will either be an object or a function. If given an object, it is to set the configuration. If given a callback, this is to handle the results of the `.detect()` method.
-* **cb**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
+* **callback**: Optional. Function. A function to handle the results of `.makeSparkles()`. Likely a function to do something with the results of makeSparkles.
 
 📤 **Outputs**
 
@@ -172,4 +172,3 @@ No tutorials yet - contribute one today!
 ## Source Code
 
 * [/src/FaceApi](https://github.com/ml5js/ml5-library/tree/development/src/FaceApi)
-
