@@ -902,11 +902,30 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "martinloesethjensen",
+      "name": "Martin L. Jensen",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/31356774?v=4",
+      "profile": "https://www.linkedin.com/in/martinloesethjensen/",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "adaptive",
+      "name": "Hugo Romano",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/17833?v=4",
+      "profile": "https://adaptive.link",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "ml5-library",
   "projectOwner": "ml5js",
   "repoType": "github",
-  "repoHost": "https://github.com"
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
