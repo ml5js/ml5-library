@@ -10,7 +10,7 @@ describe('ObjectDetector', () => {
 
     beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-        detector = await objectDetector('CocoSsd');
+        detector = await objectDetector('cocossd', () => {});
     });
 
     it('throws error when a non image is trying to be detected', async () => {
