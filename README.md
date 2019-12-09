@@ -35,7 +35,9 @@ There are several ways you can use the ml5.js library:
 
 **v0.4.3**
 
-    <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js" type="text/javascript"></script>
+```html
+<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js" type="text/javascript"></script>
+```
 
 </p data-id="latest-version">
     
@@ -49,18 +51,18 @@ There are several ways you can use the ml5.js library:
 
 * If you need to use an earlier version for any reason, you can change the version number. The [previous versions of ml5 can be found here](https://www.npmjs.com/package/ml5). You can use those previous versions by replacing `<version>` with the ml5 version of interest:
 
-```js
+```html
 <script src="https://unpkg.com/ml5@<version>/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 For example:
-```js
+```html
 <script src="https://unpkg.com/ml5@0.4.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
 
-```javascript
+```html
 <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
@@ -97,14 +99,15 @@ Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://www.shiffman.net"><img src="https://avatars0.githubusercontent.com/u/191758?v=4" width="100px;" alt="Daniel Shiffman"/><br /><sub><b>Daniel Shiffman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Code">💻</a> <a href="#example-shiffman" title="Examples">💡</a> <a href="#projectManagement-shiffman" title="Project Management">📆</a> <a href="#review-shiffman" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Tests">⚠️</a> <a href="#video-shiffman" title="Videos">📹</a></td>
-    <td align="center"><a href="https://cvalenzuelab.com/"><img src="https://avatars0.githubusercontent.com/u/10605821?v=4" width="100px;" alt="Cristóbal Valenzuela"/><br /><sub><b>Cristóbal Valenzuela</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Code">💻</a> <a href="#example-cvalenzuela" title="Examples">💡</a> <a href="#review-cvalenzuela" title="Reviewed Pull Requests">👀</a> <a href="#tool-cvalenzuela" title="Tools">🔧</a> <a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Tests">⚠️</a></td>
-    <td align="center"><a href="https://1023.io"><img src="https://avatars3.githubusercontent.com/u/8662372?v=4" width="100px;" alt="Yining Shi"/><br /><sub><b>Yining Shi</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=yining1023" title="Code">💻</a> <a href="#example-yining1023" title="Examples">💡</a> <a href="#review-yining1023" title="Reviewed Pull Requests">👀</a> <a href="#tool-yining1023" title="Tools">🔧</a> <a href="https://github.com/ml5js/ml5-library/commits?author=yining1023" title="Tests">⚠️</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ayining1023" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://www.shiffman.net"><img src="https://avatars0.githubusercontent.com/u/191758?v=4" width="100px;" alt="Daniel Shiffman"/><br /><sub><b>Daniel Shiffman</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Code">💻</a> <a href="#example-shiffman" title="Examples">💡</a> <a href="#projectManagement-shiffman" title="Project Management">📆</a> <a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3Ashiffman" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/ml5js/ml5-library/commits?author=shiffman" title="Tests">⚠️</a> <a href="#video-shiffman" title="Videos">📹</a></td>
+    <td align="center"><a href="https://cvalenzuelab.com/"><img src="https://avatars0.githubusercontent.com/u/10605821?v=4" width="100px;" alt="Cristóbal Valenzuela"/><br /><sub><b>Cristóbal Valenzuela</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Code">💻</a> <a href="#example-cvalenzuela" title="Examples">💡</a> <a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3Acvalenzuela" title="Reviewed Pull Requests">👀</a> <a href="#tool-cvalenzuela" title="Tools">🔧</a> <a href="https://github.com/ml5js/ml5-library/commits?author=cvalenzuela" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://1023.io"><img src="https://avatars3.githubusercontent.com/u/8662372?v=4" width="100px;" alt="Yining Shi"/><br /><sub><b>Yining Shi</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=yining1023" title="Code">💻</a> <a href="#example-yining1023" title="Examples">💡</a> <a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3Ayining1023" title="Reviewed Pull Requests">👀</a> <a href="#tool-yining1023" title="Tools">🔧</a> <a href="https://github.com/ml5js/ml5-library/commits?author=yining1023" title="Tests">⚠️</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Ayining1023" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://www.hannahishere.com"><img src="https://avatars0.githubusercontent.com/u/1385308?v=4" width="100px;" alt="Hannah Davis"/><br /><sub><b>Hannah Davis</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=handav" title="Code">💻</a> <a href="#example-handav" title="Examples">💡</a></td>
-    <td align="center"><a href="https://jk-lee.com/"><img src="https://avatars1.githubusercontent.com/u/3622055?v=4" width="100px;" alt="Joey Lee"/><br /><sub><b>Joey Lee</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=joeyklee" title="Code">💻</a> <a href="#example-joeyklee" title="Examples">💡</a> <a href="#review-joeyklee" title="Reviewed Pull Requests">👀</a> <a href="#content-joeyklee" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/commits?author=joeyklee" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://jk-lee.com/"><img src="https://avatars1.githubusercontent.com/u/3622055?v=4" width="100px;" alt="Joey Lee"/><br /><sub><b>Joey Lee</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=joeyklee" title="Code">💻</a> <a href="#example-joeyklee" title="Examples">💡</a> <a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3Ajoeyklee" title="Reviewed Pull Requests">👀</a> <a href="#content-joeyklee" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/commits?author=joeyklee" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/AshleyJaneLewis"><img src="https://avatars3.githubusercontent.com/u/43127855?v=4" width="100px;" alt="AshleyJaneLewis"/><br /><sub><b>AshleyJaneLewis</b></sub></a><br /><a href="#blog-AshleyJaneLewis" title="Blogposts">📝</a> <a href="#design-AshleyJaneLewis" title="Design">🎨</a> <a href="#eventOrganizing-AshleyJaneLewis" title="Event Organizing">📋</a> <a href="#content-AshleyJaneLewis" title="Content">🖋</a></td>
     <td align="center"><a href="https://ellennickles.site/"><img src="https://avatars2.githubusercontent.com/u/31713501?v=4" width="100px;" alt="Ellen Nickles"/><br /><sub><b>Ellen Nickles</b></sub></a><br /><a href="#blog-ellennickles" title="Blogposts">📝</a> <a href="#content-ellennickles" title="Content">🖋</a> <a href="#ideas-ellennickles" title="Ideas, Planning, & Feedback">🤔</a> <a href="#tutorial-ellennickles" title="Tutorials">✅</a></td>
   </tr>
@@ -124,7 +127,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://lisajamhoury.com"><img src="https://avatars0.githubusercontent.com/u/7552772?v=4" width="100px;" alt="Lisa Jamhoury"/><br /><sub><b>Lisa Jamhoury</b></sub></a><br /><a href="#example-lisajamhoury" title="Examples">💡</a> <a href="#ideas-lisajamhoury" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://www.matamala.info"><img src="https://avatars2.githubusercontent.com/u/5123955?v=4" width="100px;" alt="Alejandro Matamala Ortiz"/><br /><sub><b>Alejandro Matamala Ortiz</b></sub></a><br /><a href="#design-matamalaortiz" title="Design">🎨</a> <a href="#content-matamalaortiz" title="Content">🖋</a> <a href="#blog-matamalaortiz" title="Blogposts">📝</a></td>
     <td align="center"><a href="http://mayaontheinter.net"><img src="https://avatars0.githubusercontent.com/u/8224678?v=4" width="100px;" alt="Maya Man"/><br /><sub><b>Maya Man</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=mayaman" title="Code">💻</a> <a href="#example-mayaman" title="Examples">💡</a></td>
-    <td align="center"><a href="http://mimionuoha.com"><img src="https://avatars0.githubusercontent.com/u/1565846?v=4" width="100px;" alt="Mimi Onuoha"/><br /><sub><b>Mimi Onuoha</b></sub></a><br /><a href="#ideas-MimiOnuoha" title="Ideas, Planning, & Feedback">🤔</a> <a href="#content-MimiOnuoha" title="Content">🖋</a> <a href="#review-MimiOnuoha" title="Reviewed Pull Requests">👀</a></td>
+    <td align="center"><a href="http://mimionuoha.com"><img src="https://avatars0.githubusercontent.com/u/1565846?v=4" width="100px;" alt="Mimi Onuoha"/><br /><sub><b>Mimi Onuoha</b></sub></a><br /><a href="#ideas-MimiOnuoha" title="Ideas, Planning, & Feedback">🤔</a> <a href="#content-MimiOnuoha" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3AMimiOnuoha" title="Reviewed Pull Requests">👀</a></td>
   </tr>
   <tr>
     <td align="center"><a href="https://i.yuuno.cc/"><img src="https://avatars1.githubusercontent.com/u/18514672?v=4" width="100px;" alt="Yuuno, Hibiki"/><br /><sub><b>Yuuno, Hibiki</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=NHibiki" title="Code">💻</a> <a href="#example-NHibiki" title="Examples">💡</a> <a href="#maintenance-NHibiki" title="Maintenance">🚧</a></td>
@@ -210,9 +213,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://kruschel.dev"><img src="https://avatars0.githubusercontent.com/u/20423069?v=4" width="100px;" alt="Miká Kruschel"/><br /><sub><b>Miká Kruschel</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=mikakruschel" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Amikakruschel" title="Bug reports">🐛</a></td>
     <td align="center"><a href="https://github.com/tasanuma"><img src="https://avatars1.githubusercontent.com/u/11712443?v=4" width="100px;" alt="Takanobu Asanuma"/><br /><sub><b>Takanobu Asanuma</b></sub></a><br /><a href="#content-tasanuma" title="Content">🖋</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/martinloesethjensen/"><img src="https://avatars1.githubusercontent.com/u/31356774?v=4" width="100px;" alt="Martin L. Jensen"/><br /><sub><b>Martin L. Jensen</b></sub></a><br /><a href="#content-martinloesethjensen" title="Content">🖋</a></td>
   </tr>
 </table>
 
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
