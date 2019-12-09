@@ -4,7 +4,7 @@
 
 Adapted from the [p5.js community statement](http://p5js.org/community/).
 
-ml5.js is a community interested in exploring the creation of art and design with technology. 
+ml5.js is a community interested in exploring the creation of art and design with technology.
 
 We are a community of, and in solidarity with, people from every gender identity and expression, sexual orientation, race, ethnicity, language, neuro-type, size, ability, class, religion, culture, subculture, political opinion, age, skill level, occupation, and background. We acknowledge that not everyone has the time, financial means, or capacity to actively participate, but we recognize and encourage involvement of all kinds. We facilitate and foster access and empowerment. We are all learners.
 
@@ -39,7 +39,7 @@ We like these hashtags: #noCodeSnobs (because we value community over efficiency
 
 ### Contribute
 
-Our community is always looking for enthusiasts to help in all different ways. 
+Our community is always looking for enthusiasts to help in all different ways.
 
 -  **Develop**. [GitHub](https://github.com/ml5js/ml5-library) is the main place where code is collected, issues are documented, and discussions about code are had. Check out the [contributing documentation to get started](https://github.com/ml5js/ml5-library/blob/development/CONTRIBUTING.md) with developing the library.
 -  **Document**. Everyone loves documentation. Help is needed porting examples, and adding documentation, and creating tutorials.
@@ -86,8 +86,8 @@ This Code of Conduct applies both within project spaces and in public spaces whe
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting the project team:
 
-* @shiffman, Dan Shiffman - info@ml5js.org. 
-*  @AshleyJaneLewis, AshleyJaneLewis - hello@ml5js.org
+* @shiffman, Dan Shiffman - info@ml5js.org.
+* @AshleyJaneLewis, AshleyJaneLewis - hello@ml5js.org
 
 
 The project team will review and investigate all complaints and will respond in a way that it deems appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident. Further details of specific enforcement policies may be posted separately.

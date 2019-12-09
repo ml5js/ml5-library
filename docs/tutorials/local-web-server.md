@@ -4,7 +4,7 @@ If you've looked at our [quickstart](/getting-started/) and [introduction to ml5
 
 <br/>
 
-A big part of the ml5 project is to create lots of examples as launching points for all your creative project ideas. You can find all of the ml5.js examples at out Github page: [ml5-examples](https://github.com/ml5js/ml5-examples). If you start to explore these examples you can see how the different ml5 functions are used to accomplish different outcomes. We try our best to keep the examples as simple as possible so you can easily start to build your ideas on top of them. 
+A big part of the ml5 project is to create lots of examples as launching points for all your creative project ideas. You can find all of the ml5.js examples at out Github page: [ml5-examples](https://github.com/ml5js/ml5-examples). If you start to explore these examples you can see how the different ml5 functions are used to accomplish different outcomes. We try our best to keep the examples as simple as possible so you can easily start to build your ideas on top of them.
 
 You can check out all the examples running:
 > - [on this massive list](https://github.com/ml5js/ml5-examples#examples-index)
@@ -29,11 +29,11 @@ cd /path/to/ml5-examples
 python -m SimpleHTTPServer 8081
 ```
 
-Then open up your web browser to the url: **localhost:8081** 
+Then open up your web browser to the url: **localhost:8081**
 
 <br/>
 
-Here we set the port number to **8081**, but you can change the port number to something else like **3000** (then: **localhost:3030**), **3001** (then: **localhost:3031**) for example. 
+Here we set the port number to **8081**, but you can change the port number to something else like **3000** (then: **localhost:3030**), **3001** (then: **localhost:3031**) for example.
 
 
 ## How to: Run examples and develop "locally"

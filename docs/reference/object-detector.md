@@ -13,18 +13,18 @@ Real-time object detection system using either [YOLO](https://pjreddie.com/darkn
 ## Quickstart
 
 ```js
-const video = document.getElementById("video");
+const video = document.getElementById('video');
 
 // Create a ObjectDetector method
 const objectDetector = ml5.ObjectDetector('cocossd', {}, modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Detect objects in the video element
-yolo.detect(video, function(err, results) {
+yolo.detect(video, (err, results) => {
   console.log(results); // Will output bounding boxes of detected objects
 });
 ```
@@ -37,7 +37,7 @@ yolo.detect(video, function(err, results) {
 ```js
 const objectDetector = ml5.ObjectDetector(modelNameOrUrl);
 // OR
-const objectDetector = ml5.ObjectDetector(modelNameOrUrl, ?options, ?callback)
+const objectDetector = ml5.ObjectDetector(modelNameOrUrl, ?options, ?callback);
 ```
 
 #### Parameters
@@ -53,7 +53,7 @@ const objectDetector = ml5.ObjectDetector(modelNameOrUrl, ?options, ?callback)
 > Given an image or video, returns an array of objects containing class names, bounding boxes and probabilities.
 
 ```js
-objectDetector.detect(input, ?callback)
+objectDetector.detect(input, ?callback);
 ```
 
 📥 **Inputs**

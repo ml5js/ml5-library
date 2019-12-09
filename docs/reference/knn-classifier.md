@@ -8,7 +8,7 @@
 
 ## Description
 
-*"In pattern recognition, the k-nearest neighbors algorithm (k-NN) is a non-parametric method used for classification and regression.[1] In both cases, the input consists of the k closest training examples in the feature space."* - [Wikipedia](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
+*\"In pattern recognition, the k-nearest neighbors algorithm (k-NN) is a non-parametric method used for classification and regression.[1] In both cases, the input consists of the k closest training examples in the feature space."* - [Wikipedia](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm)
 
 This class allows you to create a classifier using the [K-Nearest Neighbors](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) algorithm. It's a little different from other classes in this library, because it doesn't provide a model with weights, but rather a utility for constructing a KNN model using outputs from another model or any other data that could be classified.
 
@@ -23,7 +23,7 @@ You can also collect any kind of data, construct them into an array of numbers a
 const knnClassifier = ml5.KNNClassifier();
 
 // Create a featureExtractor that can extract features of an image
-const featureExtractor = ml5.featureExtractor("MobileNet", modelReady);
+const featureExtractor = ml5.featureExtractor('MobileNet', modelReady);
 
 // Get the features of an image
 const features = featureExtractor.infer(myImg);
@@ -32,7 +32,7 @@ const features = featureExtractor.infer(myImg);
 knnClassifier.addExample(features, label);
 
 // Use KNN Classifier to classify these features
-knnClassifier.classify(features, function(err, result) {
+knnClassifier.classify(features, (err, result) => {
   console.log(result); // result.label is the predicted label
 });
 ```
@@ -61,7 +61,7 @@ const knnClassifier = ml5.KNNClassifier();
 > Adding an example to a class.
 
 ```js
-knnClassifier.addExample(example, indexOrLabel)
+knnClassifier.addExample(example, indexOrLabel);
 ```
 
 📥 **Inputs**
@@ -82,9 +82,9 @@ knnClassifier.addExample(example, indexOrLabel)
 > Classify an new input.
 
 ```js
-knnClassifier.classify(input, callback?)
+knnClassifier.classify(input, ?callback);
 // OR
-knnClassifier.classify(input, k?, callback?)
+knnClassifier.classify(input, ?k, ?callback);
 ```
 
 📥 **Inputs**
@@ -104,7 +104,7 @@ knnClassifier.classify(input, k?, callback?)
 > Clears the specified label.
 
 ```js
-knnClassifier.clearLabel(indexOrLabel)
+knnClassifier.clearLabel(indexOrLabel);
 ```
 
 📥 **Inputs**
@@ -121,7 +121,7 @@ knnClassifier.clearLabel(indexOrLabel)
 > Clear all examples in all labels
 
 ```js
-knnClassifier.clearAllLabels()
+knnClassifier.clearAllLabels();
 ```
 
 📥 **Inputs**
@@ -139,7 +139,7 @@ knnClassifier.clearAllLabels()
 > Get the example count for each label. It returns an object that maps class label to example count for each class.
 
 ```js
-knnClassifier.getCountByLabel()
+knnClassifier.getCountByLabel();
 ```
 
 📥 **Inputs**
@@ -157,7 +157,7 @@ knnClassifier.getCountByLabel()
 > Get the example count for each class. It returns an object that maps class index to example count for each class.
 
 ```js
-knnClassifier.getCount()
+knnClassifier.getCount();
 ```
 
 📥 **Inputs**
@@ -174,7 +174,7 @@ knnClassifier.getCount()
 > It returns the total number of labels.
 
 ```js
-knnClassifier.getNumLabels()
+knnClassifier.getNumLabels();
 ```
 
 📥 **Inputs**
@@ -192,7 +192,7 @@ knnClassifier.getNumLabels()
 > Download the whole dataset as a JSON file. It's useful for saving state.
 
 ```js
-knnClassifier.save(fileName?)
+knnClassifier.save(?fileName);
 ```
 
 📥 **Inputs**
@@ -209,7 +209,7 @@ knnClassifier.save(fileName?)
 > Load a dataset from a JSON file. It's useful for restoring state.
 
 ```js
-knnClassifier.load(path, callback?)
+knnClassifier.load(path, ?callback);
 ```
 
 📥 **Inputs**

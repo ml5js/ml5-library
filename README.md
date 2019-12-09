@@ -40,13 +40,13 @@ There are several ways you can use the ml5.js library:
 ```
 
 </p data-id="latest-version">
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
 
 
 * If you need to use an earlier version for any reason, you can change the version number. The [previous versions of ml5 can be found here](https://www.npmjs.com/package/ml5). You can use those previous versions by replacing `<version>` with the ml5 version of interest:
@@ -92,7 +92,7 @@ See [CONTRIBUTING](CONTRIBUTING.md) 🛠
 
 ml5.js is supported by the time and dedication of open source developers from all over the world. Funding and support is generously provided by a [Google Education grant](https://edu.google.com/giving/?modal_active=none) at NYU's ITP/IMA program.
 
-Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing support. 
+Many thanks [BrowserStack](https://www.browserstack.com/) for providing testing support.
 
 ## Contributors
 
