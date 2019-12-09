@@ -92,7 +92,7 @@ The options that can be specified are:
   * Example 2: loading data as a csv
     ```js
     const options = {
-      dataUrl: 'weather.csv'
+      dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
       task:'classification'
