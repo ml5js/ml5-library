@@ -911,6 +911,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "adaptive",
+      "name": "Hugo Romano",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/17833?v=4",
+      "profile": "https://adaptive.link",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
