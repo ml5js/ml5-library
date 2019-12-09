@@ -27,7 +27,7 @@ function modelLoaded() {
 }
 
 // Make some sparkles
-magic.makeSparkles(100, function(err, results) {
+magic.makeSparkles(100, (err, results) => {
   console.log(results);
 });
 ```
@@ -38,27 +38,27 @@ magic.makeSparkles(100, function(err, results) {
 ### Initialize
 
 ```js
-const magic = ml5.magicFeature(requiredInput, ?optionalInput1, ?optionalInput2)
+const magic = ml5.magicFeature(requiredInput, ?optionalInput1, ?optionalInput2);
 ```
 
 #### Parameters
 * **requiredInput**: REQUIRED. Notice there is no question mark in front of the input.
 * **optionalInput1**: OPTIONAL. Notice the `?` indicates an optional parameter.
 * **optionalInput2**: OPTIONAL. A description of some kind of object with some properties. Notice the `?` indicates an optional parameter.
-  
-    ```
-    { 
-      sparkleCount: 100, 
-      delightFactor: 1.0, 
-      party: true 
-    }
-    ```
+
+  ```js
+  {
+    sparkleCount: 100,
+    delightFactor: 1.0,
+    party: true,
+  };
+  ```
 
 ### Properties
 
 
 <!-- /////////////////////
-PROPERTY DEFINITION START 
+PROPERTY DEFINITION START
 * Notice that each property definition is wrapped in three stars `***`
 * This creates lines to contain everything
 ///////////////////////// -->
@@ -67,7 +67,7 @@ PROPERTY DEFINITION START
 > *String*. A description of the property associated with the new model instance.
 ***
 <!-- /////////////////////
-PROPERTY DEFINITION END 
+PROPERTY DEFINITION END
 ///////////////////////// -->
 
 ***
@@ -84,7 +84,7 @@ PROPERTY DEFINITION END
 ### Methods
 
 <!-- /////////////////////
-FUNCTION DEFINITION START 
+FUNCTION DEFINITION START
 * Notice that each function definition is wrapped in three stars `***`
 * This creates lines to contain everything
 ///////////////////////// -->
@@ -93,7 +93,7 @@ FUNCTION DEFINITION START
 > Given a number, will make magicSparkles
 
 ```js
-classifier.makeSparkles(?numberOfSparkles, ?callback)
+classifier.makeSparkles(?numberOfSparkles, ?callback);
 ```
 
 📥 **Inputs**
@@ -107,19 +107,19 @@ classifier.makeSparkles(?numberOfSparkles, ?callback)
 
 ***
 <!-- /////////////////////
-FUNCTION DEFINITION END 
+FUNCTION DEFINITION END
 ///////////////////////// -->
 
 
 <!-- /////////////////////
-FUNCTION DEFINITION START 
+FUNCTION DEFINITION START
 ///////////////////////// -->
 ***
 #### .makeDisappear()
 > Given an image, will make objects in the image disappear
 
 ```js
-classifier.makeDisappear(input, ?numberOfObjects, ?callback)
+classifier.makeDisappear(input, ?numberOfObjects, ?callback);
 ```
 
 📥 **Inputs**
@@ -133,7 +133,7 @@ classifier.makeDisappear(input, ?numberOfObjects, ?callback)
 
 ***
 <!-- /////////////////////
-FUNCTION DEFINITION END 
+FUNCTION DEFINITION END
 ///////////////////////// -->
 
 
@@ -176,5 +176,3 @@ No demos yet - contribute one today!
 ## Source Code
 
 * [/src/MagicFeature]()
-
-

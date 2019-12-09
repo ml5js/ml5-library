@@ -18,18 +18,18 @@ At present ml5.js only supports the CREPE model. This model is a direct port of 
 const audioContext = new AudioContext();
 // const MicStream = MicStream
 const pitch = ml5.pitchDetection(
-  "./model/",
+  './model/',
   audioContext,
   MicStream,
-  modelLoaded
+  modelLoaded,
 );
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
-pitch.getPitch(function(err, frequency) {
+pitch.getPitch((err, frequency) => {
   console.log(frequency);
 });
 ```
@@ -87,7 +87,7 @@ const detector = ml5.pitchDetection(model, audioContext, stream, callback);
 > gets the pitch.
 
 ```js
-detector.getPitch(?callback)
+detector.getPitch(?callback);
 ```
 
 📥 **Inputs**

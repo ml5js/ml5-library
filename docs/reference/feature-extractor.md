@@ -16,11 +16,11 @@ This class allows you to extract features of an image via a pre-trained model an
 
 ```js
 // Extract the already learned features from MobileNet
-const featureExtractor = ml5.featureExtractor("MobileNet", modelLoaded);
+const featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Create a new classifier using those features and with a video element
@@ -28,19 +28,19 @@ const classifier = featureExtractor.classification(video, videoReady);
 
 // Triggers when the video is ready
 function videoReady() {
-  console.log("The video is ready!");
+  console.log('The video is ready!');
 }
 
 // Add a new image with a label
-classifier.addImage(document.getElementById("dogA"), "dog");
+classifier.addImage(document.getElementById('dogA'), 'dog');
 
 // Retrain the network
-classifier.train(function(lossValue) {
-  console.log("Loss is", lossValue);
+classifier.train((lossValue) => {
+  console.log('Loss is', lossValue);
 });
 
 // Get a prediction for that image
-classifier.classify(document.getElementById("dogB"), function(err, result) {
+classifier.classify(document.getElementById('dogB'), (err, result) => {
   console.log(result); // Should output 'dog'
 });
 ```
@@ -52,28 +52,28 @@ classifier.classify(document.getElementById("dogB"), function(err, result) {
 
 ```js
 // initial without options
-const featureExtractor = ml5.featureExtractor(model, ?callback)
+const featureExtractor = ml5.featureExtractor(model, ?callback);
 // OR with options included
-const featureExtractor = ml5.featureExtractor(model, ?options, ?callback)
+const featureExtractor = ml5.featureExtractor(model, ?options, ?callback);
 ```
 
 #### Parameters
 * **model**: REQUIRED. The model from which extract the learned features. Case-insensitive
 * **callback**: OPTIONAL. A function to be executed once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
 * **options**: OPTIONAL. An object containing custom options. For the MobileNet model these are the custom options you can reset.
-  
-    ```
-    {
-       version: 1,
-       alpha: 1.0,
-       topk: 3,
-       learningRate: 0.0001,
-       hiddenUnits: 100,
-       epochs: 20,
-       numLabels: 2,
-       batchSize: 0.4,
-    }
-    ```
+
+  ```js
+  {
+    version: 1,
+    alpha: 1.0,
+    topk: 3,
+    learningRate: 0.0001,
+    hiddenUnits: 100,
+    epochs: 20,
+    numLabels: 2,
+    batchSize: 0.4,
+  };
+  ```
 
 ### Properties
 
@@ -107,7 +107,7 @@ const featureExtractor = ml5.featureExtractor(model, ?options, ?callback)
 > Use the features of MobileNet as a classifier
 
 ```js
-featureExtractor.classification(?video, ?callback)
+featureExtractor.classification(?video, ?callback);
 ```
 
 📥 **Inputs**
@@ -126,7 +126,7 @@ featureExtractor.classification(?video, ?callback)
 > Use the features of MobileNet as a regressor
 
 ```js
-featureExtractor.regression(?video, ?callback)
+featureExtractor.regression(?video, ?callback);
 ```
 
 📥 **Inputs**
@@ -144,9 +144,9 @@ featureExtractor.regression(?video, ?callback)
 > Adds a new image element to the featureExtractor for training
 
 ```js
-featureExtractor.addImage(label, ?callback)
+featureExtractor.addImage(label, ?callback);
 // OR
-featureExtractor.addImage(input, label, ?callback)
+featureExtractor.addImage(input, label, ?callback);
 ```
 
 📥 **Inputs**
@@ -165,7 +165,7 @@ featureExtractor.addImage(input, label, ?callback)
 > Retrain the model with the provided images and labels using the models original features as starting point.
 
 ```js
-featureExtractor.train(?callback)
+featureExtractor.train(?callback);
 ```
 
 📥 **Inputs**
@@ -182,9 +182,9 @@ featureExtractor.train(?callback)
 > Classifies an an image based on a new retrained model. `.classification()` needs to be used with this.
 
 ```js
-featureExtractor.classify(?callback)
+featureExtractor.classify(?callback);
 // OR
-featureExtractor.classify(input, ?callback)
+featureExtractor.classify(input, ?callback);
 ```
 
 📥 **Inputs**
@@ -203,9 +203,9 @@ featureExtractor.classify(input, ?callback)
 > Predicts a continuous value based on a new retrained model. `.regression()` needs to be used with this.
 
 ```js
-featureExtractor.predict(?callback)
+featureExtractor.predict(?callback);
 // OR
-featureExtractor.predict(input, ?callback)
+featureExtractor.predict(input, ?callback);
 ```
 
 📥 **Inputs**
@@ -261,4 +261,3 @@ No demos yet - contribute one today!
 ## Source Code
 
 [src/FeatureExtractor](https://github.com/ml5js/ml5-library/tree/development/src/FeatureExtractor)
-

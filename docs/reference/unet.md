@@ -10,7 +10,7 @@
 
 The U-Net is a convolutional neural network that was developed for biomedical image segmentation at the Computer Science Department of the University of Freiburg, Germany.[1] The network is based on the fully convolutional network [2] and its architecture was modified and extended to work with fewer training images and to yield more precise segmentations.
 
-UNET allows you to segment an image. 
+UNET allows you to segment an image.
 
 The ml5 unet `face` allows you to remove, for example, the background from video of the upper body of person.
 
@@ -31,7 +31,7 @@ function gotResult(error, result) {
     return;
   }
   // log your result
-  console.log(result)
+  console.log(result);
 }
 ```
 
@@ -41,9 +41,7 @@ function gotResult(error, result) {
 ### Initialize
 
 ```js
-const unet = ml5.uNet(model)
-// OR
-const unet = ml5.uNet(model, ?callback)
+const unet = ml5.uNet(model, ?callback);
 ```
 
 #### Parameters
@@ -63,7 +61,7 @@ const unet = ml5.uNet(model, ?callback)
 ### Methods
 
 <!-- /////////////////////
-FUNCTION DEFINITION START 
+FUNCTION DEFINITION START
 * Notice that each function definition is wrapped in three stars `***`
 * This creates lines to contain everything
 ///////////////////////// -->
@@ -84,10 +82,10 @@ unet.segment(?video, ?callback);
 * **Object**: Returns an Object.
   ```js
   {
-    segmentation:mask, 
+    segmentation: mask,
     blob: {
       featureMask: *Blob*,
-      backgroundMask: *Blob*
+      backgroundMask: *Blob*,
     },
     tensor: {
       featureMask: *Tensor*,
@@ -95,12 +93,12 @@ unet.segment(?video, ?callback);
     },
     raw: {
       featureMask: *ImageData*,
-      backgroundMask: *ImageData*
+      backgroundMask: *ImageData*,
     },
     // returns if p5 is available
     featureMask: *p5Image*,
     backgroundMask: *p5Image*,
-    mask: *p5Image*
+    mask: *p5Image*,
   };
   ```
 
