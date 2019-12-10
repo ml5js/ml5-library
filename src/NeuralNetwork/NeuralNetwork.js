@@ -7,10 +7,7 @@ import {
 
 class NeuralNetwork {
 
-  constructor(_options) {
-    const options = _options || {};
-    // config
-    this.config = options;
+  constructor() {
 
     this.isTrained = false;
     this.isCompiled = false;
