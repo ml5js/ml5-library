@@ -2,24 +2,21 @@ import * as tf from '@tensorflow/tfjs';
 import {
   saveBlob
 } from '../utils/io';
-// import callCallback from '../utils/callcallback';
 
 class NeuralNetworkData {
   constructor() {
     
     this.meta = {
-      // number of units - varies depending on input data type
-      inputUnits: null,
-      outputUnits: null,
+      inputUnits: null, // Number
+      outputUnits: null, // Number
       // objects describing input/output data by property name
       inputs: {}, // { name1: {dtype}, name2: {dtype}  }
       outputs: {}, // { name1: {dtype} }
-      isNormalized: false,
+      isNormalized: false, // Boolean - keep this in meta for model saving/loading
     }
 
     this.isMetadataReady = false;
     this.isWarmedUp = false;
-
 
     this.data = {
       raw: [], // array of {xs:{}, ys:{}}
@@ -399,56 +396,6 @@ class NeuralNetworkData {
   }
 
   /**
-   * loadCSV
-   * @param {*} _dataUrl 
-   * @param {*} _inputLabelsArray 
-   * @param {*} _outputLabelsArray 
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async loadCSV(_dataUrl, _inputLabelsArray, _outputLabelsArray) {
-    try {
-      const path = _dataUrl;
-      const myCsv = tf.data.csv(path);
-      const loadedData = await myCsv.toArray();
-      const json = {
-        entries: loadedData
-      }
-      this.loadJSON(json, _inputLabelsArray, _outputLabelsArray);
-    } catch (err) {
-      console.error('error loading csv', err);
-    }
-  }
-
-  /**
-   * loadJSON
-   * @param {*} _dataUrlOrJson 
-   * @param {*} _inputLabelsArray 
-   * @param {*} _outputLabelsArray 
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async loadJSON(_dataUrlOrJson, _inputLabelsArray, _outputLabelsArray) {
-    try {
-      const outputLabels = _outputLabelsArray;
-      const inputLabels = _inputLabelsArray;
-
-      let json;
-      // handle loading parsedJson
-      if (_dataUrlOrJson instanceof Object) {
-        json = _dataUrlOrJson;
-      } else {
-        const data = await fetch(_dataUrlOrJson);
-        json = await data.json();
-      }
-
-      // format the data.raw array
-      this.formatRawData(json, inputLabels, outputLabels);
-
-    } catch (err) {
-      console.error("error loading json", err);
-    }
-  }
-
-  /**
    * formatRawData
    * takes a json and set the this.data.raw
    * @param {*} _json 
@@ -499,7 +446,62 @@ class NeuralNetworkData {
 
     // set this.data.raw
     this.data.raw = result;
+  }
+  
+  /**
+   ************************************* 
+   * Data Loading
+   *************************************
+   */
 
+  /**
+   * loadCSV
+   * @param {*} _dataUrl 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async loadCSV(_dataUrl, _inputLabelsArray, _outputLabelsArray) {
+    try {
+      const path = _dataUrl;
+      const myCsv = tf.data.csv(path);
+      const loadedData = await myCsv.toArray();
+      const json = {
+        entries: loadedData
+      }
+      this.loadJSON(json, _inputLabelsArray, _outputLabelsArray);
+    } catch (err) {
+      console.error('error loading csv', err);
+    }
+  }
+
+  /**
+   * loadJSON
+   * @param {*} _dataUrlOrJson 
+   * @param {*} _inputLabelsArray 
+   * @param {*} _outputLabelsArray 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async loadJSON(_dataUrlOrJson, _inputLabelsArray, _outputLabelsArray) {
+    try {
+      const outputLabels = _outputLabelsArray;
+      const inputLabels = _inputLabelsArray;
+
+      let json;
+      // handle loading parsedJson
+      if (_dataUrlOrJson instanceof Object) {
+        json = _dataUrlOrJson;
+      } else {
+        const data = await fetch(_dataUrlOrJson);
+        json = await data.json();
+      }
+
+      // format the data.raw array
+      this.formatRawData(json, inputLabels, outputLabels);
+
+    } catch (err) {
+      console.error("error loading json", err);
+    }
   }
 
   /**
@@ -525,96 +527,6 @@ class NeuralNetworkData {
     } catch (err) {
       console.log('mmm might be passing in a string or something!', err)
     }
-  }
-
-  /**
-   * csvToJSON
-   * Creates a csv from a string
-   * @param {*} csv
-   */
-  // via: http://techslides.com/convert-csv-to-json-in-javascript
-  // eslint-disable-next-line class-methods-use-this
-  csvToJSON(csv) {
-    // split the string by linebreak
-    const lines = csv.split("\n");
-    const result = [];
-    // get the header row as an array
-    const headers = lines[0].split(",");
-
-    // iterate through every row
-    for (let i = 1; i < lines.length; i += 1) {
-      // create a json object for each row
-      const row = {};
-      // split the current line into an array
-      const currentline = lines[i].split(",");
-
-      // for each header, create a key/value pair 
-      headers.forEach((k, idx) => {
-        row[k] = currentline[idx]
-      });
-      // add this to the result array
-      result.push(row);
-    }
-
-    return {
-      entries: result
-    }
-
-  }
-
-  /**
-   * addData
-   * nn.neuralNetworkData.addData([255, 0,0], ['red-ish'], {
-   * inputLabels:['r', 'g', 'b'], outputLabels:['label']
-   * })
-   * @param {*} xInputs 
-   * @param {*} yInputs 
-   * @param {*} options 
-   */
-  // eslint-disable-next-line class-methods-use-this
-  addData(xInputs, yInputs, options) {
-
-    let inputLabels;
-    let outputLabels;
-
-    if (options && options !== null) {
-      // eslint-disable-next-line prefer-destructuring
-      inputLabels = options.inputLabels;
-      // eslint-disable-next-line prefer-destructuring
-      outputLabels = options.outputLabels;
-    } else {
-      inputLabels = NeuralNetworkData.createLabelsFromArrayValues(xInputs, 'input')
-      outputLabels = NeuralNetworkData.createLabelsFromArrayValues(yInputs, 'output')
-    }
-
-    const inputs = NeuralNetworkData.formatIncomingData(xInputs, inputLabels);
-    const outputs = NeuralNetworkData.formatIncomingData(yInputs, outputLabels);
-
-    this.data.raw.push({
-      xs: inputs,
-      ys: outputs
-    });
-  }
-
-  /**
-   * saveData
-   * @param {*} name 
-   */
-  // eslint-disable-next-line class-methods-use-this
-  async saveData(name) {
-    const today = new Date();
-    const date = `${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}`;
-    const time = `${String(today.getHours())}-${String(today.getMinutes())}-${String(today.getSeconds())}`;
-    const datetime = `${date}_${time}`;
-
-    let dataName = datetime;
-    if (name) dataName = name;
-
-    const output = {
-      data: this.data.raw
-    }
-
-    await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
   }
 
   /**
@@ -655,6 +567,33 @@ class NeuralNetworkData {
     if (callback) {
       callback();
     }
+  }
+
+  /** 
+   * ****************************************
+   * Saving Data and Meta Info
+   * ****************************************
+  */
+
+  /**
+   * saveData
+   * @param {*} name 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async saveData(name) {
+    const today = new Date();
+    const date = `${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}`;
+    const time = `${String(today.getHours())}-${String(today.getMinutes())}-${String(today.getSeconds())}`;
+    const datetime = `${date}_${time}`;
+
+    let dataName = datetime;
+    if (name) dataName = name;
+
+    const output = {
+      data: this.data.raw
+    }
+
+    await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
   }
 
   /**
@@ -757,10 +696,45 @@ class NeuralNetworkData {
 
 
   /*
-   * ****************
+   ********************************
    * helper functions 
-   * **************** 
+   ********************************
    */
+
+   /**
+   * csvToJSON
+   * Creates a csv from a string
+   * @param {*} csv
+   */
+  // via: http://techslides.com/convert-csv-to-json-in-javascript
+  // eslint-disable-next-line class-methods-use-this
+  csvToJSON(csv) {
+    // split the string by linebreak
+    const lines = csv.split("\n");
+    const result = [];
+    // get the header row as an array
+    const headers = lines[0].split(",");
+
+    // iterate through every row
+    for (let i = 1; i < lines.length; i += 1) {
+      // create a json object for each row
+      const row = {};
+      // split the current line into an array
+      const currentline = lines[i].split(",");
+
+      // for each header, create a key/value pair 
+      headers.forEach((k, idx) => {
+        row[k] = currentline[idx]
+      });
+      // add this to the result array
+      result.push(row);
+    }
+
+    return {
+      entries: result
+    }
+
+  }
 
   /**
    * createLabelsFromArrayValues

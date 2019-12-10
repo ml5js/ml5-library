@@ -50,6 +50,13 @@ class DiyNeuralNetwork {
     }
   }
 
+
+  /** 
+   * ************************************************************
+   * Data handling Operations
+   * ************************************************************
+  */
+
   /**
    * loadData
    * @param {*} options 
@@ -100,8 +107,6 @@ class DiyNeuralNetwork {
     return meta;
   }
 
-
-
   /**
    * summarizeData
    * adds min and max to the meta of each input and output property
@@ -146,19 +151,6 @@ class DiyNeuralNetwork {
     }
   }
 
-
-  /**
-   * convertTrainingDataToTensors
-   * @param {*} _trainingData 
-   * @param {*} _meta 
-   */
-  convertTrainingDataToTensors(_trainingData = null, _meta = null) {
-    const trainingData = _trainingData === null ? this.data.training : _trainingData;
-    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
-
-    return this.neuralNetworkData.convertRawToTensors(trainingData, meta);
-  }
-
   /**
    * normalizeData
    * @param {*} _dataRaw 
@@ -188,6 +180,64 @@ class DiyNeuralNetwork {
     this.neuralNetworkData.meta.isNormalized = true;
 
     return trainingData;
+  }
+
+  /**
+   * addData
+   * @param {*} xInputs 
+   * @param {*} yInputs 
+   * @param {*} options 
+   */
+  addData(xInputs, yInputs, options = null) {
+    const {
+      inputs,
+      outputs
+    } = this.options;
+
+    let DATA_OPTIONS;
+    let inputLabels;
+    let outputLabels;
+
+    if (options !== null) {
+      // eslint-disable-next-line prefer-destructuring
+      inputLabels = options.inputLabels;
+      // eslint-disable-next-line prefer-destructuring
+      outputLabels = options.outputLabels;
+    } else if ((inputs.length > 0) && (outputs.length > 0)) {
+      // if the inputs and outputs labels have been defined
+      // in the constructor
+      inputLabels = inputs;
+      outputLabels = outputs;
+    }
+
+    if (inputLabels && outputLabels) {
+      DATA_OPTIONS = {
+        inputLabels,
+        outputLabels
+      }
+    } else {
+      DATA_OPTIONS = null
+    }
+
+    this.neuralNetworkData.addData(xInputs, yInputs, DATA_OPTIONS);
+  }
+
+  /** 
+   * ***********************************************
+   * Model handling and preparation and training
+   * ***********************************************
+  */
+
+  /**
+   * convertTrainingDataToTensors
+   * @param {*} _trainingData 
+   * @param {*} _meta 
+   */
+  convertTrainingDataToTensors(_trainingData = null, _meta = null) {
+    const trainingData = _trainingData === null ? this.data.training : _trainingData;
+    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
+
+    return this.neuralNetworkData.convertRawToTensors(trainingData, meta);
   }
 
   /**
@@ -308,7 +358,6 @@ class DiyNeuralNetwork {
     this.neuralNetwork.train(options, finishedTrainingCb);
   }
 
-
   /**
    * add custom layers in options
    */
@@ -337,8 +386,7 @@ class DiyNeuralNetwork {
 
   }
 
-
-  /**
+ /**
    * addDefaultLayers
    * @param {*} _task 
    */
@@ -374,46 +422,6 @@ class DiyNeuralNetwork {
         console.log('no imputUnits or outputUnits defined')
         break;
     }
-  }
-
-  /**
-   * addData
-   * @param {*} xInputs 
-   * @param {*} yInputs 
-   * @param {*} options 
-   */
-  addData(xInputs, yInputs, options = null) {
-    const {
-      inputs,
-      outputs
-    } = this.options;
-
-    let DATA_OPTIONS;
-    let inputLabels;
-    let outputLabels;
-
-    if (options !== null) {
-      // eslint-disable-next-line prefer-destructuring
-      inputLabels = options.inputLabels;
-      // eslint-disable-next-line prefer-destructuring
-      outputLabels = options.outputLabels;
-    } else if ((inputs.length > 0) && (outputs.length > 0)) {
-      // if the inputs and outputs labels have been defined
-      // in the constructor
-      inputLabels = inputs;
-      outputLabels = outputs;
-    }
-
-    if (inputLabels && outputLabels) {
-      DATA_OPTIONS = {
-        inputLabels,
-        outputLabels
-      }
-    } else {
-      DATA_OPTIONS = null
-    }
-
-    this.neuralNetworkData.addData(xInputs, yInputs, DATA_OPTIONS);
   }
 
   /**
@@ -455,41 +463,11 @@ class DiyNeuralNetwork {
     }
   }
 
-  /**
-   * predict
-   * @param {*} _input 
-   * @param {*} _cb 
-   */
-  predict(_input, _cb) {
-    return callCallback(this.predictInternal(_input), _cb)
-  }
-
-  /**
-   * predictMultiple
-   * @param {*} _input 
-   * @param {*} _cb 
-   */
-  predictMultiple(_input, _cb) {
-    return callCallback(this.predictInternal(_input), _cb)
-  }
-
-  /**
-   * classify
-   * @param {*} _input 
-   * @param {*} _cb 
-   */
-  classify(_input, _cb) {
-    return callCallback(this.classifyInternal(_input), _cb)
-  }
-
-  /**
-   * classifyMultiple
-   * @param {*} _input 
-   * @param {*} _cb 
-   */
-  classifyMultiple(_input, _cb) {
-    return callCallback(this.classifyInternal(_input), _cb)
-  }
+  /** 
+   * ***********************************************
+   * Input handling for prediction / classification
+   * ***********************************************
+  */
 
   /**
    * format the inputs for prediction
@@ -524,7 +502,12 @@ class DiyNeuralNetwork {
     return inputData;
   }
 
-
+  /**
+   * formatInputsForPredictionAll
+   * @param {*} _input 
+   * @param {*} meta 
+   * @param {*} inputHeaders 
+   */
   formatInputsForPredictionAll(_input, meta, inputHeaders) {
     let output;
 
@@ -544,6 +527,86 @@ class DiyNeuralNetwork {
 
     output = this.formatInputsForPrediction(_input, meta, inputHeaders)
     return tf.tensor([output]);
+  }
+
+  /**
+   * check if the input needs to be onehot encoded or 
+   * normalized
+   * @param {*} _input 
+   * @param {*} _meta 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  isOneHotEncodedOrNormalized(_input, _key, _meta) {
+    const input = _input;
+    const key = _key;
+
+    let output;
+    if (typeof _input !== 'number') {
+      output = _meta[key].legend[input];
+    } else {
+      output = _input;
+      if (this.neuralNetworkData.meta.isNormalized) {
+        output = this.normalizeInput(_input, key, _meta);
+      }
+    }
+    return output;
+  }
+
+  /**
+   * normalize the input value
+   * @param {*} value 
+   * @param {*} _key 
+   * @param {*} _meta 
+   */
+  normalizeInput(value, _key, _meta) {
+    const key = _key;
+    const {
+      min,
+      max
+    } = _meta[key];
+    return this.neuralNetworkData.normalizeValue(value, min, max);
+  }
+
+  /** 
+   * *************************************
+   * Prediction / Classification
+   * *************************************
+  */
+
+  /**
+   * predict
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  predict(_input, _cb) {
+    return callCallback(this.predictInternal(_input), _cb)
+  }
+
+  /**
+   * predictMultiple
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  predictMultiple(_input, _cb) {
+    return callCallback(this.predictInternal(_input), _cb)
+  }
+
+  /**
+   * classify
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  classify(_input, _cb) {
+    return callCallback(this.classifyInternal(_input), _cb)
+  }
+
+  /**
+   * classifyMultiple
+   * @param {*} _input 
+   * @param {*} _cb 
+   */
+  classifyMultiple(_input, _cb) {
+    return callCallback(this.classifyInternal(_input), _cb)
   }
 
   /**
@@ -656,43 +719,10 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * check if the input needs to be onehot encoded or 
-   * normalized
-   * @param {*} _input 
-   * @param {*} _meta 
+   * **************************************
+   * Layer Handling
+   * **************************************
    */
-  // eslint-disable-next-line class-methods-use-this
-  isOneHotEncodedOrNormalized(_input, _key, _meta) {
-    const input = _input;
-    const key = _key;
-
-    let output;
-    if (typeof _input !== 'number') {
-      output = _meta[key].legend[input];
-    } else {
-      output = _input;
-      if (this.neuralNetworkData.meta.isNormalized) {
-        output = this.normalizeInput(_input, key, _meta);
-      }
-    }
-    return output;
-  }
-
-  /**
-   * normalize the input value
-   * @param {*} value 
-   * @param {*} _key 
-   * @param {*} _meta 
-   */
-  normalizeInput(value, _key, _meta) {
-    const key = _key;
-    const {
-      min,
-      max
-    } = _meta[key];
-    return this.neuralNetworkData.normalizeValue(value, min, max);
-  }
-
 
   /**
    * addLayer
@@ -736,6 +766,12 @@ class DiyNeuralNetwork {
 
     return tf.layers.conv2d(options);
   }
+
+  /**
+   * **************************************
+   * Saving / Loading 
+   * **************************************
+   */
 
   /**
    * saves the model, weights, and metadata
