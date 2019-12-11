@@ -545,260 +545,275 @@ class DiyNeuralNetwork {
     }
   }
 
-  //   /** 
-  //    * ***********************************************
-  //    * Input handling for prediction / classification
-  //    * ***********************************************
-  //   */
+   /** 
+   * ////////////////////////////////////////////////////////////
+   * Input handling for prediction / classification
+   * ////////////////////////////////////////////////////////////
+   */
 
-  //   /**
-  //    * format the inputs for prediction
-  //    * this means applying onehot or normalization
-  //    * so that the user can use original data units rather 
-  //    * than having to normalize
-  //    * @param {*} _input 
-  //    * @param {*} meta 
-  //    * @param {*} inputHeaders 
-  //    */
-  //   formatInputsForPrediction(_input, meta, inputHeaders) {
-  //     let inputData = [];
+    /**
+     * format the inputs for prediction
+     * this means applying onehot or normalization
+     * so that the user can use original data units rather 
+     * than having to normalize
+     * @param {*} _input 
+     * @param {*} meta 
+     * @param {*} inputHeaders 
+     */
+    formatInputsForPrediction(_input, meta, inputHeaders) {
+      let inputData = [];
 
-  //     // TODO: check to see if it is a nested array 
-  //     // to run predict or classify on a batch of data
+      // TODO: check to see if it is a nested array 
+      // to run predict or classify on a batch of data
 
-  //     if (_input instanceof Array) {
-  //       inputData = inputHeaders.map((prop, idx) => {
-  //         return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
-  //       });
+      if (_input instanceof Array) {
+        inputData = inputHeaders.map((prop, idx) => {
+          return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
+        });
 
-  //     } else if (_input instanceof Object) {
-  //       // TODO: make sure that the input order is preserved!
-  //       inputData = inputHeaders.map(prop => {
-  //         return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
-  //       });
-  //     }
+      } else if (_input instanceof Object) {
+        // TODO: make sure that the input order is preserved!
+        inputData = inputHeaders.map(prop => {
+          return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
+        });
+      }
 
-  //     // inputData = tf.tensor([inputData.flat()])
-  //     inputData = inputData.flat()
+      // inputData = tf.tensor([inputData.flat()])
+      inputData = inputData.flat()
 
-  //     return inputData;
-  //   }
+      return inputData;
+    }
 
-  //   /**
-  //    * formatInputsForPredictionAll
-  //    * @param {*} _input 
-  //    * @param {*} meta 
-  //    * @param {*} inputHeaders 
-  //    */
-  //   formatInputsForPredictionAll(_input, meta, inputHeaders) {
-  //     let output;
+    /**
+     * formatInputsForPredictionAll
+     * @param {*} _input 
+     * @param {*} meta 
+     * @param {*} inputHeaders 
+     */
+    formatInputsForPredictionAll(_input, meta, inputHeaders) {
+      let output;
 
-  //     if (_input instanceof Array) {
-  //       if (_input.every(item => Array.isArray(item))) {
+      if (_input instanceof Array) {
+        if (_input.every(item => Array.isArray(item))) {
 
-  //         output = _input.map(item => {
-  //           return this.formatInputsForPrediction(item, meta, inputHeaders)
-  //         })
+          output = _input.map(item => {
+            return this.formatInputsForPrediction(item, meta, inputHeaders)
+          })
 
-  //         return tf.tensor(output, [_input.length, inputHeaders.length]);
+          return tf.tensor(output, [_input.length, inputHeaders.length]);
 
-  //       }
-  //       output = this.formatInputsForPrediction(_input, meta, inputHeaders)
-  //       return tf.tensor([output]);
-  //     }
+        }
+        output = this.formatInputsForPrediction(_input, meta, inputHeaders)
+        return tf.tensor([output]);
+      }
 
-  //     output = this.formatInputsForPrediction(_input, meta, inputHeaders)
-  //     return tf.tensor([output]);
-  //   }
+      output = this.formatInputsForPrediction(_input, meta, inputHeaders)
+      return tf.tensor([output]);
+    }
 
-  //   /**
-  //    * check if the input needs to be onehot encoded or 
-  //    * normalized
-  //    * @param {*} _input 
-  //    * @param {*} _meta 
-  //    */
-  //   // eslint-disable-next-line class-methods-use-this
-  //   isOneHotEncodedOrNormalized(_input, _key, _meta) {
-  //     const input = _input;
-  //     const key = _key;
+    /**
+     * check if the input needs to be onehot encoded or 
+     * normalized
+     * @param {*} _input 
+     * @param {*} _meta 
+     */
+    // eslint-disable-next-line class-methods-use-this
+    isOneHotEncodedOrNormalized(_input, _key, _meta) {
+      const input = _input;
+      const key = _key;
 
-  //     let output;
-  //     if (typeof _input !== 'number') {
-  //       output = _meta[key].legend[input];
-  //     } else {
-  //       output = _input;
-  //       if (this.neuralNetworkData.meta.isNormalized) {
-  //         output = this.normalizeInput(_input, key, _meta);
-  //       }
-  //     }
-  //     return output;
-  //   }
+      let output;
+      if (typeof _input !== 'number') {
+        output = _meta[key].legend[input];
+      } else {
+        output = _input;
+        if (this.neuralNetworkData.meta.isNormalized) {
+          output = this.normalizeInput(_input, key, _meta);
+        }
+      }
+      return output;
+    }
 
-  //   /**
-  //    * normalize the input value
-  //    * @param {*} value 
-  //    * @param {*} _key 
-  //    * @param {*} _meta 
-  //    */
-  //   normalizeInput(value, _key, _meta) {
-  //     const key = _key;
-  //     const {
-  //       min,
-  //       max
-  //     } = _meta[key];
-  //     return this.neuralNetworkData.normalizeValue(value, min, max);
-  //   }
+    /**
+     * normalize the input value
+     * @param {*} value 
+     * @param {*} _key 
+     * @param {*} _meta 
+     */
+    // eslint-disable-next-line class-methods-use-this
+    normalizeInput(value, _key, _meta) {
+      const key = _key;
+      const {
+        min,
+        max
+      } = _meta[key];
+      return nnUtils.normalizeValue(value, min, max);
+    }
 
-  //   /** 
-  //    * *************************************
-  //    * Prediction / Classification
-  //    * *************************************
-  //   */
+    /** 
+   * ////////////////////////////////////////////////////////////
+   * Prediction / classification
+   * ////////////////////////////////////////////////////////////
+   */
 
-  //   /**
-  //    * predict
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   predict(_input, _cb) {
-  //     return callCallback(this.predictInternal(_input), _cb)
-  //   }
+    /**
+     * predict
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    predict(_input, _cb) {
+      return callCallback(this.predictInternal(_input), _cb)
+    }
 
-  //   /**
-  //    * predictMultiple
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   predictMultiple(_input, _cb) {
-  //     return callCallback(this.predictInternal(_input), _cb)
-  //   }
+    /**
+     * predictMultiple
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    predictMultiple(_input, _cb) {
+      return callCallback(this.predictInternal(_input), _cb)
+    }
 
-  //   /**
-  //    * classify
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   classify(_input, _cb) {
-  //     return callCallback(this.classifyInternal(_input), _cb)
-  //   }
+    /**
+     * classify
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    classify(_input, _cb) {
+      return callCallback(this.classifyInternal(_input), _cb)
+    }
 
-  //   /**
-  //    * classifyMultiple
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   classifyMultiple(_input, _cb) {
-  //     return callCallback(this.classifyInternal(_input), _cb)
-  //   }
+    /**
+     * classifyMultiple
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    classifyMultiple(_input, _cb) {
+      return callCallback(this.classifyInternal(_input), _cb)
+    }
 
-  //   /**
-  //    * predict
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   async predictInternal(_input) {
+    /**
+     * predict
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    async predictInternal(_input) {
 
-  //     const {
-  //       meta
-  //     } = this.neuralNetworkData;
-  //     const headers = Object.keys(meta.inputs);
+      const {
+        meta
+      } = this.neuralNetworkData;
+      const headers = Object.keys(meta.inputs);
 
-  //     const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+      const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
 
-  //     const unformattedResults = await this.neuralNetwork.predict(inputData);
-  //     inputData.dispose();
+      const unformattedResults = await this.neuralNetwork.predict(inputData);
+      inputData.dispose();
 
-  //     if (meta !== null) {
-  //       const labels = Object.keys(meta.outputs);
+      if (meta !== null) {
+        const labels = Object.keys(meta.outputs);
 
-  //       const formattedResults = unformattedResults.map(unformattedResult => {
-  //         return labels.map((item, idx) => {
-  //           // check to see if the data were normalized
-  //           // if not, then send back the values, otherwise
-  //           // unnormalize then return
-  //           let val;
-  //           let unNormalized;
-  //           if (meta.isNormalized) {
-  //             const {
-  //               min,
-  //               max
-  //             } = meta.outputs[item];
-  //             val = this.neuralNetworkData.unNormalizeValue(unformattedResult[idx], min, max)
-  //             unNormalized = unformattedResult[idx]
-  //           } else {
-  //             val = unformattedResult[idx]
-  //           }
+        const formattedResults = unformattedResults.map(unformattedResult => {
+          return labels.map((item, idx) => {
+            // check to see if the data were normalized
+            // if not, then send back the values, otherwise
+            // unnormalize then return
+            let val;
+            let unNormalized;
+            if (meta.isNormalized) {
+              const {
+                min,
+                max
+              } = meta.outputs[item];
+              val = nnUtils.unnormalizeValue(unformattedResult[idx], min, max)
+              unNormalized = unformattedResult[idx]
+            } else {
+              val = unformattedResult[idx]
+            }
 
-  //           const d = {
-  //             [labels[idx]]: val,
-  //             label: item,
-  //             value: val,
-  //           };
+            const d = {
+              [labels[idx]]: val,
+              label: item,
+              value: val,
+            };
 
-  //           // if unNormalized is not undefined, then
-  //           // add that to the output 
-  //           if (unNormalized) {
-  //             d.unNormalizedValue = unNormalized;
-  //           }
+            // if unNormalized is not undefined, then
+            // add that to the output 
+            if (unNormalized) {
+              d.unNormalizedValue = unNormalized;
+            }
 
-  //           return d;
-  //         })
-  //       })
+            return d;
+          })
+        })
 
-  //       // return single array if the length is less than 2, 
-  //       // otherwise return array of arrays
-  //       if (formattedResults.length < 2) {
-  //         return formattedResults[0];
-  //       }
-  //       return formattedResults;
-  //     }
+        // return single array if the length is less than 2, 
+        // otherwise return array of arrays
+        if (formattedResults.length < 2) {
+          return formattedResults[0];
+        }
+        return formattedResults;
+      }
 
-  //     // if no meta exists, then return unformatted results;
-  //     return unformattedResults;
+      // if no meta exists, then return unformatted results;
+      return unformattedResults;
 
-  //   }
+    }
 
-  //   /**
-  //    * classify
-  //    * @param {*} _input 
-  //    * @param {*} _cb 
-  //    */
-  //   async classifyInternal(_input) {
-  //     const {
-  //       meta
-  //     } = this.neuralNetworkData;
-  //     const headers = Object.keys(meta.inputs);
+    /**
+     * classify
+     * @param {*} _input 
+     * @param {*} _cb 
+     */
+    async classifyInternal(_input) {
+      const {
+        meta
+      } = this.neuralNetworkData;
+      const headers = Object.keys(meta.inputs);
 
-  //     const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
-  //     inputData.print()
+      let inputData;
 
-  //     const unformattedResults = await this.neuralNetwork.classify(inputData);
-  //     inputData.dispose();
+      if(this.options.task === 'imageClassification'){
+        if(meta.isNormalized){
+          const {min, max} = meta.inputs.image;
+          inputData = this.neuralNetworkData.normalizeArray( Array.from(_input), {min, max});
+        }else {
+          inputData = Array.from(_input);
+        }
+    
+        inputData = tf.tensor([inputData], [1, ...meta.inputUnits])
+    
+      } else {
+        inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+        
+      }
+      
+      const unformattedResults = await this.neuralNetwork.classify(inputData);
+      inputData.dispose();
 
-  //     if (meta !== null) {
-  //       const label = Object.keys(meta.outputs)[0]
-  //       const vals = Object.entries(meta.outputs[label].legend);
+      if (meta !== null) {
+        const label = Object.keys(meta.outputs)[0]
+        const vals = Object.entries(meta.outputs[label].legend);
 
-  //       const formattedResults = unformattedResults.map(unformattedResult => {
-  //         return vals.map((item, idx) => {
-  //           return {
-  //             [item[0]]: unformattedResult[idx],
-  //             label: item[0],
-  //             confidence: unformattedResult[idx]
-  //           };
-  //         }).sort((a, b) => b.confidence - a.confidence)
-  //       });
+        const formattedResults = unformattedResults.map(unformattedResult => {
+          return vals.map((item, idx) => {
+            return {
+              [item[0]]: unformattedResult[idx],
+              label: item[0],
+              confidence: unformattedResult[idx]
+            };
+          }).sort((a, b) => b.confidence - a.confidence)
+        });
 
-  //       // return single array if the length is less than 2, 
-  //       // otherwise return array of arrays
-  //       if (formattedResults.length < 2) {
-  //         return formattedResults[0];
-  //       }
-  //       return formattedResults;
-  //     }
+        // return single array if the length is less than 2, 
+        // otherwise return array of arrays
+        if (formattedResults.length < 2) {
+          return formattedResults[0];
+        }
+        return formattedResults;
+      }
 
-  //     return unformattedResults;
-  //   }
+      return unformattedResults;
+    }
 
 
   /** 
