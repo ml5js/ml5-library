@@ -429,7 +429,6 @@ class DiyNeuralNetwork {
           },
           {
             type: 'dense',
-            units: this.options.hiddenUnits,
             activation: 'softmax'
           }
         ]
@@ -492,8 +491,8 @@ class DiyNeuralNetwork {
       default:
         console.log('no imputUnits or outputUnits defined')
         layers = [{
-          type: 'dense',
-            units: this.options.hiddenUnits,
+            type: 'dense',
+            units:this.options.hiddenUnits,
             activation: 'relu',
           },
           {
