@@ -5,6 +5,10 @@ import NeuralNetworkVis from './NeuralNetworkVis';
 import callCallback from '../utils/callcallback';
 
 import nnUtils from './NeuralNetworkUtils';
+import {
+  imgToPixelArray,
+  isInstanceOfSupportedElement
+} from '../utils/imageUtilities';
 
 const DEFAULTS = {
   inputs: [],
@@ -187,8 +191,10 @@ class DiyNeuralNetwork {
         outputLabels = outputs;
       }
     } else if (typeof xInputs === "object" && typeof yInputs === "object") {
+
       inputLabels = Object.keys(xInputs);
       outputLabels = Object.keys(yInputs);
+
     } else {
       inputLabels = nnUtils.createLabelsFromArrayValues(xInputs, 'input')
       outputLabels = nnUtils.createLabelsFromArrayValues(yInputs, 'output')
@@ -202,13 +208,58 @@ class DiyNeuralNetwork {
       throw new Error('outputLabels must be an array')
     }
 
-    const xs = nnUtils.formatDataAsObject(xInputs, inputLabels);
+    const formattedInputs = this.searchAndFormat(xInputs);
+    const xs = nnUtils.formatDataAsObject(formattedInputs, inputLabels);
+
     const ys = nnUtils.formatDataAsObject(yInputs, outputLabels);
 
     this.neuralNetworkData.addData(xs, ys);
   }
 
+  
+  /**
+   * search though the xInputs and format for adding to data.raws
+   * @param {*} input 
+   */
+  searchAndFormat(input){
+    let formattedInputs;
+    if(Array.isArray(input)){
+      formattedInputs = input.map(item => this.formatInputItem(item));
+    } else if(typeof input === 'object'){
+      const newXInputs = Object.assign({}, input);
+      Object.keys(input).forEach(k => {
+        const val = input[k];
+        newXInputs[k] = this.formatInputItem(val);
+      })
+      formattedInputs = newXInputs;
+    }
+    return formattedInputs;
+  }
 
+  /**
+   * Returns either the original input or a pixelArray[]
+   * @param {*} input 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  formatInputItem(input){
+    let imgToPredict;
+    let formattedInputs;
+    if (isInstanceOfSupportedElement(input)) {
+      imgToPredict = input;
+    } else if (typeof input === "object" && isInstanceOfSupportedElement(input.elt)) {
+      imgToPredict = input.elt; // Handle p5.js image and video.
+    } else if (typeof input === "object" && isInstanceOfSupportedElement(input.canvas)) {
+      imgToPredict = input.canvas; // Handle p5.js image and video.
+    } 
+    
+    if(imgToPredict){
+      formattedInputs = imgToPixelArray(imgToPredict)
+    } else {
+      formattedInputs = input;
+    }
+
+    return formattedInputs;
+  }
 
   /** 
    * ////////////////////////////////////////////////////////////
@@ -787,20 +838,31 @@ class DiyNeuralNetwork {
       let inputData;
 
       if(this.options.task === 'imageClassification'){
-        if(meta.isNormalized){
-          const {min, max} = meta.inputs.image;
-          inputData = this.neuralNetworkData.normalizeArray( Array.from(_input), {min, max});
-        }else {
-          inputData = Array.from(_input);
+
+        // get the inputData for classification
+        // if it is a image type format it and
+        // flatten it
+        inputData = this.searchAndFormat(_input)
+        if(Array.isArray(inputData)){
+          inputData = inputData.flat()
+        } else {
+          inputData = inputData[headers[0]]
         }
-    
+
+        if(meta.isNormalized){
+          // TODO: check to make sure this property is not static!!!!
+          const {min, max} = meta.inputs.image;
+          inputData = this.neuralNetworkData.normalizeArray( Array.from(inputData), {min, max});
+        } else {
+          inputData = Array.from(inputData);
+        }
+
         inputData = tf.tensor([inputData], [1, ...meta.inputUnits])
-    
+
       } else {
         inputData = this.formatInputsForPredictionAll(_input, meta, headers);
-        
       }
-      
+
       const unformattedResults = await this.neuralNetwork.classify(inputData);
       inputData.dispose();
 
