@@ -61,6 +61,19 @@ class DiyNeuralNetwork {
   }
 
 
+  createMetaData(dataRaw){
+    const {inputs} = this.options;
+
+    let inputShape;
+    // TODO: the next two lines are repeated - make a function ⌄⌄⌄⌄⌄⌄⌄⌄
+    if(Array.isArray(inputs) && inputs.length > 0){
+     inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
+      // TODO ^^^^^
+    }
+    
+    this.neuralNetworkData.createMetadata(dataRaw, inputShape);
+  }
+
   /** 
    * ////////////////////////////////////////////////////////////
    * Data Handling
@@ -76,6 +89,7 @@ class DiyNeuralNetwork {
     return callCallback(this.loadDataInternal(options), callback)
   }
 
+  
   /**
    * loadDataInternal
    * @param {*} options 
@@ -92,11 +106,7 @@ class DiyNeuralNetwork {
     // once the data are loaded, create the metadata 
     // and prep the data for training
     // if the inputs are defined as an array of [img_width, img_height, channels]
-
-    // TODO: the next two lines are repeated - make a function ⌄⌄⌄⌄⌄⌄⌄⌄
-    const inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
-    this.neuralNetworkData.createMetadata(data, inputShape);
-    // TODO ^^^^^
+    this.createMetadata(data);
 
     this.prepareForTraining(data);
   }
@@ -125,9 +135,7 @@ class DiyNeuralNetwork {
 
     if (!this.neuralNetworkData.isMetadataReady) {
       // if the inputs are defined as an array of [img_width, img_height, channels]
-      const {inputs} = this.options;
-      const inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
-      this.neuralNetworkData.createMetadata(dataRaw, inputShape);
+      this.createMetaData(dataRaw);
     }
 
     if (!this.neuralNetworkData.isWarmedUp) {
@@ -299,9 +307,7 @@ class DiyNeuralNetwork {
       // if metadata needs to be generated about the data
       if (!this.neuralNetworkData.isMetadataReady) {
         // if the inputs are defined as an array of [img_width, img_height, channels]
-        const {inputs} = this.options;
-        const inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
-        this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw, inputShape);
+        this.createMetaData(this.neuralNetworkData.data.raw);
       }
 
       // if the data still need to be summarized, onehotencoded, etc
