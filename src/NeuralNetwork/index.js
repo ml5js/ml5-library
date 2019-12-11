@@ -91,8 +91,13 @@ class DiyNeuralNetwork {
 
     // once the data are loaded, create the metadata 
     // and prep the data for training
-    // this.createMetaDataFromData();
-    this.neuralNetworkData.createMetadata(data);
+    // if the inputs are defined as an array of [img_width, img_height, channels]
+
+    // TODO: the next two lines are repeated - make a function ⌄⌄⌄⌄⌄⌄⌄⌄
+    const inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
+    this.neuralNetworkData.createMetadata(data, inputShape);
+    // TODO ^^^^^
+
     this.prepareForTraining(data);
   }
 
@@ -119,7 +124,10 @@ class DiyNeuralNetwork {
     const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
 
     if (!this.neuralNetworkData.isMetadataReady) {
-      this.neuralNetworkData.createMetadata(dataRaw);
+      // if the inputs are defined as an array of [img_width, img_height, channels]
+      const {inputs} = this.options;
+      const inputShape = inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
+      this.neuralNetworkData.createMetadata(dataRaw, inputShape);
     }
 
     if (!this.neuralNetworkData.isWarmedUp) {
@@ -179,7 +187,6 @@ class DiyNeuralNetwork {
     }
 
     // Make sure that the inputLabels and outputLabels are arrays
-    console.log(inputLabels)
     if (!(inputLabels instanceof Array)) {
       throw new Error('inputLabels must be an array')
     }
