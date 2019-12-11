@@ -31,7 +31,10 @@ class NeuralNetworkUtils {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMin(_array) {
-    return Math.min(..._array)
+    // return Math.min.apply(null,_array)
+    return _array.reduce((a, b) => {
+      return Math.min(a, b);
+    });
   }
 
   /**
@@ -40,7 +43,11 @@ class NeuralNetworkUtils {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMax(_array) {
-    return Math.max(..._array)
+    // return Math.max.apply(null,_array)
+    return _array.reduce((a, b) => {
+      return Math.max(a, b);
+    });
+    // return Math.max(..._array)
   }
 
   /**
