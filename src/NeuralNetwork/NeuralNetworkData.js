@@ -1,9 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
-// import {
-//   saveBlob
-// } from '../utils/io';
-
-// eslint-disable-next-line no-unused-vars
+import {
+  saveBlob
+} from '../utils/io';
 import nnUtils from './NeuralNetworkUtils';
 
 class NeuralNetworkData {
@@ -84,7 +82,7 @@ class NeuralNetworkData {
    * ////////////////////////////////////////////////////////
    */
 
-   // /**
+  // /**
   //  * createMetaDataFromData
   //  * returns an object with:
   //  * {
@@ -111,26 +109,75 @@ class NeuralNetworkData {
 
   // }
 
+  /**
+   * ////////////////////////////////////////////////////////
+   * Tensor handling
+   * ////////////////////////////////////////////////////////
+   */
+
+
+  /**
+   * convertRawToTensors
+   * converts array of {xs, ys} to tensors
+   * @param {*} _dataRaw 
+   * @param {*} meta 
+   */
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  convertRawToTensors(dataRaw) {
+    const meta = Object.assign({}, this.meta);
+    const dataLength = dataRaw.length;
+
+    return tf.tidy(() => {
+
+      const inputArr = [];
+      const outputArr = [];
+
+      dataRaw.forEach(row => {
+        // get xs
+        const xs = Object.keys(meta.inputs).map(k => {
+          return row.xs[k]
+        }).flat();
+
+        inputArr.push(xs)
+
+        // get ys
+        const ys = Object.keys(meta.outputs).map(k => {
+          return row.ys[k]
+        }).flat();
+
+        outputArr.push(ys)
+      })
+
+      const inputs = tf.tensor(inputArr.flat(), [dataLength, ...meta.inputUnits])
+      const outputs = tf.tensor(outputArr.flat(), [dataLength, meta.outputUnits])
+
+      return {
+        inputs,
+        outputs
+      };
+    })
+  }
+
   /* 
-  * ////////////////////////////////////////////////
-  * Data normalization handling
-  * ////////////////////////////////////////////////
-  */
+   * ////////////////////////////////////////////////
+   * Data normalization handling
+   * ////////////////////////////////////////////////
+   */
 
-   /**
-    * normalize the dataRaw input
-    * @param {*} dataRaw 
-    */
-   normalizeDataRaw(dataRaw){
-      const meta = Object.assign({}, this.meta);
+  /**
+   * normalize the dataRaw input
+   * @param {*} dataRaw 
+   */
+  normalizeDataRaw(dataRaw) {
+    const meta = Object.assign({}, this.meta);
 
-      const normXs = this.normalizeInputData(dataRaw, meta.inputs, 'xs');
-      const normYs = this.normalizeInputData(dataRaw, meta.outputs, 'ys');
+    const normXs = this.normalizeInputData(dataRaw, meta.inputs, 'xs');
+    const normYs = this.normalizeInputData(dataRaw, meta.outputs, 'ys');
 
-      const normalizedData = nnUtils.zipArrays(normXs, normYs);
+    const normalizedData = nnUtils.zipArrays(normXs, normYs);
 
-      return normalizedData;
-   }
+    return normalizedData;
+  }
 
   /**
    * normalizeRaws
@@ -154,14 +201,14 @@ class NeuralNetworkData {
         max: inputMeta[k].max
       }
 
-      const dataAsArray = dataRaw.map( item => item[xsOrYs][k]);
+      const dataAsArray = dataRaw.map(item => item[xsOrYs][k]);
       // depending on the input type, normalize accordingly
       if (inputMeta[k].dtype === 'string') {
         options.legend = inputMeta[k].legend;
         normalized[k] = this.normalizeArray(dataAsArray, options);
       } else if (inputMeta[k].dtype === 'number') {
         normalized[k] = this.normalizeArray(dataAsArray, options);
-      } else if (inputMeta[k].dtype === 'array'){
+      } else if (inputMeta[k].dtype === 'array') {
         normalized[k] = dataAsArray.map(item => this.normalizeArray(item, options));
       }
 
@@ -190,7 +237,7 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   normalizeArray(inputArray, options) {
-        
+
     const {
       min,
       max
@@ -217,53 +264,60 @@ class NeuralNetworkData {
     throw new Error('error in inputArray of normalizeArray() function')
   }
 
-  // /**
-  //  * unNormalizeArray
-  //  * @param {*} _input 
-  //  * @param {*} _options 
-  //  */
-  // // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  // unNormalizeArray(_input, _options) {
-  //   const {
-  //     min,
-  //     max
-  //   } = _options;
-  //   const inputArray = [..._input];
-  //   let unNormalized;
+  /**
+   * unNormalizeArray
+   * @param {*} _input 
+   * @param {*} _options 
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  unnormalizeArray(inputArray, options) {
 
-  //   if (!_input.every(v => typeof v === 'number')) {
-  //     // console.log({
-  //     //   warn: 'not a numeric array, returning given value'
-  //     // })
+    const {
+      min,
+      max
+    } = options;
 
-  //     if (_options.legend) {
-  //       unNormalized = inputArray.map(v => {
-  //         let res;
-  //         Object.entries(_options.legend).forEach(item => {
-  //           const key = item[0];
-  //           const val = item[1];
-  //           const matches = v.map((num, idx) => num === val[idx]).every(truthy => truthy === true);
-  //           if (matches) res = key;
-  //         })
-  //         return res;
-  //       })
+    // if the data is onehot encoded then remap the 
+    // values from those oneHot arrays
+    if (options.legend) {
+      const unnormalized = inputArray.map(v => {
+        let res;
+        Object.entries(options.legend).forEach(item => {
+          const key = item[0];
+          const val = item[1];
+          const matches = v.map((num, idx) => num === val[idx]).every(truthy => truthy === true);
+          if (matches) res = key;
+        })
+        return res;
+      })
 
-  //       // unNormalized = inputArray.map(v => _options.legend[v]);
-  //       return unNormalized
-  //     }
+      return unnormalized
+    }
 
-  //     return inputArray;
-  //   }
+    // if the dtype is a number
+    if (inputArray.every(v => typeof v === 'number')) {
+      const unnormalized = inputArray.map(v => nnUtils.unnormalizeValue(v, min, max))
+      return unnormalized;
+    }
 
-  //   unNormalized = inputArray.map(v => this.unNormalizeValue(v, min, max))
-  //   return unNormalized;
-  // }
+    // otherwise return the input array
+    // return inputArray;
+    throw new Error('error in inputArray of normalizeArray() function')
+  }
+
+
+
+  /* 
+   * ////////////////////////////////////////////////
+   * data Summary
+   * ////////////////////////////////////////////////
+   */
 
   /**
-   * 
+   * get stats about the data
    * @param {*} dataRaw 
    */
-  getDataStats(dataRaw){
+  getDataStats(dataRaw) {
     const meta = Object.assign({}, this.meta)
 
     const inputMeta = this.getInputMetaStats(dataRaw, meta.inputs, 'xs');
@@ -272,7 +326,10 @@ class NeuralNetworkData {
     meta.inputs = inputMeta;
     meta.outputs = outputMeta;
 
-    this.meta = {...this.meta, ...meta};
+    this.meta = {
+      ...this.meta,
+      ...meta
+    };
 
     return meta;
   }
@@ -289,16 +346,16 @@ class NeuralNetworkData {
     const inputMeta = Object.assign({}, inputOrOutputMeta);
 
     Object.keys(inputMeta).forEach(k => {
-      
+
       if (inputMeta[k].dtype === 'string') {
         inputMeta[k].min = 0;
         inputMeta[k].max = 1;
       } else if (inputMeta[k].dtype === 'number') {
-        const dataAsArray = dataRaw.map( item => item[xsOrYs][k]);
+        const dataAsArray = dataRaw.map(item => item[xsOrYs][k]);
         inputMeta[k].min = nnUtils.getMin(dataAsArray);
         inputMeta[k].max = nnUtils.getMax(dataAsArray);
-      } else if (inputMeta[k].dtype === 'array'){
-        const dataAsArray = dataRaw.map( item => item[xsOrYs][k]).flat();
+      } else if (inputMeta[k].dtype === 'array') {
+        const dataAsArray = dataRaw.map(item => item[xsOrYs][k]).flat();
         inputMeta[k].min = nnUtils.getMin(dataAsArray);
         inputMeta[k].max = nnUtils.getMax(dataAsArray);
       }
@@ -308,12 +365,111 @@ class NeuralNetworkData {
     return inputMeta;
   }
 
+  /**
+   * get the data units, inputshape and output units
+   * @param {*} dataRaw 
+   */
+  getDataUnits(dataRaw, _arrayShape = null) {
+    const arrayShape = _arrayShape !== null ? _arrayShape : undefined;
+    const meta = Object.assign({}, this.meta);
+
+    // if the data has a shape pass it in
+    let inputShape;
+    if (arrayShape) {
+      inputShape = arrayShape;
+    } else {
+      inputShape = [this.getInputMetaUnits(dataRaw, meta.inputs)].flat();
+    }
+
+    const outputShape = this.getInputMetaUnits(dataRaw, meta.outputs);
+
+    meta.inputUnits = inputShape;
+    meta.outputUnits = outputShape;
+
+    this.meta = {
+      ...this.meta,
+      ...meta
+    };
+
+    return meta;
+  }
+
+  /**
+   * get input
+   * @param {*} _inputsMeta 
+   * @param {*} _dataRaw 
+   */
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  getInputMetaUnits(_dataRaw, _inputsMeta) {
+    let units = 0;
+    const inputsMeta = Object.assign({}, _inputsMeta);
+
+    Object.entries(inputsMeta).forEach(arr => {
+      const {
+        dtype
+      } = arr[1];
+      if (dtype === 'number') {
+        units += 1;
+      } else if (dtype === 'string') {
+
+        const {
+          uniqueValues
+        } = arr[1];
+
+        const uniqueCount = uniqueValues.length;
+        units += uniqueCount
+      } else if (dtype === 'array') {
+        // TODO: User must input the shape of the 
+        // image size correctly. 
+        units = []
+      }
+    })
+
+    return units;
+  }
+
+  /**
+   * getDTypesFromData
+   * gets the data types of the data we're using
+   * important for handling oneHot
+   */
+  getDTypesFromData(_dataRaw) {
+    const meta = {
+      ...this.meta,
+      inputs: {},
+      outputs: {}
+    }
+
+    const sample = _dataRaw[0];
+    const xs = Object.keys(sample.xs);
+    const ys = Object.keys(sample.ys);
+
+    xs.forEach((prop) => {
+      meta.inputs[prop] = {
+        dtype: nnUtils.getDataType(sample.xs[prop])
+      }
+    });
+
+    ys.forEach((prop) => {
+      meta.outputs[prop] = {
+        dtype: nnUtils.getDataType(sample.ys[prop])
+      }
+    });
+
+    // TODO: check if all entries have the same dtype.
+    // otherwise throw an error
+
+    this.meta = meta;
+
+    return meta;
+  }
+
 
   /* 
-  * ////////////////////////////////////////////////
-  * One hot encoding handling
-  * ////////////////////////////////////////////////
-  */
+   * ////////////////////////////////////////////////
+   * One hot encoding handling
+   * ////////////////////////////////////////////////
+   */
 
   /**
    * applyOneHotEncodingsToDataRaw
@@ -355,48 +511,7 @@ class NeuralNetworkData {
     return output;
   }
 
-  // /**
-  //  * convertRawToTensors
-  //  * converts array of {xs, ys} to tensors
-  //  * @param {*} _dataRaw 
-  //  * @param {*} meta 
-  //  */
-  // // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  // convertRawToTensors(_dataRaw = null, _meta = null) {
-  //   const dataRaw = _dataRaw === null ? this.data.raw : _dataRaw;
-  //   const meta = _meta === null ? this.meta : _meta;
-  //   const dataLength = dataRaw.length;
 
-  //   return tf.tidy(() => {
-
-  //     const inputArr = [];
-  //     const outputArr = [];
-
-  //     dataRaw.forEach(row => {
-  //       // get xs
-  //       const xs = Object.keys(meta.inputs).map(k => {
-  //         return row.xs[k]
-  //       }).flat();
-
-  //       inputArr.push(...xs)
-
-  //       // get ys
-  //       const ys = Object.keys(meta.outputs).map(k => {
-  //         return row.ys[k]
-  //       }).flat();
-  //       outputArr.push(...ys)
-  //     })
-
-
-  //     const inputs = tf.tensor(inputArr, [dataLength, meta.inputUnits])
-  //     const outputs = tf.tensor(outputArr, [dataLength, meta.outputUnits])
-
-  //     return {
-  //       inputs,
-  //       outputs
-  //     };
-  //   })
-  // }
 
 
   /**
@@ -405,7 +520,7 @@ class NeuralNetworkData {
    * and adds them to the meta info
    * @param {*} dataRaw 
    */
-  getDataOneHot(dataRaw){
+  getDataOneHot(dataRaw) {
     const meta = Object.assign({}, this.meta)
 
     const inputMeta = this.getInputMetaOneHot(dataRaw, meta.inputs, 'xs');
@@ -414,7 +529,10 @@ class NeuralNetworkData {
     meta.inputs = inputMeta;
     meta.outputs = outputMeta;
 
-    this.meta = {...this.meta, ...meta};
+    this.meta = {
+      ...this.meta,
+      ...meta
+    };
 
     return meta;
 
@@ -482,107 +600,10 @@ class NeuralNetworkData {
 
 
   /**
-   * get the data units, inputshape and output units
-   * @param {*} dataRaw 
+   * ////////////////////////////////////////////////
+   * Data loading handling
+   * ////////////////////////////////////////////////
    */
-  getDataUnits(dataRaw, _arrayShape = null){
-    const arrayShape = _arrayShape !== null ? _arrayShape : undefined;
-    const meta = Object.assign({}, this.meta);
-
-    // if the data has a shape pass it in
-    let inputShape;
-    if(arrayShape){
-      inputShape = arrayShape;
-    }else{
-      inputShape = [this.getInputMetaUnits(dataRaw, meta.inputs)].flat();
-    }
-    
-    const outputShape = this.getInputMetaUnits(dataRaw, meta.outputs);
-    
-    meta.inputUnits = inputShape;
-    meta.outputUnits = outputShape;
-
-    this.meta = {...this.meta, ...meta};
-
-    return meta;
-  }
-
-  /**
-   * get input
-   * @param {*} _inputsMeta 
-   * @param {*} _dataRaw 
-   */
-  // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  getInputMetaUnits(_dataRaw, _inputsMeta) {
-    let units = 0;
-    const inputsMeta = Object.assign({}, _inputsMeta);
-
-    Object.entries(inputsMeta).forEach(arr => {
-      const {
-        dtype
-      } = arr[1];
-      if (dtype === 'number') {
-        units += 1;
-      } else if (dtype === 'string') {
-        
-        const {
-          uniqueValues
-        } = arr[1];
-
-        const uniqueCount = uniqueValues.length;
-        units += uniqueCount
-      } else if (dtype === 'array'){
-        // TODO: User must input the shape of the 
-        // image size correctly. 
-        units = []
-      }
-    })
-
-    return units;
-  }
-
-  /**
-   * getDTypesFromData
-   * gets the data types of the data we're using
-   * important for handling oneHot
-   */
-  getDTypesFromData(_dataRaw) {
-    const meta = {
-      ...this.meta,
-      inputs: {},
-      outputs: {}
-    }
-
-    const sample = _dataRaw[0];
-    const xs = Object.keys(sample.xs);
-    const ys = Object.keys(sample.ys);
-
-    xs.forEach((prop) => {
-      meta.inputs[prop] = {
-        dtype: nnUtils.getDataType(sample.xs[prop])
-      }
-    });
-
-    ys.forEach((prop) => {
-      meta.outputs[prop] = {
-        dtype: nnUtils.getDataType(sample.ys[prop])
-      }
-    });
-
-    // TODO: check if all entries have the same dtype.
-    // otherwise throw an error
-
-    this.meta = meta;
-
-    return meta;
-  }
-
-
-  // /**
-  //  ************************************* 
-  //  * Data Loading
-  //  *************************************
-  //  */
 
   /**
    * Loads data from a URL using the appropriate function
@@ -750,179 +771,177 @@ class NeuralNetworkData {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  // async loadData(filesOrPath = null, callback) {
+  async loadData(filesOrPath = null, callback) {
+    try {
+      let loadedData;
 
-  //   try {
-  //     let loadedData;
+      if (typeof filesOrPath !== 'string') {
+        const file = filesOrPath[0];
+        const fr = new FileReader();
+        fr.readAsText(file);
+        if (file.name.includes('.json')) {
+          const temp = await file.text();
+          loadedData = JSON.parse(temp);
+        } else {
+          console.log('data must be a json object containing an array called "data" or "entries')
+        }
+      } else {
+        loadedData = await fetch(filesOrPath);
+        const text = await loadedData.text();
+        if (this.isJsonString(text)) {
+          loadedData = JSON.parse(text);
+        } else {
+          console.log('Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData')
+        }
+      }
 
-  //     if (typeof filesOrPath !== 'string') {
-  //       const file = filesOrPath[0];
-  //       const fr = new FileReader();
-  //       fr.readAsText(file);
-  //       if (file.name.includes('.json')) {
-  //         const temp = await file.text();
-  //         loadedData = JSON.parse(temp);
-  //       } else {
-  //         console.log('data must be a json object containing an array called "data" or "entries')
-  //       }
-  //     } else {
-  //       loadedData = await fetch(filesOrPath);
-  //       const text = await loadedData.text();
-  //       if (this.isJsonString(text)) {
-  //         loadedData = JSON.parse(text);
-  //       } else {
-  //         console.log('Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData')
-  //       }
-  //     }
+      this.data.raw = this.findEntries(loadedData);
 
-  //     this.data.raw = this.findEntries(loadedData);
+      // check if a data or entries property exists
+      if (!this.data.raw.length > 0) {
+        console.log('data must be a json object containing an array called "data" ')
+      }
 
-  //     // check if a data or entries property exists
-  //     if (!this.data.raw.length > 0) {
-  //       console.log('data must be a json object containing an array called "data" ')
-  //     }
+      if (callback) {
+        callback();
+      }
 
-  //     if (callback) {
-  //       callback();
-  //     }
+    } catch (error) {
+      throw new Error(error);
+    }
 
-  //   } catch (error) {
-  //     throw new Error(error);
-  //   }
+  }
 
-  // }
+  /** 
+   * ////////////////////////////////////////////////
+   * Save data and meta info
+   * ////////////////////////////////////////////////
+   */
 
-  // /** 
-  //  * ****************************************
-  //  * Saving Data and Meta Info
-  //  * ****************************************
-  // */
+  /**
+   * saveData
+   * @param {*} name 
+   */
+  // eslint-disable-next-line class-methods-use-this
+  async saveData(name) {
+    const today = new Date();
+    const date = `${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}`;
+    const time = `${String(today.getHours())}-${String(today.getMinutes())}-${String(today.getSeconds())}`;
+    const datetime = `${date}_${time}`;
 
-  // /**
-  //  * saveData
-  //  * @param {*} name 
-  //  */
-  // // eslint-disable-next-line class-methods-use-this
-  // async saveData(name) {
-  //   const today = new Date();
-  //   const date = `${String(today.getFullYear())}-${String(today.getMonth()+1)}-${String(today.getDate())}`;
-  //   const time = `${String(today.getHours())}-${String(today.getMinutes())}-${String(today.getSeconds())}`;
-  //   const datetime = `${date}_${time}`;
+    let dataName = datetime;
+    if (name) dataName = name;
 
-  //   let dataName = datetime;
-  //   if (name) dataName = name;
+    const output = {
+      data: this.data.raw
+    }
 
-  //   const output = {
-  //     data: this.data.raw
-  //   }
+    await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
+  }
 
-  //   await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
-  // }
+  /**
+   * Saves metadata of the data
+   * @param {*} nameOrCb 
+   * @param {*} cb 
+   */
+  async saveMeta(nameOrCb, cb) {
+    let modelName;
+    let callback;
 
-  // /**
-  //  * Saves metadata of the data
-  //  * @param {*} nameOrCb 
-  //  * @param {*} cb 
-  //  */
-  // async saveMeta(nameOrCb, cb) {
-  //   let modelName;
-  //   let callback;
+    if (typeof nameOrCb === 'function') {
+      modelName = 'model';
+      callback = nameOrCb;
+    } else if (typeof nameOrCb === 'string') {
+      modelName = nameOrCb
 
-  //   if (typeof nameOrCb === 'function') {
-  //     modelName = 'model';
-  //     callback = nameOrCb;
-  //   } else if (typeof nameOrCb === 'string') {
-  //     modelName = nameOrCb
+      if (typeof cb === 'function') {
+        callback = cb
+      }
 
-  //     if (typeof cb === 'function') {
-  //       callback = cb
-  //     }
+    } else {
+      modelName = 'model'
+    }
 
-  //   } else {
-  //     modelName = 'model'
-  //   }
+    await saveBlob(JSON.stringify(this.meta), `${modelName}_meta.json`, 'text/plain');
+    if (callback) {
+      callback();
+    }
 
-  //   await saveBlob(JSON.stringify(this.meta), `${modelName}_meta.json`, 'text/plain');
-  //   if (callback) {
-  //     callback();
-  //   }
-
-  // }
+  }
 
 
-  // /**
-  //  * load a model and metadata
-  //  * @param {*} filesOrPath 
-  //  * @param {*} callback 
-  //  */
-  // async loadMeta(filesOrPath = null, callback) {
+  /**
+   * load a model and metadata
+   * @param {*} filesOrPath 
+   * @param {*} callback 
+   */
+  async loadMeta(filesOrPath = null, callback) {
 
-  //   if (filesOrPath instanceof FileList) {
+    if (filesOrPath instanceof FileList) {
 
-  //     const files = await Promise.all(
-  //       Array.from(filesOrPath).map(async (file) => {
-  //         if (file.name.includes('.json') && !file.name.includes('_meta')) {
-  //           return {
-  //             name: "model",
-  //             file
-  //           }
-  //         } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
-  //           const modelMetadata = await file.text();
-  //           return {
-  //             name: "metadata",
-  //             file: modelMetadata
-  //           }
-  //         } else if (file.name.includes('.bin')) {
-  //           return {
-  //             name: "weights",
-  //             file
-  //           }
-  //         }
-  //         return {
-  //           name: null,
-  //           file: null
-  //         }
-  //       })
-  //     )
+      const files = await Promise.all(
+        Array.from(filesOrPath).map(async (file) => {
+          if (file.name.includes('.json') && !file.name.includes('_meta')) {
+            return {
+              name: "model",
+              file
+            }
+          } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
+            const modelMetadata = await file.text();
+            return {
+              name: "metadata",
+              file: modelMetadata
+            }
+          } else if (file.name.includes('.bin')) {
+            return {
+              name: "weights",
+              file
+            }
+          }
+          return {
+            name: null,
+            file: null
+          }
+        })
+      )
 
-  //     const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
+      const modelMetadata = JSON.parse(files.find(item => item.name === 'metadata').file);
 
-  //     this.meta = modelMetadata;
+      this.meta = modelMetadata;
 
-  //   } else if (filesOrPath instanceof Object) {
-  //     // filesOrPath = {model: URL, metadata: URL, weights: URL}
+    } else if (filesOrPath instanceof Object) {
+      // filesOrPath = {model: URL, metadata: URL, weights: URL}
 
-  //     let modelMetadata = await fetch(filesOrPath.metadata);
-  //     modelMetadata = await modelMetadata.text();
-  //     modelMetadata = JSON.parse(modelMetadata);
+      let modelMetadata = await fetch(filesOrPath.metadata);
+      modelMetadata = await modelMetadata.text();
+      modelMetadata = JSON.parse(modelMetadata);
 
-  //     this.meta = modelMetadata;
+      this.meta = modelMetadata;
 
-  //   } else {
-  //     const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
-  //     let modelMetadata = await fetch(metaPath);
-  //     modelMetadata = await modelMetadata.json();
+    } else {
+      const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf("/"))}/model_meta.json`;
+      let modelMetadata = await fetch(metaPath);
+      modelMetadata = await modelMetadata.json();
 
-  //     this.meta = modelMetadata;
-  //   }
+      this.meta = modelMetadata;
+    }
 
-  //   this.isMetadataReady = true;
-  //   this.isWarmedUp = true;
+    this.isMetadataReady = true;
+    this.isWarmedUp = true;
 
-  //   if (callback) {
-  //     callback();
-  //   }
-  //   return this.meta;
-  // }
-
+    if (callback) {
+      callback();
+    }
+    return this.meta;
+  }
 
 
 
-  // /*
-  //  ********************************
-  //  * helper functions 
-  //  ********************************
-  //  */
+  /*
+   * ////////////////////////////////////////////////
+   * Helper funcitons
+   * ////////////////////////////////////////////////
+   */
 
   /**
    * csvToJSON
@@ -958,9 +977,6 @@ class NeuralNetworkData {
     }
 
   }
-
-
-  
 
   /**
    * findEntries

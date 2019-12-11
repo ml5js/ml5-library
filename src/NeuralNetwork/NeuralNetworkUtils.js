@@ -21,7 +21,7 @@ class NeuralNetworkUtils {
    * @param {*} max 
    */
   // eslint-disable-next-line class-methods-use-this
-  unNormalizeValue(value, min, max) {
+  unnormalizeValue(value, min, max) {
     return ((value * (max - min)) + min)
   }
 
