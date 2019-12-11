@@ -787,7 +787,7 @@ class NeuralNetworkData {
       } else {
         loadedData = await fetch(filesOrPath);
         const text = await loadedData.text();
-        if (this.isJsonString(text)) {
+        if (nnUtils.isJsonOrString(text)) {
           loadedData = JSON.parse(text);
         } else {
           console.log('Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData')
