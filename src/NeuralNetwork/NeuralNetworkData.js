@@ -78,36 +78,33 @@ class NeuralNetworkData {
 
   /**
    * ////////////////////////////////////////////////////////
-   * Actions
+   * Main
    * ////////////////////////////////////////////////////////
    */
 
-  // /**
-  //  * createMetaDataFromData
-  //  * returns an object with:
-  //  * {
-  //  *  inputUnits: Number
-  //  *  outputUnits: Number
-  //  *  inputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
-  //  *  outputs: {label:{dtypes:String, [?uniqueValues], {?legend} }}
-  //  * }
-  //  * @param {*} _dataRaw 
-  //  */
-  // createMetaDataFromData(_dataRaw) {
-  //   // get dtypes
-  //   const meta = this.getDTypesFromData(_dataRaw);
-  //   meta.inputs = this.getOneHotMeta(meta.inputs, _dataRaw, 'xs');
-  //   meta.outputs = this.getOneHotMeta(meta.outputs, _dataRaw, 'ys');
-  //   meta.inputUnits = this.calculateInputUnitsFromData(meta.inputs, _dataRaw)
-  //   meta.outputUnits = this.calculateInputUnitsFromData(meta.outputs, _dataRaw)
-
-  //   this.meta = {
-  //     ...meta
-  //   };
-  //   // outputs
-  //   return meta;
-
-  // }
+  /**
+   * create the metadata from the data
+   * this covers:
+   *  1. getting the datatype from the data
+   *  2. getting the min and max from the data
+   *  3. getting the oneHot encoded values
+   *  4. getting the inputShape and outputUnits from the data
+   * @param {*} dataRaw 
+   * @param {*} inputShape 
+   */
+  createMetadata(dataRaw, inputShape = null){
+    // get the data type for each property
+    this.getDTypesFromData(dataRaw);
+    // get the stats - min, max
+    this.getDataStats(dataRaw);
+    // onehot encode 
+    this.getDataOneHot(dataRaw);
+    // calculate the input units from the data
+    this.getDataUnits(dataRaw, inputShape);
+    
+    this.isMetadataReady = true;
+    return {...this.meta}
+  }
 
   /**
    * ////////////////////////////////////////////////////////
@@ -380,6 +377,8 @@ class NeuralNetworkData {
     } else {
       inputShape = [this.getInputMetaUnits(dataRaw, meta.inputs)].flat();
     }
+
+    console.log(inputShape)
 
     const outputShape = this.getInputMetaUnits(dataRaw, meta.outputs);
 
