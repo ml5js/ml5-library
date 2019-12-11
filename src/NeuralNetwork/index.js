@@ -164,10 +164,10 @@ class DiyNeuralNetwork {
       (inputs.length > 0) && (outputs.length > 0)) {
       // if the inputs and outputs labels have been defined
       // in the constructor
-      if (inputs.every(item => item instanceof String)) {
+      if (inputs.every(item => typeof item === 'string')) {
         inputLabels = inputs;
       }
-      if (outputs.every(item => item instanceof String)) {
+      if (outputs.every(item => typeof item === 'string')) {
         outputLabels = outputs;
       }
     } else if (typeof xInputs === "object" && typeof yInputs === "object") {
@@ -179,6 +179,7 @@ class DiyNeuralNetwork {
     }
 
     // Make sure that the inputLabels and outputLabels are arrays
+    console.log(inputLabels)
     if (!(inputLabels instanceof Array)) {
       throw new Error('inputLabels must be an array')
     }
