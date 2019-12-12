@@ -215,6 +215,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/tasanuma"><img src="https://avatars1.githubusercontent.com/u/11712443?v=4" width="100px;" alt=""/><br /><sub><b>Takanobu Asanuma</b></sub></a><br /><a href="#content-tasanuma" title="Content">🖋</a></td>
     <td align="center"><a href="https://www.linkedin.com/in/martinloesethjensen/"><img src="https://avatars1.githubusercontent.com/u/31356774?v=4" width="100px;" alt=""/><br /><sub><b>Martin L. Jensen</b></sub></a><br /><a href="#content-martinloesethjensen" title="Content">🖋</a></td>
     <td align="center"><a href="https://adaptive.link"><img src="https://avatars1.githubusercontent.com/u/17833?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Romano</b></sub></a><br /><a href="#content-adaptive" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/RaisinTen"><img src="https://avatars0.githubusercontent.com/u/42526976?v=4" width="100px;" alt=""/><br /><sub><b>Darshan Sen</b></sub></a><br /><a href="#content-RaisinTen" title="Content">🖋</a></td>
   </tr>
 </table>
 
