@@ -13,9 +13,9 @@ describe('NeuralNetwork', () => {
    * Describes the neural network class
    */
   describe('NeuralNetwork Class', () => {
+    
     const nn = neuralNetwork();
     const brain = nn.neuralNetwork;
-
     
     /**
      * initialization
@@ -28,7 +28,7 @@ describe('NeuralNetwork', () => {
         expect(brain.isLayered).toBe(false);
       });
 
-      it('instantiates with a sequential model', () => {
+      it('instantiates with a sequential model', async () => {
         expect(brain.model.name).toBe('sequential_1');
       });
     });
@@ -63,6 +63,7 @@ describe('NeuralNetwork', () => {
     describe('.compile()', () => {
       
       it('should compile', () => {
+
         const modelCompileOptions = {
           loss: 'categoricalCrossentropy',
           optimizer: ml5.tf.train.sgd(0.2),
@@ -70,7 +71,7 @@ describe('NeuralNetwork', () => {
         }
         brain.compile(modelCompileOptions);
       
-        expect(brain.model.trainable).toBe(true);
+        expect(brain.model.built).toBe(true);
       });
 
     });
@@ -80,11 +81,8 @@ describe('NeuralNetwork', () => {
      */
     describe('.train()', () => {
       
-      it('the model should not be built', () => {
-        expect(brain.model.built).toBe(false);
-      });
 
-      it('should train and be built', async () => {
+      it('should train', async () => {
         const trainingOptions = {
           inputs: ml5.tf.tensor([ [0,0], [1,1] ], [2,2]),
           outputs: ml5.tf.tensor([ [0,1], [1,0] ], [2,2]),
@@ -96,42 +94,24 @@ describe('NeuralNetwork', () => {
         
         await brain.trainInternal(trainingOptions)
 
-        expect(brain.model.built).toBe(true);
+        expect(brain.isTrained).toBe(true);
       });
 
 
     });
-    
-
-
 
   });
 
+  /**
+   * NeuralNetworkData
+   */
   // the NeuralNetworkData class
   describe('NeuralNetworkData Class', () => {});
 
+  /**
+   * NeuralNetworkData
+   */
   // the NeuralNetworkUtils class
   describe('NeuralNetworkUtils Class', () => {});
 
-  // let nn;
-  // describe('instantiation without data', () => {
-
-  //   beforeAll(async () => {
-  //     const NN_OPTIONS = {
-  //       inputs: [2],
-  //       output
-  //     }
-  //     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-  //     nn = await neuralNetwork(NN_OPTIONS);
-  //   });
-
-  //   it('instantiates neuralNetwork without data', () => {
-
-  //   });
-
-  //   it('instantiates neuralNetwork with data', () => {
-
-  //   });
-
-  // })
 });
