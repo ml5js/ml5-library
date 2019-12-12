@@ -911,6 +911,24 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "adaptive",
+      "name": "Hugo Romano",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/17833?v=4",
+      "profile": "https://adaptive.link",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "RaisinTen",
+      "name": "Darshan Sen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/42526976?v=4",
+      "profile": "https://github.com/RaisinTen",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
