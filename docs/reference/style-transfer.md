@@ -26,8 +26,8 @@ function modelLoaded() {
   console.log("Model Loaded!");
 }
 // Grab a img element and generate a new image.
-style.transfer(document.getElementById("img"), function(resultImg, err) {
-  img.src = resultImg.src;
+style.transfer(document.getElementById("img"), function(error, result) {
+  img.src = result.src;
 });
 ```
 
