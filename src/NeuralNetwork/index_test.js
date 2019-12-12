@@ -7,7 +7,247 @@ const { neuralNetwork } = ml5;
 
 describe('NeuralNetwork', () => {
   // The entire neural network as a whole
-  describe('DiyNeuralNetwork Class', () => {});
+  describe('DiyNeuralNetwork Class', () => {
+    // init
+    xdescribe('init', () => {
+      it('should init', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // addData
+    xdescribe('addData', () => {
+      it('should addData', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // loadDataFromUrl
+    xdescribe('loadDataFromUrl', () => {
+      it('should loadDataFromUrl', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // loadDataInternal
+    xdescribe('loadDataInternal', () => {
+      it('should loadDataInternal', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // createMetaData
+    xdescribe('createMetaData', () => {
+      it('should createMetaData', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // prepareForTraining
+    xdescribe('prepareForTraining', () => {
+      it('should prepareForTraining', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // normalizeData
+    xdescribe('normalizeData', () => {
+      it('should normalizeData', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // normalizeInput
+    xdescribe('normalizeInput', () => {
+      it('should normalizeInput', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // searchAndFormat
+    xdescribe('searchAndFormat', () => {
+      it('should searchAndFormat', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // formatInputItem
+    xdescribe('formatInputItem', () => {
+      it('should formatInputItem', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // convertTrainingDataToTensors
+    xdescribe('convertTrainingDataToTensors', () => {
+      it('should convertTrainingDataToTensors', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // formatInputsForPrediction
+    xdescribe('formatInputsForPrediction', () => {
+      it('should formatInputsForPrediction', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // formatInputsForPredictionAll
+    xdescribe('formatInputsForPredictionAll', () => {
+      it('should formatInputsForPredictionAll', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // isOneHotEncodedOrNormalized
+    xdescribe('isOneHotEncodedOrNormalized', () => {
+      it('should isOneHotEncodedOrNormalized', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // train
+    xdescribe('train', () => {
+      it('should train', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // trainInternal
+    xdescribe('trainInternal', () => {
+      it('should trainInternal', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // addLayer
+    xdescribe('addLayer', () => {
+      it('should addLayer', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // createNetworkLayers
+    xdescribe('createNetworkLayers', () => {
+      it('should createNetworkLayers', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // addDefaultLayers
+    xdescribe('addDefaultLayers', () => {
+      it('should addDefaultLayers', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // compile
+    xdescribe('compile', () => {
+      it('should compile', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // predict
+    xdescribe('predict', () => {
+      it('should predict', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // predictMultiple
+    xdescribe('predictMultiple', () => {
+      it('should predictMultiple', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // classify
+    xdescribe('classify', () => {
+      it('should classify', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // classifyMultiple
+    xdescribe('classifyMultiple', () => {
+      it('should classifyMultiple', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // predictInternal
+    xdescribe('predictInternal', () => {
+      it('should predictInternal', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // classifyInternal
+    xdescribe('classifyInternal', () => {
+      it('should classifyInternal', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // saveData
+    xdescribe('saveData', () => {
+      it('should saveData', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // loadData
+    xdescribe('loadData', () => {
+      it('should loadData', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // save
+    xdescribe('save', () => {
+      it('should save', () => {
+        // TODO:
+        // ...
+      });
+    });
+
+    // load
+    xdescribe('load', () => {
+      it('should load', () => {
+        // TODO:
+        // ...
+      });
+    });
+  });
 
   /**
    * Describes the neural network class
@@ -94,7 +334,9 @@ describe('NeuralNetwork', () => {
           epochs: 2,
           shuffle: true,
           validationSplit: 0.2,
-          whileTraining: () => {return null}
+          whileTraining: () => {
+            return null;
+          },
         };
 
         await brain.trainInternal(trainingOptions);
@@ -109,30 +351,283 @@ describe('NeuralNetwork', () => {
     describe('.classify() & .predict()', () => {
       it('should return an array', async () => {
         let input;
-        
-        input = ml5.tf.tensor([[0, 0]], [1,2]);
+
+        input = ml5.tf.tensor([[0, 0]], [1, 2]);
         const prediction1 = await brain.classify(input);
 
-        input = ml5.tf.tensor([[0, 0]], [1,2]);
+        input = ml5.tf.tensor([[0, 0]], [1, 2]);
         const prediction2 = await brain.predict(input);
-        
+
         input.dispose();
         expect(prediction1 instanceof Array).toBe(true);
         expect(prediction2 instanceof Array).toBe(true);
       });
     });
-    
   });
 
   /**
    * NeuralNetworkData
    */
   // the NeuralNetworkData class
-  describe('NeuralNetworkData Class', () => {});
+  describe('NeuralNetworkData Class', () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    const nn = neuralNetwork();
+    const brainData = nn.neuralNetworkData;
 
-  /**
-   * NeuralNetworkData
-   */
-  // the NeuralNetworkUtils class
-  describe('NeuralNetworkUtils Class', () => {});
+    xdescribe('createMetadata()', () => {
+      it('should createMetadata()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getDataStats()', () => {
+      it('should getDataStats()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getInputMetaStats()', () => {
+      it('should getInputMetaStats()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getDataUnits()', () => {
+      it('should getDataUnits()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getInputMetaUnits()', () => {
+      it('should getInputMetaUnits()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getDTypesFromData()', () => {
+      it('should getDTypesFromData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('addData()', () => {
+      it('should addData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('convertRawToTensors()', () => {
+      it('should convertRawToTensors()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('normalizeDataRaw()', () => {
+      it('should normalizeDataRaw()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('normalizeInputData()', () => {
+      it('should normalizeInputData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('normalizeArray()', () => {
+      it('should normalizeArray()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('unnormalizeArray()', () => {
+      it('should unnormalizeArray()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('applyOneHotEncodingsToDataRaw()', () => {
+      it('should applyOneHotEncodingsToDataRaw()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getDataOneHot()', () => {
+      it('should getDataOneHot()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('getInputMetaOneHot()', () => {
+      it('should getInputMetaOneHot()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('createOneHotEncodings()', () => {
+      it('should createOneHotEncodings()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadDataFromUrl()', () => {
+      it('should loadDataFromUrl()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadJSON()', () => {
+      it('should loadJSON()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadCSV()', () => {
+      it('should loadCSV()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadBlob()', () => {
+      it('should loadBlob()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadData()', () => {
+      it('should loadData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('saveData()', () => {
+      it('should saveData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('saveMeta()', () => {
+      it('should saveMeta()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('loadMeta()', () => {
+      it('should loadMeta()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('findEntries()', () => {
+      it('should findEntries()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('formatRawData()', () => {
+      it('should formatRawData()', () => {
+        // TODO
+        // ...
+      });
+    });
+
+    xdescribe('csvToJSON()', () => {
+      it('should csvToJSON()', () => {
+        // TODO
+        // ...
+      });
+    });
+  });
 });
+
+// /**
+//    * NeuralNetworkData
+//    */
+//   // the NeuralNetworkUtils class
+//   describe('NeuralNetworkUtils Class', () => {
+//     // normalizeValue()
+//     describe('.normalizeValue()', () => {
+//       it('should normalize a single number to 0 - 1', () => {});
+//     });
+
+//     // unnormalizeValue()
+//     describe('.unnormalizeValue()', () => {
+//       it('should unnormalize a value from 0 - 1 to the given range', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // getMin()
+//     describe('.getMin()', () => {
+//       it('should get the min value from an array', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // getMax()
+//     describe('.getMax()', () => {
+//       it('should get the max value from an array ', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // isJsonOrString()
+//     describe('.isJsonOrString()', () => {
+//       it('should tests if a string is a valid json or string', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // zipArrays()
+//     describe('.zipArrays()', () => {
+//       it('should take two arrays and zip them into one array', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // createLabelsFromArrayValues()
+//     describe('.createLabelsFromArrayValues()', () => {
+//       it('should createLabelsFromArrayValues()', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // formatDataAsObject()
+//     describe('.formatDataAsObject()', () => {
+//       it('should formatDataAsObject()', () => {
+//         // TODO:
+//       });
+//     });
+
+//     // getDataType()
+//     describe('.getDataType()', () => {
+//       it('should getDataType()', () => {
+//         // TODO:
+//       });
+//     });
+//   });
