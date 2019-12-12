@@ -1,5 +1,5 @@
 class NeuralNetworkUtils {
-  constructor(options){
+  constructor(options) {
     this.options = options || {};
   }
 
@@ -31,7 +31,7 @@ class NeuralNetworkUtils {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMin(_array) {
-    // return Math.min.apply(null,_array)
+    // return Math.min(..._array)
     return _array.reduce((a, b) => {
       return Math.min(a, b);
     });
@@ -43,7 +43,6 @@ class NeuralNetworkUtils {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMax(_array) {
-    // return Math.max.apply(null,_array)
     return _array.reduce((a, b) => {
       return Math.max(a, b);
     });
@@ -91,8 +90,8 @@ class NeuralNetworkUtils {
    * @param {*} incoming 
    * @param {*} prefix 
    */
-   // eslint-disable-next-line class-methods-use-this
-   createLabelsFromArrayValues(incoming, prefix) {
+  // eslint-disable-next-line class-methods-use-this
+  createLabelsFromArrayValues(incoming, prefix) {
     let labels;
     if (Array.isArray(incoming)) {
       labels = incoming.map((v, idx) => `${prefix}_${idx}`)
@@ -130,11 +129,11 @@ class NeuralNetworkUtils {
    * @param {*} val 
    */
   // eslint-disable-next-line class-methods-use-this
-  getDataType(val){
+  getDataType(val) {
     let dtype = typeof val;
 
-    if(dtype === 'object'){
-      if( Array.isArray(val)){
+    if (dtype === 'object') {
+      if (Array.isArray(val)) {
         dtype = 'array'
       }
     }
@@ -150,8 +149,3 @@ const neuralNetworkUtils = () => {
 }
 
 export default neuralNetworkUtils();
-
-
-
-
-
