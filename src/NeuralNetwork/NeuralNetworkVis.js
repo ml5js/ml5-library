@@ -10,9 +10,12 @@ class NeuralNetworkVis {
             height: 300,
         };
 
-        // store tfvis here for now so people can access it
-        // through ml5?
-        this.tfvis = tfvis;
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    modelSummary(_options, _model){
+      const options = {..._options};
+      tfvis.show.modelSummary(options, _model);
     }
 
     /**

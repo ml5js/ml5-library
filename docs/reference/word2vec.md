@@ -16,15 +16,15 @@ You can use the word models [we provide](https://github.com/ml5js/ml5-examples/t
 
 ```js
 // Create a new word2vec method
-const wordVectors = ml5.word2vec("data/wordvecs.json", modelLoaded);
+const wordVectors = ml5.word2vec('data/wordvecs.json', modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Find the closest word to 'rainbow'
-wordVectors.nearest("rainbow", function(err, results) {
+wordVectors.nearest('rainbow', (err, results) => {
   console.log(results);
 });
 ```
@@ -35,7 +35,7 @@ wordVectors.nearest("rainbow", function(err, results) {
 ### Initialize
 
 ```js
-const word2vec = ml5.Word2Vec(model, ?callback)
+const word2vec = ml5.Word2Vec(model, ?callback);
 ```
 
 #### Parameters
@@ -63,10 +63,10 @@ const word2vec = ml5.Word2Vec(model, ?callback)
 
 ***
 #### .add()
->  Add a series of word vectors. 
+>  Add a series of word vectors.
 
 ```js
-word2vec.add(inputs, ?max, ?callback)
+word2vec.add(inputs, ?max, ?callback);
 ```
 
 📥 **Inputs**
@@ -83,10 +83,10 @@ word2vec.add(inputs, ?max, ?callback)
 
 ***
 #### .subtract()
-> Subtract a series of vectors. 
+> Subtract a series of vectors.
 
 ```js
-word2vec.subtract(inputs, ?max, ?callback)
+word2vec.subtract(inputs, ?max, ?callback);
 ```
 
 📥 **Inputs**
@@ -103,10 +103,10 @@ word2vec.subtract(inputs, ?max, ?callback)
 
 ***
 #### .average()
-> Average a series of vectors. 
+> Average a series of vectors.
 
 ```js
-word2vec.average(inputs, ?max, ?callback)
+word2vec.average(inputs, ?max, ?callback);
 ```
 
 📥 **Inputs**
@@ -122,10 +122,10 @@ word2vec.average(inputs, ?max, ?callback)
 
 ***
 #### .average()
-> Average a series of vectors. 
+> Average a series of vectors.
 
 ```js
-word2vec.average(inputs, ?max, ?callback)
+word2vec.average(inputs, ?max, ?callback);
 ```
 
 📥 **Inputs**
@@ -145,7 +145,7 @@ word2vec.average(inputs, ?max, ?callback)
 > Find the nearest vector. Returns `max` array of values.
 
 ```js
-word2vec.nearest(inputs, ?max, ?callback)
+word2vec.nearest(inputs, ?max, ?callback);
 ```
 
 📥 **Inputs**
@@ -163,7 +163,7 @@ word2vec.nearest(inputs, ?max, ?callback)
 >  Find a random vector in the loaded model.
 
 ```js
-word2vec.getRandomWord(?callback)
+word2vec.getRandomWord(?callback);
 ```
 
 📥 **Inputs**

@@ -23,18 +23,18 @@ This implementation is heavily derived from [ModelDepot](https://github.com/Mode
 ## Quickstart
 
 ```js
-const video = document.getElementById("video");
+const video = document.getElementById('video');
 
 // Create a YOLO method
 const yolo = ml5.YOLO(video, modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Detect objects in the video element
-yolo.detect(function(err, results) {
+yolo.detect((err, results) => {
   console.log(results); // Will output bounding boxes of detected objects
 });
 ```
@@ -83,9 +83,7 @@ const yolo = ml5.YOLO(?options, ?callback)
 > Given an image or video, returns an array of objects containing class names, bounding boxes and probabilities.
 
 ```js
-yolo.detect(input, ?callback)
-// OR
-yolo.detect(?callback)
+yolo.detect(?input, ?callback);
 ```
 
 📥 **Inputs**

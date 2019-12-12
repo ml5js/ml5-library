@@ -10,7 +10,7 @@
 
 ## Description
 
-Create your own neural network and train in the browser with the ml5.neuralNetwork. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network and do `classification` or `regression` tasks. 
+Create your own neural network and train in the browser with the ml5.neuralNetwork. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network and do `classification` or `regression` tasks.
 
 ## Quickstart
 
@@ -19,10 +19,10 @@ Create your own neural network and train in the browser with the ml5.neuralNetwo
 const neuralNetwork = ml5.neuralNetwork(1, 1);
 
 // add in some data
-for(let i = 0; i < 100; i+=1){
-    const x = i;
-    const y = i * 2;
-    neuralNetwork.data.addData( [x], [y])
+for (let i = 0; i < 100; i += 1) {
+  const x = i;
+  const y = i * 2;
+  neuralNetwork.data.addData([x], [y]);
 }
 
 // normalize your data
@@ -31,13 +31,11 @@ neuralNetwork.data.normalize();
 neuralNetwork.train(finishedTraining);
 
 // when it is done training, run .predict()
-function finishedTraining(){
-    neuralNetwork.predict( [50], (err, results) => {
-        console.log(results);
-    })
+function finishedTraining() {
+  neuralNetwork.predict([50], (err, results) => {
+    console.log(results);
+  });
 }
-
-
 ```
 
 
@@ -47,11 +45,11 @@ function finishedTraining(){
 
 ```js
 // Option 1: specifying the inputs and outputs with the intention of adding data later
-const neuralNetwork = ml5.neuralNetwork(3, 2)
+const neuralNetwork = ml5.neuralNetwork(3, 2);
 // OR Option 2: specifying the inputs and outputs in an options object
-const neuralNetwork = ml5.neuralNetwork(inputsOrOptions)
+const neuralNetwork = ml5.neuralNetwork(inputsOrOptions);
 // OR Option 3: specifying the inputs, outputs, and dataUrl, with a callback
-const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback)
+const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback);
 
 ```
 
@@ -59,27 +57,27 @@ const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback)
 * **inputsOrOptions**: REQUIRED. An `options` object or a number specifying the number of inputs.
 * **outputsOrCallback**: OPTIONAL. A callback to be called after your data is loaded as specified in the `options.dataUrl` or a `number` specifying the number of `outputs`.
 
-The options that can be specified are: 
+The options that can be specified are:
 
-  ```js
-    const DEFAULTS = {
-      dataUrl: 'data.csv' // can be a url path or relative path
-      task: 'regression',
-      activationHidden: 'sigmoid',
-      activationOutput: 'sigmoid',
-      debug: false,
-      learningRate: 0.25,
-      inputs: 2, // or the names of the data properties ['temperature', 'precipitation']
-      outputs: 1, // or the names of the data properties ['thermalComfort']
-      noVal: null,
-      hiddenUnits: 1,
-      modelMetrics: ['accuracy'],
-      modelLoss: 'meanSquaredError',
-      modelOptimizer: null,
-      batchSize: 64,
-      epochs: 32,
-  }
-  ```
+```js
+const DEFAULTS = {
+  dataUrl: 'data.csv', // can be a url path or relative path
+  task: 'regression',
+  activationHidden: 'sigmoid',
+  activationOutput: 'sigmoid',
+  debug: false,
+  learningRate: 0.25,
+  inputs: 2, // or the names of the data properties ['temperature', 'precipitation']
+  outputs: 1, // or the names of the data properties ['thermalComfort']
+  noVal: null,
+  hiddenUnits: 1,
+  modelMetrics: ['accuracy'],
+  modelLoss: 'meanSquaredError',
+  modelOptimizer: null,
+  batchSize: 64,
+  epochs: 32,
+};
+```
 
 * For your reference, a few typical uses are showcased below:
   * Example 1:
@@ -87,45 +85,45 @@ The options that can be specified are:
     const options = {
       inputs: 1,
       outputs: 1,
-      type:'regression'
-    }
-    const neuralNetwork = ml5.neuralNetwork(options)
+      type: 'regression',
+    };
+    const neuralNetwork = ml5.neuralNetwork(options);
     ```
   * Example 2: loading data as a csv
     ```js
     const options = {
-      dataUrl: 'weather.csv'
+      dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type:'classification'
-    }
-    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+      type: 'classification',
+    };
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
     ```
   * Example 3: loading data as a json
     ```js
     /**
     The weather json looks something like:
-    {"data": [ 
+    {"data": [
       {"xs": {"avg_temperature":20, "humidity": 0.2}, "ys": {"rained": "no"}},
       {"xs": {"avg_temperature":30, "humidity": 0.9}, "ys": {"rained": "yes"}}
-    ] } 
-    **/
+    ] }
+    * */
     const options = {
-      dataUrl: 'weather.json'
+      dataUrl: 'weather.json',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type:'classification'
-    }
-    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded)
+      type: 'classification',
+    };
+    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
     ```
   * Example 4: specifying labels for a blank neural network
     ```js
     const options = {
       inputs: ['x', 'y'],
       outputs: ['label'],
-      type:'classification'
-    }
-    const neuralNetwork = ml5.neuralNetwork(options)
+      type: 'classification',
+    };
+    const neuralNetwork = ml5.neuralNetwork(options);
     ```
 
 
@@ -149,7 +147,7 @@ The options that can be specified are:
 ***
 ***
 #### .model
-> *Object*: the model. 
+> *Object*: the model.
 ***
 
 ### Methods
@@ -157,15 +155,15 @@ The options that can be specified are:
 
 ***
 #### .addData()
-> If you are not uploading data using the `dataUrl` property of the options given to the constructor, then you can add data to a "blank" neural network class using the `.addData()` function. 
+> If you are not uploading data using the `dataUrl` property of the options given to the constructor, then you can add data to a "blank" neural network class using the `.addData()` function.
 
 ```js
-neuralNetwork.addData(xs, ys)
+neuralNetwork.addData(xs, ys);
 ```
 
 📥 **Inputs**
 
-* **xs**: Required. Array | Object. 
+* **xs**: Required. Array | Object.
   * If an array is given, then the inputs must be ordered as specified in the constructor. If no labels are given in the constructor, then the order that your data are added here will set the order of how you will pass data to `.predict()` or `.classify()`.
   * If an object is given, then feed in key/value pairs.
 * **ys**: Required. Array | Object.
@@ -183,7 +181,7 @@ neuralNetwork.addData(xs, ys)
 > normalizes the data on a scale from 0 to 1. The data being normalized are part of the `NeuralNetworkData` class which can be accessed in: `neuralNetwork.data.data.raw`
 
 ```js
-neuralNetwork.normalizeData()
+neuralNetwork.normalizeData();
 ```
 
 📥 **Inputs**
@@ -192,7 +190,7 @@ neuralNetwork.normalizeData()
 
 📤 **Outputs**
 
-* n/a: normalizes the data in `neuralNetwork.data.data.raw` and adds `inputs` and `output` tensors to `neuralNetwork.data.data.tensor` as well as the `inputMin`, `inputMax`, `outputMin`, and `outputMax` as tensors. The `inputMin`, `inputMax`, `outputMin`, and `outputMax` are also added to `neuralNetwork.data.data` as Numbers. 
+* n/a: normalizes the data in `neuralNetwork.data.data.raw` and adds `inputs` and `output` tensors to `neuralNetwork.data.data.tensor` as well as the `inputMin`, `inputMax`, `outputMin`, and `outputMax` as tensors. The `inputMin`, `inputMax`, `outputMin`, and `outputMax` are also added to `neuralNetwork.data.data` as Numbers.
 
 ***
 
@@ -202,48 +200,51 @@ neuralNetwork.normalizeData()
 > trains the model with the data loaded during the instantiation of the `NeuralNetwork` or the data added using `neuralNetwork.addData()`
 
 ```js
-neuralNetwork.train(?optionsOrCallback, ?optionsOrWhileTraining, ?callback)
+neuralNetwork.train(?optionsOrCallback, ?optionsOrWhileTraining, ?callback);
 ```
 
 📥 **Inputs**
-* **optionsOrCallback**: Optional. 
+* **optionsOrCallback**: Optional.
   * If an object of options is given, then `optionsOrCallback` will be an object where you can specify the `batchSize` and `epochs`:
     ```js
-    {batchSize: 24, epochs:32}
+    {
+      batchSize: 24,
+      epochs: 32,
+    };
     ```
   * If a callback function is given here then this will be a callback that will be called when the training is finished.
     ```js
-    function doneTraining(){
+    function doneTraining() {
       console.log('done!');
     }
     ```
   * If a callback function is given here and a second callback function is given, `optionsOrCallback` will be a callback function that is called after each `epoch` of training, and the `optionsOrWhileTraining` callback function will be a callback function that is called when the training has completed:
     ```js
-    function whileTraining(epoch, loss){
+    function whileTraining(epoch, loss) {
       console.log(`epoch: ${epoch}, loss:${loss}`);
     }
-    function doneTraining(){
-        console.log('done!');
+    function doneTraining() {
+      console.log('done!');
     }
-    neuralNetwork.train(whileTraining, doneTraining)
+    neuralNetwork.train(whileTraining, doneTraining);
     ```
-* **optionsOrWhileTraining**: Optional. 
+* **optionsOrWhileTraining**: Optional.
   * If an object of options is given as the first parameter, then `optionsOrWhileTraining` will be a callback  function that is fired after the training as finished.
   * If a callback function is given as the first parameter to handle the `whileTraining`, then `optionsOrWhileTraining` will be a callback function that is fired after the training as finished.
-* **callback**: Optional. Function. 
+* **callback**: Optional. Function.
   * If an object of options is given as the first parameter and a callback function is given as a second parameter, then this `callback` parameter will be a callback function that is fired after the training as finished.
   ```js
   const trainingOptions = {
     batchSize: 32,
     epochs: 12,
+  };
+  function whileTraining(epoch, loss) {
+    console.log(`epoch: ${epoch}, loss:${loss}`);
   }
-  function whileTraining(epoch, loss){
-      console.log(`epoch: ${epoch}, loss:${loss}`);
+  function doneTraining() {
+    console.log('done!');
   }
-  function doneTraining(){
-      console.log('done!');
-  }
-  neuralNetwork.train(trainingOptions, whileTraining, doneTraining)
+  neuralNetwork.train(trainingOptions, whileTraining, doneTraining);
 
   ```
 
@@ -257,10 +258,10 @@ neuralNetwork.train(?optionsOrCallback, ?optionsOrWhileTraining, ?callback)
 
 ***
 #### .predict()
-> Given an input, will return an array of predictions. 
+> Given an input, will return an array of predictions.
 
 ```js
-neuralNetwork.predict(inputs, callback)
+neuralNetwork.predict(inputs, callback);
 ```
 
 📥 **Inputs**
@@ -278,10 +279,10 @@ neuralNetwork.predict(inputs, callback)
 
 ***
 #### .predictMultiple()
-> Given an input, will return an array of arrays of predictions. 
+> Given an input, will return an array of arrays of predictions.
 
 ```js
-neuralNetwork.predictMultiple(inputs, callback)
+neuralNetwork.predictMultiple(inputs, callback);
 ```
 
 📥 **Inputs**
@@ -299,10 +300,10 @@ neuralNetwork.predictMultiple(inputs, callback)
 
 ***
 #### .classify()
-> Given an input, will return an array of classifications. 
+> Given an input, will return an array of classifications.
 
 ```js
-neuralNetwork.classify(inputs, callback)
+neuralNetwork.classify(inputs, callback);
 ```
 
 📥 **Inputs**
@@ -320,10 +321,10 @@ neuralNetwork.classify(inputs, callback)
 
 ***
 #### .classifyMultiple()
-> Given an input, will return an array of arrays of classifications. 
+> Given an input, will return an array of arrays of classifications.
 
 ```js
-neuralNetwork.classifyMultiple(inputs, callback)
+neuralNetwork.classifyMultiple(inputs, callback);
 ```
 
 📥 **Inputs**
@@ -345,11 +346,11 @@ neuralNetwork.classifyMultiple(inputs, callback)
 > Saves the data that has been added
 
 ```js
-neuralNetwork.saveData(?outputName, ?callback)
+neuralNetwork.saveData(?outputName, ?callback);
 ```
 
 📥 **Inputs**
-* **outputName**: Optional. String. An output name you'd like your data to be called. If no input is given, then the name will be `data_YYYY-MM-DD_mm-hh`. 
+* **outputName**: Optional. String. An output name you'd like your data to be called. If no input is given, then the name will be `data_YYYY-MM-DD_mm-hh`.
 * **callback**: Optional. function. A callback that is called after the data has been saved.
 
 
@@ -364,7 +365,7 @@ neuralNetwork.saveData(?outputName, ?callback)
 > loads the data to `neuralNetwork.data.data.raw`
 
 ```js
-neuralnetwork.loadData(?filesOrPath, ?callback)
+neuralnetwork.loadData(?filesOrPath, ?callback);
 ```
 
 📥 **Inputs**
@@ -383,11 +384,11 @@ neuralnetwork.loadData(?filesOrPath, ?callback)
 > Saves the trained model
 
 ```js
-neuralNetwork.save(?outputName, ?callback)
+neuralNetwork.save(?outputName, ?callback);
 ```
 
 📥 **Inputs**
-* **outputName**: Optional. String. An output name you'd like your model to be called. If no input is given, then the name will be `model`. 
+* **outputName**: Optional. String. An output name you'd like your model to be called. If no input is given, then the name will be `model`.
 * **callback**: Optional. function. A callback that is called after the model has been saved.
 
 📤 **Outputs**
@@ -401,26 +402,26 @@ neuralNetwork.save(?outputName, ?callback)
 > Loads a pre-trained model
 
 ```js
-neuralNetwork.load(?filesOrPath, ?callback)
+neuralNetwork.load(?filesOrPath, ?callback);
 ```
 
 📥 **Inputs**
-* **filesOrPath**: REQUIRED. String | InputFiles. 
-  * If a string path to the `model.json` data object is given, then the `model.json`, `model_meta.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match. 
+* **filesOrPath**: REQUIRED. String | InputFiles.
+  * If a string path to the `model.json` data object is given, then the `model.json`, `model_meta.json` file and its accompanying `model.weights.bin` file will be loaded. Note that the names must match.
   * If InputFiles from html input `type="file"`. Then make sure to select ALL THREE of the `model.json`, `model_meta.json` and the `model.weights.bin` file together to upload otherwise the load will throw an error.
   * Method 1: using a json object. In this case, the paths to the specific files are set directly.
     ```js
     const modelInfo = {
       model: 'path/to/model.json',
       metadata: 'path/to/model_meta.json',
-      weights: 'path/to/model.weights.bin'
-    }
-    neuralNetwork.load(modelInfo, modelLoadedCallback)
+      weights: 'path/to/model.weights.bin',
+    };
+    neuralNetwork.load(modelInfo, modelLoadedCallback);
     ```
   * Method 2: specifying only the path to th model.json. In this case, the `model_meta.json` and the `model.weights.bin` are assumed to be in the same directory, named exactly like `model_meta.json` and `model.weights.bin`.
     ```js
-    neuralNetwork.load('path/to/model.json', modelLoadedCallback)
-    ``` 
+    neuralNetwork.load('path/to/model.json', modelLoadedCallback);
+    ```
   * Method 3: using the `<input type="file" multiple>`
 * **callback**: Optional. function. A callback that is called after the model has been loaded.
 
@@ -496,5 +497,3 @@ No tutorials yet - contribute one today!
 ## Source Code
 
 * [/src/NeuralNetwork](https://github.com/ml5js/ml5-library/tree/development/src/NeuralNetwork)
-
-

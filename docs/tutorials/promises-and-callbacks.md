@@ -6,8 +6,8 @@ ml5.js is heavily inspired by the syntax, patterns and style of the [p5.js](http
 
 In [p5.js](https://p5js.org/), [callbacks](https://developer.mozilla.org/en-US/docs/Glossary/Callback_function) are passed as arguments to functions that often perform some asynchronous operation. For example, [p5.js](https://p5js.org/) defines the [**loadJSON()**](https://p5js.org/reference/#/p5/loadJSON) function as the following:
 
-```javascript
-loadJSON("http//example.com/data.json", function(results) {
+```js
+loadJSON('http//example.com/data.json', (results) => {
   // Do something with the results
 });
 ```
@@ -20,14 +20,14 @@ ml5.js, on the other hand, uses a pattern referred to as an <b>error-first callb
 
 For example if you are using the **imageClassifier()** method, you will need to construct it in the following way:
 
-```javascript
+```js
 // Pass a callback function to constructor
-const classifier = ml5.imageClassifier('MobileNet', function(err, model) {
+const classifier = ml5.imageClassifier('MobileNet', (err, model) => {
   console.log('Model Loaded!');
-}
+});
 
 // Make a prediction with the selected image and pass a callback function with two arguments
-classifier.predict(image, function(err, results) {
+classifier.predict(image, (err, results) => {
   // Check for errors. If no errors, then do something with the results
 });
 ```
@@ -40,12 +40,12 @@ ml5.js also supports [Promises](https://developer.mozilla.org/en-US/docs/Web/Jav
 
 With Promises, the image classification example can be used in the following way:
 
-```javascript
+```js
 // No callback needs to be passed to use Promises.
 ml5
-  .imageClassifier("MobileNet")
+  .imageClassifier('MobileNet')
   .then(classifier => classifier.predict(image))
-  .then(results => {
+  .then((results) => {
     // Do something with the results
   });
 ```

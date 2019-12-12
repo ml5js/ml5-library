@@ -21,15 +21,15 @@ This version is heavily based on [Christopher Hesse TensorFlow.js implementation
 
 ```js
 // Create a pix2pix model using a pre trained network
-const pix2pix = ml5.pix2pix("models/customModel.pict", modelLoaded);
+const pix2pix = ml5.pix2pix('models/customModel.pict', modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Transfer using a canvas
-pix2pix.transfer(canvas, function(err, result) {
+pix2pix.transfer(canvas, (err, result) => {
   console.log(result);
 });
 ```
@@ -64,7 +64,7 @@ const styleTransfer = ml5.pix2pix(model, ?callback);
 > Given an canvas element, applies image-to-image translation using the provided model. Returns an image.
 
 ```js
-styleTransfer.transfer(canvas, ?callback)
+styleTransfer.transfer(canvas, ?callback);
 ```
 
 📥 **Inputs**
