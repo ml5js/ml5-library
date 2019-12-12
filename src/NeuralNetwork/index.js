@@ -851,7 +851,7 @@ class DiyNeuralNetwork {
 
         if(meta.isNormalized){
           // TODO: check to make sure this property is not static!!!!
-          const {min, max} = meta.inputs.image // [headers[0]];
+          const {min, max} = meta.inputs[headers[0]];
           inputData = this.neuralNetworkData.normalizeArray( Array.from(inputData), {min, max});
         } else {
           inputData = Array.from(inputData);
