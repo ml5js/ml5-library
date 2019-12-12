@@ -55,12 +55,11 @@ class NeuralNetworkData {
     this.findEntries = this.findEntries.bind(this);
     this.formatRawData = this.formatRawData.bind(this);
     this.csvToJSON = this.csvToJSON.bind(this);
-    
   }
 
   /**
    * ////////////////////////////////////////////////////////
-   * Main
+   * Summarize Data
    * ////////////////////////////////////////////////////////
    */
 
@@ -86,207 +85,6 @@ class NeuralNetworkData {
 
     this.isMetadataReady = true;
     return { ...this.meta };
-  }
-
-  /**
-   * Add Data
-   * @param {object} xInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
-   * @param {*} yInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
-   */
-  addData(xInputObj, yInputObj) {
-    this.data.raw.push({
-      xs: xInputObj,
-      ys: yInputObj,
-    });
-  }
-
-  /**
-   * ////////////////////////////////////////////////////////
-   * Tensor handling
-   * ////////////////////////////////////////////////////////
-   */
-
-  /**
-   * convertRawToTensors
-   * converts array of {xs, ys} to tensors
-   * @param {*} _dataRaw
-   * @param {*} meta
-   */
-  // eslint-disable-next-line class-methods-use-this, no-unused-vars
-  convertRawToTensors(dataRaw) {
-    const meta = Object.assign({}, this.meta);
-    const dataLength = dataRaw.length;
-
-    return tf.tidy(() => {
-      const inputArr = [];
-      const outputArr = [];
-
-      dataRaw.forEach(row => {
-        // get xs
-        const xs = Object.keys(meta.inputs)
-          .map(k => {
-            return row.xs[k];
-          })
-          .flat();
-
-        inputArr.push(xs);
-
-        // get ys
-        const ys = Object.keys(meta.outputs)
-          .map(k => {
-            return row.ys[k];
-          })
-          .flat();
-
-        outputArr.push(ys);
-      });
-
-      const inputs = tf.tensor(inputArr.flat(), [dataLength, ...meta.inputUnits]);
-      const outputs = tf.tensor(outputArr.flat(), [dataLength, meta.outputUnits]);
-
-      return {
-        inputs,
-        outputs,
-      };
-    });
-  }
-
-  /*
-   * ////////////////////////////////////////////////
-   * Data normalization handling
-   * ////////////////////////////////////////////////
-   */
-
-  /**
-   * normalize the dataRaw input
-   * @param {*} dataRaw
-   */
-  normalizeDataRaw(dataRaw) {
-    const meta = Object.assign({}, this.meta);
-
-    const normXs = this.normalizeInputData(dataRaw, meta.inputs, 'xs');
-    const normYs = this.normalizeInputData(dataRaw, meta.outputs, 'ys');
-
-    const normalizedData = nnUtils.zipArrays(normXs, normYs);
-
-    return normalizedData;
-  }
-
-  /**
-   * normalizeRaws
-   * @param {*} dataRaw
-   * @param {*} inputOrOutputMeta
-   * @param {*} xsOrYs
-   */
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  normalizeInputData(dataRaw, inputOrOutputMeta, xsOrYs) {
-    // the data length
-    const dataLength = dataRaw.length;
-    // the copy of the inputs.meta[inputOrOutput]
-    const inputMeta = Object.assign({}, inputOrOutputMeta);
-
-    // normalized output object
-    const normalized = {};
-    Object.keys(inputMeta).forEach(k => {
-      // get the min and max values
-      const options = {
-        min: inputMeta[k].min,
-        max: inputMeta[k].max,
-      };
-
-      const dataAsArray = dataRaw.map(item => item[xsOrYs][k]);
-      // depending on the input type, normalize accordingly
-      if (inputMeta[k].dtype === 'string') {
-        options.legend = inputMeta[k].legend;
-        normalized[k] = this.normalizeArray(dataAsArray, options);
-      } else if (inputMeta[k].dtype === 'number') {
-        normalized[k] = this.normalizeArray(dataAsArray, options);
-      } else if (inputMeta[k].dtype === 'array') {
-        normalized[k] = dataAsArray.map(item => this.normalizeArray(item, options));
-      }
-    });
-
-    // create a normalized version of data.raws
-    const output = [...new Array(dataLength).fill(null)].map((item, idx) => {
-      const row = {
-        [xsOrYs]: {},
-      };
-
-      Object.keys(inputMeta).forEach(k => {
-        row[xsOrYs][k] = normalized[k][idx];
-      });
-
-      return row;
-    });
-
-    return output;
-  }
-
-  /**
-   * normalizeArray
-   * @param {*} _input
-   * @param {*} _options
-   */
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  normalizeArray(inputArray, options) {
-    const { min, max } = options;
-
-    // if the data are onehot encoded, replace the string
-    // value with the onehot array
-    // if none exists, return the given value
-    if (options.legend) {
-      const normalized = inputArray.map(v => {
-        return options.legend[v] ? options.legend[v] : v;
-      });
-      return normalized;
-    }
-
-    // if the dtype is a number
-    if (inputArray.every(v => typeof v === 'number')) {
-      const normalized = inputArray.map(v => nnUtils.normalizeValue(v, min, max));
-      return normalized;
-    }
-
-    // otherwise return the input array
-    // return inputArray;
-    throw new Error('error in inputArray of normalizeArray() function');
-  }
-
-  /**
-   * unNormalizeArray
-   * @param {*} _input
-   * @param {*} _options
-   */
-  // eslint-disable-next-line no-unused-vars, class-methods-use-this
-  unnormalizeArray(inputArray, options) {
-    const { min, max } = options;
-
-    // if the data is onehot encoded then remap the
-    // values from those oneHot arrays
-    if (options.legend) {
-      const unnormalized = inputArray.map(v => {
-        let res;
-        Object.entries(options.legend).forEach(item => {
-          const key = item[0];
-          const val = item[1];
-          const matches = v.map((num, idx) => num === val[idx]).every(truthy => truthy === true);
-          if (matches) res = key;
-        });
-        return res;
-      });
-
-      return unnormalized;
-    }
-
-    // if the dtype is a number
-    if (inputArray.every(v => typeof v === 'number')) {
-      const unnormalized = inputArray.map(v => nnUtils.unnormalizeValue(v, min, max));
-      return unnormalized;
-    }
-
-    // otherwise return the input array
-    // return inputArray;
-    throw new Error('error in inputArray of normalizeArray() function');
   }
 
   /*
@@ -441,6 +239,213 @@ class NeuralNetworkData {
     return meta;
   }
 
+  /**
+   * ////////////////////////////////////////////////////////
+   * Add Data
+   * ////////////////////////////////////////////////////////
+   */
+
+  /**
+   * Add Data
+   * @param {object} xInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
+   * @param {*} yInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
+   */
+  addData(xInputObj, yInputObj) {
+    this.data.raw.push({
+      xs: xInputObj,
+      ys: yInputObj,
+    });
+  }
+
+  /**
+   * ////////////////////////////////////////////////////////
+   * Tensor handling
+   * ////////////////////////////////////////////////////////
+   */
+
+  /**
+   * convertRawToTensors
+   * converts array of {xs, ys} to tensors
+   * @param {*} _dataRaw
+   * @param {*} meta
+   */
+  // eslint-disable-next-line class-methods-use-this, no-unused-vars
+  convertRawToTensors(dataRaw) {
+    const meta = Object.assign({}, this.meta);
+    const dataLength = dataRaw.length;
+
+    return tf.tidy(() => {
+      const inputArr = [];
+      const outputArr = [];
+
+      dataRaw.forEach(row => {
+        // get xs
+        const xs = Object.keys(meta.inputs)
+          .map(k => {
+            return row.xs[k];
+          })
+          .flat();
+
+        inputArr.push(xs);
+
+        // get ys
+        const ys = Object.keys(meta.outputs)
+          .map(k => {
+            return row.ys[k];
+          })
+          .flat();
+
+        outputArr.push(ys);
+      });
+
+      const inputs = tf.tensor(inputArr.flat(), [dataLength, ...meta.inputUnits]);
+      const outputs = tf.tensor(outputArr.flat(), [dataLength, meta.outputUnits]);
+
+      return {
+        inputs,
+        outputs,
+      };
+    });
+  }
+
+  /**
+   * ////////////////////////////////////////////////////////
+   * data normalization / unnormalization
+   * ////////////////////////////////////////////////////////
+   */
+
+  /**
+   * normalize the dataRaw input
+   * @param {*} dataRaw
+   */
+  normalizeDataRaw(dataRaw) {
+    const meta = Object.assign({}, this.meta);
+
+    const normXs = this.normalizeInputData(dataRaw, meta.inputs, 'xs');
+    const normYs = this.normalizeInputData(dataRaw, meta.outputs, 'ys');
+
+    const normalizedData = nnUtils.zipArrays(normXs, normYs);
+
+    return normalizedData;
+  }
+
+  /**
+   * normalizeRaws
+   * @param {*} dataRaw
+   * @param {*} inputOrOutputMeta
+   * @param {*} xsOrYs
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  normalizeInputData(dataRaw, inputOrOutputMeta, xsOrYs) {
+    // the data length
+    const dataLength = dataRaw.length;
+    // the copy of the inputs.meta[inputOrOutput]
+    const inputMeta = Object.assign({}, inputOrOutputMeta);
+
+    // normalized output object
+    const normalized = {};
+    Object.keys(inputMeta).forEach(k => {
+      // get the min and max values
+      const options = {
+        min: inputMeta[k].min,
+        max: inputMeta[k].max,
+      };
+
+      const dataAsArray = dataRaw.map(item => item[xsOrYs][k]);
+      // depending on the input type, normalize accordingly
+      if (inputMeta[k].dtype === 'string') {
+        options.legend = inputMeta[k].legend;
+        normalized[k] = this.normalizeArray(dataAsArray, options);
+      } else if (inputMeta[k].dtype === 'number') {
+        normalized[k] = this.normalizeArray(dataAsArray, options);
+      } else if (inputMeta[k].dtype === 'array') {
+        normalized[k] = dataAsArray.map(item => this.normalizeArray(item, options));
+      }
+    });
+
+    // create a normalized version of data.raws
+    const output = [...new Array(dataLength).fill(null)].map((item, idx) => {
+      const row = {
+        [xsOrYs]: {},
+      };
+
+      Object.keys(inputMeta).forEach(k => {
+        row[xsOrYs][k] = normalized[k][idx];
+      });
+
+      return row;
+    });
+
+    return output;
+  }
+
+  /**
+   * normalizeArray
+   * @param {*} _input
+   * @param {*} _options
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  normalizeArray(inputArray, options) {
+    const { min, max } = options;
+
+    // if the data are onehot encoded, replace the string
+    // value with the onehot array
+    // if none exists, return the given value
+    if (options.legend) {
+      const normalized = inputArray.map(v => {
+        return options.legend[v] ? options.legend[v] : v;
+      });
+      return normalized;
+    }
+
+    // if the dtype is a number
+    if (inputArray.every(v => typeof v === 'number')) {
+      const normalized = inputArray.map(v => nnUtils.normalizeValue(v, min, max));
+      return normalized;
+    }
+
+    // otherwise return the input array
+    // return inputArray;
+    throw new Error('error in inputArray of normalizeArray() function');
+  }
+
+  /**
+   * unNormalizeArray
+   * @param {*} _input
+   * @param {*} _options
+   */
+  // eslint-disable-next-line no-unused-vars, class-methods-use-this
+  unnormalizeArray(inputArray, options) {
+    const { min, max } = options;
+
+    // if the data is onehot encoded then remap the
+    // values from those oneHot arrays
+    if (options.legend) {
+      const unnormalized = inputArray.map(v => {
+        let res;
+        Object.entries(options.legend).forEach(item => {
+          const key = item[0];
+          const val = item[1];
+          const matches = v.map((num, idx) => num === val[idx]).every(truthy => truthy === true);
+          if (matches) res = key;
+        });
+        return res;
+      });
+
+      return unnormalized;
+    }
+
+    // if the dtype is a number
+    if (inputArray.every(v => typeof v === 'number')) {
+      const unnormalized = inputArray.map(v => nnUtils.unnormalizeValue(v, min, max));
+      return unnormalized;
+    }
+
+    // otherwise return the input array
+    // return inputArray;
+    throw new Error('error in inputArray of normalizeArray() function');
+  }
+
   /*
    * ////////////////////////////////////////////////
    * One hot encoding handling
@@ -568,7 +573,7 @@ class NeuralNetworkData {
 
   /**
    * ////////////////////////////////////////////////
-   * Data loading handling
+   * saving / loading data
    * ////////////////////////////////////////////////
    */
 
@@ -597,59 +602,6 @@ class NeuralNetworkData {
       console.error(error);
       throw new Error(error);
     }
-  }
-
-  /**
-   * // TODO: convert ys into strings, if the task is classification
-    // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
-    //   output.ys[prop] += "";
-    // }
-   * formatRawData
-   * takes a json and set the this.data.raw
-   * @param {*} json 
-   * @param {Array} inputLabels
-   * @param {Array} outputLabels
-   */
-  formatRawData(json, inputLabels, outputLabels) {
-    // Recurse through the json object to find
-    // an array containing `entries` or `data`
-    const dataArray = this.findEntries(json);
-
-    if (!dataArray.length > 0) {
-      console.log(`your data must be contained in an array in \n
-        a property called 'entries' or 'data' of your json object`);
-    }
-
-    // create an array of json objects [{xs,ys}]
-    const result = dataArray.map((item, idx) => {
-      const output = {
-        xs: {},
-        ys: {},
-      };
-
-      inputLabels.forEach(k => {
-        if (item[k] !== undefined) {
-          output.xs[k] = item[k];
-        } else {
-          console.error(`the input label ${k} does not exist at row ${idx}`);
-        }
-      });
-
-      outputLabels.forEach(k => {
-        if (item[k] !== undefined) {
-          output.ys[k] = item[k];
-        } else {
-          console.error(`the output label ${k} does not exist at row ${idx}`);
-        }
-      });
-
-      return output;
-    });
-
-    // set this.data.raw
-    this.data.raw = result;
-
-    return result;
   }
 
   /**
@@ -774,12 +726,6 @@ class NeuralNetworkData {
   }
 
   /**
-   * ////////////////////////////////////////////////
-   * Save data and meta info
-   * ////////////////////////////////////////////////
-   */
-
-  /**
    * saveData
    * @param {*} name
    */
@@ -894,9 +840,62 @@ class NeuralNetworkData {
 
   /*
    * ////////////////////////////////////////////////
-   * Helper funcitons
+   * data loading helpers
    * ////////////////////////////////////////////////
    */
+
+  /**
+   * // TODO: convert ys into strings, if the task is classification
+    // if (this.config.architecture.task === "classification" && typeof output.ys[prop] !== "string") {
+    //   output.ys[prop] += "";
+    // }
+   * formatRawData
+   * takes a json and set the this.data.raw
+   * @param {*} json 
+   * @param {Array} inputLabels
+   * @param {Array} outputLabels
+   */
+  formatRawData(json, inputLabels, outputLabels) {
+    // Recurse through the json object to find
+    // an array containing `entries` or `data`
+    const dataArray = this.findEntries(json);
+
+    if (!dataArray.length > 0) {
+      console.log(`your data must be contained in an array in \n
+        a property called 'entries' or 'data' of your json object`);
+    }
+
+    // create an array of json objects [{xs,ys}]
+    const result = dataArray.map((item, idx) => {
+      const output = {
+        xs: {},
+        ys: {},
+      };
+
+      inputLabels.forEach(k => {
+        if (item[k] !== undefined) {
+          output.xs[k] = item[k];
+        } else {
+          console.error(`the input label ${k} does not exist at row ${idx}`);
+        }
+      });
+
+      outputLabels.forEach(k => {
+        if (item[k] !== undefined) {
+          output.ys[k] = item[k];
+        } else {
+          console.error(`the output label ${k} does not exist at row ${idx}`);
+        }
+      });
+
+      return output;
+    });
+
+    // set this.data.raw
+    this.data.raw = result;
+
+    return result;
+  }
 
   /**
    * csvToJSON
