@@ -13,15 +13,14 @@ describe('NeuralNetwork', () => {
    * Describes the neural network class
    */
   describe('NeuralNetwork Class', () => {
-    
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
     const nn = neuralNetwork();
     const brain = nn.neuralNetwork;
-    
+
     /**
      * initialization
      */
     describe('constructor', () => {
-      
       it('instantiates with the all flags as false', () => {
         expect(brain.isTrained).toBe(false);
         expect(brain.isCompiled).toBe(false);
@@ -33,17 +32,15 @@ describe('NeuralNetwork', () => {
       });
     });
 
-
     /**
      * NeuralNetwork addLayer
      */
     describe('.addLayer()', () => {
-      
       it('adds 2 layers', () => {
         brain.addLayer(
           ml5.tf.layers.dense({
             units: 2,
-            inputShape:[2],
+            inputShape: [2],
             activation: 'relu',
           }),
         );
@@ -54,52 +51,77 @@ describe('NeuralNetwork', () => {
           }),
         );
         expect(brain.model.layers.length).toBe(2);
-      })
+      });
     });
 
     /**
      * compile
      */
     describe('.compile()', () => {
-      
       it('should compile', () => {
-
         const modelCompileOptions = {
           loss: 'categoricalCrossentropy',
           optimizer: ml5.tf.train.sgd(0.2),
           metrics: ['accuracy'],
-        }
+        };
         brain.compile(modelCompileOptions);
-      
+
         expect(brain.model.built).toBe(true);
       });
-
     });
 
     /**
      * train
      */
     describe('.train()', () => {
-      
-
       it('should train', async () => {
         const trainingOptions = {
-          inputs: ml5.tf.tensor([ [0,0], [1,1] ], [2,2]),
-          outputs: ml5.tf.tensor([ [0,1], [1,0] ], [2,2]),
-          batchSize:1,
+          inputs: ml5.tf.tensor(
+            [
+              [0, 0],
+              [1, 1],
+            ],
+            [2, 2],
+          ),
+          outputs: ml5.tf.tensor(
+            [
+              [0, 1],
+              [1, 0],
+            ],
+            [2, 2],
+          ),
+          batchSize: 1,
           epochs: 2,
-          shuffle:true,
-          validationSplit:0.2
-        }
-        
-        await brain.trainInternal(trainingOptions)
+          shuffle: true,
+          validationSplit: 0.2,
+          whileTraining: () => {return null}
+        };
+
+        await brain.trainInternal(trainingOptions);
 
         expect(brain.isTrained).toBe(true);
       });
-
-
     });
 
+    /**
+     * classify
+     */
+    describe('.classify() & .predict()', () => {
+      it('should return an array', async () => {
+        let input;
+        
+        input = ml5.tf.tensor([[0, 0]], [1,2]);
+        const prediction1 = await brain.classify(input);
+
+        input = ml5.tf.tensor([[0, 0]], [1,2]);
+        const prediction2 = await brain.predict(input);
+        
+        input.dispose();
+        expect(prediction1 instanceof Array).toBe(true);
+        expect(prediction2 instanceof Array).toBe(true);
+      });
+    });
+    
   });
 
   /**
@@ -113,5 +135,4 @@ describe('NeuralNetwork', () => {
    */
   // the NeuralNetworkUtils class
   describe('NeuralNetworkUtils Class', () => {});
-
 });
