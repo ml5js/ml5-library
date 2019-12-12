@@ -25,56 +25,7 @@ class NeuralNetworkData {
 
   }
 
-  /**
-   * ////////////////////////////////////////////////////////
-   * Mutations
-   * ////////////////////////////////////////////////////////
-   */
-
-  setDataRaw(data) {
-    this.data.raw = data;
-  }
-
-  setIsMetadataReady(bool) {
-    this.isMetadataReady = bool;
-  }
-
-  setIsWarmedUp(bool) {
-    this.isWarmedUp = bool;
-  }
-
-  setMetaInputUnits(num) {
-    this.meta.inputUnits = num;
-  }
-
-  setMetaOutputUnits(num) {
-    this.meta.outputUnits = num;
-  }
-
-  setMetaInputs(obj) {
-    this.meta.inputs = obj;
-  }
-
-  setMetaOutputs(obj) {
-    this.meta.outputs = obj;
-  }
-
-  setMetaIsNormalized(bool) {
-    this.meta.isNormalized = bool;
-  }
-
-
-  /**
-   * Add Data
-   * @param {object} xInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
-   * @param {*} yInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
-   */
-  addData(xInputObj, yInputObj) {
-    this.data.raw.push({
-      xs: xInputObj,
-      ys: yInputObj
-    });
-  }
+  
 
   /**
    * ////////////////////////////////////////////////////////
@@ -104,6 +55,18 @@ class NeuralNetworkData {
     
     this.isMetadataReady = true;
     return {...this.meta}
+  }
+
+  /**
+   * Add Data
+   * @param {object} xInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
+   * @param {*} yInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
+   */
+  addData(xInputObj, yInputObj) {
+    this.data.raw.push({
+      xs: xInputObj,
+      ys: yInputObj
+    });
   }
 
   /**
