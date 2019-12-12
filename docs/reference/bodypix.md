@@ -21,7 +21,7 @@ function modelReady() {
   bodypix.segment(img, gotResults);
 }
 
-function gotImage(error, result) {
+function gotResults(error, result) {
   if (error) {
     console.log(error);
     return;
