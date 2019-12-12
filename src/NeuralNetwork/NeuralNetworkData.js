@@ -645,7 +645,7 @@ class NeuralNetworkData {
     });
 
     // set this.data.raw
-    this.setDataRaw(result);
+    this.data.raw = result;
 
     return result;
   }
