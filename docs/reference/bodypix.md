@@ -27,7 +27,7 @@ function gotResults(error, result) {
     return;
   }
   // log the result
-  console.log(result.maskBackground);
+  console.log(result.backgroundMask);
 }
 ```
 
