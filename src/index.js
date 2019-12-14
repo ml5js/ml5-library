@@ -4,30 +4,30 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import pitchDetection from './PitchDetection/';
-import imageClassifier from './ImageClassifier/';
-import soundClassifier from './SoundClassifier/';
-import KNNClassifier from './KNNClassifier/';
-import featureExtractor from './FeatureExtractor/';
-import word2vec from './Word2vec/';
-import YOLO from './ObjectDetector/YOLO';
-import objectDetector from './ObjectDetector';
-import poseNet from './PoseNet';
+import pitchDetection from './PitchDetection/index';
+import imageClassifier from './ImageClassifier/index';
+import soundClassifier from './SoundClassifier/index';
+import KNNClassifier from './KNNClassifier/index';
+import featureExtractor from './FeatureExtractor/index';
+import word2vec from './Word2vec/index';
+import YOLO from './ObjectDetector/YOLO/index';
+import objectDetector from './ObjectDetector/index';
+import poseNet from './PoseNet/index';
 import * as imageUtils from './utils/imageUtilities';
-import styleTransfer from './StyleTransfer/';
-import charRNN from './CharRNN/';
-import pix2pix from './Pix2pix/';
-import sketchRNN from './SketchRNN';
-import uNet from './UNET';
-import CVAE from './CVAE';
-import DCGAN from './DCGAN';
+import styleTransfer from './StyleTransfer/index';
+import charRNN from './CharRNN/index';
+import pix2pix from './Pix2pix/index';
+import sketchRNN from './SketchRNN/index';
+import uNet from './UNET/index';
+import CVAE from './CVAE/index';
+import DCGAN from './DCGAN/index';
 import preloadRegister from './utils/p5PreloadHelper';
 import { version } from '../package.json';
-import sentiment from './Sentiment';
-import bodyPix from './BodyPix';
-import neuralNetwork from './NeuralNetwork';
-import faceApi from './FaceApi';
-import kmeans from './KMeans';
+import sentiment from './Sentiment/index';
+import bodyPix from './BodyPix/index';
+import neuralNetwork from './NeuralNetwork/index';
+import faceApi from './FaceApi/index';
+import kmeans from './KMeans/index';
 import p5Utils from './utils/p5Utils';
 
 const withPreload = {
@@ -52,10 +52,12 @@ const withPreload = {
   faceApi,
 };
 
-module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
+const ml5 = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
   tf,
   version,
   neuralNetwork,
 });
+
+export default ml5;
