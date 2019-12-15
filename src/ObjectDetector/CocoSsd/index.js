@@ -28,6 +28,7 @@ class CocoSsdBase {
     constructor(video, options, constructorCallback) {
         this.video = video || null;
         this.modelReady = false;
+        this.isPredicting = false;
         this.config = {
             base: options.base || DEFAULTS.base,
             modelUrl: options.modelUrl || DEFAULTS.modelUrl
@@ -71,7 +72,7 @@ class CocoSsdBase {
      * @returns {ObjectDetectorPrediction}
      */
     async detectInternal(imgToPredict) {
-
+        this.isPredicting = true;
         const predictions = await this.model.detect(imgToPredict);
         const formattedPredictions = predictions.map(prediction => {
             return {
@@ -89,7 +90,7 @@ class CocoSsdBase {
                 }
             }
         })
-
+        this.isPredicting = false;
         return formattedPredictions;
     }
 

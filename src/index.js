@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import * as tfvis from '@tensorflow/tfjs-vis';
 import pitchDetection from './PitchDetection/index';
 import imageClassifier from './ImageClassifier/index';
 import soundClassifier from './SoundClassifier/index';
@@ -56,6 +57,7 @@ const ml5 = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
   tf,
+  tfvis,
   version,
   neuralNetwork,
 });

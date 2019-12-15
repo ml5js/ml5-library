@@ -2,7 +2,10 @@
 module.exports = (config) => {
   config.set({
     client: {
-      model: config.model
+      model: config.model,
+      jasmine:{
+        random:false
+      }
     },
     frameworks: ['jasmine'],
     files: [
@@ -74,6 +77,6 @@ module.exports = (config) => {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
-    concurrency: Infinity
+    concurrency: Infinity,
   });
 };

@@ -16,15 +16,15 @@ You can train your own models using this tutorial or use this set of pre trained
 
 ```js
 // Create the character level generator with a pre trained model
-const rnn = ml5.charRNN("models/bolaño/", modelLoaded);
+const rnn = ml5.charRNN('models/bolaño/', modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
-  console.log("Model Loaded!");
+  console.log('Model Loaded!');
 }
 
 // Generete content
-rnn.generate({ seed: "the meaning of pizza is" }, function(err, results) {
+rnn.generate({ seed: 'the meaning of pizza is' }, (err, results) => {
   console.log(results);
 });
 ```
@@ -35,7 +35,7 @@ rnn.generate({ seed: "the meaning of pizza is" }, function(err, results) {
 ### Initialize
 
 ```js
-const charrnn = ml5.charRNN(model, ?callback)
+const charrnn = ml5.charRNN(model, ?callback);
 ```
 
 #### Parameters
@@ -74,19 +74,19 @@ const charrnn = ml5.charRNN(model, ?callback)
 > Generates content in a stateless manner, based on some initial text (known as a "seed"). Returns a string.
 
 ```js
-charrnn.generate(options, ?callback)
+charrnn.generate(options, ?callback);
 ```
 
 📥 **Inputs**
 
 * **options**: REQUIRED. An object specifying the input parameters of seed, length and temperature. Default length is 20, temperature is 0.5 and seed is a random character from the model. The object should look like this
-    ```
-    {
-     seed: 'The meaning of pizza is'
-     length: 20,
-     temperature: 0.5
-    }
-    ```
+  ```js
+  {
+    seed: 'The meaning of pizza is',
+    length: 20,
+    temperature: 0.5,
+  };
+  ```
 * **callback**: Optional. Function. A function to be called when the model has generated content. If no callback is provided, it will return a promise that will be resolved once the model has generated new content.
 
 📤 **Outputs**
@@ -101,7 +101,7 @@ charrnn.generate(options, ?callback)
 > Feed a string of characters to the model state.
 
 ```js
-charrnn.predict(temperature, ?callback)
+charrnn.predict(temperature, ?callback);
 ```
 
 📥 **Inputs**
@@ -119,7 +119,7 @@ charrnn.predict(temperature, ?callback)
 > Given an image, will make objects in the image disappear
 
 ```js
-charrnn.feed(seed, ?callback)
+charrnn.feed(seed, ?callback);
 ```
 
 📥 **Inputs**
@@ -137,7 +137,7 @@ charrnn.feed(seed, ?callback)
 > Reset the model state
 
 ```js
-charrnn.reset()
+charrnn.reset();
 ```
 
 📥 **Inputs**
