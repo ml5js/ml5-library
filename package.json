@@ -77,6 +77,7 @@
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-dev": "^1.1.1",
+    "rollup-plugin-eslint": "^7.0.0",
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-terser": "^5.1.3",
