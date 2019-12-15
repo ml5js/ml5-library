@@ -29,7 +29,7 @@ const build = (cmdOptions) => {
         json(),
         builtins(),
         resolve({ browser: true }), 
-        commonjs({ browser: true }),
+        commonjs(),
         babel({
             include: join(__dirname, 'src'),
             externalHelpers: true,
@@ -71,6 +71,13 @@ const build = (cmdOptions) => {
                 sourcemap: isWatch ? false : true
             }
         ],
+        onwarn(warning, rollupWarn) {
+            if (warning.code !== 'CIRCULAR_DEPENDENCY'
+                && warning.code !== 'MISSING_EXPORT'
+                && warning.code !== 'NAMESPACE_CONFLICT') {
+              rollupWarn(warning);
+            }
+        },
         plugins
     };
 
