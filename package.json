@@ -12,7 +12,7 @@
     "commit": "git-cz",
     "prebuild": "rimraf dist",
     "start": "npx rollup -w -c rollup.config.js --silent ",
-    "manual-test": "npx rollup -w -c rollup.config.js --manual-text",
+    "manual-test": "npx rollup -w -c rollup.config.js --manualTest",
     "build": "npx rollup -c rollup.config.js",
     "test": "./node_modules/karma/bin/karma start karma.conf.js ",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",

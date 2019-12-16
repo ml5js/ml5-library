@@ -18,7 +18,7 @@ import * as packageJson from "./package.json";
 
 const build = (cmdOptions) => {
     const isWatch = cmdOptions.watch;
-    const isManualTest = cmdOptions.isManualTest;
+    const isManualTest = cmdOptions.manualTest;
 
     // to supress warning for customized flag
     delete cmdOptions.isManualTest;
