@@ -940,6 +940,16 @@
         "bug",
         "example"
       ]
+    },
+    {
+      "login": "bomanimc",
+      "name": "Bomani Oseni McClendon",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6589909?v=4",
+      "profile": "http://bomani.xyz/",
+      "contributions": [
+        "content",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
