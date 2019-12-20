@@ -217,6 +217,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://adaptive.link"><img src="https://avatars1.githubusercontent.com/u/17833?v=4" width="100px;" alt=""/><br /><sub><b>Hugo Romano</b></sub></a><br /><a href="#content-adaptive" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/RaisinTen"><img src="https://avatars0.githubusercontent.com/u/42526976?v=4" width="100px;" alt=""/><br /><sub><b>Darshan Sen</b></sub></a><br /><a href="#content-RaisinTen" title="Content">🖋</a></td>
     <td align="center"><a href="https://twitter.com/ludwig_stumpp"><img src="https://avatars1.githubusercontent.com/u/42147848?v=4" width="100px;" alt=""/><br /><sub><b>Ludwig Stumpp</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/pulls?q=is%3Apr+reviewed-by%3ALudwigStumpp" title="Reviewed Pull Requests">👀</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3ALudwigStumpp" title="Bug reports">🐛</a> <a href="#example-LudwigStumpp" title="Examples">💡</a></td>
+    <td align="center"><a href="http://bomani.xyz/"><img src="https://avatars1.githubusercontent.com/u/6589909?v=4" width="100px;" alt=""/><br /><sub><b>Bomani Oseni McClendon</b></sub></a><br /><a href="#content-bomanimc" title="Content">🖋</a> <a href="https://github.com/ml5js/ml5-library/commits?author=bomanimc" title="Code">💻</a></td>
   </tr>
 </table>
 
