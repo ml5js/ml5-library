@@ -40,7 +40,7 @@ function finishedTraining() {
 }
 ```
 
-The result for `50` is `100` as expected.
+The result for `50` is a value near `100`. To improve the accuracy try feeding the model with more training data.
 
 ## Usage
 
