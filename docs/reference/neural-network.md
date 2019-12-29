@@ -14,6 +14,8 @@ Create your own neural network and train in the browser with the ml5.neuralNetwo
 
 ## Quickstart
 
+This neural network learns how to multiply by 2. The training data contains 100 multiplications where `x` is the input number and `y` is `x * 2`. 
+
 ```js
 // Initialize the the neural network
 const neuralNetwork = ml5.neuralNetwork(1, 1);
@@ -38,6 +40,7 @@ function finishedTraining() {
 }
 ```
 
+The result for `50` is `100` as expected.
 
 ## Usage
 
