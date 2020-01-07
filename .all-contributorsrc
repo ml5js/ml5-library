@@ -929,6 +929,27 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "LudwigStumpp",
+      "name": "Ludwig Stumpp",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/42147848?v=4",
+      "profile": "https://twitter.com/ludwig_stumpp",
+      "contributions": [
+        "review",
+        "bug",
+        "example"
+      ]
+    },
+    {
+      "login": "bomanimc",
+      "name": "Bomani Oseni McClendon",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/6589909?v=4",
+      "profile": "http://bomani.xyz/",
+      "contributions": [
+        "content",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
