@@ -950,6 +950,15 @@
         "content",
         "code"
       ]
+    },
+    {
+      "login": "jhaemin",
+      "name": "Jang Haemin",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19797697?v=4",
+      "profile": "https://jhaemin.com",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
