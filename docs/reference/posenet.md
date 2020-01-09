@@ -262,8 +262,8 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### PoseNet featured on Hour of Code via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/EA3-k9mnLHs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+### PoseNet on The Coding Train
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/OIo-DIOkNVg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 ## Acknowledgements
