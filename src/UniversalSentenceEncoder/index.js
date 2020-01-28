@@ -3,9 +3,11 @@ import * as USE from '@tensorflow-models/universal-sentence-encoder';
 import callCallback from '../utils/callcallback';
 
 class UniversalSentenceEncoder {
-  constructor(){
+  constructor(options, callback){
     this.model = null;
     this.config = {};
+
+    callCallback(this.loadModel(),callback);
   }
 
   /**
@@ -23,7 +25,7 @@ class UniversalSentenceEncoder {
   async predictInternal(textArray){
     try{
       const embeddings = await this.model.embed(textArray);
-      const results = await embeddings.toArray();
+      const results = await embeddings.array();
       embeddings.dispose();
       return results;
     } catch(err){
