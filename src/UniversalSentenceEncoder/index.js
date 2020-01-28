@@ -1,5 +1,5 @@
 // import * as tf from '@tensorflow/tfjs';
-// import callCallback from '../utils/callcallback';
+import callCallback from '../utils/callcallback';
 import * as USE from '@tensorflow-models/universal-sentence-encoder';
 
 class UniversalSentenceEncoder {
@@ -16,7 +16,20 @@ class UniversalSentenceEncoder {
     return this;
   }
 
-  
+  predict(textArray, callback){
+    return callCallback(this.predictInternal(textArray), callback);
+  }
+
+  async predictInternal(textArray){
+    try{
+      const embeddings = await this.model.embed(textArray);
+      const results = await embeddings.toArray();
+      embeddings.dispose();
+      return results;
+    } catch(err){
+      throw new Error(err);
+    }
+  }
 
 }
 
