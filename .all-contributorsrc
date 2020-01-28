@@ -959,6 +959,15 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "fannt",
+      "name": "Anton Filatov",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1931343?v=4",
+      "profile": "http://antonfilatov.com",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
