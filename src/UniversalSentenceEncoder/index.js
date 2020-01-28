@@ -1,6 +1,6 @@
 // import * as tf from '@tensorflow/tfjs';
-import callCallback from '../utils/callcallback';
 import * as USE from '@tensorflow-models/universal-sentence-encoder';
+import callCallback from '../utils/callcallback';
 
 class UniversalSentenceEncoder {
   constructor(){

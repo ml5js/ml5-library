@@ -29,6 +29,7 @@ import bodyPix from './BodyPix';
 import neuralNetwork from './NeuralNetwork';
 import faceApi from './FaceApi';
 import kmeans from './KMeans';
+import universalSentenceEncoder from './UniversalSentenceEncoder';
 import p5Utils from './utils/p5Utils';
 
 const withPreload = {
@@ -51,6 +52,7 @@ const withPreload = {
   sentiment,
   bodyPix,
   faceApi,
+  universalSentenceEncoder
 };
 
 module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
