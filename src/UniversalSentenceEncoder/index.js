@@ -29,27 +29,17 @@ class UniversalSentenceEncoder {
       embeddings.dispose();
       return results;
     } catch(err){
-      throw new Error(err);
+      console.error(err);
+      return err;
     }
   }
 
 }
 
 const universalSentenceEncoder = (optionsOr, cb) => {
-  let options = {};
-  let callback = cb;
+  const options = (typeof optionsOr === 'object') ? optionsOr : {};
+  const callback = (typeof optionsOr === 'function') ? optionsOr : cb;
 
-  if (typeof optionsOr === 'function') {
-    callback = optionsOr;
-  } else if (typeof optionsOr === 'object') {
-    options = optionsOr;
-  }
-
-  if (typeof optionsOr === 'object') {
-    options = optionsOr;
-  } else if (typeof optionsOr === 'function') {
-    callback = optionsOr;
-  }
   return new UniversalSentenceEncoder(options, callback);
 };
 
