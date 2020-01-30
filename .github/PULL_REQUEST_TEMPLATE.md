@@ -1,31 +1,55 @@
-<!-- MANY MANY THANKS FOR YOUR CONTRIBUTION. ML5 ❤️S YOU! -->
-## → Submit changes to the relevant branch 🌲
+<!--------------------------------------------
+🌈DEAR BELOVED ML5 COMMUNITY MEMBER. WELCOME. 🌈
+---------------------------------------------->
 
-We have 2 branches you can submit to, **development** or **release**. You'd make us so happy 😊 if you submitted your pull request to the branch that is most relevant for your submission.
+Dear ml5 community, 
 
-- for pull requests related to **new features** 🆕 make sure to use the **development** branch
-- for pull requests related to bug 🐛fixes of the existing stable release, make sure your pull request  goes to the **release** branch.
-
-
-## → Description 📝
-
-A clear and concise description of what the pull request is about. Let us know if you are:
-
-- fixing a bug 🐛
-- adding an update 🛠
-- submitting a new feature 🆕 
-
-## → Screenshots 🖼
-(Any relevant screenshots, sketches, or helpful concept diagrams - these are helpful for our release notes and for getting people excited about your super cool feature and/or fix!)
+I'm making a Pull Request(PR). Please see the details below.
 
 
-## → Relevant Example or Paired Pull Request to [ml5-examples](https://github.com/ml5js/ml5-examples) 🦄
+**A good PR 🌟**
 
-In order to help the ml5 team understand your pull request, we ask that you please submit an example to [ml5-examples](https://github.com/ml5js/ml5-examples) showcasing how your integrated feature works. You're also welcome to show how this works by providing code that can be easily run by others. 
+### → Step 1:  Which branch are you submitting to? 🌲
+> Development (for new features or updates), Release (for bug fixes), or ___________?
 
-## → Relevant documentation 🌴
 
-Write a few notes about your pull request. Document any functionality that might be helpful for others who want to run and test your changes. If we don't know how to make use of your contribution, we won't be able t integrate it! 🙏
+
+### → Step 2: Describe your Pull Request 📝
+> Fixing a Bug? Adding an Update? Submitting a New Feature? Does it introduce a breaking change?
+
+
+
+
+
+**A great PR 🌟🌟**
+
+### → Step 3: Share a Relevant Example 🦄
+> Here's some example code or a link to another PR in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
+
+
+
+
+**The best PR 🌟🌟🌟**
+
+### → Step 4: Screenshots or Relevant Documentation 🖼
+> Here's some helpful screenshots and/or documentation of the new feature 
+
+
+
+
+<!-- 
+
+BEFORE SUBMITTING YOUR PULL REQUEST PLEASE MAKE
+SURE TO SUBMIT THE RELEVANT INFORMATION
+TO THE SECTIONS LISTED BELOW. 
+HELP US HELP YOU BY PROVIDING ALL THE HELPFUL
+INFORMATION THAT WILL ALLOW THE ML5 COMMUNITY
+TO UNDERSTAND WHAT YOUR PR IS ABOUT.
+WE WILL PRIORITIZE WELL A DOCUMENTED PR.
+
+THANK YOU! MERCI! ABRIGADO! GRACIAS! DANKE!
+-->
+
 
 
 

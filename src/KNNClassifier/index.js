@@ -15,11 +15,19 @@ import * as io from '../utils/io';
 import callCallback from '../utils/callcallback';
 
 class KNN {
+  /**
+   * Create a KNNClassifier instance.
+   */
   constructor() {
     this.knnClassifier = knnClassifier.create();
     this.mapStringToIndex = [];
   }
 
+  /**
+   * Adding an example to a class.
+   * @param {*} input - An example to add to the dataset, usually an activation from another model.
+   * @param {number || String} classIndexOrLabel  The class index(number) or label(string) of the example.
+   */
   addExample(input, classIndexOrLabel) {
     let classIndex;
     let example;
@@ -30,7 +38,7 @@ class KNN {
       } else {
         classIndex = this.mapStringToIndex.indexOf(classIndexOrLabel);
       }
-    } else if (classIndexOrLabel === 'number') {
+    } else if (typeof classIndexOrLabel === 'number') {
       classIndex = classIndexOrLabel;
     }
 
@@ -42,6 +50,12 @@ class KNN {
     this.knnClassifier.addExample(example, classIndex);
   }
 
+  /**
+   * Classify an new input. It returns an object with a top classIndex and label, confidences mapping all class indices to their confidence, and confidencesByLabel mapping all classes' confidence by label.
+   * @param {*} input  - An example to make a prediction on, could be an activation from another model or an array of numbers.
+   * @param {number} k  - Optional. The K value to use in K-nearest neighbors. The algorithm will first find the K nearest examples from those it was previously shown, and then choose the class that appears the most as the final prediction for the input example. Defaults to 3. If examples < k, k = examples.
+   * @param {function} callback  - Optional. A function to be called once the input has been classified. If no callback is provided, it will return a promise that will be resolved once the model has classified the new input.
+   */
   async classify(input, kOrCallback, cb) {
     let k = 3;
     let callback = cb;
@@ -87,13 +101,17 @@ class KNN {
     }
   }
 
+  /**
+   * Clear all examples in a label.
+   * @param {number||number} labelIndex - The class index or label, a number or a string.
+   */
   clearLabel(labelIndex) {
     let classIndex;
     if (typeof labelIndex === 'string') {
       if (this.mapStringToIndex.includes(labelIndex)) {
         classIndex = this.mapStringToIndex.indexOf(labelIndex);
       }
-    } else {
+    } else if (typeof labelIndex === 'number') {
       classIndex = labelIndex;
     }
     this.knnClassifier.clearClass(classIndex);
@@ -104,6 +122,10 @@ class KNN {
     this.knnClassifier.clearAllClasses();
   }
 
+  /**
+   * Get the example count for each label. It returns an object that maps class label to example count for each class.
+   * @returns {Number}
+   */
   getCountByLabel() {
     const countByIndex = this.knnClassifier.getClassExampleCount();
     if (this.mapStringToIndex.length > 0) {
@@ -119,6 +141,10 @@ class KNN {
     return countByIndex;
   }
 
+  /**
+   * Get the example count for each class. It returns an object that maps class index to example count for each class.
+   * @returns {Number}
+   */
   getCount() {
     return this.knnClassifier.getClassExampleCount();
   }
@@ -131,6 +157,10 @@ class KNN {
     this.knnClassifier.setClassifierDataset(dataset);
   }
 
+  /**
+   * It returns the total number of labels.
+   * @returns {String}
+   */
   getNumLabels() {
     return this.knnClassifier.getNumClasses();
   }
@@ -139,6 +169,10 @@ class KNN {
     this.knnClassifier.dispose();
   }
 
+  /**
+   * Download the whole dataset as a JSON file. It's useful for saving state.
+   * @param {String} name - Optional. The name of the JSON file that will be downloaded. e.g. "myKNN" or "myKNN.json". If no fileName is provided, the default file name is "myKNN.json".
+   */
   async save(name) {
     const dataset = this.knnClassifier.getClassifierDataset();
     if (this.mapStringToIndex.length > 0) {
@@ -162,6 +196,11 @@ class KNN {
     await io.saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
   }
 
+  /**
+   * Load a dataset from a JSON file. It's useful for restoring state.
+   * @param {String} pathOrData - The path for a valid JSON file.
+   * @param {function} callback - Optional. A function to run once the dataset has been loaded. If no callback is provided, it will return a promise that will be resolved once the dataset has loaded.
+   */
   async load(pathOrData, callback) {
     let data;
     if (typeof pathOrData === 'object') {

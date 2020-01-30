@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>ml5 - A friendly machine learning library for the web.</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="A friendly machine learning library for the web." />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
+    <!-- Edit on Github -->
+    <script src="//unpkg.com/docsify-edit-on-github/index.js"></script>
+    <!-- custom styles -->
+    <style>
+      .github-corner {
+        display: none;
+      }
+      .Menu__Top {
+        background: #ffffff;
+        color: black;
+        position: fixed;
+        top: 0px;
+        width: 100%;
+        height: 60px;
+        margin: 0px !important;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        padding: 0rem 2rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .Menu__Top__LogoContainer {
+        display: flex;
+      }
+      .Menu__Top__LogoContainer_Logo {
+        height: 28px;
+      }
+
+      .sidebar {
+        margin: 80px 0 0 0;
+      }
+
+      .Menu__Top__Menu {
+        display: flex;
+        align-items: center;
+      }
+
+      .Menu__Top__Menu__Item:not(:last-child) {
+        margin-right: 2rem;
+      }
+
+      @media screen and (max-width: 600px) {
+        .Menu__Top__LogoContainer {
+          width: 300px !important;
+          flex: 3;
+        }
+        .Menu__Top__Menu {
+          flex: 1;
+        }
+        .Menu__Top__Menu__Item {
+          display: none !important;
+        }
+      }
+      @media screen and (min-width: 600px) {
+        .Menu__Top {
+          padding: 0 0.5em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="Menu__Top">
+      <a href="https://ml5js.org" class="Menu__Top__LogoContainer">
+        <img
+          class="Menu__Top__LogoContainer_Logo"
+          src="https://ml5js.org/static/ml5_logo_purple-88e082b8dc81d8729f95bcc092db90c5.png"
+          alt="ml5 Logo"
+        />
+      </a>
+
+      <div class="Menu__Top__Menu">
+          <a class="Menu__Top__Menu__Item" href="https://ml5js.github.io/ml5-library/docs/#/"
+          >Getting Started</a
+        >
+        <a class="Menu__Top__Menu__Item" href="https://ml5js.github.io/ml5-library/docs/#/reference/index"
+          >Reference</a
+        >
+        <a class="Menu__Top__Menu__Item" href="https://ml5js.org/community/">Community</a>
+        <a class="Menu__Top__Menu__Item" href="https://ml5js.org/about/">About</a>
+        <a class="Menu__Top__Menu__Item" href="https://github.com/ml5js/ml5-library">
+          <img
+            class="Menu__Top__LogoContainer_Logo"
+            src="_media/GitHub-Mark-120px-plus.png"
+            alt="github Logo"
+          />
+        </a>
+      </div>
+    </nav>
+
+    <div id="app">loading...</div>
+    <script>
+      const config = {
+        editOnGithub: {
+          docBase: 'https://github.com/ml5js/ml5-library/tree/gh-pages/docs/',
+          docEditBase: 'https://ml5js.github.io/ml5-library',
+          title: 'Edit document',
+        },
+      };
+      window.$docsify = {
+        name: 'ml5',
+        repo: 'https://github.com/ml5js/ml5-library',
+        loadSidebar: '_sidebar.md',
+        alias: {
+          '/.*/sidebar.md': '/./sidebar.md',
+        },
+        subMaxLevel: 2,
+        relativePath: true,
+        maxLevel: 2,
+        mergeNavbar: true,
+        auto2top: true,
+        plugins: [
+          EditOnGithubPlugin.create(config.editOnGithub.docBase, null, config.editOnGithub.title),
+        ],
+      };
+    </script>
+    <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
+    <!-- Plugins -->
+    <!-- Search -->
+    <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
+    <!-- Emoji plugin -->
+    <script src="//unpkg.com/docsify/lib/plugins/emoji.min.js"></script>
+    <!-- External JS -->
+    <script src="//unpkg.com/docsify/lib/plugins/external-script.min.js"></script>
+    <!-- Copy to clipboard -->
+    <script src="//unpkg.com/docsify-copy-code"></script>
+    <!-- Pagination -->
+    <script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+  </body>
+</html>

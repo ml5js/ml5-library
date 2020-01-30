@@ -12,6 +12,12 @@ import callCallback from '../utils/callcallback';
 
 
 class Word2Vec {
+  /**
+   * Create Word2Vec model
+   * @param {String} modelPath - path to pre-trained word vector model in .json e.g data/wordvecs1000.json
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   *    that will be resolved once the model has loaded.
+   */
   constructor(modelPath, callback) {
     this.model = {};
     this.modelPath = modelPath;
