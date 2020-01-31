@@ -15,6 +15,8 @@ import YOLO from './ObjectDetector/YOLO';
 import objectDetector from './ObjectDetector';
 import poseNet from './PoseNet';
 import * as imageUtils from './utils/imageUtilities';
+import * as drawUtils from './utils/drawDetections';
+
 import styleTransfer from './StyleTransfer/';
 import charRNN from './CharRNN/';
 import pix2pix from './Pix2pix/';
@@ -56,6 +58,7 @@ const withPreload = {
 module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
   ...imageUtils,
+  ...drawUtils,
   tf,
   tfvis,
   version,
