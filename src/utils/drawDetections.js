@@ -9,7 +9,7 @@ function hsl(num, min, max) {
 function drawObject(item, ctx) {
 	const lineWidth = 3;
 	const textBoxHeight = 20;
-	const label = `${item.label}:${(item.score * 100).toFixed(1)}%`;
+	const label = `${item.label}:${(item.confidence * 100).toFixed(1)}%`;
 	const textBoxWidth = ctx.measureText(label).width + 25;
 	// console.log(ctx.measureText(item.label));
 	ctx.font = '1rem Segoe UI';

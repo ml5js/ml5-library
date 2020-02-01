@@ -317,7 +317,7 @@ class YOLOBase extends Video {
 
 				labelIndex: classIndex,
 				label,
-				score,
+				confidence : score,
 
 				x: topX * scaleX,
 				y: topY * scaleY,
