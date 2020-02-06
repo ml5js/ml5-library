@@ -222,6 +222,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://jhaemin.com"><img src="https://avatars3.githubusercontent.com/u/19797697?v=4" width="100px;" alt=""/><br /><sub><b>Jang Haemin</b></sub></a><br /><a href="#content-jhaemin" title="Content">🖋</a></td>
     <td align="center"><a href="http://antonfilatov.com"><img src="https://avatars1.githubusercontent.com/u/1931343?v=4" width="100px;" alt=""/><br /><sub><b>Anton Filatov</b></sub></a><br /><a href="#content-fannt" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/ELI7VH"><img src="https://avatars2.githubusercontent.com/u/11658002?v=4" width="100px;" alt=""/><br /><sub><b>Elijah Lucian</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=ELI7VH" title="Documentation">📖</a></td>
   </tr>
 </table>
 
