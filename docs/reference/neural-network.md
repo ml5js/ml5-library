@@ -24,7 +24,7 @@ for (let i = 0; i < 100; i += 1) {
 }
 
 // normalize your data
-neuralNetwork.data.normalize();
+neuralNetwork.data.normalizeData();
 // train your model
 neuralNetwork.train(finishedTraining);
 
