@@ -12,6 +12,9 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
+import {
+    isInstanceOfSupportedElement
+} from '../utils/imageUtilities';
 
 const modelPath = {
     'hosoda': 'https://raw.githubusercontent.com/leemengtaiwan/tfjs-models/master/cartoongan/tfjs_json_models/hosoda/model.json',
@@ -24,11 +27,14 @@ class Cartoon {
      * @param {String} modelIdentifier - Required. The name of pre-inluded model or the url path to your model.
      * @param {function} callback - Required. A function to run once the model has been loaded.
      */
-    constructor(modelIdentifier, callback) {
-        this.modelUrl = modelPath[modelIdentifier] ? modelPath[modelIdentifier] : modelIdentifier;
-        this.ready = false;
+    constructor(options, callback) {
+        this.config = {
+            modelUrl: options.modelUrl ? options.modelUrl : modelPath.hosoda,
+            returnTensors: options.returnTensors ? options.returnTensors : false,
+        }
         this.model = {};
-        this.ready = callCallback(this.loadModel(this.modelUrl), callback);
+        this.ready = false;
+        this.ready = callCallback(this.loadModel(this.config.modelUrl), callback);
     }
 
     /* load tfjs model that is converted by tensorflowjs with graph and weights */
@@ -44,12 +50,28 @@ class Cartoon {
      * @param {HTMLImageElement | HTMLCanvasElement} src the source img you want to transfer.
      * @param {function} callback
      */
-    async generate(src, callback) {
-        if( !(src instanceof HTMLImageElement || src instanceof HTMLCanvasElement) ){
-            throw new Error (`Invalid input type: ${typeof(src)}\nExpected HTMLImgElement, p5Image or HTMLCanvasElement`);
-        }
+    async generate(inputOrCallback, cb) {
+
         await this.ready;
-        return callCallback(this.generateInternal(src), callback);
+        await tf.nextFrame();
+
+        let imgToPredict;
+        let callback = cb;
+
+        if (isInstanceOfSupportedElement(inputOrCallback)) {
+            imgToPredict = inputOrCallback;
+        } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
+            imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
+        } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.canvas)) {
+            imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
+        } else if (typeof inputOrCallback === "function") {
+            imgToPredict = this.video;
+            callback = inputOrCallback;
+        } else {
+            throw new Error('Detection subject not supported');
+        }
+
+        return callCallback(this.generateInternal(imgToPredict), callback);
     }
 
     async generateInternal(src) {
@@ -65,8 +87,14 @@ class Cartoon {
         let res = this.model.predict(img);
         res = res.add(1).mul(127.5).reshape([256, 256, 3]);
         const result = this.resultFinalize(res);
-        return result;
         
+        if(this.config.returnTensors){
+            return result;
+        }
+
+        img.dispose();
+        res.dispose();
+        return result;
     }
 
     /* eslint class-methods-use-this: "off" */
@@ -75,10 +103,24 @@ class Cartoon {
         const raw = await res.data();
         const blob = await p5Utils.rawToBlob(res, res.shape[0], res.shape[1]);
         const image = await p5Utils.blobToP5Image(blob);
-        return {tensor, raw, blob, image};
+        if(this.config.returnTensors){
+            return {tensor, raw, blob, image};
+        }
+        return {raw, blob, image};
+        
     }
 } 
 
-const cartoon = (model, callback) => new Cartoon(model, callback);
+const cartoon = (optionsOr, cb) => {
+    const options = (typeof optionsOr === 'object') ? optionsOr : {};
+    const callback = (typeof optionsOr === 'function') ? optionsOr : cb;
+
+    if(typeof optionsOr === 'string'){
+        options.modelUrl = optionsOr;
+    }
+
+    return new Cartoon(options, callback);
+};
+
 
 export default cartoon; 
