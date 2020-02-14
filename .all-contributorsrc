@@ -977,6 +977,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tambuildsthings",
+      "name": "Tam",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11823786?v=4",
+      "profile": "http://tambuildsthings.com",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
