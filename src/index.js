@@ -31,6 +31,7 @@ import faceApi from './FaceApi';
 import kmeans from './KMeans';
 import cartoon from './CartoonGAN';
 import p5Utils from './utils/p5Utils';
+import communityStatement from './utils/community';
 
 const withPreload = {
   charRNN,
@@ -55,8 +56,14 @@ const withPreload = {
   faceApi,
 };
 
+// call community statement on load
+(() => {
+  communityStatement();
+})();
+
 module.exports = Object.assign({p5Utils}, preloadRegister(withPreload), {
   KNNClassifier,
+  communityStatement,
   ...imageUtils,
   tf,
   tfvis,
