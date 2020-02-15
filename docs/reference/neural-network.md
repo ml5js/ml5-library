@@ -83,7 +83,7 @@ const DEFAULTS = {
     const options = {
       inputs: 1,
       outputs: 1,
-      type: 'regression',
+      task: 'regression',
     };
     const neuralNetwork = ml5.neuralNetwork(options);
     ```
@@ -93,7 +93,7 @@ const DEFAULTS = {
       dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
+      task: 'classification',
     };
     const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
     ```
@@ -110,7 +110,7 @@ const DEFAULTS = {
       dataUrl: 'weather.json',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
+      task: 'classification',
     };
     const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
     ```
@@ -119,7 +119,7 @@ const DEFAULTS = {
     const options = {
       inputs: ['x', 'y'],
       outputs: ['label'],
-      type: 'classification',
+      task: 'classification',
     };
     const neuralNetwork = ml5.neuralNetwork(options);
     ```
