@@ -968,6 +968,42 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "ELI7VH",
+      "name": "Elijah Lucian",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/11658002?v=4",
+      "profile": "https://github.com/ELI7VH",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tambuildsthings",
+      "name": "Tam",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/11823786?v=4",
+      "profile": "http://tambuildsthings.com",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "VishnuRaghavan",
+      "name": "RGV",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23146562?v=4",
+      "profile": "https://github.com/VishnuRaghavan",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "hansvana",
+      "name": "hansvana",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10974059?v=4",
+      "profile": "https://github.com/hansvana",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
