@@ -1004,6 +1004,16 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "AliKarpuzoglu",
+      "name": "Ali Karpuzoglu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9629776?v=4",
+      "profile": "http://alikarpuzoglu.com",
+      "contributions": [
+        "bug",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
