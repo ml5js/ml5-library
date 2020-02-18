@@ -172,7 +172,7 @@ function handleResults(error, result) {
     const options = {
       inputs: 1,
       outputs: 1,
-      task:'regression'
+      task: 'regression'
     }
     const nn = ml5.neuralNetwork(options)
     ```
@@ -182,7 +182,7 @@ function handleResults(error, result) {
       dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      task:'classification'
+      task: 'classification'
     }
     const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
@@ -199,7 +199,7 @@ function handleResults(error, result) {
       dataUrl: 'weather.json',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      task:'classification'
+      task: 'classification'
     }
     const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
