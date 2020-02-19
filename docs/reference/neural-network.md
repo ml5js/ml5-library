@@ -164,98 +164,7 @@ function handleResults(error, result) {
 
 ## Usage
 
-### Initialization
-
-There are X main ways to initialize the `ml5.neuralNetwork`.
-
-1. Minimal Configuration Method
-2. Defining inputs and output labels as numbers or as arrays of labels
-3. Loading External Data
-4. Loading a pre-trained Model
-
-#### Minimal Configuration Method
-
-**Minimal Configuration Method**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. You will have to add data later on, but ml5 will figure the inputs and outputs based on the data your add. 
-  ```js
-  const options = {
-    task: 'regression' // or 'classification'
-  }
-  const nn = ml5.neuralNetwork(options)
-  ```
-
-#### Defining inputs and output labels as numbers or as arrays of labels
-
-**Defining inputs and output labels as numbers or as arrays of labels**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. To be more specific about your inputs and outputs, you can also define the *names of the labels for your inputs and outputs* as arrays OR *the number of inputs and outputs*. You will have to add data later on. Note that if you add data as JSON, your JSON Keys should match those defined in the `options`. If you add data as arrays, make sure the order you add your data match those given in the `options`.
-
-* **As arrays of labels**
-  ```js
-  const options = {
-    task: 'classification' // or 'regression'
-    inputs:['r', 'g','b'],
-    outputs: ['color']
-  }
-  const nn = ml5.neuralNetwork(options)
-  ```
-* **As numbers**
-  ```js
-  const options = {
-    task: 'classification' // or 'regression'
-    inputs: 3, // r, g, b
-    outputs: 2 // red-ish, blue-ish
-  }
-  const nn = ml5.neuralNetwork(options)
-    ```
-
-#### Loading External Data
-**Loading External Data**:
-
-#### Loading a pre-trained Model
-
-**Loading a pre-trained Model**:
-
-```js
-
-```
-
-#### Parameters
-* **inputsOrOptions**: REQUIRED. An `options` object or a number specifying the number of inputs.
-* **outputsOrCallback**: OPTIONAL. A callback to be called after your data is loaded as specified in the `options.dataUrl` or a `number` specifying the number of `outputs`.
-
-The options that can be specified are:
-
-```js
-const DEFAULTS = {
-  inputs: [],
-  outputs: [],
-  dataUrl: null,
-  modelUrl: null,
-  layers: [],
-  task: null,
-  debug: false, // determines whether or not to show the training visualization
-  learningRate: 0.2,
-  hiddenUnits: 16,
-};
-```
-
-<!-- ```js
-const DEFAULTS = {
-  dataUrl: 'data.csv', // can be a url path or relative path
-  task: 'regression',
-  activationHidden: 'sigmoid',
-  activationOutput: 'sigmoid',
-  debug: false,
-  learningRate: 0.25,
-  inputs: 2, // or the names of the data properties ['temperature', 'precipitation']
-  outputs: 1, // or the names of the data properties ['thermalComfort']
-  noVal: null,
-  hiddenUnits: 1,
-  modelMetrics: ['accuracy'],
-  modelLoss: 'meanSquaredError',
-  modelOptimizer: null,
-  batchSize: 64,
-  epochs: 32,
-};
-``` -->
+#### Quick Reference
 
 * For your reference, a few typical uses are showcased below:
   * Example 1:
@@ -304,6 +213,116 @@ const DEFAULTS = {
     const neuralNetwork = ml5.neuralNetwork(options);
     ```
 
+
+### Initialization & Parameters
+
+There are X main ways to initialize the `ml5.neuralNetwork`.
+
+1. Minimal Configuration Method
+2. Defining inputs and output labels as numbers or as arrays of labels
+3. Loading External Data
+4. Loading a pre-trained Model
+
+#### Minimal Configuration Method
+
+**Minimal Configuration Method**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. You will have to add data later on, but ml5 will figure the inputs and outputs based on the data your add. 
+  ```js
+  const options = {
+    task: 'regression' // or 'classification'
+  }
+  const nn = ml5.neuralNetwork(options)
+  ```
+
+#### Defining inputs and output labels as numbers or as arrays of labels
+
+**Defining inputs and output labels as numbers or as arrays of labels**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. To be more specific about your inputs and outputs, you can also define the *names of the labels for your inputs and outputs* as arrays OR *the number of inputs and outputs*. You will have to add data later on. Note that if you add data as JSON, your JSON Keys should match those defined in the `options`. If you add data as arrays, make sure the order you add your data match those given in the `options`.
+
+* **As arrays of labels**
+  ```js
+  const options = {
+    task: 'classification' // or 'regression'
+    inputs:['r', 'g','b'],
+    outputs: ['color']
+  }
+  const nn = ml5.neuralNetwork(options)
+  ```
+* **As numbers**
+  ```js
+  const options = {
+    task: 'classification' // or 'regression'
+    inputs: 3, // r, g, b
+    outputs: 2 // red-ish, blue-ish
+  }
+  const nn = ml5.neuralNetwork(options)
+    ```
+
+#### Loading External Data
+**Loading External Data**: You can initialize `ml5.neuralNetwork` specifying an external url to some data structured as a CSV or a JSON file. If you pass in data as part of the options, you will need to provide a **callback function** that will be called when your data has finished loading. Furthermore, you will **need to specify which properties** in the data that ml5.neuralNetwork will use for inputs and outputs.
+
+```js
+const options = {
+    dataUrl: 'data/colorData.csv'
+    task: 'classification' // or 'regression'
+    inputs: ['r', 'g','b'], // r, g, b
+    outputs: ['color'] // red-ish, blue-ish
+}
+
+const nn = ml5.neuralNetwork(options, dataLoaded)
+
+function dataLoaded(){
+  // continue on your neural network journey
+  nn.normalizeData();
+  // ...
+}
+```
+
+#### Loading a pre-trained Model
+
+**Loading a pre-trained Model**: If you've trained a model using the `ml5.neuralNetwork` and saved it out using the `ml5.neuralNetwork.save()` then you can load in the **model**, the **weights**, and the **metadata**.
+
+```js
+const options = {
+    task: 'classification' // or 'regression'
+  }
+  const nn = ml5.neuralNetwork(options);
+  
+  const modelDetails = {
+    model: 'model/model.json',
+    metadata: 'model/model_meta.json',
+    weights: 'model/model.weights.bin'
+  }
+  nn.load(modelDetails, modelLoaded)
+
+  function modelLoaded(){
+    // continue on your neural network journey
+    // use nn.classify() for classifications or nn.predict() for regressions
+  }
+```
+
+#### Arguments for `ml5.neuralNetwork(options)` 
+
+The options that can be specified are:
+
+```js
+const DEFAULTS = {
+  inputs: [], // can also be a number
+  outputs: [], // can also be a number
+  dataUrl: null,
+  modelUrl: null,
+  layers: [],
+  task: null,
+  debug: false, // determines whether or not to show the training visualization
+  learningRate: 0.2,
+  hiddenUnits: 16,
+};
+```
+
+
+<!-- 
+* **inputsOrOptions**: REQUIRED. An `options` object or a number specifying the number of inputs.
+* **outputsOrCallback**: OPTIONAL. A callback to be called after your data is loaded as specified in the `options.dataUrl` or a `number` specifying the number of `outputs`.
+
+-->
 
 ### Properties
 
