@@ -1,7 +1,5 @@
 # NeuralNetwork
 
-**currently in development - coming soon to the ml5 release**
-
 
 <center>
     <img style="display:block; max-height:20rem" alt="Illustration of brain" src="_media/reference__header-neural-network.png">
@@ -10,46 +8,212 @@
 
 ## Description
 
-Create your own neural network and train in the browser with the ml5.neuralNetwork. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network and do `classification` or `regression` tasks.
+Create your own neural network and train it in the browser with the `ml5.neuralNetwork`. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network and do `classification` or `regression` tasks.
+
 
 ## Quickstart
 
+In general the steps for using the `ml5.neuralNetwork` look something like:
+* Step 1: load data or create some data
+* Step 2: set your neural network options & initialize your neural network
+* Step 4: add data to the neural network
+* Step 5: normalize your data
+* Step 6: train your neural network
+* Step 7: use the trained model to make a classification
+* Step 8: do something with the results
+
+The below examples are quick 
+
+### Creating data in real-time
 ```js
-// Initialize the the neural network
-const neuralNetwork = ml5.neuralNetwork(1, 1);
+// Step 1: load data or create some data 
+const data = [
+  {r:255, g:0, b:0, color:'red-ish'},
+  {r:254, g:0, b:0, color:'red-ish'}
+  {r:253, g:0, b:0, color:'red-ish'},
+  {r:0, g:0, b:255, color:'blue-ish'}
+  {r:0, g:0, b:254, color:'blue-ish'}
+  {r:0, g:0, b:253, color:'blue-ish'}
+];
 
-// add in some data
-for (let i = 0; i < 100; i += 1) {
-  const x = i;
-  const y = i * 2;
-  neuralNetwork.data.addData([x], [y]);
+// Step 2: set your neural network options
+const options = {
+  task: 'classification',
+  debug: true
 }
 
-// normalize your data
-neuralNetwork.data.normalize();
-// train your model
-neuralNetwork.train(finishedTraining);
+// Step 3: initialize your neural network
+const nn = ml5.neuralNetwork(options);
 
-// when it is done training, run .predict()
-function finishedTraining() {
-  neuralNetwork.predict([50], (err, results) => {
-    console.log(results);
-  });
+// Step 4: add data to the neural network
+data.forEach(item => {
+  const inputs = {
+    r: item.r, 
+    g: item.g, 
+    b: item.b
+  };
+  const output = {
+    color: item.color
+  };
+
+  nn.addData(inputs, outputs);
+});
+
+// Step 5: normalize your data;
+nn.normalizeData();
+
+// Step 6: train your neural network
+const trainingOptions = {
+  epochs: 32,
+  batchSize: 12
 }
+nn.train(trainingOptions, finishedTraining);
+
+// Step 7: use the trained model
+function finishedTraining(){
+  classify();
+}
+
+// Step 8: make a classification
+function classify(){
+  const input = {
+    r: 255, 
+    g: 0, 
+    b: 0
+  }
+  nn.classify(input, handleResults);
+}
+
+// Step 9: define a function to handle the results of your classification
+function handleResults(error, result) {
+    if(error){
+      console.error(error);
+      return;
+    }
+    console.log(results); // {label: 'red', confidence: 0.8};
+}
+
+```
+
+### Loading Existing Data
+
+External data: `"data/colorData.json"`
+```json
+[
+  {"r":255, "g":0, "b":0, "color": "red-ish"},
+  {"r":254, "g":0, "b":0, "color": "red-ish"}
+  {"r":253, "g":0, "b":0, "color": "red-ish"},
+  {"r":0,   "g":0, "b":255, "color": "blue-ish"}
+  {"r":0,   "g":0, "b":254, "color": "blue-ish"}
+  {"r":0,   "g":0, "b":253, "color": "blue-ish"}
+];
+```
+In your JavaScript: `"script.js"`
+```js
+// Step 1: set your neural network options
+const options = {
+  dataUrl: "data/colorData.json",
+  task: 'classification',
+  debug: true
+}
+
+// Step 2: initialize your neural network
+const nn = ml5.neuralNetwork(options, dataLoaded);
+
+// Step 3: normalize data and train the model
+function dataLoaded(){
+  nn.normalizeData();
+  trainModel();
+}
+
+// Step 4: train the model
+function trainModel(){
+  const trainingOptions = {
+    epochs: 32,
+    batchSize: 12
+  }
+  nn.train(trainingOptions, finishedTraining);
+}
+
+// Step 5: use the trained model
+function finishedTraining(){
+  classify();
+}
+
+// Step 6: make a classification
+function classify(){
+  const input = {
+    r: 255, 
+    g: 0, 
+    b: 0
+  }
+  nn.classify(input, handleResults);
+}
+
+// Step 7: define a function to handle the results of your classification
+function handleResults(error, result) {
+    if(error){
+      console.error(error);
+      return;
+    }
+    console.log(results); // {label: 'red', confidence: 0.8};
+}
+
 ```
 
 
 ## Usage
 
-### Initialize
+### Initialization
+
+There are X main ways to initialize the `ml5.neuralNetwork`.
+
+1. Minimal Configuration Method
+2. Defining inputs and output labels as numbers or as arrays of labels
+3. Loading External Data
+4. Loading a pre-trained Model
+
+#### Minimal Configuration Method
+
+**Minimal Configuration Method**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. You will have to add data later on, but ml5 will figure the inputs and outputs based on the data your add. 
+  ```js
+  const options = {
+    task: 'regression' // or 'classification'
+  }
+  const nn = ml5.neuralNetwork(options)
+  ```
+
+#### Defining inputs and output labels as numbers or as arrays of labels
+
+**Defining inputs and output labels as numbers or as arrays of labels**: If you plan to create data in real-time, you can just set the type of task you want to accomplish `('regression' | 'classification')` and then create the neuralNetwork. To be more specific about your inputs and outputs, you can also define the *names of the labels for your inputs and outputs* as arrays OR *the number of inputs and outputs*. You will have to add data later on. Note that if you add data as JSON, your JSON Keys should match those defined in the `options`. If you add data as arrays, make sure the order you add your data match those given in the `options`.
+
+* **As arrays of labels**
+  ```js
+  const options = {
+    task: 'classification' // or 'regression'
+    inputs:['r', 'g','b'],
+    outputs: ['color']
+  }
+  const nn = ml5.neuralNetwork(options)
+  ```
+* **As numbers**
+  ```js
+  const options = {
+    task: 'classification' // or 'regression'
+    inputs: 3, // r, g, b
+    outputs: 2 // red-ish, blue-ish
+  }
+  const nn = ml5.neuralNetwork(options)
+    ```
+
+#### Loading External Data
+**Loading External Data**:
+
+#### Loading a pre-trained Model
+
+**Loading a pre-trained Model**:
 
 ```js
-// Option 1: specifying the inputs and outputs with the intention of adding data later
-const neuralNetwork = ml5.neuralNetwork(3, 2);
-// OR Option 2: specifying the inputs and outputs in an options object
-const neuralNetwork = ml5.neuralNetwork(inputsOrOptions);
-// OR Option 3: specifying the inputs, outputs, and dataUrl, with a callback
-const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback);
 
 ```
 
@@ -60,6 +224,20 @@ const neuralNetwork = ml5.neuralNetwork(inputsOrOptions, outputsOrCallback);
 The options that can be specified are:
 
 ```js
+const DEFAULTS = {
+  inputs: [],
+  outputs: [],
+  dataUrl: null,
+  modelUrl: null,
+  layers: [],
+  task: null,
+  debug: false, // determines whether or not to show the training visualization
+  learningRate: 0.2,
+  hiddenUnits: 16,
+};
+```
+
+<!-- ```js
 const DEFAULTS = {
   dataUrl: 'data.csv', // can be a url path or relative path
   task: 'regression',
@@ -77,7 +255,7 @@ const DEFAULTS = {
   batchSize: 64,
   epochs: 32,
 };
-```
+``` -->
 
 * For your reference, a few typical uses are showcased below:
   * Example 1:
