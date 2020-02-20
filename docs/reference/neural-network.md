@@ -174,7 +174,7 @@ function handleResults(error, result) {
       outputs: 1,
       type: 'regression',
     };
-    const neuralNetwork = ml5.neuralNetwork(options);
+    const nn = ml5.neuralNetwork(options);
     ```
   * Example 2: loading data as a csv
     ```js
@@ -184,7 +184,7 @@ function handleResults(error, result) {
       outputs: ['rained'],
       type: 'classification',
     };
-    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
+    const nn = ml5.neuralNetwork(options, modelLoaded);
     ```
   * Example 3: loading data as a json
     ```js
@@ -201,7 +201,7 @@ function handleResults(error, result) {
       outputs: ['rained'],
       type: 'classification',
     };
-    const neuralNetwork = ml5.neuralNetwork(options, modelLoaded);
+    const nn = ml5.neuralNetwork(options, modelLoaded);
     ```
   * Example 4: specifying labels for a blank neural network
     ```js
@@ -210,18 +210,32 @@ function handleResults(error, result) {
       outputs: ['label'],
       type: 'classification',
     };
-    const neuralNetwork = ml5.neuralNetwork(options);
+    const nn = ml5.neuralNetwork(options);
+    ```
+  * Example 5: creating a convolutional neural network for image classification by setting `task: imageClassification`.
+    ```js
+    const IMAGE_WIDTH = 64;
+    const IMAGE_HEIGHT = 64;
+    const IMAGE_CHANNELS = 4;
+    const options = {
+      task: 'imageClassification',
+      inputs:[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
+      outputs: ['label']
+    }
+    const nn = ml5.neuralNetwork(options);
     ```
 
 
 ### Initialization & Parameters
 
-There are 4 main ways to initialize the `ml5.neuralNetwork`.
+There are a number of ways to initialize the `ml5.neuralNetwork`. Below we cover the possibilities:
 
 1. Minimal Configuration Method
 2. Defining inputs and output labels as numbers or as arrays of labels
 3. Loading External Data
 4. Loading a pre-trained Model
+5. A convolutional neural network for image classification tasks
+6. Defining custom layers
 
 #### Minimal Configuration Method
 
@@ -299,6 +313,122 @@ const options = {
   }
 ```
 
+### A convolutional neural network for image classification tasks
+
+**A convolutional neural network for image classification tasks**: You can use convolutional neural networks in the `ml5.neuralNetwork` by setting the `task:"imageClassification"`.
+
+```js
+const IMAGE_WIDTH = 64;
+const IMAGE_HEIGHT = 64;
+const IMAGE_CHANNELS = 4;
+const options = {
+  task: 'imageClassification',
+  inputs:[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
+  outputs: ['label']
+}
+const nn = ml5.neuralNetwork(options);
+```
+
+
+### Defining Custom Layers
+
+**Defaults**: By default the `ml5.neuralNetwork` has simple default architectures for the `classification`, `regression` and `imageClassificaiton` tasks. 
+
+* default `classification` layers:
+  ```js
+  layers:[
+    {
+      type: 'dense',
+      units: this.options.hiddenUnits,
+      activation: 'relu',
+    },
+    {
+      type: 'dense',
+      activation: 'softmax',
+    },
+  ];
+  ```
+* default `regression` layers:
+  ```js
+  layers: [
+    {
+      type: 'dense',
+      units: this.options.hiddenUnits,
+      activation: 'relu',
+    },
+    {
+      type: 'dense',
+      activation: 'sigmoid',
+    },
+  ];
+  ```
+* default `imageClassification` layers:
+  ```js
+  layers = [
+    {
+      type: 'conv2d',
+      filters: 2,
+      kernelSize: 2,
+      strides: 2,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling',
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [1, 1],
+      strides: [1, 1],
+    },
+    {
+      type: 'conv2d',
+      filters: 1,
+      kernelSize: 1,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling',
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [1, 1],
+      strides: [1, 1],
+    },
+    {
+      type: 'flatten',
+    },
+    {
+      type: 'dense',
+      kernelInitializer: 'varianceScaling',
+      activation: 'softmax',
+    },
+  ];
+  ```
+
+**Defining Custom Layers**: You can define custom neural network architecture by defining your layers in the `options` that are passed to the `ml5.neuralNetwork` on initialization.
+
+* A neural network with 3 layers
+  ```js
+  const options = {
+    debug: true,
+    task: 'classification',
+    layers: [
+      {
+        type: 'dense',
+        units: 16,
+        activation: 'relu'
+      },
+      {
+        type: 'dense',
+        units: 16,
+        activation: 'sigmoid'
+      },
+      {
+        type: 'dense',
+        activation: 'sigmoid'
+      }
+    ]
+  };
+  const nn = ml5.neuralNetwork(options);
+  ```
+
 #### Arguments for `ml5.neuralNetwork(options)` 
 
 The options that can be specified are:
@@ -309,8 +439,8 @@ const DEFAULTS = {
   outputs: [], // can also be a number
   dataUrl: null,
   modelUrl: null,
-  layers: [],
-  task: null,
+  layers: [], // custom layers 
+  task: null, // 'classification', 'regression', 'imageClassificaiton'
   debug: false, // determines whether or not to show the training visualization
   learningRate: 0.2,
   hiddenUnits: 16,
@@ -370,6 +500,7 @@ neuralNetwork.addData(xs, ys);
 * **xs**: Required. Array | Object.
   * If an array is given, then the inputs must be ordered as specified in the constructor. If no labels are given in the constructor, then the order that your data are added here will set the order of how you will pass data to `.predict()` or `.classify()`.
   * If an object is given, then feed in key/value pairs.
+  * if `task:imageClassification`: you can supply a HTMLImageElement or HTMLCanvasElement or a flat 1-D array of the pixel values such that the dimensions match with the defined image size in the `options.inputs: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS]` 
 * **ys**: Required. Array | Object.
   * If an array is given, then the inputs must be ordered as specified in the constructor.
   * If an object is given, then feed in key/value pairs.
