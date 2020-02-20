@@ -216,7 +216,7 @@ function handleResults(error, result) {
 
 ### Initialization & Parameters
 
-There are X main ways to initialize the `ml5.neuralNetwork`.
+There are 4 main ways to initialize the `ml5.neuralNetwork`.
 
 1. Minimal Configuration Method
 2. Defining inputs and output labels as numbers or as arrays of labels
@@ -317,37 +317,44 @@ const DEFAULTS = {
 };
 ```
 
-
 <!-- 
 * **inputsOrOptions**: REQUIRED. An `options` object or a number specifying the number of inputs.
 * **outputsOrCallback**: OPTIONAL. A callback to be called after your data is loaded as specified in the `options.dataUrl` or a `number` specifying the number of `outputs`.
 
 -->
 
+***
 ### Properties
 
-***
-#### .config
-> *Object*: a configuration object that organizes the input options for the model and data. A high level structure of the config object is as follows: {debug, {architecture}, {training}, {dataOptions} }
-***
-***
-#### .vis
-> *Object*: allows access to the tf.vis functionality and the `NeuralNetworkVis` object.
-***
-***
-#### .data
-> *Object*: allows access to the `NeuralNetworkData` object.
-***
-***
-#### .ready
-> *Boolean*: set to true if the model is loaded and ready, false if it is not.
-***
-***
-#### .model
-> *Object*: the model.
+| property | description | datatype |
+| :---     | ---         | --- |
+|`.callback` |   the callback to be called after data is loaded on initialization  | `function` |
+|`.options` |    the options for how the neuralNetwork should be configured on initialization   | `object` |
+|`.neuralNetwork` |    the `neuralNetwork` class where all of the tensorflow.js model operations are organized  | `class` |
+|`.neuralNetworkData` | the `neuralNetworkData` class where all of the data handling operations are organized  | `class` |
+|`.neuralNetworkVis` |    the `neuralNetworkVis` class where all of the tf-vis operations are organized  | `class` |
+|`.data` |   The property that stores all of the training data after `.train()` is called  | `class` |
+|`.ready` |  set to true if the model is loaded and ready, false if it is not.  | `boolean` |
+
 ***
 
 ### Methods
+
+#### Overview
+
+| method | description | 
+| :---   | ---         |
+| `.addData()` | adds data to the `neuralNetworkData.data.raw` array |
+| `.normalizeData()` | normalizes the data stored in `neuralNetworkData.data.raw` and stores the normalized values in the `neuralNetwork.data.training` array |
+| `.train()` | uses the data in the `neuralNetwork.data.training` array to train your model |
+| `.predict()` | for regression tasks, allows you to make a prediction based on an input array or JSON object.    |
+| `.predictMultiple()` | for regression tasks, allows you to make a prediction based on an input array of arrays or array of JSON objects.    |
+| `.classify()` | for classification tasks, allows you to make a classification based on an input array or JSON object.     |
+| `.classifyMultiple()` | for classification tasks, allows you to make classifications based on an input array of arrays or array of JSON objects.     |
+| `.saveData()` | allows you to save your data out from the `neuralNetworkData.data.raw` array  |
+| `.loadData()` | allows you to load data previously saved from the `.saveData()` function |
+| `.save()` | allows you to save the trained model     |
+| `.load()` | allows you to load a trained model     |
 
 
 ***
