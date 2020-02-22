@@ -4,15 +4,15 @@
 // https://opensource.org/licenses/MIT
 
 import merge from 'webpack-merge';
-import common from './webpack.common.babel';
+import common, {indexEntryWithBabel} from './webpack.common.babel';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 
 export default merge(common, {
   mode: 'production',
   devtool: 'source-map',
   entry: {
-    ml5: ["babel-polyfill", "./src/index.js"],
-    "ml5.min": ["babel-polyfill", "./src/index.js"],
+    ml5: indexEntryWithBabel,
+    "ml5.min": indexEntryWithBabel,
   },
   output: {
     filename: "[name].js",
