@@ -224,6 +224,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://antonfilatov.com"><img src="https://avatars1.githubusercontent.com/u/1931343?v=4" width="100px;" alt=""/><br /><sub><b>Anton Filatov</b></sub></a><br /><a href="#content-fannt" title="Content">🖋</a></td>
     <td align="center"><a href="https://github.com/ELI7VH"><img src="https://avatars2.githubusercontent.com/u/11658002?v=4" width="100px;" alt=""/><br /><sub><b>Elijah Lucian</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=ELI7VH" title="Documentation">📖</a></td>
     <td align="center"><a href="http://tambuildsthings.com"><img src="https://avatars1.githubusercontent.com/u/11823786?v=4" width="100px;" alt=""/><br /><sub><b>Tam</b></sub></a><br /><a href="#content-tambuildsthings" title="Content">🖋</a></td>
+    <td align="center"><a href="https://github.com/VishnuRaghavan"><img src="https://avatars1.githubusercontent.com/u/23146562?v=4" width="100px;" alt=""/><br /><sub><b>RGV</b></sub></a><br /><a href="#question-VishnuRaghavan" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/hansvana"><img src="https://avatars0.githubusercontent.com/u/10974059?v=4" width="100px;" alt=""/><br /><sub><b>hansvana</b></sub></a><br /><a href="#content-hansvana" title="Content">🖋</a></td>
+    <td align="center"><a href="http://alikarpuzoglu.com"><img src="https://avatars2.githubusercontent.com/u/9629776?v=4" width="100px;" alt=""/><br /><sub><b>Ali Karpuzoglu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3AAliKarpuzoglu" title="Bug reports">🐛</a> <a href="#maintenance-AliKarpuzoglu" title="Maintenance">🚧</a></td>
   </tr>
 </table>
 

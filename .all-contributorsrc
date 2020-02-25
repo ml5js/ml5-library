@@ -986,6 +986,34 @@
       "contributions": [
         "content"
       ]
+    },
+    {
+      "login": "VishnuRaghavan",
+      "name": "RGV",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/23146562?v=4",
+      "profile": "https://github.com/VishnuRaghavan",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "hansvana",
+      "name": "hansvana",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/10974059?v=4",
+      "profile": "https://github.com/hansvana",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "AliKarpuzoglu",
+      "name": "Ali Karpuzoglu",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/9629776?v=4",
+      "profile": "http://alikarpuzoglu.com",
+      "contributions": [
+        "bug",
+        "maintenance"
+      ]
     }
   ],
   "contributorsPerLine": 7,
