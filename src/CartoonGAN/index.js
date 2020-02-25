@@ -29,7 +29,7 @@ class Cartoon {
      */
     constructor(options, callback) {
         this.config = {
-            modelUrl: options.modelUrl ? options.modelUrl : modelPath.hosoda,
+            modelUrl: options.modelUrl ? options.modelUrl : modelPath.miyazaki,
             returnTensors: options.returnTensors ? options.returnTensors : false,
         }
         this.model = {};
@@ -83,9 +83,11 @@ class Cartoon {
             throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
         }
         img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
-
+        
+        const alpha = tf.ones([256, 256, 1]).tile([1, 1, 1]).mul(255)
         let res = this.model.predict(img);
-        res = res.add(1).mul(127.5).reshape([256, 256, 3]);
+        res = res.add(1).mul(127.5).reshape([256, 256, 3]).floor();
+        res = res.concat(alpha, 2)
         const result = this.resultFinalize(res);
         
         if(this.config.returnTensors){
@@ -101,7 +103,7 @@ class Cartoon {
     async resultFinalize(res){
         const tensor = res;
         const raw = await res.data();
-        const blob = await p5Utils.rawToBlob(res, res.shape[0], res.shape[1]);
+        const blob = await p5Utils.rawToBlob(raw, res.shape[0], res.shape[1]);
         const image = await p5Utils.blobToP5Image(blob);
         if(this.config.returnTensors){
             return {tensor, raw, blob, image};
