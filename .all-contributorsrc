@@ -1014,6 +1014,15 @@
         "bug",
         "maintenance"
       ]
+    },
+    {
+      "login": "wyskoj",
+      "name": "Jacob Wysko",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31376393?v=4",
+      "profile": "http://wysko.org",
+      "contributions": [
+        "content"
+      ]
     }
   ],
   "contributorsPerLine": 7,
