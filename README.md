@@ -228,6 +228,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/hansvana"><img src="https://avatars0.githubusercontent.com/u/10974059?v=4" width="100px;" alt=""/><br /><sub><b>hansvana</b></sub></a><br /><a href="#content-hansvana" title="Content">🖋</a></td>
     <td align="center"><a href="http://alikarpuzoglu.com"><img src="https://avatars2.githubusercontent.com/u/9629776?v=4" width="100px;" alt=""/><br /><sub><b>Ali Karpuzoglu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3AAliKarpuzoglu" title="Bug reports">🐛</a> <a href="#maintenance-AliKarpuzoglu" title="Maintenance">🚧</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://wysko.org"><img src="https://avatars0.githubusercontent.com/u/31376393?v=4" width="100px;" alt=""/><br /><sub><b>Jacob Wysko</b></sub></a><br /><a href="#content-wyskoj" title="Content">🖋</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
