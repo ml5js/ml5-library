@@ -22,6 +22,7 @@
     "publish:npm": "npm run build && npm publish",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
+    "examples:develop": "live-server ./examples --port=8082 --open=/public",
     "examples:update:ml5": "node scripts/update-ml5-reference.js",
     "examples:update:ml5-dev": "NODE_ENV=dev node scripts/update-ml5-reference.js",
     "examples:create:example-index": "node scripts/create-examples-index.js",
@@ -111,6 +112,7 @@
     "@tensorflow/tfjs": "~1.2.1",
     "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
-    "face-api.js": "0.20.1"
+    "face-api.js": "0.20.1",
+    "live-server": "^1.2.1"
   }
 }
