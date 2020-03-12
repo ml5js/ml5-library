@@ -113,6 +113,7 @@
     "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
     "face-api.js": "0.20.1",
-    "live-server": "^1.2.1"
+    "live-server": "^1.2.1",
+    "recursive-readdir": "^2.2.2"
   }
 }
