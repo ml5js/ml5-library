@@ -7,7 +7,7 @@ Welcome to the ml5.js documentation. Here you'll find everything you need to get
 
 Take a ride on the Coding Train to watch Dan Shiffman's ["A Beginner's Guide to Machine Learning with ml5.js"](https://www.youtube.com/watch?v=jmznx0Q1fP0). Here Dan explains what ml5.js is and where it all comes from.
 
-ml5.js is machine learning _for the web_ in your web browser. Through some clever and exciting advancements, the folks building [TensorFlow.js](https://www.tensorflow.org/js) figured out that it is possible to use the web browser's built in graphics processing unit (GPU) to do calculations that would otherwise run very slowly using central processing unit (CPU). A really nice explantion of what is happening with GPUs can be found [here - Why are shaders fast?](https://thebookofshaders.com/01/). ml5 strives to make all these new developments in machine learning on the web more approachable for everyone.
+ml5.js is machine learning _for the web_ in your web browser. Through some clever and exciting advancements, the folks building [TensorFlow.js](https://www.tensorflow.org/js) figured out that it is possible to use the web browser's built in graphics processing unit (GPU) to do calculations that would otherwise run very slowly using central processing unit (CPU). A really nice explanation of what is happening with GPUs can be found [here - Why are shaders fast?](https://thebookofshaders.com/01/). ml5 strives to make all these new developments in machine learning on the web more approachable for everyone.
 
 
 ### Quickstart
@@ -15,7 +15,7 @@ ml5.js is machine learning _for the web_ in your web browser. Through some cleve
 The fastest way to get started exploring the creative possibilities of ml5.js are to either:
 
 1. Download a ml5.js project boilerplate. You can download a zip file here: [ml5 project boilerplate](https://github.com/ml5js/ml5-boilerplate/releases). <br/> Or...
-2. Open this [p5 web editor sketch with ml5.js added](https://editor.p5js.org/ml5/sketches/oYweRi2H7).
+2. Open this [p5 web editor sketch with ml5.js added](https://editor.p5js.org/ml5/sketches/ml5_boilerplate).
 3. You can also copy and paste the cdn link to the ml5 library here:
 
   ```html

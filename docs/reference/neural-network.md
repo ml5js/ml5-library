@@ -172,9 +172,9 @@ function handleResults(error, result) {
     const options = {
       inputs: 1,
       outputs: 1,
-      type: 'regression',
-    };
-    const nn = ml5.neuralNetwork(options);
+      task: 'regression'
+    }
+    const nn = ml5.neuralNetwork(options)
     ```
   * Example 2: loading data as a csv
     ```js
@@ -182,9 +182,9 @@ function handleResults(error, result) {
       dataUrl: 'weather.csv',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
-    };
-    const nn = ml5.neuralNetwork(options, modelLoaded);
+      task: 'classification'
+    }
+    const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
   * Example 3: loading data as a json
     ```js
@@ -199,16 +199,16 @@ function handleResults(error, result) {
       dataUrl: 'weather.json',
       inputs: ['avg_temperature', 'humidity'],
       outputs: ['rained'],
-      type: 'classification',
-    };
-    const nn = ml5.neuralNetwork(options, modelLoaded);
+      task: 'classification'
+    }
+    const nn = ml5.neuralNetwork(options, modelLoaded)
     ```
   * Example 4: specifying labels for a blank neural network
     ```js
     const options = {
       inputs: ['x', 'y'],
       outputs: ['label'],
-      type: 'classification',
+      task: 'classification',
     };
     const nn = ml5.neuralNetwork(options);
     ```
@@ -773,8 +773,8 @@ neuralNetwork.load(?filesOrPath, ?callback);
 
 
 **p5.js**
-- [NeuralNetwork_Simple-Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Classification)
-- [NeuralNetwork_Simple-Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple-Regression)
+- [NeuralNetwork_Simple_Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple_Classification)
+- [NeuralNetwork_Simple_Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple_Regression)
 - [NeuralNetwork_XOR](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_XOR)
 - [NeuralNetwork_basics](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_basics)
 - [NeuralNetwork_co2net](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_co2net)
@@ -782,7 +782,7 @@ neuralNetwork.load(?filesOrPath, ?callback);
 - [NeuralNetwork_load_model](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_model)
 - [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
 - [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
-- [NeuralNetwork_multiple-layers](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_multiple-layer)
+- [NeuralNetwork_multiple_layers](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_multiple_layers)
 - [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_face)
 - [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
 - [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
@@ -790,8 +790,8 @@ neuralNetwork.load(?filesOrPath, ?callback);
 - [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
-- [NeuralNetwork_Simple-Classification](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple-Classification)
-- [NeuralNetwork_Simple-Regression](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple-Regression)
+- [NeuralNetwork_Simple_Classification](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple_Classification)
+- [NeuralNetwork_Simple_Regression](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple_Regression)
 - [NeuralNetwork_XOR](https://editor.p5js.org/ml5/sketches/NeuralNetwork_XOR)
 - [NeuralNetwork_basics](https://editor.p5js.org/ml5/sketches/NeuralNetwork_basics)
 - [NeuralNetwork_co2net](https://editor.p5js.org/ml5/sketches/NeuralNetwork_co2net)
@@ -799,7 +799,7 @@ neuralNetwork.load(?filesOrPath, ?callback);
 - [NeuralNetwork_load_model](https://editor.p5js.org/ml5/sketches/NeuralNetwork_load_model)
 - [NeuralNetwork_load_saved_data](https://editor.p5js.org/ml5/sketches/NeuralNetwork_load_saved_data)
 - [NeuralNetwork_lowres_pixels](https://editor.p5js.org/ml5/sketches/NeuralNetwork_lowres_pixels)
-- [NeuralNetwork_multiple-layers](https://https://editor.p5js.org/ml5/sketches/NeuralNetwork_multiple-layer)
+- [NeuralNetwork_multiple_layers](https://editor.p5js.org/ml5/sketches/NeuralNetwork_multiple_layers)
 - [NeuralNetwork_musical_face](https://editor.p5js.org/ml5/sketches/NeuralNetwork_musical_face)
 - [NeuralNetwork_musical_mouse](https://editor.p5js.org/ml5/sketches/NeuralNetwork_musical_mouse)
 - [NeuralNetwork_pose_classifier](https://editor.p5js.org/ml5/sketches/NeuralNetwork_pose_classifier)
@@ -816,7 +816,18 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-No tutorials yet - contribute one today!
+### ml5.js: Train Your Own Neural Network (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8HEgeAbYphA"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### ml5.js: Save Neural Network Training Data (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/q6cwxORPDo8"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### ml5.js: Save Neural Network Trained Model (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/wUrg9Hjkhg0"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+### ml5.js: Neural Network Regression (Coding Train)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fFzvwdkzr_c"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 ## Acknowledgements
 

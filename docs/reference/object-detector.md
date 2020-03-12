@@ -24,7 +24,7 @@ function modelLoaded() {
 }
 
 // Detect objects in the video element
-yolo.detect(video, (err, results) => {
+objectDetector.detect(video, (err, results) => {
   console.log(results); // Will output bounding boxes of detected objects
 });
 ```
