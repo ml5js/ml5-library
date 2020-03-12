@@ -1,18 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 const recursive = require("recursive-readdir");
-const { parse } = require('node-html-parser');
 
-const baseurl = path.resolve(__dirname, "..");
+const baseurl = path.resolve(__dirname, "../examples");
 
-const ghUrl = 'https://ml5js.github.io/ml5-examples';
 const weUrl = 'https://editor.p5js.org/ml5/sketches';
 
 // Get all the references
-const p5Examples = getReferences(`${baseurl}/p5js`, 'p5js', ghUrl, weUrl);
-const plainJsExamples = getReferences(`${baseurl}/javascript`, 'javascript', ghUrl);
-const d3Examples = getReferences(`${baseurl}/d3`, 'd3', ghUrl);
-
+const p5Examples = getReferences(`${baseurl}/p5js`, 'p5js', weUrl);
+const plainJsExamples = getReferences(`${baseurl}/javascript`, 'javascript');
+const d3Examples = getReferences(`${baseurl}/d3`, 'd3');
 
 appendToSource(p5Examples, plainJsExamples);
 appendToSource(p5Examples, d3Examples);
@@ -53,7 +50,7 @@ function getDirectories(path) {
   });
 }
 
-function getReferences(_examplesRoot, _rootName, _ghUrl, _weUrl = null){
+function getReferences(_examplesRoot, _rootName, _weUrl = null){
   const dirs = getDirectories(_examplesRoot);
 
   const subdirs = dirs.map(dir => {
@@ -62,7 +59,7 @@ function getReferences(_examplesRoot, _rootName, _ghUrl, _weUrl = null){
       const ghItems = items.map(item => { 
         return { 
           name: item, 
-          url:`${_ghUrl}/${_rootName}/${dir}/${item}`} 
+          url:`../${_rootName}/${dir}/${item}`} 
       });
 
       if(_weUrl !== null){
