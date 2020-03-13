@@ -4,10 +4,10 @@ const recursive = require("recursive-readdir");
 
 const baseurl = path.resolve(__dirname, "../examples");
 
-const weUrl = 'https://editor.p5js.org/ml5/sketches';
+const webEditorURL = 'https://editor.p5js.org/ml5/sketches';
 
 // Get all the references
-const p5Examples = getReferences(`${baseurl}/p5js`, 'p5js', weUrl);
+const p5Examples = getReferences(`${baseurl}/p5js`, 'p5js', webEditorURL);
 const plainJsExamples = getReferences(`${baseurl}/javascript`, 'javascript');
 const d3Examples = getReferences(`${baseurl}/d3`, 'd3');
 
@@ -50,37 +50,37 @@ function getDirectories(path) {
   });
 }
 
-function getReferences(_examplesRoot, _rootName, _weUrl = null){
+function getReferences(_examplesRoot, _rootName, _webEditorURL = null){
   const dirs = getDirectories(_examplesRoot);
 
   const subdirs = dirs.map(dir => {
       let items = getDirectories(`${_examplesRoot}/${dir}`);
 
-      const ghItems = items.map(item => { 
+      const localItems = items.map(item => { 
         return { 
           name: item, 
           url:`../${_rootName}/${dir}/${item}`} 
       });
 
-      if(_weUrl !== null){
-        const weItems = items.map(item => {
+      if(_webEditorURL !== null){
+        const webEditorItems = items.map(item => {
           return {
             name: item,
-            url: `${_weUrl}/${item}`
+            url: `${_webEditorURL}/${item}`
           }
         });
 
         return {
           parent: dir, 
           children: {
-            [_rootName]: ghItems,
-            "p5webeditor": weItems
+            [_rootName]: localItems,
+            "p5webeditor": webEditorItems
           }}
       } else {
         return {
           parent: dir, 
           children: {
-            [_rootName]: ghItems
+            [_rootName]: localItems
           }}
       }
       
