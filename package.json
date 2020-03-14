@@ -72,7 +72,9 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-safari-launcher": "1.0.0",
     "karma-webpack": "3.0.0",
+    "live-server": "^1.2.1",
     "npm-run-all": "^4.1.5",
+    "recursive-readdir": "^2.2.2",
     "regenerator-runtime": "0.11.1",
     "rimraf": "2.6.2",
     "semantic-release": "^15.13.26",
@@ -113,8 +115,6 @@
     "@tensorflow/tfjs": "~1.2.1",
     "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
-    "face-api.js": "0.20.1",
-    "live-server": "^1.2.1",
-    "recursive-readdir": "^2.2.2"
+    "face-api.js": "0.20.1"
   }
 }
