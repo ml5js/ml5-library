@@ -6,6 +6,16 @@
 import merge from 'webpack-merge';
 import common, {indexEntryWithBabel} from './webpack.common.babel';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
+
+const regexMatchHTMLFiles = /^[^.]+.html$/;
+const replaceML5Reference = (content, path) => {
+  if(!regexMatchHTMLFiles.test(path)) {
+    return content;
+  }
+
+  return content.toString().replace('http://localhost:8080/ml5.js', 'https://unpkg.com/ml5@latest/dist/ml5.min.js');
+}
 
 export default merge(common, {
   mode: 'production',
@@ -26,4 +36,13 @@ export default merge(common, {
       }),
     ],
   },
+  plugins: [
+    new CopyPlugin([
+      {
+        from: 'examples/',
+        to: 'examples/',
+        transform: (content, path) => replaceML5Reference(content, path),
+      },
+    ]),
+  ],
 });

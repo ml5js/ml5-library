@@ -4,7 +4,6 @@
 // https://opensource.org/licenses/MIT
 
 import { join, resolve } from 'path';
-import CopyPlugin from 'copy-webpack-plugin';
 
 const include = join(__dirname, 'src');
 
@@ -37,12 +36,4 @@ export default {
   node: {
     fs: "empty"
   },
-  plugins: [
-    new CopyPlugin([
-      {
-        from: 'examples/',
-        to: 'examples/',
-      },
-    ]),
-  ],
 };
