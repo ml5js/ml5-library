@@ -11,7 +11,7 @@
     "commit": "git-cz",
     "prebuild": "rimraf dist",
     "develop": "npm-run-all --parallel start examples:develop",
-    "start": "webpack-dev-server --open --config webpack.dev.babel.js",
+    "start": "webpack-dev-server --config webpack.dev.babel.js",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
