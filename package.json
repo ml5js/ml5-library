@@ -10,7 +10,7 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
-    "develop": "npm-run-all --parallel start examples:develop",
+    "develop": "npm-run-all --parallel start examples:serve",
     "start": "webpack-dev-server --config webpack.dev.babel.js",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js",
@@ -23,7 +23,7 @@
     "publish:npm": "npm run build && npm publish",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "examples:develop": "live-server ./examples --port=8082 --mount=/:./examples/public",
+    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples/public",
     "examples:update:example-json": "node scripts/update-examples-json.js"
   },
   "repository": {
