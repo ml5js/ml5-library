@@ -24,9 +24,6 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "examples:develop": "live-server ./examples --port=8082 --mount=/:./examples/public",
-    "examples:update:ml5": "node scripts/update-ml5-reference.js",
-    "examples:update:ml5-dev": "NODE_ENV=dev node scripts/update-ml5-reference.js",
-    "examples:create:example-index": "node scripts/create-examples-index.js",
     "examples:update:example-json": "node scripts/update-examples-json.js"
   },
   "repository": {
