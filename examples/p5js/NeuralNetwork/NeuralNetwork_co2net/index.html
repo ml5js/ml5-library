@@ -1,0 +1,32 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>co2Net - Neural Network</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <style></style>
+</head>
+
+<body>
+  <h1>co2Net - Neural Network</h1>
+  <h2>Urban Population vs. CO2 Emissions</h2>
+  <p>Population and CO2 emissions (in tons of CO2 or CO2 equivalent).</p>
+  <small>data: https://doi.pangaea.de/10.1594/PANGAEA.884141</small>
+  <div id="legend">
+    <div class="legend-item">
+      <div class="icon" id="prediction-icon"></div>  
+      <div>predictions</div>  
+    </div>
+    <div class="legend-item">
+        <div class="icon" id="actual-icon"></div>  
+        <div>actual</div>  
+      </div>
+  </div>
+  <script src="sketch.js"></script>
+</body>
+
+</html>

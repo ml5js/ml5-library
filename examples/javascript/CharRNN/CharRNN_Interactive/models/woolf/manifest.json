@@ -1,0 +1,52 @@
+{
+  "Variable": {
+    "filename": "Variable",
+    "shape": []
+  },
+  "embedding": {
+    "filename": "embedding",
+    "shape": [
+      223,
+      1024
+    ]
+  },
+  "rnnlm/multi_rnn_cell/cell_0/basic_lstm_cell/bias": {
+    "filename": "rnnlm_multi_rnn_cell_cell_0_basic_lstm_cell_bias",
+    "shape": [
+      4096
+    ]
+  },
+  "rnnlm/multi_rnn_cell/cell_0/basic_lstm_cell/kernel": {
+    "filename": "rnnlm_multi_rnn_cell_cell_0_basic_lstm_cell_kernel",
+    "shape": [
+      2048,
+      4096
+    ]
+  },
+  "rnnlm/multi_rnn_cell/cell_1/basic_lstm_cell/bias": {
+    "filename": "rnnlm_multi_rnn_cell_cell_1_basic_lstm_cell_bias",
+    "shape": [
+      4096
+    ]
+  },
+  "rnnlm/multi_rnn_cell/cell_1/basic_lstm_cell/kernel": {
+    "filename": "rnnlm_multi_rnn_cell_cell_1_basic_lstm_cell_kernel",
+    "shape": [
+      2048,
+      4096
+    ]
+  },
+  "rnnlm/softmax_b": {
+    "filename": "rnnlm_softmax_b",
+    "shape": [
+      223
+    ]
+  },
+  "rnnlm/softmax_w": {
+    "filename": "rnnlm_softmax_w",
+    "shape": [
+      1024,
+      223
+    ]
+  }
+}

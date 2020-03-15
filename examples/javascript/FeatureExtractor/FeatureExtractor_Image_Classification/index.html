@@ -1,0 +1,36 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Image Classification using Feature Extraction with MobileNet</title>
+
+
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <style></style>
+</head>
+
+<body>
+  <h2>Image Classification using Feature Extraction with MobileNet</h2>
+  <h3>(Train a Neural Network to distinguish between your Cat or Dog poses)</h3>
+  <video id="video" width="640" height="480" autoplay></video>
+
+  <h6><span id="loading">Loading base model...</span> | <span id="videoStatus">Loading video...</span></h6>
+  <p>
+    <button id="catButton">Add Cat Image</button>
+    </p><p><span id="amountOfCatImages">0</span> Cat Images</p>
+    <br /><button id="dogButton">Add Dog Image</button>
+    <p><span id="amountOfDogImages">0</span> Dog Images</p>
+  
+  <br />
+  <p><button id="train">Train</button><span id="loss"></span></p>
+  <br />
+  <p>
+    <button id="predict">Start guessing!</button><br />
+    My guess is: <span id="result">...</span>
+    , with a confidence of <span id="confidence">...</span>.
+  </p>
+  <script src="sketch.js"></script>
+</body>
+
+</html>

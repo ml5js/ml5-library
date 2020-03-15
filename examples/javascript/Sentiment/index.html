@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <title>ml5 - Sentiment</title>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/addons/p5.dom.min.js"></script>
+
+  <style></style>
+
+</head>
+
+<body>
+  <h1>Sentiment Analysis Demo
+  </h1>
+    <h2>Using a pre-trained model from TensorFlow.js Layers trained on short movie review. <br />
+      This model is trained to predict the sentiment of a short movie review (as a score between 0 and 1)
+    </h2>
+    <h3>
+      The model is trained using movie reviews that have been truncated to a maximum of 200 words, only the 20000 most used
+      words in the reviews are used. 
+    </h3>
+
+  <p id='status'></p>
+
+  <div>
+    <div class="row">
+      <p>
+        <input type="text" style="width: 100%" placeholder="input sentence to analize" id="inputText"          />
+      </p>
+      <p>
+        <button id="submit" class="btn btn-primary">predict sentiment</button>
+      </p>
+      <p id="sentiment-res">Sentiment score:</p>
+    </div>
+  </div>
+
+
+
+  <script src="sketch.js"></script>
+
+</body>
+
+</html>
