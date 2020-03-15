@@ -1,0 +1,31 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Style Transfer Image Example with Promises</title>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+  
+  <style></style>
+</head>
+
+
+<body>
+  <h1>Style Transfer Image Example</h1>
+  <p id="statusMsg">Loading Models...</p>
+  <p>Input Image:</p>
+  <img src="img/patagonia.jpg" alt="input img" id="inputImg"                    />
+
+  <div id="styleA">
+    <p>Style A: <a href="https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa">The Great Wave off Kanagawa, 1829 - Katsushika Hokusai</a></p>
+    <img src="img/wave.jpg" alt="style one"                    />
+  </div>
+
+  <div id="styleB">
+    <p>Style B: <a href="https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa">Udnie (Young American Girl, The Dance), 1913 - Francis Picabia</a></p>
+    <img src="img/udnie.jpg" alt="style two"                    />
+  </div>
+
+  <script src="sketch.js"></script>
+</body>
+
+</html>
