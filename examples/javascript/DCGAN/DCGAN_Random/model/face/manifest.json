@@ -1,0 +1,6 @@
+{
+    "description": "DCGAN, human faces, 64x64",
+    "model": "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/dcgan/face/model.json",
+    "modelSize": 64,
+    "modelLatentDim": 128
+}

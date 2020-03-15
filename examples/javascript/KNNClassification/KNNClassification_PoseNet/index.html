@@ -1,0 +1,41 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PoseNet with KNN Classification on Webcam Images</title>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <style></style>
+</head>
+
+<body>
+  <h2>KNN Classification on PoseNet data from webcam</h2>
+  <div id="videoContainer">
+    <canvas width="640" height="480" id="myCanvas"></canvas>
+  </div>
+  <p id="status">Loading Model...</p>
+  <br /><p>
+    <button id="addClassA">Add an Example to Class A</button>
+    <button id="resetA">Reset Class A</button>
+    </p><p><span id="exampleA">0</span> A examples</p>
+    <p>| Confidence in A is: <span id="confidenceA">0</span></p>
+
+    <br /><button id="addClassB">Add an Example to Class B</button>
+    <button id="resetB">Reset Class B</button>
+    <p><span id="exampleB">0</span> B examples</p>
+    <p>| Confidence in B is: <span id="confidenceB">0</span></p>
+  
+  <br />
+  <p>
+    <button id="buttonPredict">Start predicting!</button><br />
+    <button id="clearAll">Clear all classes</button><br />
+  </p>
+  <p>
+    KNN Classifier with mobileNet model labeled this
+    as Class: <span id="result">...</span>
+    with a confidence of <span id="confidence">...</span>
+  </p>
+  <script src="sketch.js"></script>
+</body>
+
+</html>

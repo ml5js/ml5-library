@@ -1,0 +1,39 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Image Regression using Feature Extraction with MobileNet. Built with p5.js</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+  
+  
+  <style></style>
+</head>
+
+<body>
+  <h1>Image Regression using Feature Extraction with MobileNet. Built with p5.js</h1>
+  <h2>(Train a Neural Network to move the red square)</h2>
+  <div id="videoContainer"></div>
+  <h6><span id="modelStatus">Loading base model...</span> | <span id="videoStatus">Loading video...</span></h6>
+  <p>
+    <input type="range" name="slider" id="slider" min="0.01" max="1.0" step="0.01" value="0.5"                             />
+  </p>
+  <br />
+  <p>
+    <button id="addSample">Add Sample</button>
+    </p><p><span id="amountOfSamples">0</span> Sample Images</p>
+  
+
+  <br />
+  <p><button id="train">Train</button><span id="loss"></span></p>
+  <br />
+  <p>
+    <button id="buttonPredict">Start predicting!</button><br />
+  </p>
+  <script src="sketch.js"></script>
+</body>
+
+</html>
