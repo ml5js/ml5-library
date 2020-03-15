@@ -44,16 +44,37 @@ For example, the `PoseNet` directory contains 3 subdirectories, one for each exa
 
 # Getting Started
 
-Since all the example are self contained, if you want to contribute by fixing bugs, adding documentation or adding new examples, just start by cloning or [downloading this repository](https://github.com/ml5js/ml5-examples/archive/master.zip):
+Since all the example are self contained, if you want to contribute by fixing bugs, adding documentation or adding new examples, just start by cloning or downloading this repository:
 
 ```bash
-git clone https://github.com/ml5js/ml5-examples.git
-cd ml5-examples
+git clone https://github.com/ml5js/ml5-library.git
+cd ml5-library/examples
 ```
+
+Once you add a new example, run `npm run examples:update-json`. This command adds your new example to the list of examples that are displayed on the ml5.js examples index website! TODO: Add a link here.
 
 Make some changes, fix bugs and submit a new pull request!
 
 We encourage everyone to contribute to this project. If you have never contributed to open source before this might be a good place to start! Just open a new issue!
+
+# Local Development
+You can start a server or your machine to view a local version of the ml5 examples index web page that links to every example in the project. You can use this local version of the examples index to test new and old examples against changes you're making to the core library.
+
+Open your terminal
+
+```sh
+# change directories
+cd ml5-library
+
+# install the dependencies
+npm install
+
+# run the local web server
+npm run develop
+```
+
+After running the above commands, a local version of the ml5 examples index web site should open at http://localhost:8081/ in your default browser. The page will automatically refresh itself each time a change is made to any file in the `examples/` directory. Additionally, the `npm run develop` command triggers `webpack-dev-server` to build the `ml5.js` core library file (with hot reloading) and serve it at http://localhost:8080/. Since all of the examples load their copies of `ml5.js` from http://localhost:8080/ml5.js, you'll be able to see how core library changes influence your examples in real-time.
+
 
 ## Additional Resources
 
