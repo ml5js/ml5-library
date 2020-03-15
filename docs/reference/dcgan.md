@@ -102,10 +102,10 @@ dcgan.generate(callback, ?latentVector);
 ## Examples
 
 **p5.js**
-* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector)
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_Slider)
-* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_Random)
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_Random)
 
 **p5 web editor**
 * [DCGAN_LatentVector](https://editor.p5js.org/ml5/sketches/DCGAN_LatentVector)
@@ -115,10 +115,10 @@ dcgan.generate(callback, ?latentVector);
 
 
 **plain javascript**
-* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector)
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_Slider)
-* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_Random)
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_Random)
 
 
 
