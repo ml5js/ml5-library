@@ -70,13 +70,13 @@ For example:
 
 - [Getting Started](https://ml5js.org/getting-started/)
 - [API Reference](https://ml5js.org/reference/)
-- [Examples](https://github.com/ml5js/ml5-examples)
+- [Examples](https://github.com/ml5js/ml5-library/tree/development/examples)
 - [Community](https://ml5js.org/community)
 - [FAQ](https://ml5js.org/getting-started/faq/)
 
 ## Standalone Examples
 
-You can find a collection of standalone examples in this repository: [github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples)
+You can find a collection of standalone examples in this repository within the `examples/` directory. You can also test working hosted of the examples online on the ml5.js examples index website (TODO: Add a link). 
 
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 
