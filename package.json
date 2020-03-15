@@ -31,7 +31,7 @@
     "machine learning"
   ],
   "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ml5js)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ml5js/ml5-library/issues"
   },
