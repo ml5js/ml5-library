@@ -24,7 +24,7 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples/public",
-    "examples:update:example-json": "node scripts/update-examples-json.js"
+    "examples:update-json": "node scripts/update-examples-json.js"
   },
   "repository": {
     "type": "git",
