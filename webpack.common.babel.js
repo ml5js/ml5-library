@@ -10,6 +10,7 @@ const include = join(__dirname, 'src');
 export const indexEntryWithBabel = ['babel-polyfill', './src/index.js'];
 
 export default {
+  name: 'ml5',
   entry: indexEntryWithBabel,
   output: {
     path: resolve(__dirname, 'dist'),

@@ -12,6 +12,7 @@ training/lstm/data/t
 /public
 /static
 /dist
+/dist_examples
 
 website/translated_docs
 website/build/
