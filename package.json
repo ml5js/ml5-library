@@ -13,7 +13,7 @@
     "develop": "npm-run-all --parallel start examples:serve",
     "start": "webpack-dev-server --config webpack.dev.babel.js",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
-    "build": "webpack --config webpack.prod.babel.js",
+    "build": "webpack --config webpack.prod.babel.js --config-name ml5",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
@@ -24,7 +24,9 @@
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
     "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples/public",
-    "examples:update-json": "node scripts/update-examples-json.js"
+    "examples:update-json": "node scripts/update-examples-json.js",
+    "preexamples:build": "rimraf dist_examples",
+    "examples:build": "webpack --config webpack.prod.babel.js --config-name examples"
   },
   "repository": {
     "type": "git",

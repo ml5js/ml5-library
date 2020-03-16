@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import merge from 'webpack-merge';
+import { resolve } from 'path';
 import common, {indexEntryWithBabel} from './webpack.common.babel';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -17,7 +18,7 @@ const replaceML5Reference = (content, path) => {
   return content.toString().replace('http://localhost:8080/ml5.js', 'https://unpkg.com/ml5@latest/dist/ml5.min.js');
 }
 
-export default merge(common, {
+const libraryBuildConfig = merge(common, {
   mode: 'production',
   devtool: 'source-map',
   entry: {
@@ -35,14 +36,24 @@ export default merge(common, {
         sourceMap: true,
       }),
     ],
+  }
+});
+
+const exampleBuildConfig = merge(common, {
+  name: 'examples',
+  mode: 'production',
+  output: {
+    path: resolve(__dirname, 'dist_examples'),
+    publicPath: '/',
   },
   plugins: [
     new CopyPlugin([
       {
         from: 'examples/',
-        to: 'examples/',
         transform: (content, path) => replaceML5Reference(content, path),
       },
     ]),
   ],
 });
+
+export default [libraryBuildConfig, exampleBuildConfig];
