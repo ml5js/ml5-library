@@ -231,6 +231,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="http://wysko.org"><img src="https://avatars0.githubusercontent.com/u/31376393?v=4" width="100px;" alt=""/><br /><sub><b>Jacob Wysko</b></sub></a><br /><a href="#content-wyskoj" title="Content">🖋</a></td>
     <td align="center"><a href="http://dilwoarhussain.com"><img src="https://avatars2.githubusercontent.com/u/4599889?v=4" width="100px;" alt=""/><br /><sub><b>Dilwoar Hussain</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=DilwoarH" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/manaswini-das/"><img src="https://avatars0.githubusercontent.com/u/22885912?v=4" width="100px;" alt=""/><br /><sub><b>Manaswini Das</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=manaswinidas" title="Documentation">📖</a></td>
   </tr>
 </table>
 
