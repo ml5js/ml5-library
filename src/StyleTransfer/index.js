@@ -19,6 +19,14 @@ import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
 
+const convertCanvasToImage = canvas => {
+  return new Promise(resolve => {
+    const image = new Image(IMAGE_SIZE, IMAGE_SIZE);
+    image.onload = () => resolve(image);
+    image.src = canvas.toDataURL();
+  });
+}
+
 class StyleTransfer extends Video {
   /**
    * Create a new Style Transfer Instance。
@@ -111,6 +119,10 @@ class StyleTransfer extends Video {
         inputOrCallback instanceof HTMLImageElement ||
         inputOrCallback instanceof ImageData) {
       input = inputOrCallback;
+    } else if (inputOrCallback instanceof HTMLCanvasElement) {
+      input = await convertCanvasToImage(inputOrCallback);
+    } else if (typeof inputOrCallback === 'object' && inputOrCallback.elt instanceof HTMLCanvasElement) {
+      input = await convertCanvasToImage(inputOrCallback.elt);
     } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement 
       || inputOrCallback.elt instanceof HTMLImageElement
       || inputOrCallback.elt instanceof ImageData)) {
