@@ -1,4 +1,4 @@
-# NameOfFeature
+# CharRNN
 
 
 <center>
@@ -23,7 +23,7 @@ function modelLoaded() {
   console.log('Model Loaded!');
 }
 
-// Generete content
+// Generate content
 rnn.generate({ seed: 'the meaning of pizza is' }, (err, results) => {
   console.log(results);
 });
