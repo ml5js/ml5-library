@@ -1,0 +1,39 @@
+{
+  "name": "ml5-examples",
+  "version": "0.4.3",
+  "description": "ml5-examples repo",
+  "main": "index.js",
+  "scripts": {
+    "develop": "live-server --port=8082",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "update:ml5": "node scripts/update-ml5-reference.js",
+    "update:ml5-dev": "NODE_ENV=dev node scripts/update-ml5-reference.js",
+    "create:example-index": "node scripts/create-examples-index.js",
+    "update:example-json": "node scripts/update-examples-json.js",
+    "merge:release:ours": "git merge --strategy-option ours release",
+    "merge:release:dev": "git checkout release-dev && git merge --strategy-option theirs release && npm run update:ml5-dev && git add . && git commit -m 'sets ml5 url to dev'",
+    "merge:dev:release": "git checkout dev-release && npm run update:ml5 && git add . && git commit -m 'sets ml5 url to release' && git checkout release && git merge dev-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ml5js/ml5-examples.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ml5js/ml5-examples/issues"
+  },
+  "homepage": "https://github.com/ml5js/ml5-examples#readme",
+  "dependencies": {
+    "node-html-parser": "^1.1.14",
+    "recursive-readdir": "^2.2.2"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "dotenv": "^8.2.0",
+    "live-server": "^1.2.1",
+    "q": "^1.5.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4"
+  }
+}

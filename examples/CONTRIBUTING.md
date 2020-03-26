@@ -57,6 +57,7 @@ Make some changes, fix bugs and submit a new pull request!
 
 We encourage everyone to contribute to this project. If you have never contributed to open source before this might be a good place to start! Just open a new issue!
 
+
 # Local Development
 You can start a server or your machine to view a local version of the ml5 examples index web page that links to every example in the project. You can use this local version of the examples index to test new and old examples against changes you're making to the core library.
 
