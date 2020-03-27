@@ -23,10 +23,10 @@
     "publish:npm": "npm run build && npm publish",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples/public",
+    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples",
     "examples:update-json": "node scripts/update-examples-json.js",
     "preexamples:build": "rimraf dist_examples",
-    "examples:build": "webpack --config webpack.prod.babel.js --config-name examples"
+    "examples:build": "npm run examples:update-json && webpack --config webpack.prod.babel.js --config-name examples"
   },
   "repository": {
     "type": "git",
@@ -36,7 +36,7 @@
     "machine learning"
   ],
   "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ml5js)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ml5js/ml5-library/issues"
   },
