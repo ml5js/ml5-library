@@ -1,0 +1,39 @@
+<head>
+  <meta charset="UTF-8">
+  <title>Interactive Regression Example - Neural Network</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@0.10.2/lib/p5.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <style></style>
+</head>
+
+<body>
+  <h1>Interactive Regression Example - Neural Network</h1>
+  <h3>Instructions</h3>
+
+  <ol>
+    <li>Add data by clicking inside the canvas</li>
+    <li>Edit learning rate = amount that the weights are updated during training</li>
+    <li>Edit number of hidden units = number of hidden units in dense layer</li>
+    <li>Edit number of training epochs = number of iterations over entire dataset</li>
+    <li>Edit number of batch size = number of data points to work through before updating the internal model parameters</li>
+    <li>Click on the Train button</li>
+  </ol>
+
+  <form onsubmit="return false;">
+    <label for="neuralNetworkLearningRate">learning rate: </label>
+    <input type="number" name="neuralNetworkLearningRate" id="neuralNetworkLearningRate" value=0.25 step="0.01"><br>
+    <label for="neuralNetworkHiddenUnits">number of hidden units: </label>
+    <input type="number" name="neuralNetworkHiddenUnits" id="neuralNetworkHiddenUnits" value=20><br>
+    <label for="trainEpochs">number train epochs: </label>
+    <input type="number" name="trainEpochs" id="trainEpochs" value=100><br>
+    <label for="trainBatchSize">number batch size: </label>
+    <input type="number" name="trainBatchSize" id="trainBatchSize" value=64><br>
+    <button id="startTraining">Train</button>
+  </form>
+
+  <script src="sketch.js"></script>
+</body>
+
+</html>
