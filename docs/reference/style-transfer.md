@@ -26,8 +26,8 @@ function modelLoaded() {
   console.log('Model Loaded!');
 }
 // Grab a img element and generate a new image.
-style.transfer(document.getElementById('img'), (err, resultImg) => {
-  img.src = resultImg.src;
+style.transfer(document.getElementById("img"), function(error, result) {
+  img.src = result.src;
 });
 ```
 
@@ -86,16 +86,16 @@ styletransfer.transfer(input, ?callback);
 
 
 **p5.js**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-examples/tree/development/p5js/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/StyleTransfer/StyleTransfer_Video)
+* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/StyleTransfer/StyleTransfer_Image)
+* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/StyleTransfer/StyleTransfer_Video)
 
 **p5 web editor**
 * [StyleTransfer_Image](https://editor.p5js.org/ml5/sketches/StyleTransfer_Image)
 * [StyleTransfer_Video](https://editor.p5js.org/ml5/sketches/StyleTransfer_Video)
 
 **plain javascript**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-examples/tree/development/javascript/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-examples/tree/development/javascript/StyleTransfer/StyleTransfer_Video)
+* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/StyleTransfer/StyleTransfer_Image)
+* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/StyleTransfer/StyleTransfer_Video)
 
 ## Demo
 

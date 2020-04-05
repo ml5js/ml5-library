@@ -1,4 +1,4 @@
-# NameOfFeature
+# CharRNN
 
 
 <center>
@@ -23,7 +23,7 @@ function modelLoaded() {
   console.log('Model Loaded!');
 }
 
-// Generete content
+// Generate content
 rnn.generate({ seed: 'the meaning of pizza is' }, (err, results) => {
   console.log(results);
 });
@@ -153,9 +153,9 @@ charrnn.reset();
 ## Examples
 
 **p5.js**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/p5js/CharRNN/CharRNN_Text_Stateful)
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
 
@@ -164,9 +164,9 @@ charrnn.reset();
 * [CharRNN_Text_Stateful](https://editor.p5js.org/ml5/sketches/CharRNN_Text_Stateful)
 
 **plain javascript**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-examples/tree/development/javascript/CharRNN/CharRNN_Text_Stateful)
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Text_Stateful)
 
 ## Demo
 

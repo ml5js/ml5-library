@@ -13,7 +13,7 @@ PoseNet is a machine learning model that allows for Real-time Human Pose Estimat
 
 PoseNet can be used to estimate either a single pose or multiple poses, meaning there is a version of the algorithm that can detect only one person in an image/video and one version that can detect multiple persons in an image/video.
 
-The original PoseNet model was ported to TensorFlow.js by Dan Oved. Check out his blog post.
+The original PoseNet model was ported to TensorFlow.js by Dan Oved. For background, read [Real-time Human Pose Estimation in the Browser with TensorFlow.js](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5).
 
 ## Quickstart
 
@@ -242,9 +242,9 @@ poseNet.multiPose(?input);
 ## Examples
 
 **p5.js**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_webcam)
 
 **p5 web editor**
 * [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/PoseNet_image_single)
@@ -252,9 +252,9 @@ poseNet.multiPose(?input);
 * [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/PoseNet_webcam)
 
 **plain javascript**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_webcam)
 
 ## Demo
 
@@ -262,8 +262,8 @@ No demos yet - contribute one today!
 
 ## Tutorials
 
-### PoseNet featured on Hour of Code via CodingTrain
-<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/EA3-k9mnLHs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+### PoseNet on The Coding Train
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/OIo-DIOkNVg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
 ## Acknowledgements

@@ -69,7 +69,7 @@ export default class CheckpointLoader {
           throw new Error(`Not found variable ${varName}`);
         }
         const values = new Float32Array(xhr.response);
-        const tensor = tf.Tensor.make(this.checkpointManifest[varName].shape, { values });
+        const tensor = tf.tensor(values, this.checkpointManifest[varName].shape);
         resolve(tensor);
       };
       xhr.onerror = (error) => {
