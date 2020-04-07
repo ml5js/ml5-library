@@ -1,3 +1,19 @@
+let meta = {
+  "inputUnits": [1],
+  "outputUnits": 2,
+  "inputs": { "0": { "dtype": "number", "min": 0.1, "max": 0.9 } },
+  "outputs": {
+    "0": {
+      "dtype": "string",
+      "min": 0,
+      "max": 1,
+      "uniqueValues": ["left", "right"],
+      "legend": { "left": [1,0], "right": [0,1]}
+    }
+  },
+  "isNormalized": false
+};
+
 function setup() {
   // Options for Neural Network
   const options = {
@@ -10,9 +26,8 @@ function setup() {
   nn.addData([0.1], ['left'])
   nn.addData([0.9], ['right'])
   nn.createMetaData(nn.neuralNetworkData.data.raw)
-  nn.addDefaultLayers(nn.options.task, nn.neuralNetworkData.meta);
+  nn.addDefaultLayers('classification', meta);
   nn.classify([0.2], (err, result) => {
-    console.log('hello');
     if (err) console.log(err);
     console.log(result);
   });
