@@ -1,9 +1,9 @@
 let meta = {
   "inputUnits": [1],
   "outputUnits": 2,
-  "inputs": { "0": { "dtype": "number", "min": 0.1, "max": 0.9 } },
+  "inputs": { "direction": { "dtype": "number", "min": 0.1, "max": 0.9 } },
   "outputs": {
-    "0": {
+    "label": {
       "dtype": "string",
       "min": 0,
       "max": 1,
@@ -23,10 +23,14 @@ function setup() {
   }
   // Create Neural Network
   const nn = ml5.neuralNetwork(options);
-  nn.addData([0.1], ['left'])
-  nn.addData([0.9], ['right'])
-  nn.createMetaData(nn.neuralNetworkData.data.raw)
+
+  // nn.addData([0.1], ['left'])
+  // nn.addData([0.9], ['right'])
+  // nn.createMetaData(nn.neuralNetworkData.data.raw)
+  
   nn.addDefaultLayers('classification', meta);
+  nn.neuralNetworkData.meta = meta;
+  console.log(nn)
   nn.classify([0.2], (err, result) => {
     if (err) console.log(err);
     console.log(result);
