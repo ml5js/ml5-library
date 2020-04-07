@@ -17,13 +17,7 @@ class Bird {
     if (brain) {
       this.brain = brain.copy();
     } else {
-      const options = {
-        inputs: 5,
-        outputs: 2,
-        task: 'classification'
-      }
-      this.brain = ml5.neuralNetwork(options);
-      this.brain.addDefaultLayers();
+      this.brain = new NeuralNetwork();
     }
   }
 
@@ -63,9 +57,8 @@ class Bird {
     inputs[2] = closest.bottom / height;
     inputs[3] = closest.x / width;
     inputs[4] = this.velocity / 10;
-    let output = this.brain.predict(inputs);
-    //if (output[0] > output[1] && this.velocity >= 0) {
-    if (output[0] > output[1]) {
+    const results = this.brain.nn.classifySync(inputs);
+    if (results[0].label === 'up') {
       this.up();
     }
   }

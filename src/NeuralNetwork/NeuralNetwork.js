@@ -122,6 +122,23 @@ class NeuralNetwork {
   }
 
   /**
+   * returns the prediction as an array synchronously
+   * @param {*} _inputs
+   */
+  predictSync(_inputs) {
+    const output = tf.tidy(() => {
+      return this.model.predict(_inputs);
+    });
+    const result = output.arraySync();
+
+    output.dispose();
+    _inputs.dispose();
+
+    return result;
+  }
+
+
+  /**
    * returns the prediction as an array
    * @param {*} _inputs
    */
@@ -143,6 +160,14 @@ class NeuralNetwork {
    */
   async classify(_inputs) {
     return this.predict(_inputs);
+  }
+
+  /**
+   * classify is the same as .predict()
+   * @param {*} _inputs
+   */
+  classifySync(_inputs) {
+    return this.predictSync(_inputs);
   }
 
   // predictMultiple

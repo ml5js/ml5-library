@@ -3,7 +3,7 @@
 // http://thecodingtrain.com
 // https://youtu.be/cdUNkwXx-I4
 
-const TOTAL = 250;
+const TOTAL = 100;
 let birds = [];
 let savedBirds = [];
 let pipes = [];
