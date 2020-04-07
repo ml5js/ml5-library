@@ -10,7 +10,7 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
-    "develop": "npm-run-all --parallel start examples:serve",
+    "develop": "npm-run-all --parallel start examples:serve examples:watch",
     "start": "webpack-dev-server --config webpack.dev.babel.js",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js --config-name ml5",
@@ -23,8 +23,9 @@
     "publish:npm": "npm run build && npm publish",
     "contributors:add": "all-contributors add",
     "contributors:generate": "all-contributors generate",
-    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples",
+    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples --wait=250",
     "examples:update-json": "node scripts/update-examples-json.js",
+    "examples:watch": "onchange -f 'addDir unlinkDir' './examples' -- npm run examples:update-json",
     "preexamples:build": "rimraf dist_examples",
     "examples:build": "npm run examples:update-json && webpack --config webpack.prod.babel.js --config-name examples"
   },
@@ -115,6 +116,7 @@
     "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
     "face-api.js": "~0.22.2",
-    "live-server": "^1.2.1"
+    "live-server": "^1.2.1",
+    "onchange": "^6.1.0"
   }
 }
