@@ -1041,6 +1041,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "henrmota",
+      "name": "Henrique Mota",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/896860?v=4",
+      "profile": "https://github.com/henrmota",
+      "contributions": [
+        "review",
+        "question",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
