@@ -16,6 +16,8 @@ import {
     isInstanceOfSupportedElement
 } from '../utils/imageUtilities';
 
+const IMAGE_SIZE = 256;
+
 const modelPath = {
     'hosoda': 'https://raw.githubusercontent.com/leemengtaiwan/tfjs-models/master/cartoongan/tfjs_json_models/hosoda/model.json',
     'miyazaki': 'https://raw.githubusercontent.com/Derek-Wds/training_CartoonGAN/master/tfModels/Miyazaki/model.json'
@@ -77,16 +79,16 @@ class Cartoon {
     async generateInternal(src) {
         await this.ready;
         let img = tf.browser.fromPixels(src);
-        if (img.shape[0] !== 256 || img.shape[1] !== 256) {
-            throw new Error(`Input size should be 256*256 but ${img.shape} is found`);
+        if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
+            throw new Error(`Input size should be ${IMAGE_SIZE}*${IMAGE_SIZE} but ${img.shape} is found`);
         } else if (img.shape[2] !== 3) {
             throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
         }
         img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
         
-        const alpha = tf.ones([256, 256, 1]).tile([1, 1, 1]).mul(255)
+        const alpha = tf.ones([IMAGE_SIZE, IMAGE_SIZE, 1]).tile([1, 1, 1]).mul(255)
         let res = this.model.predict(img);
-        res = res.add(1).mul(127.5).reshape([256, 256, 3]).floor();
+        res = res.add(1).mul(127.5).reshape([IMAGE_SIZE, IMAGE_SIZE, 3]).floor();
         res = res.concat(alpha, 2)
         const result = this.resultFinalize(res);
         
