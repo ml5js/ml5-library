@@ -1051,6 +1051,16 @@
         "review",
         "question",
         "ideas"
+        ]
+    },
+    {
+      "login": "CaseyPYZ",
+      "name": "CaseyPan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/37056925?v=4",
+      "profile": "https://github.com/CaseyPYZ",
+      "contributions": [
+        "code",
+        "ideas"
       ]
     }
   ],
