@@ -67,7 +67,7 @@ module.exports = (config) => {
         browser: 'chrome',
         browser_version: 'latest',
         os: 'OS X',
-        os_version: 'High Sierra'
+        os_version: 'Mojave'
       },
     },
     reporters: ['mocha'],

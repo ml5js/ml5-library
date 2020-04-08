@@ -29,17 +29,17 @@ There are several ways you can use the ml5.js library:
 
 
 
+
 <p id="latest-version">
 
-* You can use the latest version (0.4.3) by adding it to the head section of your HTML document:
+* You can use the latest version (0.5.0) by adding it to the head section of your HTML document:
 
-**v0.4.3**
+**v0.5.0**
 
-```html
-<script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js" type="text/javascript"></script>
-```
+    <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
 
 
 
@@ -70,13 +70,13 @@ For example:
 
 - [Getting Started](https://ml5js.org/getting-started/)
 - [API Reference](https://ml5js.org/reference/)
-- [Examples](https://github.com/ml5js/ml5-examples)
+- [Examples](https://github.com/ml5js/ml5-library/tree/development/examples)
 - [Community](https://ml5js.org/community)
 - [FAQ](https://ml5js.org/getting-started/faq/)
 
 ## Standalone Examples
 
-You can find a collection of standalone examples in this repository: [github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples)
+You can find a collection of standalone examples in this repository within the `examples/` directory. You can also test working hosted of the examples online on the ml5.js examples index website (TODO: Add a link). 
 
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 
@@ -227,6 +227,11 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/VishnuRaghavan"><img src="https://avatars1.githubusercontent.com/u/23146562?v=4" width="100px;" alt=""/><br /><sub><b>RGV</b></sub></a><br /><a href="#question-VishnuRaghavan" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/hansvana"><img src="https://avatars0.githubusercontent.com/u/10974059?v=4" width="100px;" alt=""/><br /><sub><b>hansvana</b></sub></a><br /><a href="#content-hansvana" title="Content">🖋</a></td>
     <td align="center"><a href="http://alikarpuzoglu.com"><img src="https://avatars2.githubusercontent.com/u/9629776?v=4" width="100px;" alt=""/><br /><sub><b>Ali Karpuzoglu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3AAliKarpuzoglu" title="Bug reports">🐛</a> <a href="#maintenance-AliKarpuzoglu" title="Maintenance">🚧</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://wysko.org"><img src="https://avatars0.githubusercontent.com/u/31376393?v=4" width="100px;" alt=""/><br /><sub><b>Jacob Wysko</b></sub></a><br /><a href="#content-wyskoj" title="Content">🖋</a></td>
+    <td align="center"><a href="http://dilwoarhussain.com"><img src="https://avatars2.githubusercontent.com/u/4599889?v=4" width="100px;" alt=""/><br /><sub><b>Dilwoar Hussain</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=DilwoarH" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/manaswini-das/"><img src="https://avatars0.githubusercontent.com/u/22885912?v=4" width="100px;" alt=""/><br /><sub><b>Manaswini Das</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=manaswinidas" title="Documentation">📖</a></td>
   </tr>
 </table>
 

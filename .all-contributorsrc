@@ -1014,6 +1014,33 @@
         "bug",
         "maintenance"
       ]
+    },
+    {
+      "login": "wyskoj",
+      "name": "Jacob Wysko",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31376393?v=4",
+      "profile": "http://wysko.org",
+      "contributions": [
+        "content"
+      ]
+    },
+    {
+      "login": "DilwoarH",
+      "name": "Dilwoar Hussain",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4599889?v=4",
+      "profile": "http://dilwoarhussain.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "manaswinidas",
+      "name": "Manaswini Das",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/22885912?v=4",
+      "profile": "https://www.linkedin.com/in/manaswini-das/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

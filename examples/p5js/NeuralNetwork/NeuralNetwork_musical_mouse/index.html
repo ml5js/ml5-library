@@ -1,0 +1,31 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Neural Network Musical Mouse</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <h1>Neural Network Musical Mouse</h1>
+  <script src="sketch.js"></script>
+
+  <p>
+    Training frequency: <input id="frequency" value="440"          />
+    <button id="train">train</button>
+  </p>
+  <p>
+    Frequency prediction: <span id="prediction"></span>
+  </p>
+
+  <p>
+    Click in canvas to add training data.
+  </p>
+
+</body>
+
+</html>

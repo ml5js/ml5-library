@@ -180,13 +180,13 @@ word2vec.getRandomWord(?callback);
 ## Examples
 
 **p5.js**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Word2Vec/Word2Vec_Interactive)
 
 **p5 web editor**
 * [Word2Vec_Interactive](https://editor.p5js.org/ml5/sketches/Word2Vec_Interactive)
 
 **plain javascript**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/Word2Vec/Word2Vec_Interactive)
 
 ## Demo
 

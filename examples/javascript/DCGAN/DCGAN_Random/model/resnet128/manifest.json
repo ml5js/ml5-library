@@ -1,0 +1,6 @@
+{
+    "description": "ResNet, 128x128 (252 MB)",
+    "model": "https://storage.googleapis.com/store.alantian.net/tfjs_gan/chainer-resent128-celebahq-128/tfjs_SmoothedGenerator_20000/model.json",
+    "modelSize": 128,
+    "modelLatentDim": 128
+}

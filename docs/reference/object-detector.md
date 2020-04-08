@@ -24,7 +24,7 @@ function modelLoaded() {
 }
 
 // Detect objects in the video element
-yolo.detect(video, (err, results) => {
+objectDetector.detect(video, (err, results) => {
   console.log(results); // Will output bounding boxes of detected objects
 });
 ```
@@ -72,20 +72,20 @@ objectDetector.detect(input, ?callback);
 
 
 **p5.js**
-* [COCOSSD_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/COCOSSD_Video)
-* [COCOSSD_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/COCOSSD_Video)
-* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/YOLO_single_image)
-* [YOLO_Video](https://github.com/ml5js/ml5-examples/tree/development/p5js/ObjectDetector/YOLO_Video)
+* [COCOSSD_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/COCOSSD_Video)
+* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/COCOSSD_Video)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/YOLO_single_image)
+* [YOLO_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/YOLO_Video)
 
 **p5 web editor**
 * [YOLO_single_image](https://editor.p5js.org/ml5/sketches/YOLO_single_image)
 * [YOLO_webcam](https://editor.p5js.org/ml5/sketches/YOLO_webcam)
 
 **plain javascript**
-* [COCOSSD_single_image](https://github.com/ml5js/ml5-examples/tree/development/javascript/ObjectDetector/COCOSSD_single_image)
-* [COCOSSD_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/ObjectDetector/COCOSSD_webcam)
-* [YOLO_single_image](https://github.com/ml5js/ml5-examples/tree/development/javascript/ObjectDetector/YOLO_single_image)
-* [YOLO_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/ObjectDetector/YOLO_webcam)
+* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/COCOSSD_single_image)
+* [COCOSSD_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/COCOSSD_webcam)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/YOLO_webcam)
 
 ## Demo
 

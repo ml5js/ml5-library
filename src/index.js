@@ -29,7 +29,11 @@ import bodyPix from './BodyPix';
 import neuralNetwork from './NeuralNetwork';
 import faceApi from './FaceApi';
 import kmeans from './KMeans';
+<<<<<<< HEAD
 import cartoon from './CartoonGAN';
+=======
+import universalSentenceEncoder from './UniversalSentenceEncoder';
+>>>>>>> development
 import p5Utils from './utils/p5Utils';
 import communityStatement from './utils/community';
 
@@ -54,6 +58,7 @@ const withPreload = {
   sentiment,
   bodyPix,
   faceApi,
+  universalSentenceEncoder
 };
 
 // call community statement on load

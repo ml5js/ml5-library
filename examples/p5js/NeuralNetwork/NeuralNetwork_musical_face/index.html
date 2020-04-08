@@ -1,0 +1,28 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Neural Network Sound Player</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <h1>Face Prediction</h1>
+  <script src="sketch.js"></script>
+
+  <p>
+    Training frequency: <span id="training_freq">440</span>
+    <input type="range" id="frequency_slider" min="0" max="800" value="440"          />
+    <button id="collectData">collect training data</button>
+  </p>
+  <p>
+    <button id="train">train model</button>
+    Frequency prediction: <span id="prediction"></span>
+  </p>
+</body>
+
+</html>
