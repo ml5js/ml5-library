@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>KNN Classification on Webcam Images with mobileNet</title>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+  
+  <style></style>
+</head>
+
+<body>
+  <h2>KNN Classification on Webcam Images that moves a square on the canvas with mobileNet</h2>
+  <div id="canvasContainer">
+    <canvas width="640" height="480" id="myCanvas"></canvas>
+  </div>
+  <p id="status">Loading Model...</p><br />
+  <p>
+    <span class="emoji"> ⬆️ </span><button id="addClass1">Add an Example to Class Up</button>
+    </p><p><span id="example1">0</span> Up examples</p>
+
+    <br /><span class="emoji"> ➡️ </span><button id="addClass2">Add an Example to Class Right</button>
+    <p><span id="example2">0</span> Right examples</p>
+
+    <br /><span class="emoji"> ⬇️ </span><button id="addClass3">Add an Example to Class Down</button>
+    <p><span id="example3">0</span> Down examples</p>
+
+    <br /><span class="emoji"> ⬅️ </span><button id="addClass4">Add an Example to Class Left</button>
+    <p><span id="example4">0</span> Left examples</p>
+  
+  <br />
+  <p>
+    <button id="buttonPredict">Start predicting!</button><br />
+    <button id="clearAll">Clear all classes</button><br />
+  </p>
+  <p>
+    KNN Classifier with mobileNet model labeled this
+    as Class: <span id="result">...</span>
+    with a confidence of <span id="confidence">...</span>
+  </p>
+  <script src="sketch.js"></script>
+</body>
+
+</html>

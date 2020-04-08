@@ -217,12 +217,47 @@ featureExtractor.predict(input, ?callback);
 
 ***
 
+***
+#### .save()
+> Saves your model to the downloads folder of your machine.
+
+```js
+featureExtractor.save(?callback, ?name);
+```
+
+📥 **Inputs**
+* **callback** - Optional. A function to be called once the input has been predicted. If no callback is provided, it will return a promise that will be resolved once the model has predicted the image.
+* **name** - Optional. A name that you'd like to give to your saved model. This should be a text string. The default is 
+
+📤 **Outputs**
+* Downloads a `model.json` and `model.weights.bin` file to your downloads directory.
+
+***
+
+***
+#### .load()
+> Allows you to load your model from a URL path or via an HTML input file reader.
+
+```js
+featureExtractor.load(filesOrPath = null, callback);
+```
+
+📥 **Inputs**
+* **filesOrPath** - A path to your `model.json` if you are using a string path. If you are using the HTML file input, then select BOTH the `model.json` and the model.weights.bin` files.
+* **callback** - Optional. A function to do after your model has been loaded
+
+📤 **Outputs**
+* Returns the loaded model.
+
+***
+
+
 
 ## Examples
 
 **p5.js**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/FeatureExtractor/FeatureExtractor_Image_Classification)
+* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FeatureExtractor/FeatureExtractor_Image_Regression)
+* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FeatureExtractor/FeatureExtractor_Image_Classification)
 
 **p5 web editor**
 * [FeatureExtractor_Image_Regression](https://editor.p5js.org/ml5/sketches/FeatureExtractor_Image_Regression)
@@ -230,8 +265,8 @@ featureExtractor.predict(input, ?callback);
 
 
 **plain javascript**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-examples/tree/development/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
+* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
+* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
 
 
 

@@ -1,8 +1,5 @@
 # Face-Api
 
-**currently in development - coming soon to the ml5 release**
-
-
 <center>
     <img style="display:block; max-height:20rem" alt="face landmark detection" src="_media/reference__header-faceapi.png">
 </center>
@@ -142,18 +139,18 @@ faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);
 ## Examples
 
 **p5.js**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Image_Landmarks)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Image_Landmarks)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
 
 **p5 web editor**
 * [FaceApi_Image_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Image_Landmarks)
 * [FaceApi_Video_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Video_Landmarks)
 
 **plain javascript**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Image_Landmarks/)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks/)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Image_Landmarks/)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks/)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
 
 ## Demo
 

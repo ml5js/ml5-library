@@ -7,8 +7,11 @@ import { join, resolve } from 'path';
 
 const include = join(__dirname, 'src');
 
+export const indexEntryWithBabel = ['babel-polyfill', './src/index.js'];
+
 export default {
-  entry: ['babel-polyfill', './src/index.js'],
+  name: 'ml5',
+  entry: indexEntryWithBabel,
   output: {
     path: resolve(__dirname, 'dist'),
     publicPath: '/',
@@ -33,5 +36,5 @@ export default {
   },
   node: {
     fs: "empty"
-  }
+  },
 };

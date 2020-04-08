@@ -12,6 +12,7 @@ training/lstm/data/t
 /public
 /static
 /dist
+/dist_examples
 
 website/translated_docs
 website/build/
@@ -22,3 +23,4 @@ website/i18n/*
 !website/i18n/en.json
 
 yarn-error.log
+local.log

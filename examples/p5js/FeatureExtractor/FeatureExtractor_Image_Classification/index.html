@@ -1,0 +1,36 @@
+<html>
+  <head>
+    <meta charset="UTF-8" >
+    <title>Image Classification using Feature Extraction with MobileNet. Built with p5.js</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+
+    <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+    <style></style>
+  </head>
+
+  <body>
+    <h1>Image Classification using Feature Extractor with MobileNet</h1>
+    <div id="videoContainer"></div>
+    <p><span id="modelStatus">Loading MobileNet</span></p>
+    <p>
+      <button id="catButton">Add Cat Image</button>
+      <span id="amountOfCatImages">0</span> Cat Images<br />
+      <button id="dogButton">Add Dog Image</button>
+      <span id="amountOfDogImages">0</span> Dog Images<br />
+      <button id="badgerButton">Add Badger Image</button>
+      <span id="amountOfBadgerImages">0</span> Badger Images<br />
+      <br />
+      <button id="train">Train</button><span id="loss"></span>
+      <button id="buttonPredict">Start guessing!</button><br />
+    </p>
+    <p>Label: <span id="result">...</span><br />confidence: <span id="confidence">...</span></p>
+    <p>
+      <button id="save">Save Model</button> |
+      <label for="avatar">Load Model:</label>
+      <input type="file" id="load" multiple          />
+    </p>
+    <script src="sketch.js"></script>
+  </body>
+</html>

@@ -24,7 +24,7 @@ I'm making a Pull Request(PR). Please see the details below.
 **A great PR 🌟🌟**
 
 ### → Step 3: Share a Relevant Example 🦄
-> Here's some example code or a link to another PR in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
+> Here's some example code or a demonstration of my feature as a part of this pull request, a separate pull request, in the https://editor.p5js.org, or codepen/jsfiddle/etc...
 
 
 
