@@ -1041,6 +1041,17 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "benbot",
+      "name": "Benjamin Botwin",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1340967?v=4",
+      "profile": "https://github.com/benbot",
+      "contributions": [
+        "review",
+        "question",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
