@@ -13,7 +13,9 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
 import {
-    isInstanceOfSupportedElement
+    isInstanceOfSupportedElement,
+    // eslint-disable-next-line no-unused-vars
+    imgToTensor
 } from '../utils/imageUtilities';
 
 const IMAGE_SIZE = 256;
@@ -78,13 +80,14 @@ class Cartoon {
 
     async generateInternal(src) {
         await this.ready;
-        let img = tf.browser.fromPixels(src);
+        // adds resizeBilinear to resize image to 256x256 as required by the model
+        let img = tf.browser.fromPixels(src).resizeBilinear([IMAGE_SIZE,IMAGE_SIZE]);
         if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
             throw new Error(`Input size should be ${IMAGE_SIZE}*${IMAGE_SIZE} but ${img.shape} is found`);
         } else if (img.shape[2] !== 3) {
             throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
         }
-        img = img.sub(127.5).div(127.5).reshape([1, 256, 256, 3]);
+        img = img.sub(127.5).div(127.5).reshape([1, IMAGE_SIZE, IMAGE_SIZE, 3]);
         
         const alpha = tf.ones([IMAGE_SIZE, IMAGE_SIZE, 1]).tile([1, 1, 1]).mul(255)
         let res = this.model.predict(img);
