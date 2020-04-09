@@ -49,33 +49,12 @@ class NeuralNetwork {
 }
 
 function createModel() {
-  let meta = {
-    "inputUnits": [5],
-    "outputUnits": 2,
-    "inputs": { 0: { "dtype": "number", "min": 0, "max": 1.0 },
-                1: { "dtype": "number", "min": 0, "max": 1.0 }, 
-                2: { "dtype": "number", "min": 0, "max": 1.0 },
-                3: { "dtype": "number", "min": 0, "max": 1.0 }, 
-                4: { "dtype": "number", "min": 0, "max": 1.0 } 
-              },
-    "outputs": {
-      "label": {
-        "dtype": "string",
-        "min": 0,
-        "max": 1,
-        "uniqueValues": ["up", "down"],
-        "legend": { "up": [1, 0], "down": [0, 1]}
-      }
-    },
-    "isNormalized": false
-  };
   const options = {
     inputs: 5,
-    outputs: 2,
+    outputs: ['up', 'down'],
     task: 'classification'
   }      
   const nn = ml5.neuralNetwork(options);
-  nn.addDefaultLayers('classification', meta);
-  nn.neuralNetworkData.meta = meta;
+  nn.buildModelBasedOnNothing();
   return nn;
 }

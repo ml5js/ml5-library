@@ -270,5 +270,29 @@ class NeuralNetwork {
     }
     return this.model;
   }
+
+  mutate(rate) {
+    tf.tidy(() => {
+      const weights = this.model.getWeights();
+      const mutatedWeights = [];
+      for (let i = 0; i < weights.length; i+=1) {
+        const tensor = weights[i];
+        const { shape } = weights[i];
+        const values = tensor.dataSync().slice();
+        for (let j = 0; j < values.length; j+=1) {
+          if (Math.random() < rate) {
+            const w = values[j];
+            // TODO: adjust based on +/- distribution (gaussian?)
+            values[j] = w + Math.random();
+          }
+        }
+        const newTensor = tf.tensor(values, shape);
+        mutatedWeights[i] = newTensor;
+      }
+      this.model.setWeights(mutatedWeights);
+    });
+  }
+
+
 }
 export default NeuralNetwork;

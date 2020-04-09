@@ -596,6 +596,16 @@ class DiyNeuralNetwork {
   //   return tf.layers.conv2d(options);
   // }
 
+  buildModelBasedOnNothing() {
+    const { outputs } = this.options;
+    for (let i = 0; i < outputs.length; i += 1) {
+      const inputs = new Array(this.options.inputs).fill(0);
+      this.addData(inputs, [outputs[i]]);
+    }
+    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
+    this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
+  }
+
   /**
    * addDefaultLayers
    * @param {*} _task
