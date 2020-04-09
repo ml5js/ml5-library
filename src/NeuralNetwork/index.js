@@ -17,6 +17,7 @@ const DEFAULTS = {
   debug: false,
   learningRate: 0.2,
   hiddenUnits: 16,
+  static: false
 };
 class DiyNeuralNetwork {
   constructor(options, cb) {
@@ -96,6 +97,8 @@ class DiyNeuralNetwork {
     } else if (this.options.modelUrl !== null) {
       // will take a URL to model.json, an object, or files array
       this.ready = this.load(this.options.modelUrl, callback);
+    } else if (this.options.returnBrain === true) {
+      this.ready = this.buildModelBasedOnNothing();
     } else {
       this.ready = true;
     }
