@@ -122,6 +122,23 @@ class NeuralNetwork {
   }
 
   /**
+   * returns the prediction as an array synchronously
+   * @param {*} _inputs
+   */
+  predictSync(_inputs) {
+    const output = tf.tidy(() => {
+      return this.model.predict(_inputs);
+    });
+    const result = output.arraySync();
+
+    output.dispose();
+    _inputs.dispose();
+
+    return result;
+  }
+
+
+  /**
    * returns the prediction as an array
    * @param {*} _inputs
    */
@@ -143,6 +160,14 @@ class NeuralNetwork {
    */
   async classify(_inputs) {
     return this.predict(_inputs);
+  }
+
+  /**
+   * classify is the same as .predict()
+   * @param {*} _inputs
+   */
+  classifySync(_inputs) {
+    return this.predictSync(_inputs);
   }
 
   // predictMultiple
@@ -245,5 +270,29 @@ class NeuralNetwork {
     }
     return this.model;
   }
+
+  mutate(rate) {
+    tf.tidy(() => {
+      const weights = this.model.getWeights();
+      const mutatedWeights = [];
+      for (let i = 0; i < weights.length; i+=1) {
+        const tensor = weights[i];
+        const { shape } = weights[i];
+        const values = tensor.dataSync().slice();
+        for (let j = 0; j < values.length; j+=1) {
+          if (Math.random() < rate) {
+            const w = values[j];
+            // TODO: adjust based on +/- distribution (gaussian?)
+            values[j] = w + Math.random();
+          }
+        }
+        const newTensor = tf.tensor(values, shape);
+        mutatedWeights[i] = newTensor;
+      }
+      this.model.setWeights(mutatedWeights);
+    });
+  }
+
+
 }
 export default NeuralNetwork;

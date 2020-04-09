@@ -596,6 +596,16 @@ class DiyNeuralNetwork {
   //   return tf.layers.conv2d(options);
   // }
 
+  buildModelBasedOnNothing() {
+    const { outputs } = this.options;
+    for (let i = 0; i < outputs.length; i += 1) {
+      const inputs = new Array(this.options.inputs).fill(0);
+      this.addData(inputs, [outputs[i]]);
+    }
+    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
+    this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
+  }
+
   /**
    * addDefaultLayers
    * @param {*} _task
@@ -745,6 +755,14 @@ class DiyNeuralNetwork {
   /**
    * predict
    * @param {*} _input
+   */
+  predictSync(_input) {
+    return this.predictSyncInternal(_input);
+  }
+
+  /**
+   * predict
+   * @param {*} _input
    * @param {*} _cb
    */
   predict(_input, _cb) {
@@ -758,6 +776,14 @@ class DiyNeuralNetwork {
    */
   predictMultiple(_input, _cb) {
     return callCallback(this.predictInternal(_input), _cb);
+  }
+
+  /**
+   * predict
+   * @param {*} _input
+   */
+  classifySync(_input) {
+    return this.classifySyncInternal(_input);
   }
 
   /**
@@ -776,6 +802,66 @@ class DiyNeuralNetwork {
    */
   classifyMultiple(_input, _cb) {
     return callCallback(this.classifyInternal(_input), _cb);
+  }
+
+  /**
+   * predict
+   * @param {*} _input
+   * @param {*} _cb
+   */
+  predictSyncInternal(_input) {
+    const { meta } = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
+
+    const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+
+    const unformattedResults = this.neuralNetwork.predictSync(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const labels = Object.keys(meta.outputs);
+
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return labels.map((item, idx) => {
+          // check to see if the data were normalized
+          // if not, then send back the values, otherwise
+          // unnormalize then return
+          let val;
+          let unNormalized;
+          if (meta.isNormalized) {
+            const { min, max } = meta.outputs[item];
+            val = nnUtils.unnormalizeValue(unformattedResult[idx], min, max);
+            unNormalized = unformattedResult[idx];
+          } else {
+            val = unformattedResult[idx];
+          }
+
+          const d = {
+            [labels[idx]]: val,
+            label: item,
+            value: val,
+          };
+
+          // if unNormalized is not undefined, then
+          // add that to the output
+          if (unNormalized) {
+            d.unNormalizedValue = unNormalized;
+          }
+
+          return d;
+        });
+      });
+
+      // return single array if the length is less than 2,
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
+      return formattedResults;
+    }
+
+    // if no meta exists, then return unformatted results;
+    return unformattedResults;
   }
 
   /**
@@ -837,6 +923,73 @@ class DiyNeuralNetwork {
     // if no meta exists, then return unformatted results;
     return unformattedResults;
   }
+
+  /**
+   * classify
+   * @param {*} _input
+   * @param {*} _cb
+   */
+  classifySyncInternal(_input) {
+    const { meta } = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
+
+    let inputData;
+
+    if (this.options.task === 'imageClassification') {
+      // get the inputData for classification
+      // if it is a image type format it and
+      // flatten it
+      inputData = this.searchAndFormat(_input);
+      if (Array.isArray(inputData)) {
+        inputData = inputData.flat();
+      } else {
+        inputData = inputData[headers[0]];
+      }
+
+      if (meta.isNormalized) {
+        // TODO: check to make sure this property is not static!!!!
+        const { min, max } = meta.inputs[headers[0]];
+        inputData = this.neuralNetworkData.normalizeArray(Array.from(inputData), { min, max });
+      } else {
+        inputData = Array.from(inputData);
+      }
+
+      inputData = tf.tensor([inputData], [1, ...meta.inputUnits]);
+    } else {
+      inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+    }
+
+    const unformattedResults = this.neuralNetwork.classifySync(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const label = Object.keys(meta.outputs)[0];
+      const vals = Object.entries(meta.outputs[label].legend);
+
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return vals
+          .map((item, idx) => {
+            return {
+              [item[0]]: unformattedResult[idx],
+              label: item[0],
+              confidence: unformattedResult[idx],
+            };
+          })
+          .sort((a, b) => b.confidence - a.confidence);
+      });
+
+      // return single array if the length is less than 2,
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
+      return formattedResults;
+    }
+
+    return unformattedResults;
+  }
+
+
 
   /**
    * classify
