@@ -92,16 +92,29 @@ class DiyNeuralNetwork {
    * @param {*} callback
    */
   init(callback) {
+    // check if the a static model should be built based on the inputs and output properties
+    if(this.options.static === true){
+      this.buildModelBasedOnNothing();
+    }
+
     if (this.options.dataUrl !== null) {
       this.ready = this.loadDataFromUrl(this.options, callback);
     } else if (this.options.modelUrl !== null) {
       // will take a URL to model.json, an object, or files array
       this.ready = this.load(this.options.modelUrl, callback);
-    } else if (this.options.returnBrain === true) {
-      this.ready = this.buildModelBasedOnNothing();
     } else {
       this.ready = true;
     }
+  }
+
+  buildModelBasedOnNothing() {
+    const { outputs } = this.options;
+    for (let i = 0; i < outputs.length; i += 1) {
+      const inputs = new Array(this.options.inputs).fill(0);
+      this.addData(inputs, [outputs[i]]);
+    }
+    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
+    this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
   }
 
   /**
@@ -598,16 +611,6 @@ class DiyNeuralNetwork {
 
   //   return tf.layers.conv2d(options);
   // }
-
-  buildModelBasedOnNothing() {
-    const { outputs } = this.options;
-    for (let i = 0; i < outputs.length; i += 1) {
-      const inputs = new Array(this.options.inputs).fill(0);
-      this.addData(inputs, [outputs[i]]);
-    }
-    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
-    this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
-  }
 
   /**
    * addDefaultLayers
