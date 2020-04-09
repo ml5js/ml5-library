@@ -28,10 +28,11 @@ function setup() {
   const options = {
     inputs: 3,
     outputs: ['yes', 'no'],
-    task: 'classification'
+    task: 'classification',
+    static: true
   }
   const nn = ml5.neuralNetwork(options);
-  nn.buildModelBasedOnNothing();
+  // nn.buildModelBasedOnNothing();
 
   const results1 = nn.classifySync([0.2, 0.1, 0.5]);
   console.log(results1);
