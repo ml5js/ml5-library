@@ -56,7 +56,7 @@ data.forEach(item => {
     color: item.color
   };
 
-  nn.addData(inputs, outputs);
+  nn.addData(inputs, output);
 });
 
 // Step 5: normalize your data;
@@ -90,7 +90,7 @@ function handleResults(error, result) {
       console.error(error);
       return;
     }
-    console.log(results); // {label: 'red', confidence: 0.8};
+    console.log(result); // {label: 'red', confidence: 0.8};
 }
 
 ```
