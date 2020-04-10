@@ -29,11 +29,11 @@ The below examples are quick
 // Step 1: load data or create some data 
 const data = [
   {r:255, g:0, b:0, color:'red-ish'},
-  {r:254, g:0, b:0, color:'red-ish'}
+  {r:254, g:0, b:0, color:'red-ish'},
   {r:253, g:0, b:0, color:'red-ish'},
-  {r:0, g:0, b:255, color:'blue-ish'}
-  {r:0, g:0, b:254, color:'blue-ish'}
-  {r:0, g:0, b:253, color:'blue-ish'}
+  {r:0, g:0, b:255, color:'blue-ish'},
+  {r:0, g:0, b:254, color:'blue-ish'},
+  {r:0, g:0, b:253, color:'blue-ish'},
 ];
 
 // Step 2: set your neural network options
