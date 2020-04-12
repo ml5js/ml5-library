@@ -12,7 +12,7 @@ function setup() {
 
   // Mutating a neural network
   // TODO: nn.mutate();
-  nn.neuralNetwork.mutate(1.0);
+  nn.mutate(1.0);
   const results2 = nn.classifySync([0.2, 0.1, 0.5]);
   console.log(results2);
 
