@@ -271,6 +271,8 @@ class NeuralNetwork {
     return this.model;
   }
 
+  // NeuroEvolution Functions
+
   mutate(rate) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
@@ -278,6 +280,7 @@ class NeuralNetwork {
       for (let i = 0; i < weights.length; i+=1) {
         const tensor = weights[i];
         const { shape } = weights[i];
+        // TODO: Evaluate if this should be sync or not
         const values = tensor.dataSync().slice();
         for (let j = 0; j < values.length; j+=1) {
           if (Math.random() < rate) {
@@ -290,6 +293,30 @@ class NeuralNetwork {
         mutatedWeights[i] = newTensor;
       }
       this.model.setWeights(mutatedWeights);
+    });
+  }
+
+  crossover(other) {
+    return tf.tidy(() => {
+      const weightsA = this.model.getWeights();
+      const weightsB = other.model.getWeights();
+      const childWeights = [];
+      for (let i = 0; i < weightsA.length; i+=1) {
+        const tensorA = weightsA[i];
+        const tensorB = weightsB[i];
+        const { shape } = weightsA[i];
+        // TODO: Evaluate if this should be sync or not
+        const valuesA = tensorA.dataSync().slice();
+        const valuesB = tensorB.dataSync().slice();
+        for (let j = 0; j < valuesA.length; j+=1) {
+          if (Math.random() < 0.5) {
+            valuesA[j] = valuesB[j];
+          }
+        }
+        const newTensor = tf.tensor(valuesA, shape);
+        childWeights[i] = newTensor;
+      }
+      this.model.setWeights(childWeights);
     });
   }
 

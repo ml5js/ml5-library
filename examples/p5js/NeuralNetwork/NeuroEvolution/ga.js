@@ -5,12 +5,20 @@ function nextGeneration() {
   console.log('next generation');
   calculateFitness();
   for (let i = 0; i < TOTAL; i++) {
-    birds[i] = pickOne();
+    birds[i] = reproduce();
   }
   for (let i = 0; i < TOTAL; i++) {
     savedBirds[i].dispose();
   }
   savedBirds = [];
+}
+
+function reproduce() {
+  let brainA = pickOne();
+  let brainB = pickOne();
+  let childBrain = brainA.crossover(brainB);
+  childBrain.mutate(0.1);
+  return new Bird(childBrain);
 }
 
 function pickOne() {
@@ -22,9 +30,7 @@ function pickOne() {
   }
   index--;
   let bird = savedBirds[index];
-  let child = new Bird(bird.brain);
-  child.mutate();
-  return child;
+  return bird.brain;
 }
 
 function calculateFitness() {

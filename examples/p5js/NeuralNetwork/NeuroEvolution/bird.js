@@ -15,14 +15,20 @@ class Bird {
     this.score = 0;
     this.fitness = 0;
     if (brain) {
-      this.brain = brain.copy();
+      this.brain = brain;
     } else {
-      this.brain = new NeuralNetwork();
+      const options = {
+        inputs: 5,
+        outputs: ['up', 'down'],
+        task: 'classification',
+        noTraining: true
+      }      
+      this.brain = ml5.neuralNetwork(options);
     }
   }
 
   dispose() {
-    this.brain.dispose();
+    this.brain.neuralNetwork.model.dispose();
   }
 
   show() {
@@ -57,7 +63,7 @@ class Bird {
     inputs[2] = closest.bottom / height;
     inputs[3] = closest.x / width;
     inputs[4] = this.velocity / 10;
-    const results = this.brain.nn.classifySync(inputs);
+    const results = this.brain.classifySync(inputs);
     if (results[0].label === 'up') {
       this.up();
     }

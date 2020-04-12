@@ -77,6 +77,9 @@ class DiyNeuralNetwork {
     this.save = this.save.bind(this);
     this.load = this.load.bind(this);
 
+    // neuroevolution
+    this.mutate = this.mutate.bind(this);
+
     // Initialize
     this.init(this.callback);
   }
@@ -118,6 +121,19 @@ class DiyNeuralNetwork {
     }
     this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
     this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
+  }
+
+  copy() {
+    const nnCopy = new DiyNeuralNetwork(this.options);
+    return tf.tidy(() => {
+      const weights = this.neuralNetwork.model.getWeights();
+      const weightCopies = [];
+      for (let i = 0; i < weights.length; i+=1) {
+        weightCopies[i] = weights[i].clone();
+      }
+      nnCopy.neuralNetwork.model.setWeights(weightCopies);
+      return nnCopy;
+    });
   }
 
   /**
@@ -1138,6 +1154,17 @@ class DiyNeuralNetwork {
 
       return this.neuralNetwork.model;
     });
+  }
+
+  // NeuroEvolution functions
+  mutate(rate) {
+    this.neuralNetwork.mutate(rate);
+  }
+
+  crossover(other) {
+    const nnCopy = this.copy();
+    nnCopy.neuralNetwork.crossover(other.neuralNetwork);
+    return nnCopy;
   }
 }
 

@@ -5,24 +5,28 @@ function setup() {
     task: 'classification',
     noTraining: true
   }
-  const nn = ml5.neuralNetwork(options);
-
-  const results1 = nn.classifySync([0.2, 0.1, 0.5]);
-  console.log(results1);
+  const nnA = ml5.neuralNetwork(options);
+  const results1 = nnA.classifySync([0.2, 0.1, 0.5]);
+  console.log(results1[0]);
 
   // Mutating a neural network
-  // TODO: nn.mutate();
-  nn.mutate(1.0);
-  const results2 = nn.classifySync([0.2, 0.1, 0.5]);
-  console.log(results2);
+  nnA.mutate(0.1);
+  const results2 = nnA.classifySync([0.2, 0.1, 0.5]);
+  console.log(results2[0]);
 
-  // nn.addData([0,0,0],['yes']);
-  // nn.addData([0,0,0],['no']);
-  // nn.neuralNetworkData.createMetadata(nn.neuralNetworkData.data.raw);
-  // nn.addDefaultLayers('classification', nn.neuralNetworkData.meta);
+  const nnCopy = nnA.copy();
+  const results3 = nnCopy.classifySync([0.2, 0.1, 0.5]);
+  console.log(results3[0]);
 
-  // nn.classify([0.2], (err, result) => {
-  //   if (err) console.log(err);
-  //   console.log(result);
-  // });
+  const nnB = ml5.neuralNetwork(options);
+  const results4 = nnB.classifySync([0.2, 0.1, 0.5]);
+  console.log(results4[0]);
+
+  const child = nnA.crossover(nnB);
+  const resultsA = nnA.classifySync([0.2, 0.1, 0.5]);
+  const resultsB = nnB.classifySync([0.2, 0.1, 0.5]);
+  const childResults = child.classifySync([0.2, 0.1, 0.5]);
+  console.log(resultsA[0]);
+  console.log(resultsB[0]);
+  console.log(childResults[0]);
 }
