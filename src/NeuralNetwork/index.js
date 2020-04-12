@@ -93,8 +93,8 @@ class DiyNeuralNetwork {
    */
   init(callback) {
     // check if the a static model should be built based on the inputs and output properties
-    if(this.options.static === true){
-      this.buildModelBasedOnNothing();
+    if(this.options.noTraining === true){
+      this.createLayersBeforeData();
     }
 
     if (this.options.dataUrl !== null) {
@@ -107,7 +107,7 @@ class DiyNeuralNetwork {
     }
   }
 
-  buildModelBasedOnNothing() {
+  createLayersBeforeData() {
     const { outputs } = this.options;
     for (let i = 0; i < outputs.length; i += 1) {
       const inputs = new Array(this.options.inputs).fill(0);

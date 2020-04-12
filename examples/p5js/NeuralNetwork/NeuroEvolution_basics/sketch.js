@@ -1,38 +1,11 @@
-// let meta = {
-//   "inputUnits": [3],
-//   "outputUnits": 2,
-//   "inputs": {
-//     0: {
-//       "dtype": "number"
-//     },
-//     1: {
-//       "dtype": "number"
-//     },
-//     2: {
-//       "dtype": "number"
-//     }
-//   },
-//   "outputs": {
-//     "label": {
-//       "dtype": "string",
-//       "legend": {
-//         'yes': [1, 0],
-//         'no': [0, 1]
-//       }
-//     }
-//   },
-//   "isNormalized": false
-// };
-
 function setup() {
   const options = {
     inputs: 3,
     outputs: ['yes', 'no'],
     task: 'classification',
-    static: true
+    noTraining: true
   }
   const nn = ml5.neuralNetwork(options);
-  // nn.buildModelBasedOnNothing();
 
   const results1 = nn.classifySync([0.2, 0.1, 0.5]);
   console.log(results1);
