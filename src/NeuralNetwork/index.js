@@ -1157,8 +1157,8 @@ class DiyNeuralNetwork {
   }
 
   // NeuroEvolution functions
-  mutate(rate) {
-    this.neuralNetwork.mutate(rate);
+  mutate(rate, mutateFunction) {
+    this.neuralNetwork.mutate(rate, mutateFunction);
   }
 
   crossover(other) {

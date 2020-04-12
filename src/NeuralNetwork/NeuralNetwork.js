@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import { saveBlob } from '../utils/io';
+import { randomGaussian } from '../utils/random';
 
 class NeuralNetwork {
   constructor() {
@@ -273,7 +274,7 @@ class NeuralNetwork {
 
   // NeuroEvolution Functions
 
-  mutate(rate) {
+  mutate(rate, mutateFunction) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
       const mutatedWeights = [];
@@ -284,9 +285,11 @@ class NeuralNetwork {
         const values = tensor.dataSync().slice();
         for (let j = 0; j < values.length; j+=1) {
           if (Math.random() < rate) {
-            const w = values[j];
-            // TODO: adjust based on +/- distribution (gaussian?)
-            values[j] = w + Math.random();
+            if (mutateFunction) {
+              values[j] = mutateFunction(values[j]);
+            } else {
+              values[j] += randomGaussian();
+            }
           }
         }
         const newTensor = tf.tensor(values, shape);
