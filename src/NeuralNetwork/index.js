@@ -82,6 +82,7 @@ class DiyNeuralNetwork {
 
     // neuroevolution
     this.mutate = this.mutate.bind(this);
+    this.crossover = this.crossover.bind(this);
 
     // Initialize
     this.init(this.callback);
