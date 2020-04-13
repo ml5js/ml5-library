@@ -5,7 +5,7 @@
 
 class P5Util {
     constructor() {
-        this.p5Instance = window;
+        this.m_p5Instance = window;
     }
 
     /**
@@ -13,7 +13,22 @@ class P5Util {
      * @param {Object} p5Instance 
      */
     setP5Instance(p5Instance) {
-        this.p5Instance = p5Instance;
+        this.m_p5Instance = p5Instance;
+    }
+
+    /**
+     * This getter will return p5, checking first if it is in
+     * the window and next if it is in the p5 property of this.m_p5Instance
+     * @returns {boolean} if it is in p5 
+     */
+    get p5Instance() {
+        if (typeof this.m_p5Instance !== "undefined" &&
+            typeof this.m_p5Instance.loadImage === "function") return this.m_p5Instance;
+
+        if (typeof this.m_p5Instance.p5 !== 'undefined' &&
+            typeof this.m_p5Instance.p5.Image !== 'undefined' &&
+            typeof this.m_p5Instance.p5.Image === 'function') return this.m_p5Instance.p5;
+        return undefined;
     }
 
     /**
@@ -22,13 +37,7 @@ class P5Util {
      * @returns {boolean} if it is in p5 
      */
     checkP5() {
-        // typeof this.p5Instance !== 'undefined' && this.p5Instance.p5 && this.p5Instance.p5.Image && typeof this.p5Instance.p5.Image === 'function'
-        if (typeof this.p5Instance !== 'undefined' &&
-            typeof this.p5Instance.loadImage === 'function' || 
-            typeof this.p5Instance.p5 !== 'undefined' &&
-            typeof this.p5Instance.p5.Image !== 'undefined' &&
-            typeof this.p5Instance.p5.Image === 'function') return true;
-        return false
+        return !!this.p5Instance;
     }
 
     /**
