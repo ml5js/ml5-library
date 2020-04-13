@@ -4,11 +4,15 @@
 function nextGeneration() {
   console.log('next generation');
   calculateFitness();
+  
+  // Create a new population
   for (let i = 0; i < TOTAL; i++) {
     birds[i] = reproduce();
   }
+
+  // Release all the memory
   for (let i = 0; i < TOTAL; i++) {
-    savedBirds[i].dispose();
+    savedBirds[i].brain.dispose();
   }
   savedBirds = [];
 }

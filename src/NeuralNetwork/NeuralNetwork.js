@@ -272,8 +272,20 @@ class NeuralNetwork {
     return this.model;
   }
 
+  /**
+   * dispose and release the memory for the model
+   */
+  dispose() {
+    this.model.dispose();
+  }
+
   // NeuroEvolution Functions
 
+  /**
+   * mutate the weights of a model
+   * @param {*} rate
+   * @param {*} mutateFunction
+   */  
   mutate(rate, mutateFunction) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
@@ -284,7 +296,7 @@ class NeuralNetwork {
         // TODO: Evaluate if this should be sync or not
         const values = tensor.dataSync().slice();
         for (let j = 0; j < values.length; j+=1) {
-          if (Math.random() < rate) {
+          if (Math.random() < rate || 0.1) {
             if (mutateFunction) {
               values[j] = mutateFunction(values[j]);
             } else {
@@ -299,6 +311,10 @@ class NeuralNetwork {
     });
   }
 
+  /**
+   * create a new neural network with crossover
+   * @param {*} other
+   */
   crossover(other) {
     return tf.tidy(() => {
       const weightsA = this.model.getWeights();

@@ -77,6 +77,9 @@ class DiyNeuralNetwork {
     this.save = this.save.bind(this);
     this.load = this.load.bind(this);
 
+    // release model
+    this.dispose = this.dispose.bind(this);
+
     // neuroevolution
     this.mutate = this.mutate.bind(this);
 
@@ -110,6 +113,9 @@ class DiyNeuralNetwork {
     }
   }
 
+  /**
+   * createLayersNoTraining
+   */
   createLayersNoTraining() {
     // Makes some sample data
     // TODO: Account for regression
@@ -123,6 +129,9 @@ class DiyNeuralNetwork {
     this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
   }
 
+  /**
+   * copy
+   */
   copy() {
     const nnCopy = new DiyNeuralNetwork(this.options);
     return tf.tidy(() => {
@@ -778,7 +787,7 @@ class DiyNeuralNetwork {
    */
 
   /**
-   * predict
+   * synchronous predict
    * @param {*} _input
    */
   predictSync(_input) {
@@ -804,7 +813,7 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * predict
+   * synchronous classify
    * @param {*} _input
    */
   classifySync(_input) {
@@ -830,7 +839,7 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * predict
+   * synchronous predict internal
    * @param {*} _input
    * @param {*} _cb
    */
@@ -950,7 +959,7 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * classify
+   * synchronous classify internal
    * @param {*} _input
    * @param {*} _cb
    */
@@ -1156,11 +1165,32 @@ class DiyNeuralNetwork {
     });
   }
 
-  // NeuroEvolution functions
+  /**
+   * dispose and release memory for a model
+   */
+  dispose() {
+    this.neuralNetwork.dispose();
+  }
+
+  /**
+   * ////////////////////////////////////////////////////////////
+   * New methods for Neuro Evolution
+   * ////////////////////////////////////////////////////////////
+   */
+
+  /**
+   * mutate the weights of a model
+   * @param {*} rate
+   * @param {*} mutateFunction
+   */  
   mutate(rate, mutateFunction) {
     this.neuralNetwork.mutate(rate, mutateFunction);
   }
 
+  /**
+   * create a new neural network with crossover
+   * @param {*} other
+   */  
   crossover(other) {
     const nnCopy = this.copy();
     nnCopy.neuralNetwork.crossover(other.neuralNetwork);

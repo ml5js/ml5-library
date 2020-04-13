@@ -27,10 +27,6 @@ class Bird {
     }
   }
 
-  dispose() {
-    this.brain.neuralNetwork.model.dispose();
-  }
-
   show() {
     stroke(255);
     fill(255, 100);
