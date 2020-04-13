@@ -17,7 +17,7 @@ const DEFAULTS = {
   debug: false,
   learningRate: 0.2,
   hiddenUnits: 16,
-  static: false
+  noTraining: false
 };
 class DiyNeuralNetwork {
   constructor(options, cb) {
