@@ -1051,9 +1051,9 @@
         "review",
         "question",
         "ideas"
-        ]
-     },
-     {
+      ]
+    },
+    {
       "login": "henrmota",
       "name": "Henrique Mota",
       "avatar_url": "https://avatars1.githubusercontent.com/u/896860?v=4",
@@ -1062,7 +1062,7 @@
         "review",
         "question",
         "ideas"
-        ]
+      ]
     },
     {
       "login": "CaseyPYZ",
@@ -1071,6 +1071,18 @@
       "profile": "https://github.com/CaseyPYZ",
       "contributions": [
         "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "starakaj",
+      "name": "Sam Tarakajian",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/523270?v=4",
+      "profile": "https://github.com/starakaj",
+      "contributions": [
+        "code",
+        "bug",
+        "maintenance",
         "ideas"
       ]
     }
