@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import { saveBlob } from '../utils/io';
+import { randomGaussian } from '../utils/random';
 
 class NeuralNetwork {
   constructor() {
@@ -122,6 +123,23 @@ class NeuralNetwork {
   }
 
   /**
+   * returns the prediction as an array synchronously
+   * @param {*} _inputs
+   */
+  predictSync(_inputs) {
+    const output = tf.tidy(() => {
+      return this.model.predict(_inputs);
+    });
+    const result = output.arraySync();
+
+    output.dispose();
+    _inputs.dispose();
+
+    return result;
+  }
+
+
+  /**
    * returns the prediction as an array
    * @param {*} _inputs
    */
@@ -143,6 +161,14 @@ class NeuralNetwork {
    */
   async classify(_inputs) {
     return this.predict(_inputs);
+  }
+
+  /**
+   * classify is the same as .predict()
+   * @param {*} _inputs
+   */
+  classifySync(_inputs) {
+    return this.predictSync(_inputs);
   }
 
   // predictMultiple
@@ -245,5 +271,74 @@ class NeuralNetwork {
     }
     return this.model;
   }
+
+  /**
+   * dispose and release the memory for the model
+   */
+  dispose() {
+    this.model.dispose();
+  }
+
+  // NeuroEvolution Functions
+
+  /**
+   * mutate the weights of a model
+   * @param {*} rate
+   * @param {*} mutateFunction
+   */  
+  mutate(rate, mutateFunction) {
+    tf.tidy(() => {
+      const weights = this.model.getWeights();
+      const mutatedWeights = [];
+      for (let i = 0; i < weights.length; i+=1) {
+        const tensor = weights[i];
+        const { shape } = weights[i];
+        // TODO: Evaluate if this should be sync or not
+        const values = tensor.dataSync().slice();
+        for (let j = 0; j < values.length; j+=1) {
+          if (Math.random() < rate || 0.1) {
+            if (mutateFunction) {
+              values[j] = mutateFunction(values[j]);
+            } else {
+              values[j] += randomGaussian();
+            }
+          }
+        }
+        const newTensor = tf.tensor(values, shape);
+        mutatedWeights[i] = newTensor;
+      }
+      this.model.setWeights(mutatedWeights);
+    });
+  }
+
+  /**
+   * create a new neural network with crossover
+   * @param {*} other
+   */
+  crossover(other) {
+    return tf.tidy(() => {
+      const weightsA = this.model.getWeights();
+      const weightsB = other.model.getWeights();
+      const childWeights = [];
+      for (let i = 0; i < weightsA.length; i+=1) {
+        const tensorA = weightsA[i];
+        const tensorB = weightsB[i];
+        const { shape } = weightsA[i];
+        // TODO: Evaluate if this should be sync or not
+        const valuesA = tensorA.dataSync().slice();
+        const valuesB = tensorB.dataSync().slice();
+        for (let j = 0; j < valuesA.length; j+=1) {
+          if (Math.random() < 0.5) {
+            valuesA[j] = valuesB[j];
+          }
+        }
+        const newTensor = tf.tensor(valuesA, shape);
+        childWeights[i] = newTensor;
+      }
+      this.model.setWeights(childWeights);
+    });
+  }
+
+
 }
 export default NeuralNetwork;
