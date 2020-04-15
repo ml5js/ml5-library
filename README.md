@@ -237,6 +237,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/CaseyPYZ"><img src="https://avatars3.githubusercontent.com/u/37056925?v=4" width="100px;" alt=""/><br /><sub><b>CaseyPan</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=CaseyPYZ" title="Code">💻</a> <a href="#ideas-CaseyPYZ" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/starakaj"><img src="https://avatars3.githubusercontent.com/u/523270?v=4" width="100px;" alt=""/><br /><sub><b>Sam Tarakajian</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=starakaj" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Astarakaj" title="Bug reports">🐛</a> <a href="#maintenance-starakaj" title="Maintenance">🚧</a> <a href="#ideas-starakaj" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/MichaelFBA"><img src="https://avatars0.githubusercontent.com/u/1113721?v=4" width="100px;" alt=""/><br /><sub><b>Michael Bell</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=MichaelFBA" title="Documentation">📖</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3AMichaelFBA" title="Bug reports">🐛</a> <a href="#maintenance-MichaelFBA" title="Maintenance">🚧</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
