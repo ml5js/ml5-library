@@ -1,10 +1,11 @@
 // Daniel Shiffman
-// Neuro-Evolution Flappy Bird with TensorFlow.js
-// http://thecodingtrain.com
-// https://youtu.be/cdUNkwXx-I4
+// Neuro-Evolution Flappy Bird
+
+// Class for a Pipe
 
 class Pipe {
   constructor() {
+    // Fixed spacing
     this.spacing = 125;
     this.top = random(height / 6, (3 / 4) * height);
     this.bottom = height - (this.top + this.spacing);
@@ -34,10 +35,6 @@ class Pipe {
   }
 
   offscreen() {
-    if (this.x < -this.w) {
-      return true;
-    } else {
-      return false;
-    }
+    return (this.x < -this.w);
   }
 }

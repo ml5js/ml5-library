@@ -1,7 +1,7 @@
 // Daniel Shiffman
-// Neuro-Evolution Flappy Bird with TensorFlow.js
-// http://thecodingtrain.com
-// https://youtu.be/cdUNkwXx-I4
+// Neuro-Evolution Flappy Bird with ml5.js
+
+// Bird class
 
 class Bird {
   constructor(brain) {
@@ -14,9 +14,12 @@ class Bird {
 
     this.score = 0;
     this.fitness = 0;
+
+    // Bird can be created with an existing neural network
     if (brain) {
       this.brain = brain;
     } else {
+      // Create a new neural network
       const options = {
         inputs: 5,
         outputs: ['up', 'down'],
@@ -37,7 +40,9 @@ class Bird {
     this.velocity += this.lift;
   }
 
+  // Mutate the brain
   mutate() {
+    // 10% mutation rate
     this.brain.mutate(0.1);
   }
 
@@ -53,12 +58,15 @@ class Bird {
       }
     }
 
+    // Normalize 5 inputs
     let inputs = [];
     inputs[0] = this.y / height;
     inputs[1] = closest.top / height;
     inputs[2] = closest.bottom / height;
     inputs[3] = closest.x / width;
     inputs[4] = this.velocity / 10;
+
+    // Jump according to neural network output
     const results = this.brain.classifySync(inputs);
     if (results[0].label === 'up') {
       this.up();
@@ -70,10 +78,9 @@ class Bird {
   }
 
   update() {
+    // Score increases each frame
     this.score++;
-
     this.velocity += this.gravity;
-    //this.velocity *= 0.9;
     this.y += this.velocity;
   }
 }
