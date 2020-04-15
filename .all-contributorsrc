@@ -1096,6 +1096,15 @@
         "bug",
         "maintenance"
       ]
+    },
+    {
+      "login": "machenmusik",
+      "name": "machenmusik",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2080738?v=4",
+      "profile": "https://github.com/machenmusik",
+      "contributions": [
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7,
