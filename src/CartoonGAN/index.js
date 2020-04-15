@@ -56,9 +56,6 @@ class Cartoon {
      */
     async generate(inputOrCallback, cb) {
 
-        await this.ready;
-        await tf.nextFrame();
-
         let imgToPredict;
         let callback = cb;
 
@@ -80,6 +77,7 @@ class Cartoon {
 
     async generateInternal(src) {
         await this.ready;
+        await tf.nextFrame();
         // adds resizeBilinear to resize image to 256x256 as required by the model
         let img = tf.browser.fromPixels(src).resizeBilinear([IMAGE_SIZE,IMAGE_SIZE]);
         if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
