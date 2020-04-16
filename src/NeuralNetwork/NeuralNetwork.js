@@ -286,7 +286,7 @@ class NeuralNetwork {
    * @param {*} rate
    * @param {*} mutateFunction
    */  
-  mutate(rate, mutateFunction) {
+  mutate(rate = 0.1, mutateFunction) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
       const mutatedWeights = [];
@@ -296,11 +296,11 @@ class NeuralNetwork {
         // TODO: Evaluate if this should be sync or not
         const values = tensor.dataSync().slice();
         for (let j = 0; j < values.length; j+=1) {
-          if (Math.random() < rate || 0.1) {
+          if (Math.random() < rate) {
             if (mutateFunction) {
               values[j] = mutateFunction(values[j]);
             } else {
-              values[j] += randomGaussian();
+              values[j] = Math.min(Math.max(values[j] + randomGaussian(), -1), 1);
             }
           }
         }
