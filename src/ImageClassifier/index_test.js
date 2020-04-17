@@ -131,8 +131,8 @@ describe('videoClassifier', () => {
     const video = document.createElement('video');
     video.crossOrigin = true;
     video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/pelican.mp4' /* TODO add univeral url */;
-    video.width = 400;
-    video.height = 400;
+    video.width = 200;
+    video.height = 200;
     return video;
   }
 
