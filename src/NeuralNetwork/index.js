@@ -118,14 +118,19 @@ class DiyNeuralNetwork {
    * createLayersNoTraining
    */
   createLayersNoTraining() {
-    // Makes some sample data
-    // TODO: Account for regression
-    // TODO: Account for categorical inputs?
-    const { outputs } = this.options;
-    for (let i = 0; i < outputs.length; i += 1) {
-      const inputs = new Array(this.options.inputs).fill(0);
-      this.addData(inputs, [outputs[i]]);
+    // Create sample data based on options 
+    const { inputs, outputs, task } = this.options;
+    if (task === 'classification') {
+      for (let i = 0; i < outputs.length; i += 1) {
+        const inputSample = new Array(inputs).fill(0);
+        this.addData(inputSample, [outputs[i]]);
+      }
+    } else {
+      const inputSample  = new Array(inputs).fill(0);
+      const outputSample = new Array(outputs).fill(0);
+      this.addData(inputSample, outputSample);
     }
+
     this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
     this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
   }
