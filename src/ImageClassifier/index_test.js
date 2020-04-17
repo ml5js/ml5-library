@@ -49,7 +49,7 @@ describe('imageClassifier', () => {
   describe('with Teachable Machine model', () => {
     
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
       classifier = await imageClassifier(TM_URL, undefined, {});
     });
 
@@ -69,7 +69,7 @@ describe('imageClassifier', () => {
   describe('imageClassifier with Mobilenet', () => {
 
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
       classifier = await imageClassifier('MobileNet', undefined, {});
     });
 
@@ -130,7 +130,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = '../../assets/pelican.mp4' /* TODO add univeral url */;
+    video.src = 'https://cdn.jsdelivr.net/gh/brondle/ml5-library@imageClassifier/assets/pelican.mp4' /* TODO add univeral url */;
     video.width = 400;
     video.height = 400;
     return video;
@@ -150,12 +150,11 @@ describe('videoClassifier', () => {
     expect(classifier.ready).toBeTruthy();
   });
 
-  describe('predict', () => {
+  describe('classify', () => {
     it('Should support video', async () => {
-      await classifier.predict()
-        .then((results) => {
-          expect(results[0].label).toBe('pelican');
-        })
+      const results = await classifier.classify()
+      console.log(results)
+      expect(results[0].label).not.toBe(null);
     });
   });
 });
