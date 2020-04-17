@@ -1105,6 +1105,15 @@
       "contributions": [
         "example"
       ]
+    },
+    {
+      "login": "pro-nav",
+      "name": "Pranav Dudhane",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/45587765?v=4",
+      "profile": "https://github.com/pro-nav",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
