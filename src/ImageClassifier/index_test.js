@@ -130,7 +130,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = 'https://cdn.jsdelivr.net/gh/brondle/ml5-library@imageClassifier/assets/pelican.mp4' /* TODO add univeral url */;
+    video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/pelican.mp4' /* TODO add univeral url */;
     video.width = 400;
     video.height = 400;
     return video;
