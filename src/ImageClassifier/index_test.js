@@ -123,5 +123,39 @@ describe('imageClassifier', () => {
     });
 
   });
+});
 
-})
+describe('videoClassifier', () => {
+  let classifier;
+  async function getVideo() {
+    const video = document.createElement('video');
+    video.crossOrigin = true;
+    video.src = '../../assets/pelican.mp4' /* TODO add univeral url */;
+    video.width = 400;
+    video.height = 400;
+    return video;
+  }
+
+  beforeEach(async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    const video = await getVideo();
+    // FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
+    classifier = await imageClassifier('MobileNet', video, {});
+  });
+
+  it('Should create a classifier with all the defaults', async () => {
+    expect(classifier.version).toBe(DEFAULTS.version);
+    expect(classifier.alpha).toBe(DEFAULTS.alpha);
+    expect(classifier.topk).toBe(DEFAULTS.topk);
+    expect(classifier.ready).toBeTruthy();
+  });
+
+  describe('predict', () => {
+    it('Should support video', async () => {
+      await classifier.predict()
+        .then((results) => {
+          expect(results[0].label).toBe('pelican');
+        })
+    });
+  });
+});
