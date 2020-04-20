@@ -44,7 +44,7 @@ Your project directory should look something like this:
 
 ## Demo
 
-This example is built with p5.js. You can also find the same example without p5.js [here](https://github.com/ml5js/ml5-examples/tree/release/javascript/ImageClassification).
+This example is built with p5.js. You can also find the same example without p5.js [here](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ImageClassification/ImageClassification).
 
 <br/>
 
@@ -55,7 +55,7 @@ This example is built with p5.js. You can also find the same example without p5.
 </div> -->
 
 <!-- added inline height -->
-<div style="height:800px" class="iframe__container iframe__container--video"><iframe src="https://ml5js.github.io/ml5-examples/p5js/ImageClassification/ImageClassification" frameborder="0" height="800px" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+<div style="height:800px" class="iframe__container iframe__container--video"><iframe src="https://examples.ml5js.org/p5js/imageclassification/imageclassification" frameborder="0" height="800px" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
 
 ## Code
 
@@ -201,7 +201,7 @@ Some guiding questions you might start to think about are:
 1. When classifying an image with MobileNet, does the computer see people? If not, why do you think that is?
 2. Do you notice that MobileNet is better at classifying some animals over others? Why do you think that is?
 
-## [Source](https://github.com/ml5js/ml5-examples/tree/master/p5js/ImageClassification/ImageClassification)
+## [Source](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ImageClassification/ImageClassification)
 
-- [ml5.js image classification on Github](https://github.com/ml5js/ml5-examples/tree/master/p5js/ImageClassification/ImageClassification)
+- [ml5.js image classification on Github](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ImageClassification/ImageClassification)
 - [ml5.js image classification on p5 web editor](https://editor.p5js.org/ml5/sketches/ImageClassification)
