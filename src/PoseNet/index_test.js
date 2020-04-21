@@ -16,7 +16,7 @@ const POSENET_DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'multiple',
-  inputResolution: 513,
+  inputResolution: 256,
   multiplier: 0.75,
   quantBytes: 2
 };
