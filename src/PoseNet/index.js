@@ -23,7 +23,7 @@ const DEFAULTS = {
   scoreThreshold: 0.5, 
   nmsRadius: 20, // any number > 0
   detectionType: 'multiple', // 'single'
-  inputResolution: 513, // or { width: 257, height: 200 }
+  inputResolution: 256, // or { width: 257, height: 200 }
   multiplier: 0.75, // 1.01, 1.0, 0.75, or 0.50 -- only for MobileNet
   quantBytes: 2, // 4, 2, 1
   modelUrl: null, // url path to model
@@ -234,7 +234,6 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   if (typeof optionsOrCallback === 'function') {
     callback = optionsOrCallback;
   } 
-
 
   return new PoseNet(video, options, detectionType, callback);
 };
