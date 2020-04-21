@@ -15,7 +15,7 @@ const KMEANS_DEFAULTS = {
 
 describe('kMeans', () => {
     let kmeansModel;
-    const dataurl = 'https://raw.githubusercontent.com/ml5js/ml5-examples/development/d3/KMeans/KMeans_GaussianClusterDemo/data/gaussian2d_2clusters.csv'
+    const dataurl = 'https://raw.githubusercontent.com/ml5js/ml5-library/development/examples/d3/KMeans/KMeans_GaussianClusterDemo/data/gaussian2d_2clusters.csv'
 
     beforeAll(async () => {
         jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
