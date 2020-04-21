@@ -19,8 +19,8 @@ function setup() {
 function imageReady(){
     // set some options
     let options = {
-        imageScaleFactor: 1,
-        minConfidence: 0.1
+        minConfidence: 0.1,
+        inputResolution: { "width": width, "height": height }
     }
     
     // assign poseNet
