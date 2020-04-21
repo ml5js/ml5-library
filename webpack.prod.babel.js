@@ -5,7 +5,7 @@
 
 import merge from 'webpack-merge';
 import { resolve } from 'path';
-import common, {indexEntryWithBabel} from './webpack.common.babel';
+import common, {indexEntryWithBabel, developmentPort} from './webpack.common.babel';
 import UglifyJSPlugin from 'uglifyjs-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
 
@@ -15,7 +15,7 @@ const replaceML5Reference = (content, path) => {
     return content;
   }
 
-  return content.toString().replace('http://localhost:8080/ml5.js', 'https://unpkg.com/ml5@latest/dist/ml5.min.js');
+  return content.toString().replace(`http://localhost:${developmentPort}/ml5.js`, 'https://unpkg.com/ml5@latest/dist/ml5.min.js');
 }
 
 const libraryBuildConfig = merge(common, {
