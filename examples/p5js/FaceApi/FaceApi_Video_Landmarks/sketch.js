@@ -6,6 +6,7 @@ let detections;
 const detection_options = {
     withLandmarks: true,
     withDescriptors: false,
+    withTinyNet:true
 }
 
 
