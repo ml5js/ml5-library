@@ -19,7 +19,7 @@ const DEFAULTS = {
   withLandmarks: true,
   withDescriptors: true,
   minConfidence: 0.5,
-  withTinyNet: false,
+  withTinyNet: true,
   MODEL_URLS: {
     Mobilenetv1Model:
       "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json",

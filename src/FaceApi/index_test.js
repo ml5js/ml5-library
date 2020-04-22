@@ -8,16 +8,23 @@ const {
 } = ml5;
 
 const FACEAPI_DEFAULTS = {
-    withLandmarks: true,
-    withDescriptors: true,
-    MODEL_URLS: {
-        Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
-        FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
-        FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
-        FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
-    }
-}
-
+  withLandmarks: true,
+  withDescriptors: true,
+  minConfidence: 0.5,
+  withTinyNet: true,
+  MODEL_URLS: {
+    Mobilenetv1Model:
+      "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json",
+    TinyFaceDetectorModel:
+      "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/tiny_face_detector_model-weights_manifest.json",
+    FaceLandmarkModel:
+      "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json",
+    FaceLandmark68TinyNet:
+      "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json",
+    FaceRecognitionModel:
+      "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json",
+  },
+};
 
 describe('faceApi', () => {
     let faceapi;
