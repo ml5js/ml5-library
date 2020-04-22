@@ -5,7 +5,7 @@
 
 import { join } from 'path';
 import merge from 'webpack-merge';
-import common from './webpack.common.babel';
+import common, {developmentPort} from './webpack.common.babel';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 
 export default merge(common, {
@@ -15,6 +15,7 @@ export default merge(common, {
     watchContentBase: true,
     contentBase: join(__dirname, './dist'),
     disableHostCheck: true,
+    port: developmentPort,
   },
   plugins: [
     new HtmlWebpackPlugin({

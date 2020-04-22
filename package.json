@@ -81,7 +81,7 @@
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "4.1.1",
     "webpack-cli": "2.0.10",
-    "webpack-dev-server": "3.1.11",
+    "webpack-dev-server": "3.10.3",
     "webpack-merge": "^4.1.2"
   },
   "config": {
@@ -121,7 +121,6 @@
     "@tensorflow/tfjs-vis": "^1.1.0",
     "events": "^3.0.0",
     "face-api.js": "~0.22.2",
-    "live-server": "^1.2.1",
     "onchange": "^6.1.0"
   }
 }

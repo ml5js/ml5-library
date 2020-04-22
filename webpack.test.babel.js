@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, writeFileSync, lstatSync } from 'fs';
 import { join } from 'path';
 import assert from 'assert';
 import merge from 'webpack-merge';
-import common from './webpack.common.babel';
+import common, {developmentPort} from './webpack.common.babel';
 
 // this is the function to initialize manual-test folder when running `npm run start`
 (function checkExperimentsFolder() {
@@ -27,7 +27,7 @@ import common from './webpack.common.babel';
       <html>
       <head>
         <title>ml5.js manual test</title>
-        <script src="http://localhost:8080/ml5.js"></script>
+        <script src="http://localhost:${developmentPort}/ml5.js"></script>
       </head>
       <body>
         <script>

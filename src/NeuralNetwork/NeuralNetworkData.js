@@ -159,8 +159,6 @@ class NeuralNetworkData {
       inputShape = [this.getInputMetaUnits(dataRaw, meta.inputs)].flat();
     }
 
-    console.log(inputShape);
-
     const outputShape = this.getInputMetaUnits(dataRaw, meta.outputs);
 
     meta.inputUnits = inputShape;
