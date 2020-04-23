@@ -1,40 +1,20 @@
-// Daniel Shiffman
-// Neuro-Evolution Flappy Bird
-
-// Class for a Pipe
-
+//Very basic class for each pipe
 class Pipe {
-  constructor() {
-    // Fixed spacing
-    this.spacing = 125;
-    this.top = random(height / 6, (3 / 4) * height);
-    this.bottom = height - (this.top + this.spacing);
-    this.x = width;
-    this.w = 80;
-    this.speed = 6;
+  constructor (x, y){
+    this.x = x  //x coordinate of the pipe
+    this.y = y  //y coordinate of the OPENING           
   }
-
-  hits(bird) {
-    if (bird.y < this.top || bird.y > height - this.bottom) {
-      if (bird.x > this.x && bird.x < this.x + this.w) {
-        return true;
-      }
-    }
-    return false;
+  //Moves the pipe back 
+  advance (speed) {
+    this.x -= speed
   }
-
-  show() {
-    fill(255);
-    rectMode(CORNER);
-    rect(this.x, 0, this.w, this.top);
-    rect(this.x, height - this.bottom, this.w, this.bottom);
-  }
-
-  update() {
-    this.x -= this.speed;
-  }
-
-  offscreen() {
-    return (this.x < -this.w);
+  //Draws the pipe
+  draw (spacing, pipesize) {
+    //green because the original was green
+    fill(0,255,0)
+    //draws upper pipe
+    rect(this.x, 0, pipesize, this.y)    
+    //draws lower pipe
+    rect(this.x, this.y+spacing, pipesize, settings.height)		
   }
 }

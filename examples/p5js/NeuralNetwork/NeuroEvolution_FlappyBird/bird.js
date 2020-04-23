@@ -1,86 +1,86 @@
-// Daniel Shiffman
-// Neuro-Evolution Flappy Bird with ml5.js
-
-// Bird class
-
+//The agent class
 class Bird {
-  constructor(brain) {
-    this.y = height / 2;
-    this.x = 64;
-
-    this.gravity = 0.8;
-    this.lift = -12;
-    this.velocity = 0;
-
-    this.score = 0;
-    this.fitness = 0;
-
-    // Bird can be created with an existing neural network
-    if (brain) {
-      this.brain = brain;
-    } else {
-      // Create a new neural network
-      const options = {
-        inputs: 5,
-        outputs: ['up', 'down'],
-        task: 'classification',
-        noTraining: true
-      }      
-      this.brain = ml5.neuralNetwork(options);
-    }
+  constructor(brain){
+    //Fixed x position of birds  
+    this.x = settings.birdPosition
+    //Arbitrary starting point 
+    this.y = settings.height/2
+    //The gravity of the system
+    this.gravity = settings.gravity
+    //Size of the bird
+    this.size = settings.birdSize
+    //How "powerful" the jump is
+    this.lift = 12
+    //Velocity of the bird
+    this.velocity = 0
+    //Boolean to check if bird is still alive
+    this.alive = true
+    //Score of the bird
+    this.score = 0
+    //Fitness of the bird AKA normalized score
+    this.fitness = 0
+    //If a Neural Network is passed to the constructor creates a bird with that NN as its brain
+    if (brain)
+      this.brain = brain
+    //Otherwise creates a new "blank" one using options from settings.js
+    else 
+      this.brain = new ml5.neuralNetwork(options)
   }
-
-  show() {
+  //Draws the bird
+  draw (){
     stroke(255);
-    fill(255, 100);
-    ellipse(this.x, this.y, 32, 32);
+    fill(255,100)
+    ellipse(this.x, this.y, this.size, this.size) 
   }
-
-  up() {
-    this.velocity += this.lift;
+  //Apllies physics to the bird
+  fall(){
+    this.velocity+=this.gravity
+    this.y += this.velocity
   }
-
-  // Mutate the brain
-  mutate() {
-    // 10% mutation rate
-    this.brain.mutate(0.1);
+  //Simulate the jump of the bird
+  jump (){
+    this.velocity -= this.lift
+  }  
+  //Activates the NeuralNetwork using some normalized inputs
+  move (pipe){
+    const input =[
+      this.y / settings.height,                             //the position of the bird
+      this.velocity / 10,                                  //the velocity of the bird (100 is an arbitrary number)
+      pipe.x / settings.width,                              //the x coordinate of the closest pipe
+      pipe.y / settings.height,                             //height of the top pipe
+      (pipe.y + settings.pipeSpacing) / settings.height     //height of the bottom pipe
+    ]
+    //Passes the inputs to the NN and stores its output
+    const res = this.brain.classifySync(input)
+    //If the NN is more confident to jump, then the bird jumps
+    if (res[0].label == 'up')
+      this.jump()
   }
-
-  think(pipes) {
-    // Find the closest pipe
-    let closest = null;
-    let closestD = Infinity;
-    for (let i = 0; i < pipes.length; i++) {
-      let d = pipes[i].x + pipes[i].w - this.x;
-      if (d < closestD && d > 0) {
-        closest = pipes[i];
-        closestD = d;
-      }
+  
+  //Checks if the bird has hit the pipe/ground/floor
+  checkCollision (closestPipe) {
+    if ((this.x > closestPipe.x &&                        //
+         this.x < closestPipe.x + world.pipeSize && !(    //    This checks for
+         this.y > closestPipe.y &&                        //    the closest Pipe
+         this.y < closestPipe.y + world.pipeSpacing)) ||  // 
+        (this.y < 0 || this.y > settings.height)){        //Check for ground && floor
+      //The bird is dead, updates its status 
+      this.alive = false
+      //Another one has died
+      deads++
     }
-
-    // Normalize 5 inputs
-    let inputs = [];
-    inputs[0] = this.y / height;
-    inputs[1] = closest.top / height;
-    inputs[2] = closest.bottom / height;
-    inputs[3] = closest.x / width;
-    inputs[4] = this.velocity / 10;
-
-    // Jump according to neural network output
-    const results = this.brain.classifySync(inputs);
-    if (results[0].label === 'up') {
-      this.up();
-    }
+    //If it is still alive, then moves using its NN (brain)
+    else 
+      this.move(closestPipe)
   }
-
-  offScreen() {
-    return this.y > height || this.y < 0;
-  }
-
-  update() {
-    // Score increases each frame
-    this.score++;
-    this.velocity += this.gravity;
-    this.y += this.velocity;
+  
+  //Main function:
+  //Applies Physichs
+  //Check hit & activates Neural Network
+  //Increase its score
+  run (closestPipe){
+    this.fall()
+    this.checkCollision(closestPipe)
+    this.score++
   }
 }
