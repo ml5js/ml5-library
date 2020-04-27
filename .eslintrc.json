@@ -10,5 +10,11 @@
     "env": {
         "browser": true,
         "jasmine": true
-    }
+    },
+    "overrides": [{
+      "files": [ "examples/**" ],
+      "globals": {
+        "ml5": false
+      }
+    }]
 }
