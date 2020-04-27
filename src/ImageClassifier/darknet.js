@@ -45,27 +45,27 @@ export class Darknet {
   constructor(version) {
     this.version = version;
     switch (this.version) {
-      case 'reference':
-        this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET;
-        break;
-      case 'tiny':
-        this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET_TINY;
-        break;
-      default:
-        break;
+    case 'reference':
+      this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET;
+      break;
+    case 'tiny':
+      this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET_TINY;
+      break;
+    default:
+      break;
     }
   }
 
   async load() {
     switch (this.version) {
-      case 'reference':
-        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_URL);
-        break;
-      case 'tiny':
-        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_TINY_URL);
-        break;
-      default:
-        break;
+    case 'reference':
+      this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_URL);
+      break;
+    case 'tiny':
+      this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_TINY_URL);
+      break;
+    default:
+      break;
     }
 
     // Warmup the model.

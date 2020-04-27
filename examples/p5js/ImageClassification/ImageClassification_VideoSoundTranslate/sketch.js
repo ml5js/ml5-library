@@ -80,16 +80,16 @@ function langChangedEvent() {
   // Set language
   myVoice.setLang(selectedLang);
   switch (selectedLang) {
-    case 'zh-CN':
-      myVoice.setVoice(63);
-      break;
-    case 'es':
-      myVoice.setVoice(52);
-      break;
-    case 'fr':
-      myVoice.setVoice(54);
-      break;
-    default:
-      myVoice.setVoice(63);
+  case 'zh-CN':
+    myVoice.setVoice(63);
+    break;
+  case 'es':
+    myVoice.setVoice(52);
+    break;
+  case 'fr':
+    myVoice.setVoice(54);
+    break;
+  default:
+    myVoice.setVoice(63);
   }
 }

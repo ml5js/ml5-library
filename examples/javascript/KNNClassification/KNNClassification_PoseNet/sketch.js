@@ -189,10 +189,10 @@ function drawSkeleton() {
       let partA = skeleton[j][0];
       let partB = skeleton[j][1];
       ctx.beginPath();
-        ctx.moveTo(partA.position.x, partA.position.y);
-        ctx.lineTo(partB.position.x, partB.position.y);
-        ctx.strokeStyle = '#FF0000'
-        ctx.stroke();
+      ctx.moveTo(partA.position.x, partA.position.y);
+      ctx.lineTo(partB.position.x, partB.position.y);
+      ctx.strokeStyle = '#FF0000'
+      ctx.stroke();
     }
   }
 }

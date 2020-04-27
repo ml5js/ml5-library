@@ -28,11 +28,11 @@ class SoundClassifier {
         this.modelName = modelNameOrUrl;
         this.modelUrl = null;
         switch (this.modelName) {
-          case 'speechcommands18w':
-            this.modelToUse = speechCommands;
-            break;
-          default:
-            this.modelToUse = null;
+        case 'speechcommands18w':
+          this.modelToUse = speechCommands;
+          break;
+        default:
+          this.modelToUse = null;
         }
       } else {
         // Default to speechCommands for now

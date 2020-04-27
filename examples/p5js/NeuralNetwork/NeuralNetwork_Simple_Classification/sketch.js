@@ -44,13 +44,13 @@ function finishedTraining(){
 }
 
 function createTrainingData(){
-    for(let i = 0; i < 400; i++){
-      if(i%2 === 0){
-        const x = random(0, width/2);
-        nn.addData( [x],  ['left'])
-      } else {
-        const x = random(width/2, width);
-        nn.addData( [x],  ['right'])
-      }
+  for(let i = 0; i < 400; i++){
+    if(i%2 === 0){
+      const x = random(0, width/2);
+      nn.addData( [x],  ['left'])
+    } else {
+      const x = random(width/2, width);
+      nn.addData( [x],  ['right'])
     }
+  }
 }

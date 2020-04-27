@@ -204,7 +204,7 @@ class CharRNN {
     this.state = this.zeroState;
   }
 
- /**
+  /**
  * @typedef {Object} options
  * @property {String} seed
  * @property {number} length

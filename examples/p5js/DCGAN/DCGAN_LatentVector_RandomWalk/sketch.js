@@ -13,38 +13,38 @@ let dcgan;
 let vector = [];
 
 function preload() {
-    dcgan = ml5.DCGAN('model/geo/manifest.json');
+  dcgan = ml5.DCGAN('model/geo/manifest.json');
 }
 
 function setup() {
-    createCanvas(600, 600);
+  createCanvas(600, 600);
 
-    // start with random vector
-    for (let i = 0; i < 128; i++) {
-        vector[i] = random(-1, 1);
-    }
+  // start with random vector
+  for (let i = 0; i < 128; i++) {
+    vector[i] = random(-1, 1);
+  }
 
-    // generate an image on load
-    generate();
+  // generate an image on load
+  generate();
 }
 
 
 function walk() {
-    for (let i = 0; i < 128; i++) {
-        vector[i] += random(-0.01, 0.01);
-    }
+  for (let i = 0; i < 128; i++) {
+    vector[i] += random(-0.01, 0.01);
+  }
 }
 
 function generate() {
-    walk();
-    dcgan.generate(displayImage, vector);
+  walk();
+  dcgan.generate(displayImage, vector);
 }
 
 function displayImage(err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    image(result.image, 0, 0, width, height);
-    generate();
+  if (err) {
+    console.log(err);
+    return;
+  }
+  image(result.image, 0, 0, width, height);
+  generate();
 }

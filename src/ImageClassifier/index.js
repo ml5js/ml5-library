@@ -42,25 +42,25 @@ class ImageClassifier {
         this.modelName = modelNameOrUrl;
         this.modelUrl = null;
         switch (this.modelName) {
-          case "mobilenet":
-            this.modelToUse = mobilenet;
-            this.version = options.version || DEFAULTS.mobilenet.version;
-            this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
-            this.topk = options.topk || DEFAULTS.mobilenet.topk;
-            break;
-          case "darknet":
-            this.version = "reference"; // this a 28mb model
-            this.modelToUse = darknet;
-            break;
-          case "darknet-tiny":
-            this.version = "tiny"; // this a 4mb model
-            this.modelToUse = darknet;
-            break;
-          case "doodlenet":
-            this.modelToUse = doodlenet;
-            break;
-          default:
-            this.modelToUse = null;
+        case "mobilenet":
+          this.modelToUse = mobilenet;
+          this.version = options.version || DEFAULTS.mobilenet.version;
+          this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
+          this.topk = options.topk || DEFAULTS.mobilenet.topk;
+          break;
+        case "darknet":
+          this.version = "reference"; // this a 28mb model
+          this.modelToUse = darknet;
+          break;
+        case "darknet-tiny":
+          this.version = "tiny"; // this a 4mb model
+          this.modelToUse = darknet;
+          break;
+        case "doodlenet":
+          this.modelToUse = doodlenet;
+          break;
+        default:
+          this.modelToUse = null;
         }
       } else {
         this.modelUrl = modelNameOrUrl;

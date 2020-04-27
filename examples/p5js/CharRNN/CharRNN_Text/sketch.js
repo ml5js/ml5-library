@@ -49,7 +49,7 @@ function modelReady() {
 function generate() {
   // prevent starting inference if we've already started another instance
   // TODO: is there better JS way of doing this?
- if(!runningInference) {
+  if(!runningInference) {
     runningInference = true;
 
     // Update the status log

@@ -124,24 +124,24 @@ function gotResults(err, result) {
       select('#confidence').html(`${confidences[result.label] * 100} %`);
 
       switch(result.label) {
-        case 'Up':
-          posY-=2;
-          break;
+      case 'Up':
+        posY-=2;
+        break;
 
-        case 'Down':
-          posY+=2;
-          break;
+      case 'Down':
+        posY+=2;
+        break;
 
-        case 'Left':
-          posX+=2;
-          break;
+      case 'Left':
+        posX+=2;
+        break;
 
-        case 'Right':
-          posX-=2;
-          break;
+      case 'Right':
+        posX-=2;
+        break;
         
-        default:
-          console.log(`Sorry, unknown label: ${result.label}`);
+      default:
+        console.log(`Sorry, unknown label: ${result.label}`);
       }
       // Border checking
       if (posY < 0) posY = 0;

@@ -43,12 +43,12 @@ class NeuralNetwork {
    */
   createModel(_type = 'sequential') {
     switch (_type.toLowerCase()) {
-      case 'sequential':
-        this.model = tf.sequential();
-        return this.model;
-      default:
-        this.model = tf.sequential();
-        return this.model;
+    case 'sequential':
+      this.model = tf.sequential();
+      return this.model;
+    default:
+      this.model = tf.sequential();
+      return this.model;
     }
   }
 
