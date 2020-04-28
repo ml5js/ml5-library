@@ -9,7 +9,6 @@ const POSENET_IMG = 'https://github.com/ml5js/ml5-adjacent/raw/master/02_ImageCl
 
 const POSENET_DEFAULTS = {
   architecture: 'MobileNetV1',
-  imageScaleFactor: 0.3,
   outputStride: 16,
   flipHorizontal: false,
   minConfidence: 0.5,
@@ -17,7 +16,7 @@ const POSENET_DEFAULTS = {
   scoreThreshold: 0.5,
   nmsRadius: 20,
   detectionType: 'multiple',
-  inputResolution: 513,
+  inputResolution: 256,
   multiplier: 0.75,
   quantBytes: 2
 };
@@ -40,7 +39,6 @@ describe('PoseNet', () => {
 
   it('instantiates poseNet', () => {
     expect(net.architecture).toBe(POSENET_DEFAULTS.architecture);
-    expect(net.imageScaleFactor).toBe(POSENET_DEFAULTS.imageScaleFactor);
     expect(net.outputStride).toBe(POSENET_DEFAULTS.outputStride);
     expect(net.inputResolution).toBe(POSENET_DEFAULTS.inputResolution);
     expect(net.multiplier).toBe(POSENET_DEFAULTS.multiplier);
