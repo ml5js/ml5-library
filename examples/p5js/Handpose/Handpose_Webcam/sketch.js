@@ -13,7 +13,6 @@ function setup() {
   // with an array every time new poses are detected
   handpose.on("pose", results => {
     poses = results;
-    console.log(poses);
   });
 
   // Hide the video element, and just show the canvas

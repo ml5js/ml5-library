@@ -50,7 +50,7 @@ class Handpose extends EventEmitter {
       });
     }
 
-    this.singlePose();
+    this.pose();
 
     return this;
   }
@@ -59,7 +59,7 @@ class Handpose extends EventEmitter {
    * Load the model and set it to this.model
    * @return {this} the Handpose model.
    */
-  async singlePose(inputOr, callback) {
+  async pose(inputOr, callback) {
     const input = this.getInput(inputOr);
     const { flipHorizontal } = this.config;
     const pose = await this.model.estimateHands(input, flipHorizontal);
@@ -67,7 +67,7 @@ class Handpose extends EventEmitter {
     this.emit("pose", result);
 
     if (this.video) {
-      return tf.nextFrame().then(() => this.singlePose());
+      return tf.nextFrame().then(() => this.pose());
     }
 
     if (typeof callback === "function") {
