@@ -37,7 +37,7 @@ class Particle {
     this.acceleration.add(force);
   }
 
-    // Run in relation to all the obstacles
+  // Run in relation to all the obstacles
   // If I'm stuck, don't bother updating or checking for intersection
   think() {
     let inputs = [];

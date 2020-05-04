@@ -83,10 +83,9 @@ class ImageClassifier {
 
   async loadModelFrom(path = null) {
     try {
-
       let result;
       let data;
-      if(path !== null){
+      if (path !== null) {
         result = await fetch(path);
         data = await result.json();
       }

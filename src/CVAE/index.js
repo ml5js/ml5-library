@@ -57,10 +57,10 @@ class Cvae {
 
   loadAsync(url){
     return new Promise((resolve, reject) => {
-        if(!this.ready) reject();
-        loadImage(url, (img) => {
-            resolve(img);
-        });
+      if(!this.ready) reject();
+      loadImage(url, (img) => {
+        resolve(img);
+      });
     });
   };
 

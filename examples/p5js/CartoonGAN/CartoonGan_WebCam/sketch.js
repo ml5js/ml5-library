@@ -22,15 +22,15 @@ function generate(){
 }
 
 function gotResults(err, result){
-    if(err){
-        console.error(err);
-        return;
-    }
+  if(err){
+    console.error(err);
+    return;
+  }
 
-    // render this result
-    image(result.image, 0,0, width, height);
+  // render this result
+  image(result.image, 0,0, width, height);
 
-    // call generate
-    generate();
+  // call generate
+  generate();
 }
 

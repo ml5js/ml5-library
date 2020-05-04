@@ -20,38 +20,38 @@ let c = [];
 let slider;
 
 function preload() {
-    dcgan = ml5.DCGAN('model/geo/manifest.json');
+  dcgan = ml5.DCGAN('model/geo/manifest.json');
 }
 
 function setup() {
-    createCanvas(600, 600);
+  createCanvas(600, 600);
 
-    // create 2 arrays to hold random values for our latent vector
-    for (let i = 0; i < 128; i++) {
-        a[i] = random(-1, 1);
-        b[i] = random(-1, 1);
-    }
-    slider = createSlider(0, 1, 0.5, 0.01);
-    slider.input(generate);
+  // create 2 arrays to hold random values for our latent vector
+  for (let i = 0; i < 128; i++) {
+    a[i] = random(-1, 1);
+    b[i] = random(-1, 1);
+  }
+  slider = createSlider(0, 1, 0.5, 0.01);
+  slider.input(generate);
 
-    // generate an image on load
-    generate();
+  // generate an image on load
+  generate();
 }
 
 
 function generate() {
-    let amt = slider.value();
-    // fill the latent vector with the interpolation between a and b
-    for (let i = 0; i < 128; i++) {
-        c[i] = lerp(a[i], b[i], amt);
-    }
-    dcgan.generate(displayImage, c);
+  let amt = slider.value();
+  // fill the latent vector with the interpolation between a and b
+  for (let i = 0; i < 128; i++) {
+    c[i] = lerp(a[i], b[i], amt);
+  }
+  dcgan.generate(displayImage, c);
 }
 
 function displayImage(err, result) {
-    if (err) {
-        console.log(err);
-        return;
-    }
-    image(result.image, 0, 0, width, height);
+  if (err) {
+    console.log(err);
+    return;
+  }
+  image(result.image, 0, 0, width, height);
 }

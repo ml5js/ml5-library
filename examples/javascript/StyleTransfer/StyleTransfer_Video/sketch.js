@@ -87,7 +87,7 @@ async function getVideo() {
 
   // Create a webcam capture
   const capture = await navigator.mediaDevices.getUserMedia({
-      video: true
+    video: true
   })
   videoElement.srcObject = capture;
   videoElement.play();

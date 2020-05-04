@@ -39,40 +39,40 @@ function setup() {
     debug: true,
     inputs:[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
     layers: [{
-        type: 'conv2d',
-        kernelSize: 5,
-        filters: 8,
-        strides: 1,
-        activation: 'relu',
-        kernelInitializer: 'varianceScaling'
-      },
-      {
-        type: 'maxPooling2d',
-        poolSize: [2, 2],
-        strides: [2, 2]
-      },
-      {
-        type: 'conv2d',
-        filters: 16,
-        kernelSize: 5,
-        filters: 8,
-        strides: 1,
-        activation: 'relu',
-        kernelInitializer: 'varianceScaling'
-      },
-      {
-        type: 'maxPooling2d',
-        poolSize: [2, 2],
-        strides: [2, 2]
-      },
-      {
-        type: 'flatten'
-      },
-      {
-        type: 'dense',
-        kernelInitializer: 'varianceScaling',
-        activation: 'softmax'
-      }
+      type: 'conv2d',
+      kernelSize: 5,
+      filters: 8,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling'
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [2, 2],
+      strides: [2, 2]
+    },
+    {
+      type: 'conv2d',
+      filters: 16,
+      kernelSize: 5,
+      filters: 8,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling'
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [2, 2],
+      strides: [2, 2]
+    },
+    {
+      type: 'flatten'
+    },
+    {
+      type: 'dense',
+      kernelInitializer: 'varianceScaling',
+      activation: 'softmax'
+    }
     ]
   }
 

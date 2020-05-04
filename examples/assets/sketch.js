@@ -44,22 +44,22 @@ init();
 
 function createExampleList(_example, _sectionDiv, _sectionTitle, _exampleKey){
   const weList = document.createElement("ul");
-    weList.classList.add(`section-list`);
+  weList.classList.add(`section-list`);
 
-    if(_example[_exampleKey]){
-      _example[_exampleKey].forEach( item => {
-        const li = document.createElement('li');
-        li.classList.add('section-list__item');
-        li.innerHTML = `<a href="${item.url}">${item.name}</a>`;
-        weList.appendChild(li);
-      })
+  if(_example[_exampleKey]){
+    _example[_exampleKey].forEach( item => {
+      const li = document.createElement('li');
+      li.classList.add('section-list__item');
+      li.innerHTML = `<a href="${item.url}">${item.name}</a>`;
+      weList.appendChild(li);
+    })
 
-      const weHeader = document.createElement('h3');
-      weHeader.classList.add('section-list__title');
-      weHeader.textContent = _sectionTitle ;
-      _sectionDiv.appendChild( weHeader )
-      _sectionDiv.appendChild(weList);
-    }
+    const weHeader = document.createElement('h3');
+    weHeader.classList.add('section-list__title');
+    weHeader.textContent = _sectionTitle ;
+    _sectionDiv.appendChild( weHeader )
+    _sectionDiv.appendChild(weList);
+  }
     
 }
 

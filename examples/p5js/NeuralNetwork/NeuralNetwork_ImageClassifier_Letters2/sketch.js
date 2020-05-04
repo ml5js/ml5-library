@@ -70,9 +70,9 @@ function finishedTraining() {
   console.log('finished training');
   // method 1: you can pass in an object with a matching key and the HTMLImageElement
   nn.classify({
-      pixelArray: testA
-    },
-    gotResults
+    pixelArray: testA
+  },
+  gotResults
   );
 
   // method 2: you can pass in an array holding the HTMLImageElement

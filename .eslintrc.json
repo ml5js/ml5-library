@@ -1,14 +1,15 @@
 {
-    "extends": ["airbnb-base", "prettier"],
-    "globals": {
-        "fetch": false,
-        "document": true
-    },
-    "rules":{
-        "no-console":0
-    },
-    "env": {
-        "browser": true,
-        "jasmine": true
-    }
+  "extends": ["airbnb-base", "prettier"],
+  "globals": {
+    "fetch": false,
+    "document": true
+  },
+  "rules": {
+    "no-console": 0,
+    "indent": ["error", 2, { "SwitchCase": 1 }]
+  },
+  "env": {
+    "browser": true,
+    "jasmine": true
+  }
 }
