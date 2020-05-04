@@ -17,12 +17,12 @@ let ctx;
 
 async function setup() {
   // Grab elements, create settings, etc.
-   img = document.getElementById('image');
+  img = document.getElementById('image');
 
-   canvas = document.getElementById('canvas');
-   canvas.width = 640;
-   canvas.height = 360;
-   ctx = canvas.getContext('2d');
+  canvas = document.getElementById('canvas');
+  canvas.width = 640;
+  canvas.height = 360;
+  ctx = canvas.getContext('2d');
 
   // Create a new poseNet method with a single detection
   poseNet = await ml5.poseNet(modelReady);
@@ -60,37 +60,37 @@ function draw() {
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
-    // Loop through all the poses detected
-    for (let i = 0; i < poses.length; i++) {
-      // For each pose detected, loop through all the keypoints
-      for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
-        let keypoint = poses[i].pose.keypoints[j];
-        // Only draw an ellipse is the pose probability is bigger than 0.2
-        if (keypoint.score > 0.2) {
-          ctx.fillStyle = '#FFFFFF'
-          ctx.beginPath();
-          ctx.arc(keypoint.position.x, keypoint.position.y, 6, 0, 2 * Math.PI);
-          ctx.stroke();
-          ctx.strokeStyle = '#00FF00'
-          ctx.fill();
-        }
-      }
-    }
-  }
-  
-  // A function to draw the skeletons
-  function drawSkeleton() {
-    // Loop through all the skeletons detected
-    for (let i = 0; i < poses.length; i++) {
-      // For every skeleton, loop through all body connections
-      for (let j = 0; j < poses[i].skeleton.length; j++) {
-        let partA = poses[i].skeleton[j][0];
-        let partB = poses[i].skeleton[j][1];
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i++) {
+    // For each pose detected, loop through all the keypoints
+    for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
+      let keypoint = poses[i].pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        ctx.fillStyle = '#FFFFFF'
         ctx.beginPath();
-        ctx.moveTo(partA.position.x, partA.position.y);
-        ctx.lineTo(partB.position.x, partB.position.y);
-        ctx.strokeStyle = '#FFFFFF'
+        ctx.arc(keypoint.position.x, keypoint.position.y, 6, 0, 2 * Math.PI);
         ctx.stroke();
+        ctx.strokeStyle = '#00FF00'
+        ctx.fill();
       }
     }
   }
+}
+  
+// A function to draw the skeletons
+function drawSkeleton() {
+  // Loop through all the skeletons detected
+  for (let i = 0; i < poses.length; i++) {
+    // For every skeleton, loop through all body connections
+    for (let j = 0; j < poses[i].skeleton.length; j++) {
+      let partA = poses[i].skeleton[j][0];
+      let partB = poses[i].skeleton[j][1];
+      ctx.beginPath();
+      ctx.moveTo(partA.position.x, partA.position.y);
+      ctx.lineTo(partB.position.x, partB.position.y);
+      ctx.strokeStyle = '#FFFFFF'
+      ctx.stroke();
+    }
+  }
+}

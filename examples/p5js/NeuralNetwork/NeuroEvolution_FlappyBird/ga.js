@@ -6,7 +6,7 @@
 
 // Create the next generation
 function nextGeneration() {
-console.log('next generation');
+  console.log('next generation');
   // Calculate fitness values
   calculateFitness();
   

@@ -12,6 +12,7 @@
     "prebuild": "rimraf dist",
     "develop": "npm-run-all --parallel start examples:serve examples:watch",
     "start": "webpack-dev-server --config webpack.dev.babel.js",
+    "lint": "eslint . --ext .js; exit 0",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js --config-name ml5",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",

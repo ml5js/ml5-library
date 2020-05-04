@@ -94,8 +94,8 @@ describe('imageClassifier', () => {
       it('Should support p5 elements with an image on .elt', async () => {
         const img = await getImage();
         await classifier.classify({
-            elt: img
-          })
+          elt: img
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
 
@@ -108,16 +108,16 @@ describe('imageClassifier', () => {
       it('Should support p5 elements with canvas on .canvas', async () => {
         const canvas = await getCanvas();
         await classifier.classify({
-            canvas
-          })
+          canvas
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
 
       it('Should support p5 elements with canvas on .elt', async () => {
         const canvas = await getCanvas();
         await classifier.classify({
-            elt: canvas
-          })
+          elt: canvas
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
     });

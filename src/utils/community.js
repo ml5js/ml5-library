@@ -1,7 +1,7 @@
 import { version } from '../../package.json';
 
 export default () => {
-console.log(`
+  console.log(`
 🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
 🌟 Thank you for using ml5.js v${version} 🌟
 

@@ -6,21 +6,21 @@
 const { objectDetector } = ml5;
 
 describe('ObjectDetector', () => {
-    let detector;
+  let detector;
 
-    beforeAll(async () => {
-        jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
-        detector = await objectDetector('cocossd', () => {});
-    });
+  beforeAll(async () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    detector = await objectDetector('cocossd', () => {});
+  });
 
-    it('throws error when a non image is trying to be detected', async () => {
-        const notAnImage = 'not_an_image'
-        try {
-            await detector.detect(notAnImage);
-            fail('Error should have been thrown');
-        }
-        catch (error) {
-            expect(error.message).toBe('Detection subject not supported');
-        }
-    });
+  it('throws error when a non image is trying to be detected', async () => {
+    const notAnImage = 'not_an_image'
+    try {
+      await detector.detect(notAnImage);
+      fail('Error should have been thrown');
+    }
+    catch (error) {
+      expect(error.message).toBe('Detection subject not supported');
+    }
+  });
 });

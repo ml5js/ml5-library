@@ -507,37 +507,37 @@ class Mobilenet {
     if (img instanceof tf.Tensor || img instanceof ImageData || 
         img instanceof HTMLImageElement || img instanceof HTMLCanvasElement 
         || img instanceof HTMLVideoElement ) {
-          return tf.tidy(() => {
-              if (!(img instanceof tf.Tensor)) {
-                  img = tf.browser.fromPixels(img);
-                }
-              const normalized = img.toFloat().sub(this.normalizationOffset)
-                                    .div(this.normalizationOffset);
-
-              // Resize the image to
-              let resized = normalized;
-              if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
-                const alignCorners = true;
-                resized = tf.image.resizeBilinear(
-                    normalized, [IMAGE_SIZE, IMAGE_SIZE], alignCorners);
-              }
-
-              // Reshape so we can pass it to predict.
-              const batched = resized.reshape([-1, IMAGE_SIZE, IMAGE_SIZE, 3]);
-              let result;
-              if (embedding) {
-                const embeddingName = EMBEDDING_NODES[this.config.version];
-                const internal = this.model.execute(batched, embeddingName);
-                result = internal.squeeze([1, 2]);
-              } else {
-                const logits1001 = this.model.predict(batched);
-                result = logits1001.slice([0, 1], [-1, 1000]);
-              }
-              return result;
-            }
-          );
+      return tf.tidy(() => {
+        if (!(img instanceof tf.Tensor)) {
+          img = tf.browser.fromPixels(img);
         }
-      return null;
+        const normalized = img.toFloat().sub(this.normalizationOffset)
+          .div(this.normalizationOffset);
+
+        // Resize the image to
+        let resized = normalized;
+        if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
+          const alignCorners = true;
+          resized = tf.image.resizeBilinear(
+            normalized, [IMAGE_SIZE, IMAGE_SIZE], alignCorners);
+        }
+
+        // Reshape so we can pass it to predict.
+        const batched = resized.reshape([-1, IMAGE_SIZE, IMAGE_SIZE, 3]);
+        let result;
+        if (embedding) {
+          const embeddingName = EMBEDDING_NODES[this.config.version];
+          const internal = this.model.execute(batched, embeddingName);
+          result = internal.squeeze([1, 2]);
+        } else {
+          const logits1001 = this.model.predict(batched);
+          result = logits1001.slice([0, 1], [-1, 1000]);
+        }
+        return result;
+      }
+      );
+    }
+    return null;
   }
 
   infer(input, endpoint) {
