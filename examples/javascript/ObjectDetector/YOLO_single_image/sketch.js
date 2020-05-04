@@ -16,20 +16,20 @@ let width = 640;
 let height = 420;
 
 async function make() {
-    img = new Image();
-    img.src = 'images/cat2.JPG';
-    img.width = width;
-    img.height = height;
+  img = new Image();
+  img.src = 'images/cat2.JPG';
+  img.width = width;
+  img.height = height;
 
-    objectDetector = await ml5.objectDetector('yolo', startDetecting)
+  objectDetector = await ml5.objectDetector('yolo', startDetecting)
   
-    canvas = createCanvas(width, height);
-    ctx = canvas.getContext('2d');
+  canvas = createCanvas(width, height);
+  ctx = canvas.getContext('2d');
 }
 
 // when the dom is loaded, call make();
 window.addEventListener('DOMContentLoaded', function() {
-    make();
+  make();
 });
 
 function startDetecting(){
@@ -52,30 +52,30 @@ function detect() {
 }
 
 function draw(){
-    // Clear part of the canvas
-    ctx.fillStyle = "#000000"
-    ctx.fillRect(0,0, width, height);
+  // Clear part of the canvas
+  ctx.fillStyle = "#000000"
+  ctx.fillRect(0,0, width, height);
 
-    ctx.drawImage(img, 0, 0);
-    for (let i = 0; i < objects.length; i++) {
+  ctx.drawImage(img, 0, 0);
+  for (let i = 0; i < objects.length; i++) {
       
-      ctx.font = "16px Arial";
-      ctx.fillStyle = "green";
-      ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y + 16); 
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "green";
+    ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y + 16); 
 
-      ctx.beginPath();
-      ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
-      ctx.strokeStyle = "green";
-      ctx.stroke();
-      ctx.closePath();
-    }
+    ctx.beginPath();
+    ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+    ctx.strokeStyle = "green";
+    ctx.stroke();
+    ctx.closePath();
+  }
 }
 
 
 function createCanvas(w, h){
-    const canvas = document.createElement("canvas"); 
-    canvas.width  = w;
-    canvas.height = h;
-    document.body.appendChild(canvas);
-    return canvas;
+  const canvas = document.createElement("canvas"); 
+  canvas.width  = w;
+  canvas.height = h;
+  document.body.appendChild(canvas);
+  return canvas;
 }

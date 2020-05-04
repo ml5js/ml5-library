@@ -6,9 +6,9 @@
 const { bodyPix } = ml5;
 
 const BODYPIX_DEFAULTS = {
-    "multiplier": 0.75,
-    "outputStride": 16,
-    "segmentationThreshold": 0.5
+  "multiplier": 0.75,
+  "outputStride": 16,
+  "segmentationThreshold": 0.5
 };
 
 describe('bodyPix', () => {
@@ -71,14 +71,14 @@ describe('bodyPix', () => {
       const img = await getImage();
       await bp.segment(img)
         .then(results => {
-            expect(results.segmentation.width).toBe(128);
-            expect(results.segmentation.height).toBe(128);
+          expect(results.segmentation.width).toBe(128);
+          expect(results.segmentation.height).toBe(128);
 
-            expect(results.segmentation.width).toBe(128);
-            expect(results.segmentation.height).toBe(128);
+          expect(results.segmentation.width).toBe(128);
+          expect(results.segmentation.height).toBe(128);
 
-            expect(results.segmentation.width).toBe(128);
-            expect(results.segmentation.height).toBe(128);
+          expect(results.segmentation.width).toBe(128);
+          expect(results.segmentation.height).toBe(128);
 
         })
     });

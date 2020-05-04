@@ -54,8 +54,8 @@ class SketchRNN {
       this.config.modelPath = modelPath;
 
     } else if(modelPaths.has(checkpointUrl)) {
-        checkpointUrl = (large ? this.config.modelPath : this.config.modelPath_small) + checkpointUrl + this.config.PATH_END;
-        this.config.modelPath = checkpointUrl;
+      checkpointUrl = (large ? this.config.modelPath : this.config.modelPath_small) + checkpointUrl + this.config.PATH_END;
+      this.config.modelPath = checkpointUrl;
     } else {
       console.log('no model found!');
       return this;

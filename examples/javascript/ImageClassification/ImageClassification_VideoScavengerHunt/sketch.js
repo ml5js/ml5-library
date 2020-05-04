@@ -71,7 +71,7 @@ async function setup() {
 
   // speechEnded function will be called when an utterance is finished
   // Read more at p5.speech's onEnd property: http://ability.nyu.edu/p5.js-speech/
-    myVoice.onEnd = speechEnded;
+  myVoice.onEnd = speechEnded;
 
 }
 

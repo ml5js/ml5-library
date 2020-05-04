@@ -31,9 +31,9 @@ export class SpeechCommands {
       }
       return cb(`ERROR: Cannot find scores in result: ${result}`);
     }, this.options)
-    .catch(err => {
-      return cb(`ERROR: ${err.message}`);
-    });
+      .catch(err => {
+        return cb(`ERROR: ${err.message}`);
+      });
   }
 }
 

@@ -1,7 +1,7 @@
-import * as tf from '@tensorflow/tfjs';
-import callCallback from '../utils/callcallback';
-import { saveBlob } from '../utils/io';
-import { randomGaussian } from '../utils/random';
+import * as tf from "@tensorflow/tfjs";
+import callCallback from "../utils/callcallback";
+import { saveBlob } from "../utils/io";
+import { randomGaussian } from "../utils/random";
 
 class NeuralNetwork {
   constructor() {
@@ -41,9 +41,9 @@ class NeuralNetwork {
    * uses switch/case for potential future where different formats are supported
    * @param {*} _type
    */
-  createModel(_type = 'sequential') {
+  createModel(_type = "sequential") {
     switch (_type.toLowerCase()) {
-      case 'sequential':
+      case "sequential":
         this.model = tf.sequential();
         return this.model;
       default:
@@ -138,7 +138,6 @@ class NeuralNetwork {
     return result;
   }
 
-
   /**
    * returns the prediction as an array
    * @param {*} _inputs
@@ -184,17 +183,17 @@ class NeuralNetwork {
     let modelName;
     let callback;
 
-    if (typeof nameOrCb === 'function') {
-      modelName = 'model';
+    if (typeof nameOrCb === "function") {
+      modelName = "model";
       callback = nameOrCb;
-    } else if (typeof nameOrCb === 'string') {
+    } else if (typeof nameOrCb === "string") {
       modelName = nameOrCb;
 
-      if (typeof cb === 'function') {
+      if (typeof cb === "function") {
         callback = cb;
       }
     } else {
-      modelName = 'model';
+      modelName = "model";
     }
 
     this.model.save(
@@ -209,8 +208,8 @@ class NeuralNetwork {
           ],
         };
 
-        await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
-        await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
+        await saveBlob(data.weightData, `${modelName}.weights.bin`, "application/octet-stream");
+        await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, "text/plain");
         if (callback) {
           callback();
         }
@@ -227,20 +226,20 @@ class NeuralNetwork {
     if (filesOrPath instanceof FileList) {
       const files = await Promise.all(
         Array.from(filesOrPath).map(async file => {
-          if (file.name.includes('.json') && !file.name.includes('_meta')) {
-            return { name: 'model', file };
-          } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
+          if (file.name.includes(".json") && !file.name.includes("_meta")) {
+            return { name: "model", file };
+          } else if (file.name.includes(".json") && file.name.includes("_meta.json")) {
             const modelMetadata = await file.text();
-            return { name: 'metadata', file: modelMetadata };
-          } else if (file.name.includes('.bin')) {
-            return { name: 'weights', file };
+            return { name: "metadata", file: modelMetadata };
+          } else if (file.name.includes(".bin")) {
+            return { name: "weights", file };
           }
           return { name: null, file: null };
         }),
       );
 
-      const model = files.find(item => item.name === 'model').file;
-      const weights = files.find(item => item.name === 'weights').file;
+      const model = files.find(item => item.name === "model").file;
+      const weights = files.find(item => item.name === "weights").file;
 
       // load the model
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
@@ -249,12 +248,12 @@ class NeuralNetwork {
 
       let modelJson = await fetch(filesOrPath.model);
       modelJson = await modelJson.text();
-      const modelJsonFile = new File([modelJson], 'model.json', { type: 'application/json' });
+      const modelJsonFile = new File([modelJson], "model.json", { type: "application/json" });
 
       let weightsBlob = await fetch(filesOrPath.weights);
       weightsBlob = await weightsBlob.blob();
-      const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', {
-        type: 'application/macbinary',
+      const weightsBlobFile = new File([weightsBlob], "model.weights.bin", {
+        type: "application/macbinary",
       });
 
       this.model = await tf.loadLayersModel(tf.io.browserFiles([modelJsonFile, weightsBlobFile]));
@@ -285,17 +284,18 @@ class NeuralNetwork {
    * mutate the weights of a model
    * @param {*} rate
    * @param {*} mutateFunction
-   */  
+   */
+
   mutate(rate = 0.1, mutateFunction) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
       const mutatedWeights = [];
-      for (let i = 0; i < weights.length; i+=1) {
+      for (let i = 0; i < weights.length; i += 1) {
         const tensor = weights[i];
         const { shape } = weights[i];
         // TODO: Evaluate if this should be sync or not
         const values = tensor.dataSync().slice();
-        for (let j = 0; j < values.length; j+=1) {
+        for (let j = 0; j < values.length; j += 1) {
           if (Math.random() < rate) {
             if (mutateFunction) {
               values[j] = mutateFunction(values[j]);
@@ -320,14 +320,14 @@ class NeuralNetwork {
       const weightsA = this.model.getWeights();
       const weightsB = other.model.getWeights();
       const childWeights = [];
-      for (let i = 0; i < weightsA.length; i+=1) {
+      for (let i = 0; i < weightsA.length; i += 1) {
         const tensorA = weightsA[i];
         const tensorB = weightsB[i];
         const { shape } = weightsA[i];
         // TODO: Evaluate if this should be sync or not
         const valuesA = tensorA.dataSync().slice();
         const valuesB = tensorB.dataSync().slice();
-        for (let j = 0; j < valuesA.length; j+=1) {
+        for (let j = 0; j < valuesA.length; j += 1) {
           if (Math.random() < 0.5) {
             valuesA[j] = valuesB[j];
           }
@@ -338,7 +338,5 @@ class NeuralNetwork {
       this.model.setWeights(childWeights);
     });
   }
-
-
 }
 export default NeuralNetwork;

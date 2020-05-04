@@ -23,10 +23,10 @@ navigator.mediaDevices.getUserMedia({ video: true })
     video.play();
   })
 
-  // Initialize the Image Classifier method with MobileNet passing the video as the
+// Initialize the Image Classifier method with MobileNet passing the video as the
 // second argument and the getClassification function as the third
 ml5.imageClassifier(checkpoint)
-.then(classifier => loop(classifier))
+  .then(classifier => loop(classifier))
 
 const loop = (classifier) => {
   classifier.classify(video)
