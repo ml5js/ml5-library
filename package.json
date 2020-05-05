@@ -59,6 +59,7 @@
     "docsify-cli": "^4.3.0",
     "eslint": "4.18.2",
     "eslint-config-airbnb-base": "12.1.0",
+    "eslint-config-p5js": "^1.0.1",
     "eslint-config-prettier": "^4.1.0",
     "eslint-loader": "2.0.0",
     "eslint-plugin-import": "2.9.0",
