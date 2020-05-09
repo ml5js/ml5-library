@@ -1,7 +1,7 @@
 const p5Globals = require("./p5Globals");
 
 module.exports = {
-  extends: ["airbnb-base", "prettier", "p5js"],
+  extends: ["airbnb-base", "prettier"],
   globals: {
     fetch: false,
     document: true,
