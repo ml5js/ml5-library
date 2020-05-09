@@ -18,7 +18,7 @@ let resetBtn;
 let singleBtn;
 let generating = false;
 
-let canvasHeight = 100;
+const canvasHeight = 100;
 
 function setup() {
   noCanvas();
@@ -77,9 +77,9 @@ async function loopRNN() {
 }
 
 async function predict() {
-  let par = select('#result');
-  let temperature = tempSlider.value();
-  let next = await charRNN.predict(temperature);
+  const par = select('#result');
+  const temperature = tempSlider.value();
+  const next = await charRNN.predict(temperature);
   await charRNN.feed(next.sample);
   par.html(par.html() + next.sample);
 }

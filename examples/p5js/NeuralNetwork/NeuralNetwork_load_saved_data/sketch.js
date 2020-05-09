@@ -26,7 +26,7 @@ function setup() {
   resultsText = select('#results');
 
   // Train the model
-  let trainBtn = select('#trainBtn');
+  const trainBtn = select('#trainBtn');
   // trainBtn.position(10, 50);
   trainBtn.mousePressed(function () {
     trainModel();
@@ -49,7 +49,7 @@ function setup() {
   // });
 
   // Load Data
-  let loadBtn = select('#load');
+  const loadBtn = select('#load');
   loadBtn.changed(function () {
     nn.loadData(loadBtn.elt.files, function () {
       console.log('Data Loaded!');

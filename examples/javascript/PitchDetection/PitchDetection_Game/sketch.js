@@ -15,17 +15,17 @@ const voiceHigh = 500;
 let audioStream;
 let stream;
 
-let width = 410;
-let height = 320;
+const width = 410;
+const height = 320;
 
 // Circle variables
-let circleSize = 42;
+const circleSize = 42;
 const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 // Text variables
 let goalNote = 0;
 let currentNote = '';
-let currentText = '';
+const currentText = '';
 let textCoordinates;
 let canvas;
 
@@ -70,7 +70,7 @@ function modelLoaded() {
 function getPitch() {
   pitch.getPitch(function (err, frequency) {
     if (frequency) {
-      let midiNum = freqToMidi(frequency);
+      const midiNum = freqToMidi(frequency);
       currentNote = scale[midiNum % 12];
       document.querySelector('#currentNote').textContent = currentNote;
     }

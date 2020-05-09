@@ -2,8 +2,8 @@ let bodypix;
 let segmentation;
 let video;
 let canvas, ctx;
-let width = 480;
-let height = 360;
+const width = 480;
+const height = 360;
 
 const options = {
   outputStride: 8, // 8, 16, or 32, default is 16
@@ -35,7 +35,7 @@ function gotImage(err, result){
   }
   segmentation = result;
   ctx.drawImage(video, 0, 0, width, height);
-  let maskBackground = imageDataToCanvas(result.raw.backgroundMask.data, result.raw.backgroundMask.width, result.raw.backgroundMask.height)
+  const maskBackground = imageDataToCanvas(result.raw.backgroundMask.data, result.raw.backgroundMask.width, result.raw.backgroundMask.height)
   ctx.drawImage(maskBackground, 0, 0, width, height);
     
   bodypix.segment(video, gotImage, options);

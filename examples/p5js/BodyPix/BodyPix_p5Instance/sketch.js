@@ -43,4 +43,4 @@ const s = (sketch) => {
   }
 }
 
-let myp5 = new p5(s, document.getElementById('p5sketch'));
+const myp5 = new p5(s, document.getElementById('p5sketch'));

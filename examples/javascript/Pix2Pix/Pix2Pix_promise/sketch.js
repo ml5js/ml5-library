@@ -14,7 +14,7 @@ For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/
 // So the input images can only be 256x256 or 512x512, or multiple of 256
 const SIZE = 256;
 let inputImg, canvas, outputContainer, statusMsg, pix2pix, clearBtn, transferBtn, modelReady = false, isTransfering = false;
-let mouseIsPressed = false;
+const mouseIsPressed = false;
 let outputImg;
 
 let pX = null;

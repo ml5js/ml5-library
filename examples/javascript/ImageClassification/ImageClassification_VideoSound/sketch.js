@@ -11,8 +11,8 @@ This example uses a callback pattern to create the classifier
 
 let classifier;
 let video;
-let width= 640;
-let height=480;
+const width= 640;
+const height=480;
 
 // adapted from https://github.com/IDMNYU/p5.js-speech/blob/master/lib/p5.speech.js
 class MySpeech {

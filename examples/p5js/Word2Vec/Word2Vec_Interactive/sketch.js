@@ -22,24 +22,24 @@ function setup() {
   word2Vec = ml5.word2vec('data/wordvecs5000.json', modelLoaded);
 
   // Select all the DOM elements
-  let nearWordInput = select('#nearword');
-  let nearButton = select('#submit');
-  let nearResults = select('#results');
+  const nearWordInput = select('#nearword');
+  const nearButton = select('#submit');
+  const nearResults = select('#results');
 
-  let betweenWordInput1 = select("#between1");
-  let betweenWordInput2 = select("#between2");
-  let betweenButton = select("#submit2");
-  let betweenResults = select("#results2");
+  const betweenWordInput1 = select("#between1");
+  const betweenWordInput2 = select("#between2");
+  const betweenButton = select("#submit2");
+  const betweenResults = select("#results2");
 
-  let addInput1 = select("#isto1");
-  let addInput2 = select("#isto2");
-  let addInput3 = select("#isto3");
-  let addButton = select("#submit3");
-  let addResults = select("#results3");
+  const addInput1 = select("#isto1");
+  const addInput2 = select("#isto2");
+  const addInput3 = select("#isto3");
+  const addButton = select("#submit3");
+  const addResults = select("#results3");
 
   // Finding the nearest words
   nearButton.mousePressed(() => {
-    let word = nearWordInput.value();
+    const word = nearWordInput.value();
     word2Vec.nearest(word, (err, result) => {
       let output = '';
       if (result) {
@@ -55,8 +55,8 @@ function setup() {
 
   // Finding the average of two words
   betweenButton.mousePressed(() => {
-    let word1 = betweenWordInput1.value();
-    let word2 = betweenWordInput2.value();
+    const word1 = betweenWordInput1.value();
+    const word2 = betweenWordInput2.value();
     word2Vec.average([word1, word2], 4, (err, average) => {
       betweenResults.html(average[0].word);
     })
@@ -64,9 +64,9 @@ function setup() {
 
   // Adding two words together to "solve" an analogy
   addButton.mousePressed(() => {
-    let is1 = addInput1.value();
-    let to1 = addInput2.value();
-    let is2 = addInput3.value();
+    const is1 = addInput1.value();
+    const to1 = addInput2.value();
+    const is2 = addInput3.value();
     word2Vec.subtract([to1, is1])
       .then(difference => word2Vec.add([is2, difference[0].word]))
       .then(result => addResults.html(result[0].word))

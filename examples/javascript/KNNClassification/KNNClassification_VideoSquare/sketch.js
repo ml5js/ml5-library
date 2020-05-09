@@ -14,8 +14,8 @@ const squareSize = 100;
 // Create a KNN classifier
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 let canvas, ctx;
 
 async function setup() {

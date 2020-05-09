@@ -1,4 +1,4 @@
-let trainData = [];
+const trainData = [];
 let neuralNetwork;
 
 // selectors for inputs and button

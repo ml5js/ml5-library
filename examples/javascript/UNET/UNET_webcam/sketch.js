@@ -11,8 +11,8 @@ UNET example using p5.js
 let video;
 let uNet;
 let segmentationImage;
-let width = 320;
-let height = 240;
+const width = 320;
+const height = 240;
 let request;
 let canvas, ctx;
 
@@ -59,7 +59,7 @@ function draw() {
 
   if(segmentationImage.hasOwnProperty('raw')){
     // UNET image is 128x128
-    let im = imageDataToCanvas(segmentationImage.raw.backgroundMask, 128, 128)
+    const im = imageDataToCanvas(segmentationImage.raw.backgroundMask, 128, 128)
     ctx.drawImage(im, 0, 0, width, height);
   }
   

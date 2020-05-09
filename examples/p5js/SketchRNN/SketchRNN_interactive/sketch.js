@@ -32,7 +32,7 @@ function setup() {
   model = ml5.sketchRNN('cat', modelReady);
 
   // Button to start drawing
-  let button = select('#clear');
+  const button = select('#clear');
   button.mousePressed(clearDrawing);
 }
 
@@ -70,7 +70,7 @@ function draw() {
     strokeWeight(3.0);
     line(pmouseX, pmouseY, mouseX, mouseY);
     // Create a "stroke path" with dx, dy, and pen
-    let userStroke = {
+    const userStroke = {
       dx: mouseX - pmouseX,
       dy: mouseY - pmouseY,
       pen: 'down'

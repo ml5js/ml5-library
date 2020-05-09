@@ -33,12 +33,12 @@ function gotImage(error, result) {
 function modelReady() {
   // Create dropdown with all possible labels
   dropdown = createSelect();
-  for (let label of cvae.labels) {
+  for (const label of cvae.labels) {
     dropdown.option(label);
   }
 }
 
 function generateImage() {
-  let label = dropdown.value();
+  const label = dropdown.value();
   cvae.generate(label, gotImage);
 }

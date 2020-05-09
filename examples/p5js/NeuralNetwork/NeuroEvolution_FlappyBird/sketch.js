@@ -3,9 +3,9 @@
 
 const TOTAL = 100;
 // Current birds
-let birds = [];
+const birds = [];
 // Save any birds that die
-let savedBirds = [];
+const savedBirds = [];
 let pipes = [];
 let counter = 0;
 let slider;
@@ -58,7 +58,7 @@ function draw() {
     }
 
     // Run all birds
-    for (let bird of birds) {
+    for (const bird of birds) {
       bird.think(pipes);
       bird.update();
     }
@@ -74,11 +74,11 @@ function draw() {
   // All the drawing stuff
   background(0);
 
-  for (let bird of birds) {
+  for (const bird of birds) {
     bird.show();
   }
 
-  for (let pipe of pipes) {
+  for (const pipe of pipes) {
     pipe.show();
   }
 }

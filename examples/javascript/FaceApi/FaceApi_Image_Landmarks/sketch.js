@@ -1,8 +1,8 @@
 let faceapi;
 let img;
 let detections;
-let width = 200;
-let height = 200;
+const width = 200;
+const height = 200;
 let canvas, ctx;
 
 // by default all options are set to true

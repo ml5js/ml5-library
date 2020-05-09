@@ -4,15 +4,15 @@ let pixelBrain;
 // The video and pixel scale
 let video;
 let ready = false;
-let videoSize = 10;
+const videoSize = 10;
 
 // For sound synthesis
-let playing = false;
+const playing = false;
 let frequency;
 let osc;
 
 // Going to normalize the data myself here
-let freqMax = 800;
+const freqMax = 800;
 
 function setup() {
   createCanvas(200, 200);
@@ -22,7 +22,7 @@ function setup() {
   video.hide();
 
   // Inputs are total pixels times 3 (RGB)
-  let totalPixels = videoSize * videoSize * 3;
+  const totalPixels = videoSize * videoSize * 3;
   const options = {
     inputs: totalPixels,
     outputs: 1,
@@ -47,14 +47,14 @@ function draw() {
   background(0);
   if (ready) {
     // Render the low-res image
-    let w = width / videoSize;
+    const w = width / videoSize;
     video.loadPixels();
     for (let x = 0; x < video.width; x++) {
       for (let y = 0; y < video.height; y++) {
-        let index = (x + y * video.width) * 4;
-        let r = video.pixels[index + 0];
-        let g = video.pixels[index + 1];
-        let b = video.pixels[index + 2];
+        const index = (x + y * video.width) * 4;
+        const r = video.pixels[index + 0];
+        const g = video.pixels[index + 1];
+        const b = video.pixels[index + 2];
         noStroke();
         fill(r, g, b);
         rect(x * w, y * w, w, w);
@@ -68,9 +68,9 @@ function draw() {
 function getInputs() {
   video.loadPixels();
   // Create an array
-  let inputs = [];
+  const inputs = [];
   for (let i = 0; i < video.width * video.height; i++) {
-    let index = i * 4;
+    const index = i * 4;
     // Manual normalization
     inputs.push(video.pixels[index + 0] / 255);
     inputs.push(video.pixels[index + 1] / 255);
@@ -82,9 +82,9 @@ function getInputs() {
 
 // Add an example
 function addExample() {
-  let freq = parseFloat(select('#frequency').value());
+  const freq = parseFloat(select('#frequency').value());
   video.loadPixels();
-  let inputs = getInputs();
+  const inputs = getInputs();
   // Manual normalization of frequency
   pixelBrain.addData(inputs, [freq / freqMax]);
 }
@@ -112,7 +112,7 @@ function finishedTraining() {
 }
 
 function predict() {
-  let inputs = getInputs();
+  const inputs = getInputs();
   pixelBrain.predict(inputs, gotFrequency);
 }
 

@@ -28,7 +28,7 @@ function setup() {
   background(220);
 
   // Button to reset drawing
-  let button = createButton('clear');
+  const button = createButton('clear');
   button.mousePressed(startDrawing);
   
   // run sketchRNN

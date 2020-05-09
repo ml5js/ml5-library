@@ -17,7 +17,7 @@ function setup() {
   gSlider = createSlider(0, 255, 0);
   bSlider = createSlider(0, 255, 255);
 
-  let nnOptions = {
+  const nnOptions = {
     task: 'classification',
     debug: true
   };
@@ -42,7 +42,7 @@ function modelReady() {
 
 
 function classify() {
-  let inputs = {
+  const inputs = {
     r: rSlider.value(),
     g: gSlider.value(),
     b: bSlider.value()

@@ -1,6 +1,6 @@
 let kmeans;
 let baseImage;
-let data = [];
+const data = [];
 
 const imgSize = 30;
 const colorDict = {
@@ -33,7 +33,7 @@ function setup() {
   // data to be sent to kmeans
   for (let x = 0; x < imgSize; x++) {
     for (let y = 0; y < imgSize; y++) {
-      let off = (y * imgSize + x) * 4;
+      const off = (y * imgSize + x) * 4;
       const r = img.pixels[off];
       const g = img.pixels[off + 1];
       const b = img.pixels[off + 2];
@@ -60,14 +60,14 @@ function modelReady() {
   console.log('ready!')
   const dataset = kmeans.dataset;
 
-  let segmented = createImage(imgSize, imgSize);
+  const segmented = createImage(imgSize, imgSize);
   segmented.loadPixels();
 
   // redraw the image using the color dictionary above
   // use the .centroid value to apply the color
   for (let x = 0; x < segmented.width; x++) {
     for (let y = 0; y < segmented.height; y++) {
-      let off = (x * imgSize + y);
+      const off = (x * imgSize + y);
       const c = colorDict[dataset[off].centroid]
       segmented.set(x, y, color(c));
     }
