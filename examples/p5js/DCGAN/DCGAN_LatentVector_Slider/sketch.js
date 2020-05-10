@@ -11,11 +11,11 @@ DCGAN example
 let dcgan;
 
 // vector 1
-let a = [];
+const a = [];
 // vector 2
-let b = [];
+const b = [];
 // vector to interpolate between 1 and 2
-let c = [];
+const c = [];
 
 let slider;
 
@@ -40,7 +40,7 @@ function setup() {
 
 
 function generate() {
-  let amt = slider.value();
+  const amt = slider.value();
   // fill the latent vector with the interpolation between a and b
   for (let i = 0; i < 128; i++) {
     c[i] = lerp(a[i], b[i], amt);

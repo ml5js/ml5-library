@@ -32,7 +32,7 @@ function setup() {
   // Whenever mouseReleased event happens on canvas, call "classifyCanvas" function
   canvas.mouseReleased(classifyCanvas);
   // Create a clear canvas button
-  let button = createButton('Clear Canvas');
+  const button = createButton('Clear Canvas');
   button.position(7, 44);
   button.mousePressed(clearCanvas);
   // Create 'label' and 'confidence' div to hold results

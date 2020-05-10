@@ -51,7 +51,7 @@ class Bird {
     let closest = null;
     let closestD = Infinity;
     for (let i = 0; i < pipes.length; i++) {
-      let d = pipes[i].x + pipes[i].w - this.x;
+      const d = pipes[i].x + pipes[i].w - this.x;
       if (d < closestD && d > 0) {
         closest = pipes[i];
         closestD = d;
@@ -59,7 +59,7 @@ class Bird {
     }
 
     // Normalize 5 inputs
-    let inputs = [];
+    const inputs = [];
     inputs[0] = this.y / height;
     inputs[1] = closest.top / height;
     inputs[2] = closest.bottom / height;

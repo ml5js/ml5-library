@@ -10,7 +10,7 @@ DCGAN example
 
 let dcgan;
 
-let vector = [];
+const vector = [];
 
 function preload() {
   dcgan = ml5.DCGAN('model/geo/manifest.json');

@@ -26,8 +26,8 @@ let button;
 // Storing a reference to the canvas
 let canvas, ctx;
 
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 
 let mouseDown = false;
 
@@ -99,7 +99,7 @@ function draw() {
 
 
     // Create a "stroke path" with dx, dy, and pen
-    let userStroke = {
+    const userStroke = {
       dx: mouseX - pX,
       dy: mouseY - pY,
       pen: 'down'

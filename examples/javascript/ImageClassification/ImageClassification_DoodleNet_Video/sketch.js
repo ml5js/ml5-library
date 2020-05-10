@@ -21,8 +21,8 @@ let confidence;
 let canvas;
 let ctx;
 
-let width = 280;
-let height = 280;
+const width = 280;
+const height = 280;
 
 async function setup() {
   // Create a 'label' and 'confidence' div to hold results

@@ -58,7 +58,7 @@ describe('word2vec', () => {
           .then(word => word2vecInstance.nearest(word))
           .then((nearest) => {
             let currentDistance = 0;
-            for (let { word, distance: nextDistance } of nearest) {
+            for (const { word, distance: nextDistance } of nearest) {
               expect(typeof word).toEqual('string');
               expect(nextDistance).toBeGreaterThan(currentDistance);
               currentDistance = nextDistance;

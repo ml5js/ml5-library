@@ -51,14 +51,14 @@ function generate() {
     select('#temperature').html(tempSlider.value());
 
     // Grab the original text
-    let original = textInput.value();
+    const original = textInput.value();
     // Make it to lower case
-    let txt = original.toLowerCase();
+    const txt = original.toLowerCase();
 
     // Check if there's something
     if (txt.length > 0) {
       // Here is the data for the LSTM generator
-      let data = {
+      const data = {
         seed: txt,
         temperature: tempSlider.value(),
         length: lengthSlider.value()

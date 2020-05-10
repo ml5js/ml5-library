@@ -18,7 +18,7 @@ let info;
 let slider;
 
 function setup() {
-  let canvas = createCanvas(600, 600);
+  const canvas = createCanvas(600, 600);
 
   // Move the target if you click on the canvas
   canvas.mousePressed(function() {

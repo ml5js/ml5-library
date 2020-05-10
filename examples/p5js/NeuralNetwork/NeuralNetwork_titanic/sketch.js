@@ -4,7 +4,7 @@ let submitButton;
 function setup() {
   noCanvas();
 
-  let nnOptions = {
+  const nnOptions = {
     dataUrl: 'data/titanic_cleaned.csv',
     inputs: ['fare_class','sex', 'age', 'fare'],
     outputs: ['survived'],
@@ -35,10 +35,10 @@ function finishedTraining() {
 
 // TODO: normalize and encode values going into predict?
 function classify() {
-  let age = parseInt(select('#age').value());
-  let fare = parseInt(select('#fare').value());
-  let fare_class = select('#fare_class').value();
-  let sex = select('#sex').value();
+  const age = parseInt(select('#age').value());
+  const fare = parseInt(select('#fare').value());
+  const fare_class = select('#fare_class').value();
+  const sex = select('#sex').value();
 
   // let inputs = {
   //   age: age,
@@ -47,7 +47,7 @@ function classify() {
   //   sex: sex
   // };
 
-  let inputs = [fare_class, sex, age, fare];
+  const inputs = [fare_class, sex, age, fare];
   neuralNetwork.classify(inputs, gotResults);
 }
 

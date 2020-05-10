@@ -13,8 +13,8 @@ let classifier;
 
 let img;
 let currentIndex = 0;
-let allImages = [];
-let predictions = [];
+const allImages = [];
+const predictions = [];
 
 function preload() {
   classifier = ml5.imageClassifier('MobileNet');

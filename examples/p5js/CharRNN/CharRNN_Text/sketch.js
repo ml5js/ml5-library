@@ -56,16 +56,16 @@ function generate() {
     select('#status').html('Generating...');
 
     // Grab the original text
-    let original = textInput.value();
+    const original = textInput.value();
     // Make it to lower case
-    let txt = original.toLowerCase();
+    const txt = original.toLowerCase();
 
     // Check if there's something to send
     if (txt.length > 0) {
       // This is what the LSTM generator needs
       // Seed text, temperature, length to outputs
       // TODO: What are the defaults?
-      let data = {
+      const data = {
         seed: txt,
         temperature: tempSlider.value(),
         length: lengthSlider.value()
