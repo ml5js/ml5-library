@@ -42,21 +42,21 @@ function draw() {
 
   // For one pose only (use a for loop for multiple poses!)
   if (poses.length > 0) {
-    let pose = poses[0].pose;
+    const pose = poses[0].pose;
 
     // Create a pink ellipse for the nose
     fill(213, 0, 143);
-    let nose = pose['nose'];
+    const nose = pose['nose'];
     ellipse(nose.x, nose.y, 20, 20);
 
     // Create a yellow ellipse for the right eye
     fill(255, 215, 0);
-    let rightEye = pose['rightEye'];
+    const rightEye = pose['rightEye'];
     ellipse(rightEye.x, rightEye.y, 20, 20);
 
     // Create a yellow ellipse for the right eye
     fill(255, 215, 0);
-    let leftEye = pose['leftEye'];
+    const leftEye = pose['leftEye'];
     ellipse(leftEye.x, leftEye.y, 20, 20);
   }
 }

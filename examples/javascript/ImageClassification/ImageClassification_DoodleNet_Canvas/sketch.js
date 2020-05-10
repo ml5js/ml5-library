@@ -22,8 +22,8 @@ let canvas, ctx;
 let label;
 let confidence;
 let button
-let width = 280;
-let height = 280;
+const width = 280;
+const height = 280;
 
 let pX = null;
 let pY = null;

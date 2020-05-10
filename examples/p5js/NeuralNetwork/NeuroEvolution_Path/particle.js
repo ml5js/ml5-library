@@ -28,7 +28,7 @@ class Particle {
 
   // fitness = one divided by distance squared
   calcFitness() {
-    let d = p5.Vector.dist(this.position, target);
+    const d = p5.Vector.dist(this.position, target);
     this.fitness = pow(1 / d, 2);
     return this.fitness;
   }
@@ -40,10 +40,10 @@ class Particle {
   // Run in relation to all the obstacles
   // If I'm stuck, don't bother updating or checking for intersection
   think() {
-    let inputs = [];
+    const inputs = [];
     inputs[0] = this.position.x / width;
     inputs[1] = this.position.y / height;
-    let outputs = this.brain.predictSync(inputs);
+    const outputs = this.brain.predictSync(inputs);
     this.velocity = p5.Vector.fromAngle(outputs[0].value * TWO_PI);
     this.velocity.mult(outputs[1].value * 5);
 

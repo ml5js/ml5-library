@@ -12,8 +12,8 @@ let objectDetector;
 let status;
 let objects = [];
 let canvas, ctx;
-let width = 640;
-let height = 420;
+const width = 640;
+const height = 420;
 
 async function make() {
   img = new Image();

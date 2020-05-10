@@ -12,8 +12,8 @@ let img;
 let button;
 let dropdown;
 let canvas, ctx;
-let width = 200;
-let height = 200;
+const width = 200;
+const height = 200;
 
 async function make() {
   canvas = createCanvas(width, height);
@@ -29,7 +29,7 @@ async function make() {
 }
 
 function generateImage() {
-  let label = dropdown.value;
+  const label = dropdown.value;
   cvae.generate(label, gotImage);
 }
 
@@ -52,7 +52,7 @@ function modelReady() {
   dropdown = document.createElement('select');
   document.body.appendChild(dropdown);
 
-  for (let label of cvae.labels) {
+  for (const label of cvae.labels) {
     const option = document.createElement("option");
     option.value = label;
     option.text = label;

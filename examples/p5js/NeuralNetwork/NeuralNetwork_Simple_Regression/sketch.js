@@ -43,9 +43,9 @@ function finishedTraining(){
         return;
       }
       console.log(results[0]);
-      let prediction = results[0]
-      let x = counter;
-      let y = prediction.value
+      const prediction = results[0]
+      const x = counter;
+      const y = prediction.value
       fill(255, 0, 0);
       rectMode(CENTER);
       rect(x, y, 10, 10);
@@ -62,7 +62,7 @@ function createTrainingData(){
     const iters = floor(random(5, 20))
     const spread = 50;
     for(let j = 0; j < iters; j++){
-      let data = [i, height - i + floor(random(-spread, spread))]
+      const data = [i, height - i + floor(random(-spread, spread))]
       fill(0, 0, 255);
       ellipse(data[0], data[1], 10, 10)
       nn.addData([data[0]], [data[1]])

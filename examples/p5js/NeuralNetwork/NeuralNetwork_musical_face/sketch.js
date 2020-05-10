@@ -11,10 +11,10 @@ let faceBrain;
 
 //  Sound
 let osc;
-let freqMax = 800;
+const freqMax = 800;
 
 // Keeping track of state
-let trained = false;
+const trained = false;
 let collecting = false;
 
 function setup() {
@@ -67,7 +67,7 @@ function draw() {
 
   // Just look at the first face and draw all the points
   if (detections.length > 0) {
-    let points = detections[0].landmarks.positions;
+    const points = detections[0].landmarks.positions;
     for (let i = 0; i < points.length; i++) {
       stroke(161, 95, 251);
       strokeWeight(4);
@@ -78,12 +78,12 @@ function draw() {
   // If Collecting  data
   if (collecting) {
     // Get slider frequency value
-    let freq = parseFloat(select('#frequency_slider').value());
+    const freq = parseFloat(select('#frequency_slider').value());
     select('#training_freq').html(freq);
     osc.freq(freq);
 
     // Get face inputs
-    let inputs = getInputs();
+    const inputs = getInputs();
     if (inputs) {
       // Normalize frequency value
       faceBrain.addData(inputs, [freq]);
@@ -95,8 +95,8 @@ function getInputs() {
   // If there is a face, flatten all the positions into
   // a normalized array.
   if (detections.length > 0) {
-    let points = detections[0].landmarks.positions;
-    let inputs = [];
+    const points = detections[0].landmarks.positions;
+    const inputs = [];
     for (let i = 0; i < points.length; i++) {
       inputs.push(points[i]._x);
       inputs.push(points[i]._y);
@@ -133,7 +133,7 @@ function finishedTraining() {
 
 // Predict a frequency
 function predict() {
-  let inputs = getInputs();
+  const inputs = getInputs();
   faceBrain.predict(inputs, gotFrequency);
 }
 

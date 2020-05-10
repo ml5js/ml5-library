@@ -2,7 +2,7 @@
 let brain;
 
 function setup() {
-  let canvas = createCanvas(400, 400);
+  const canvas = createCanvas(400, 400);
   // Only when clicking on the canvas
   canvas.mousePressed(addData);
 
@@ -24,7 +24,7 @@ function setup() {
 // Add a data record
 function addData() {
   // Get frequency
-  let label = select('#label').value();
+  const label = select('#label').value();
   // Add data
   brain.addData({x:mouseX, y:mouseY}, {label});
 

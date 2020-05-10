@@ -23,8 +23,8 @@ let currentNote = '';
 
 let canvas, ctx;
 
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 
 // taken from p5.Sound
 function freqToMidi(f) {
@@ -67,7 +67,7 @@ function modelLoaded() {
 function getPitch() {
   pitch.getPitch(function(err, frequency) {
     if (frequency) {
-      let midiNum = freqToMidi(frequency);
+      const midiNum = freqToMidi(frequency);
       currentNote = scale[midiNum % 12];
     }
     getPitch();

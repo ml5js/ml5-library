@@ -64,7 +64,7 @@ function drawKeypoints()  {
   for (let i = 0; i < poses.length; i++) {
     // For each pose detected, loop through all the keypoints
     for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
-      let keypoint = poses[i].pose.keypoints[j];
+      const keypoint = poses[i].pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         ctx.fillStyle = '#FFFFFF'
@@ -84,8 +84,8 @@ function drawSkeleton() {
   for (let i = 0; i < poses.length; i++) {
     // For every skeleton, loop through all body connections
     for (let j = 0; j < poses[i].skeleton.length; j++) {
-      let partA = poses[i].skeleton[j][0];
-      let partB = poses[i].skeleton[j][1];
+      const partA = poses[i].skeleton[j][0];
+      const partB = poses[i].skeleton[j][1];
       ctx.beginPath();
       ctx.moveTo(partA.position.x, partA.position.y);
       ctx.lineTo(partB.position.x, partB.position.y);

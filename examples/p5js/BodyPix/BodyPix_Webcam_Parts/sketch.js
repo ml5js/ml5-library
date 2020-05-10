@@ -66,7 +66,7 @@ function createHSBPalette() {
     });
 }
 
-function createHSBPalette() {
+function createRGBPalette() {
     colorMode(RGB);
     options.palette = bodypix.config.palette;
     Object.keys(options.palette).forEach(part => {
