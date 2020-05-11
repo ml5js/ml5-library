@@ -80,8 +80,8 @@ async function loopRNN() {
 }
 
 async function predict() {
-  let temperature = Number(tempSlider.value);
-  let next = await charRNN.predict( Number(temperature) );
+  const temperature = Number(tempSlider.value);
+  const next = await charRNN.predict( Number(temperature) );
   await charRNN.feed(next.sample);
   resultText.innerHTML +=  next.sample;
 }

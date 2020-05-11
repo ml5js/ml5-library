@@ -2,12 +2,12 @@
 let brain;
 
 // Variables to track p5 oscillator
-let playing = false;
+const playing = false;
 let frequency;
 let osc;
 
 function setup() {
-  let canvas = createCanvas(400, 400);
+  const canvas = createCanvas(400, 400);
   // Only when clicking on the canvas
   canvas.mousePressed(addData);
 
@@ -29,7 +29,7 @@ function setup() {
 // Add a data record
 function addData() {
   // Get frequency
-  let target = parseFloat(select('#frequency').value());
+  const target = parseFloat(select('#frequency').value());
   // TODO: support notePlayer.data.addData({x: mouseX, y: mouseY}, {frequency: target});
   // Add data
   brain.addData({x:mouseX, y:mouseY}, {freq:target});

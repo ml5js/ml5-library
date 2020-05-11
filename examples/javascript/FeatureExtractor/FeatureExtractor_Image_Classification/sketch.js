@@ -42,11 +42,6 @@ const featureExtractor = ml5.featureExtractor('MobileNet', modelLoaded);
 // Create a new classifier using those features
 const classifier = featureExtractor.classification(video, videoReady);
 
-// Predict the current frame.
-function predict() {
-  classifier.predict(gotResults);
-}
-
 // A function to be called when the video is finished loading
 function videoReady() {
   videoStatus.innerText = 'Video ready!';

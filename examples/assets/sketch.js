@@ -1,8 +1,8 @@
 
 const s = ( sketch ) => {
 
-  let x = 100;
-  let y = 100;
+  const x = 100;
+  const y = 100;
   let canvas;
 
   sketch.setup = () => {
@@ -37,7 +37,7 @@ async function init(){
   createSections(data);
 
   // p5 sketch
-  let myp5 = new p5(s, 'myCanvas');
+  const myp5 = new p5(s, 'myCanvas');
 }
 
 init();
@@ -90,7 +90,7 @@ function createSections(data){
 $search.addEventListener('keyup', (e) =>{
   const val = e.target.value;
   
-  let dataCopy = Object.assign({}, data);
+  const dataCopy = Object.assign({}, data);
   if(val.trim() === ""){
     createSections(dataCopy);
   } else {

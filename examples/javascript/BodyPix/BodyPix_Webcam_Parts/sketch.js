@@ -2,8 +2,8 @@ let bodypix;
 let segmentation;
 let video;
 let canvas, ctx;
-let width = 480;
-let height = 360;
+const width = 480;
+const height = 360;
 
 const options = {
   outputStride: 8, // 8, 16, or 32, default is 16
@@ -35,7 +35,7 @@ function gotImage(err, result){
   segmentation = result;
   ctx.drawImage(video, 0, 0, width, height);
 
-  let parts = imageDataToCanvas(result.raw.partMask.data, result.raw.partMask.width, result.raw.partMask.height)
+  const parts = imageDataToCanvas(result.raw.partMask.data, result.raw.partMask.width, result.raw.partMask.height)
   ctx.drawImage(parts, 0, 0, width, height);
 
   bodypix.segmentWithParts(gotImage, options);

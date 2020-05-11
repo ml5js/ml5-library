@@ -1,8 +1,8 @@
 let faceapi;
 let video;
 let detections;
-let width = 360;
-let height = 280;
+const width = 360;
+const height = 280;
 let canvas, ctx;
 
 // relative path to your models from window.location.pathname

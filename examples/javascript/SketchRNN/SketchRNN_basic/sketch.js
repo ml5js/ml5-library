@@ -20,8 +20,8 @@ let button;
 
 let canvas, ctx;
 
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 
 
 async function setup() {

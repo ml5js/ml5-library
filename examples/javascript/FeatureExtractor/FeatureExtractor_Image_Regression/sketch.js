@@ -15,8 +15,8 @@ let loss;
 let slider;
 let samples = 0;
 let ctx;
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 let positionX = width/2;
 
 function map(n, start1, stop1, start2, stop2) {

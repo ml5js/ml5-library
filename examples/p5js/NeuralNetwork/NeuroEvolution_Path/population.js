@@ -15,22 +15,22 @@ class Population {
   }
 
   update() {
-    for (let p of this.population) {
+    for (const p of this.population) {
       p.think();
       p.update();
     }
   }
 
   show() {
-    for (let p of this.population) {
+    for (const p of this.population) {
       p.show();
     }
   }
 
   reproduce() {
-    let brainA = this.pickOne();
-    let brainB = this.pickOne();
-    let childBrain = brainA.crossover(brainB);
+    const brainA = this.pickOne();
+    const brainB = this.pickOne();
+    const childBrain = brainA.crossover(brainB);
     // 1% mutation rate
     childBrain.mutate(0.01);
     return new Particle(childBrain);
@@ -51,17 +51,17 @@ class Population {
   // Normalize all fitness values
   calculateFitness() {
     let sum = 0;
-    for (let p of this.population) {
+    for (const p of this.population) {
       sum += p.calcFitness();
     }
-    for (let p of this.population) {
+    for (const p of this.population) {
       p.fitness = p.fitness / sum;
     }
   }
 
   // Making the next generation
   reproduction() {
-    let nextPopulation = [];
+    const nextPopulation = [];
     // Refill the population with children from the mating pool
     for (let i = 0; i < this.population.length; i++) {
       nextPopulation[i] = this.reproduce();

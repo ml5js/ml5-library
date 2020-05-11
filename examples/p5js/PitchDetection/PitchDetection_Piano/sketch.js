@@ -40,7 +40,7 @@ function modelLoaded() {
 function getPitch() {
   pitch.getPitch(function(err, frequency) {
     if (frequency) {
-      let midiNum = freqToMidi(frequency);
+      const midiNum = freqToMidi(frequency);
       currentNote = scale[midiNum % 12];
     }
     getPitch();

@@ -13,8 +13,8 @@ let status;
 let objects = [];
 let video;
 let canvas, ctx;
-let width = 480;
-let height = 360;
+const width = 480;
+const height = 360;
 
 async function make() {
   // get the video

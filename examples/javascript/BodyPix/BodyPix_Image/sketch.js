@@ -3,8 +3,8 @@ let segmentation;
 let img;
 let canvas;
 let ctx;
-let width = 480;
-let height = 560;
+const width = 480;
+const height = 560;
 
 async function make() {
   img = new Image();
@@ -18,7 +18,7 @@ async function make() {
 
   ctx.drawImage(img, 0,0);
 
-  let maskedBackground = await imageDataToCanvas(segmentation.raw.backgroundMask.data, segmentation.raw.backgroundMask.width, segmentation.raw.backgroundMask.height)
+  const maskedBackground = await imageDataToCanvas(segmentation.raw.backgroundMask.data, segmentation.raw.backgroundMask.width, segmentation.raw.backgroundMask.height)
   ctx.drawImage(maskedBackground, 0, 0);
 
 }
