@@ -15,6 +15,9 @@
       "files": [ "examples/**" ],
       "globals": {
         "ml5": false
+      },
+      "rules": {
+        "no-use-before-define": ["error", { "functions": false, "classes": true, "variables": true }]
       }
     }]
 }
