@@ -1114,6 +1114,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tundiszasz",
+      "name": "Tündi Szász",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19189730?v=4",
+      "profile": "http://www.tundiszasz.com",
+      "contributions": [
+        "design",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
