@@ -20,6 +20,16 @@ module.exports = {
         ml5: false,
         ...p5Globals,
       },
+      rules: {
+        "no-use-before-define": [
+          "error",
+          {
+            functions: false,
+            classes: true,
+            variables: true,
+          },
+        ],
+      },
     },
   ],
 };
