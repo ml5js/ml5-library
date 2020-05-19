@@ -29,7 +29,7 @@ function setup() {
 }
 
 function appendImages() {
-  for (i = 0; i < data.images.length; i++) {
+  for (i = 0; i < data.images.length; i += 1) {
     imgPath = data.images[i];
     allImages.push('images/dataset/' + imgPath);
   }

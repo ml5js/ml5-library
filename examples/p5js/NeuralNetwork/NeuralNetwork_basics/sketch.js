@@ -66,7 +66,7 @@ function trainModel() {
   // const training_target = [0.3, 0.9];
   let a, b, c;
   let training_target;
-  for (let i = 0; i < 500; i++) {
+  for (let i = 0; i < 500; i += 1) {
     if (i % 2) {
       a = Math.random(0, 0.16);
       b = Math.random(0.16, 0.32);

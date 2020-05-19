@@ -152,7 +152,7 @@ function clearAllLabels() {
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
     const pose = poses[i].pose;
     for (let j = 0; j < pose.keypoints.length; j++) {
@@ -171,7 +171,7 @@ function drawKeypoints()  {
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     const skeleton = poses[i].skeleton;
     // For every skeleton, loop through all body connections
     for (let j = 0; j < skeleton.length; j++) {

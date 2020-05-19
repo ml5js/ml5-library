@@ -9,7 +9,7 @@ class Population {
   constructor(total) {
     this.population = [];
     this.generations = 0;  // Number of generations
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < total; i += 1) {
       this.population[i] = new Particle();
     }
   }
@@ -63,7 +63,7 @@ class Population {
   reproduction() {
     const nextPopulation = [];
     // Refill the population with children from the mating pool
-    for (let i = 0; i < this.population.length; i++) {
+    for (let i = 0; i < this.population.length; i += 1) {
       nextPopulation[i] = this.reproduce();
     }
     this.population = nextPopulation;

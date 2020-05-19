@@ -93,7 +93,7 @@ function drawKeyboard() {
 
 
   // White keys
-  for (let i = 0; i < scale.length; i++) {
+  for (let i = 0; i < scale.length; i += 1) {
     if (scale[i].indexOf('#') == -1) {
       
 
@@ -113,7 +113,7 @@ function drawKeyboard() {
   whiteKeyCounter = 0;
 
   // Black keys
-  for (let i = 0; i < scale.length; i++) {
+  for (let i = 0; i < scale.length; i += 1) {
     if (scale[i].indexOf('#') > -1) {
       
       ctx.beginPath();

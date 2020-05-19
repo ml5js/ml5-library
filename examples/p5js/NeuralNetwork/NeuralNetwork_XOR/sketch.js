@@ -12,7 +12,7 @@ function setup() {
   rows = height / resolution;
 
   let index = 0;
-  for (let i = 0; i < cols; i++) {
+  for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j++) {
       const br = 255; // y_values[index] * 255
       fill(br);
@@ -56,7 +56,7 @@ function finishedTraining() {
   // console.log('done!');
   // TODO: Support prediction on multiple rows of input data
   const xs = [];
-  for (let i = 0; i < cols; i++) {
+  for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j++) {
       const x1 = i / cols;
       const x2 = j / rows;
@@ -75,7 +75,7 @@ function gotResults(error, results) {
   }
   // console.log(results);
   let index = 0;
-  for (let i = 0; i < cols; i++) {
+  for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j++) {
       const br = results[index][0].value * 255; // y_values[index] * 255
       fill(br);

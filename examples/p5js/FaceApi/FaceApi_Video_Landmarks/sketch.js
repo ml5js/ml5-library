@@ -47,7 +47,7 @@ function gotResults(err, result) {
 }
 
 function drawBox(detections) {
-  for (let i = 0; i < detections.length; i++) {
+  for (let i = 0; i < detections.length; i += 1) {
     const alignedRect = detections[i].alignedRect;
     const x = alignedRect._box._x;
     const y = alignedRect._box._y;
@@ -66,7 +66,7 @@ function drawLandmarks(detections) {
   stroke(161, 95, 251);
   strokeWeight(2);
 
-  for (let i = 0; i < detections.length; i++) {
+  for (let i = 0; i < detections.length; i += 1) {
     const mouth = detections[i].parts.mouth;
     const nose = detections[i].parts.nose;
     const leftEye = detections[i].parts.leftEye;
@@ -85,7 +85,7 @@ function drawLandmarks(detections) {
 
 function drawPart(feature, closed) {
   beginShape();
-  for (let i = 0; i < feature.length; i++) {
+  for (let i = 0; i < feature.length; i += 1) {
     const x = feature[i]._x;
     const y = feature[i]._y;
     vertex(x, y);

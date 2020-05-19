@@ -57,7 +57,7 @@ function modelReady() {
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints()  {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
     for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
       let keypoint = poses[i].pose.keypoints[j];
@@ -74,7 +74,7 @@ function drawKeypoints()  {
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For every skeleton, loop through all body connections
     for (let j = 0; j < poses[i].skeleton.length; j++) {
       let partA = poses[i].skeleton[j][0];

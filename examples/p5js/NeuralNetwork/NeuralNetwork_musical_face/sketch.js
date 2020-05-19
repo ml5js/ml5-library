@@ -68,7 +68,7 @@ function draw() {
   // Just look at the first face and draw all the points
   if (detections.length > 0) {
     const points = detections[0].landmarks.positions;
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < points.length; i += 1) {
       stroke(161, 95, 251);
       strokeWeight(4);
       point(points[i]._x, points[i]._y);
@@ -97,7 +97,7 @@ function getInputs() {
   if (detections.length > 0) {
     const points = detections[0].landmarks.positions;
     const inputs = [];
-    for (let i = 0; i < points.length; i++) {
+    for (let i = 0; i < points.length; i += 1) {
       inputs.push(points[i]._x);
       inputs.push(points[i]._y);
     }

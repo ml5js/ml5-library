@@ -57,7 +57,7 @@ function drawKeyboard() {
   strokeWeight(2);
   stroke(50);
   // White keys
-  for (let i = 0; i < scale.length; i++) {
+  for (let i = 0; i < scale.length; i += 1) {
     if (scale[i].indexOf('#') == -1) {
       if (scale[i] == currentNote) {
         fill(200);
@@ -71,7 +71,7 @@ function drawKeyboard() {
   whiteKeyCounter = 0;
 
   // Black keys
-  for (let i = 0; i < scale.length; i++) {
+  for (let i = 0; i < scale.length; i += 1) {
     if (scale[i].indexOf('#') > -1) {
       if (scale[i] == currentNote) {
         fill(100);

@@ -11,12 +11,12 @@ function nextGeneration() {
   calculateFitness();
   
   // Create new population of birds
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = reproduce();
   }
 
   // Release all the memory
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     savedBirds[i].brain.dispose();
   }
   // Clear the array
