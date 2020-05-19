@@ -22,10 +22,10 @@ class Bird {
       // Create a new neural network
       const options = {
         inputs: 5,
-        outputs: ['up', 'down'],
-        task: 'classification',
-        noTraining: true
-      }      
+        outputs: ["up", "down"],
+        task: "classification",
+        noTraining: true,
+      };
       this.brain = ml5.neuralNetwork(options);
     }
   }
@@ -68,7 +68,7 @@ class Bird {
 
     // Jump according to neural network output
     const results = this.brain.classifySync(inputs);
-    if (results[0].label === 'up') {
+    if (results[0].label === "up") {
       this.up();
     }
   }
@@ -79,7 +79,7 @@ class Bird {
 
   update() {
     // Score increases each frame
-    this.score++;
+    this.score += 1;
     this.velocity += this.gravity;
     this.y += this.velocity;
   }

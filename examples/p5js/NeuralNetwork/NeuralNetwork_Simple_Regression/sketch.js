@@ -48,7 +48,7 @@ function finishedTraining() {
       rectMode(CENTER);
       rect(x, y, 10, 10);
 
-      counter++;
+      counter += 1;
       finishedTraining();
     });
   }

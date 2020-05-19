@@ -6,10 +6,10 @@
 
 // Create the next generation
 function nextGeneration() {
-  console.log('next generation');
+  console.log("next generation");
   // Calculate fitness values
   calculateFitness();
-  
+
   // Create new population of birds
   for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = reproduce();
@@ -23,7 +23,7 @@ function nextGeneration() {
   savedBirds = [];
 }
 
-// Create a child bird from two parents 
+// Create a child bird from two parents
 function reproduce() {
   const brainA = pickOne();
   const brainB = pickOne();
@@ -38,9 +38,9 @@ function pickOne() {
   let r = random(1);
   while (r > 0) {
     r = r - savedBirds[index].fitness;
-    index++;
+    index += 1;
   }
-  index--;
+  index -= 1;
   const bird = savedBirds[index];
   return bird.brain;
 }
