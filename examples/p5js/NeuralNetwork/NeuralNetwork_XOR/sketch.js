@@ -22,7 +22,7 @@ function setup() {
       textAlign(CENTER, CENTER);
       text(nf(0.5, 1, 2), i * resolution + resolution / 2, j * resolution + resolution / 2);
       // text(nf(y_values[index], 1, 2), i * resolution + resolution / 2, j * resolution + resolution / 2)
-      index++;
+      index += 1;
     }
   }
 
@@ -87,7 +87,7 @@ function gotResults(error, results) {
         i * resolution + resolution / 2,
         j * resolution + resolution / 2,
       );
-      index++;
+      index += 1;
     }
   }
 
