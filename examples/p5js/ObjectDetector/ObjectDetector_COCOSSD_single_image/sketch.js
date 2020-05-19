@@ -39,7 +39,7 @@ function draw() {
   if (status != undefined) {
     image(img, 0, 0)
 
-    for (let i = 0; i < objects.length; i++) {
+    for (let i = 0; i < objects.length; i += 1) {
       noStroke();
       fill(0, 255, 0);
       text(objects[i].label + " " + nfc(objects[i].confidence * 100.0, 2) + "%", objects[i].x + 5, objects[i].y + 15);

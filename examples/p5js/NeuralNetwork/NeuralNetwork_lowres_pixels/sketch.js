@@ -69,7 +69,7 @@ function getInputs() {
   video.loadPixels();
   // Create an array
   const inputs = [];
-  for (let i = 0; i < video.width * video.height; i++) {
+  for (let i = 0; i < video.width * video.height; i += 1) {
     const index = i * 4;
     // Manual normalization
     inputs.push(video.pixels[index + 0] / 255);

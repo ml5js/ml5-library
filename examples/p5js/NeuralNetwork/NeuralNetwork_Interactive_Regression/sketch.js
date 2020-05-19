@@ -60,7 +60,7 @@ function startTraining() {
   neuralNetwork = ml5.neuralNetwork(options);
 
   // add training data
-  for (let i = 0; i < trainData.length; i++) {
+  for (let i = 0; i < trainData.length; i += 1) {
     neuralNetwork.addData([trainData[i][0]], [trainData[i][1]]);
   }
 
@@ -81,7 +81,7 @@ function doneTraining() {
       console.log(error); 
     } else {
       console.log(results);
-      for (let i = 0; i < results.length; i++){
+      for (let i = 0; i < results.length; i += 1){
         x = xMany[i][0];
         y = results[i][0]['value'];
         circle(x, y, 1);

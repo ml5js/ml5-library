@@ -28,7 +28,7 @@ function setup() {
 
 function draw() {
   image(video, 0, 0, width, height);
-  for (let i = 0; i < objects.length; i++) {
+  for (let i = 0; i < objects.length; i += 1) {
     noStroke();
     fill(0, 255, 0);
     text(objects[i].label, objects[i].x * width, objects[i].y * height - 5);

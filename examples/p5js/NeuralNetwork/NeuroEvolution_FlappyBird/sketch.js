@@ -19,7 +19,7 @@ function setup() {
   slider = createSlider(1, 10, 1);
 
   // Create initial population of birds
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = new Bird();
   }
 }

@@ -50,7 +50,7 @@ class Bird {
     // Find the closest pipe
     let closest = null;
     let closestD = Infinity;
-    for (let i = 0; i < pipes.length; i++) {
+    for (let i = 0; i < pipes.length; i += 1) {
       const d = pipes[i].x + pipes[i].w - this.x;
       if (d < closestD && d > 0) {
         closest = pipes[i];
