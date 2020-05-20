@@ -100,12 +100,12 @@ class ImageClassifier {
         const prefix = split.slice(0, split.length - 1).join("/");
         const metadataUrl = `${prefix}/metadata.json`;
 
-        const metadataResponse = await axios.get(metadataUrl);
-        if (metadataResponse.statusText !== "OK") {
-          console.log("Tried to fetch metadata.json, but it seems to be missing.", metadataResponse.statusText);
-          // throw Error(metadataResponse.statusText);
-        } else {
+        const metadataResponse = await axios.get(metadataUrl).catch((metadataError) => {
+          console.log("Tried to fetch metadata.json, but it seems to be missing.", metadataError);
+        });
+        if (metadataResponse) {
           const metadata = metadataResponse.data;
+          
           if (metadata.labels) {
             this.mapStringToIndex = metadata.labels;
           }
