@@ -12,7 +12,7 @@
  */
 
 import * as tf from "@tensorflow/tfjs";
-import * as handtrack from "@tensorflow-models/handpose";
+import * as handposeCore from "@tensorflow-models/handpose";
 import { EventEmitter } from "events";
 import callCallback from "../utils/callcallback";
 
@@ -39,7 +39,7 @@ class Handpose extends EventEmitter {
    * @return {this} the Handpose model.
    */
   async loadModel() {
-    this.model = await handtrack.load(this.config);
+    this.model = await handposeCore.load(this.config);
     this.modelReady = true;
 
     if (this.video && this.video.readyState === 0) {
@@ -50,7 +50,7 @@ class Handpose extends EventEmitter {
       });
     }
 
-    this.pose();
+    this.predict();
 
     return this;
   }
@@ -59,15 +59,15 @@ class Handpose extends EventEmitter {
    * Load the model and set it to this.model
    * @return {this} the Handpose model.
    */
-  async pose(inputOr, callback) {
+  async predict(inputOr, callback) {
     const input = this.getInput(inputOr);
     const { flipHorizontal } = this.config;
-    const pose = await this.model.estimateHands(input, flipHorizontal);
-    const result = pose;
-    this.emit("pose", result);
+    const predictions = await this.model.estimateHands(input, flipHorizontal);
+    const result = predictions;
+    this.emit("predict", result);
 
     if (this.video) {
-      return tf.nextFrame().then(() => this.pose());
+      return tf.nextFrame().then(() => this.predict());
     }
 
     if (typeof callback === "function") {

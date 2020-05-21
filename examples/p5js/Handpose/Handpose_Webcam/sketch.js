@@ -1,6 +1,6 @@
 let handpose;
 let video;
-let poses = [];
+let predictions = [];
 
 function setup() {
   createCanvas(640, 480);
@@ -9,10 +9,10 @@ function setup() {
 
   handpose = ml5.handpose(video, modelReady);
 
-  // This sets up an event that fills the global variable "poses"
-  // with an array every time new poses are detected
-  handpose.on("pose", results => {
-    poses = results;
+  // This sets up an event that fills the global variable "predictions"
+  // with an array every time new hand poses are detected
+  handpose.on("predict", results => {
+    predictions = results;
   });
 
   // Hide the video element, and just show the canvas
@@ -32,10 +32,10 @@ function draw() {
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
-  for (let i = 0; i < poses.length; i += 1) {
-    const pose = poses[i];
-    for (let j = 0; j < pose.landmarks.length; j += 1) {
-      const keypoint = pose.landmarks[j];
+  for (let i = 0; i < predictions.length; i += 1) {
+    const prediction = predictions[i];
+    for (let j = 0; j < prediction.landmarks.length; j += 1) {
+      const keypoint = prediction.landmarks[j];
       fill(0, 255, 0);
       noStroke();
       ellipse(keypoint[0], keypoint[1], 10, 10);
