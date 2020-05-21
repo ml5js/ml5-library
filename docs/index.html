@@ -124,22 +124,22 @@
         mergeNavbar: true,
         auto2top: true,
         plugins: [
-          function(hook, vm){
-            hook.ready(function(){
-                // Docsify way
-                // vm.route = vm.router.parse();
-                // document.body.setAttribute('data-page', vm.route.file);
-                // vm._updateRender();
-                // vm.$fetch(()=>{}, vm.$resetEvents.bind(vm, 'navigate'));
+          // function(hook, vm){
+          //   hook.ready(function(){
+          //       // Docsify way
+          //       // vm.route = vm.router.parse();
+          //       // document.body.setAttribute('data-page', vm.route.file);
+          //       // vm._updateRender();
+          //       // vm.$fetch(()=>{}, vm.$resetEvents.bind(vm, 'navigate'));
 
-                // Normal HTML way
-                var initialRoute = document.querySelector(`a[href="${vm.router.parse().path}"]`);
-                initialRoute.click();
-            })
-          },
+          //       // Normal HTML way
+          //       var initialRoute = document.querySelector(`a[href="${vm.router.parse().path}"]`);
+          //       initialRoute.click();
+          //   })
+          // },
           EditOnGithubPlugin.create(config.editOnGithub.docBase, null, config.editOnGithub.title),
         ],
-        routerMode: 'history',
+        // routerMode: 'history',
       };
       
 
