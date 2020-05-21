@@ -114,6 +114,7 @@
     "@magenta/sketch": "0.2.0",
     "@tensorflow-models/body-pix": "1.1.2",
     "@tensorflow-models/coco-ssd": "^2.0.0",
+    "@tensorflow-models/facemesh": "0.0.3",
     "@tensorflow-models/knn-classifier": "1.2.1",
     "@tensorflow-models/mobilenet": "2.0.3",
     "@tensorflow-models/posenet": "^2.2.1",
