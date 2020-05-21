@@ -124,10 +124,21 @@
         mergeNavbar: true,
         auto2top: true,
         plugins: [
+          function(hook, vm){
+            hook.ready(function(){
+                // window.history.pushState({}, '', "/tutorials/local-web-server");
+                // vm.route.path = "/tutorials/local-web-server";
+                vm.route.path = window.location.pathname
+                vm.$fetch(vm.$resetEvents.bind(vm, 'navigate'));
+                // console.log(vm);
+            })
+          },
           EditOnGithubPlugin.create(config.editOnGithub.docBase, null, config.editOnGithub.title),
         ],
         routerMode: 'history',
       };
+      
+
     </script>
     <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
     <!-- Plugins -->
