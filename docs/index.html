@@ -126,11 +126,10 @@
         plugins: [
           function(hook, vm){
             hook.ready(function(){
-                // window.history.pushState({}, '', "/tutorials/local-web-server");
-                // vm.route.path = "/tutorials/local-web-server";
-                vm.route.path = window.location.pathname
-                vm.$fetch(vm.$resetEvents.bind(vm, 'navigate'));
-                // console.log(vm);
+                vm.route = vm.router.parse();
+                document.body.setAttribute('data-page', vm.route.file);
+                vm._updateRender();
+                vm.$fetch(()=>{}, vm.$resetEvents.bind(vm, 'navigate'));
             })
           },
           EditOnGithubPlugin.create(config.editOnGithub.docBase, null, config.editOnGithub.title),
