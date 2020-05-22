@@ -24,7 +24,7 @@ describe('objectDetector with cocossd', () => {
   }
 
   async function getImageData() {
-    const arr = new Uint8ClampedArray(10000);
+    const arr = new Uint8ClampedArray(20000);
 
     // Iterate through every pixel
     for (let i = 0; i < arr.length; i += 4) {
