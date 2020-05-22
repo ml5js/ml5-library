@@ -2,14 +2,13 @@
 // Daniel Shiffman
 // http://natureofcode.com
 
-
 // A class to describe a population of particles
 
 class Population {
   constructor(total) {
     this.population = [];
-    this.generations = 0;  // Number of generations
-    for (let i = 0; i < total; i++) {
+    this.generations = 0; // Number of generations
+    for (let i = 0; i < total; i += 1) {
       this.population[i] = new Particle();
     }
   }
@@ -42,9 +41,9 @@ class Population {
     let r = random(1);
     while (r > 0) {
       r = r - this.population[index].fitness;
-      index++;
+      index += 1;
     }
-    index--;
+    index -= 1;
     return this.population[index].brain;
   }
 
@@ -63,10 +62,10 @@ class Population {
   reproduction() {
     const nextPopulation = [];
     // Refill the population with children from the mating pool
-    for (let i = 0; i < this.population.length; i++) {
+    for (let i = 0; i < this.population.length; i += 1) {
       nextPopulation[i] = this.reproduce();
     }
     this.population = nextPopulation;
-    this.generations++;
+    this.generations += 1;
   }
 }

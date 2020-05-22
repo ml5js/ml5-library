@@ -27,15 +27,15 @@ function setup() {
     inputs: totalPixels,
     outputs: 1,
     learningRate: 0.01,
-    task:'regression',
+    task: "regression",
     debug: true,
-  }
+  };
   // Create the model
   pixelBrain = ml5.neuralNetwork(options);
 
   // Buttons add trainin data and train model
-  select('#addExample').mousePressed(addExample);
-  select('#train').mousePressed(trainModel);
+  select("#addExample").mousePressed(addExample);
+  select("#train").mousePressed(trainModel);
 }
 
 // Video is ready!
@@ -49,8 +49,8 @@ function draw() {
     // Render the low-res image
     const w = width / videoSize;
     video.loadPixels();
-    for (let x = 0; x < video.width; x++) {
-      for (let y = 0; y < video.height; y++) {
+    for (let x = 0; x < video.width; x += 1) {
+      for (let y = 0; y < video.height; y += 1) {
         const index = (x + y * video.width) * 4;
         const r = video.pixels[index + 0];
         const g = video.pixels[index + 1];
@@ -61,7 +61,6 @@ function draw() {
       }
     }
   }
-
 }
 
 // Package the pixels as inputs to a neural network
@@ -69,7 +68,7 @@ function getInputs() {
   video.loadPixels();
   // Create an array
   const inputs = [];
-  for (let i = 0; i < video.width * video.height; i++) {
+  for (let i = 0; i < video.width * video.height; i += 1) {
     const index = i * 4;
     // Manual normalization
     inputs.push(video.pixels[index + 0] / 255);
@@ -79,10 +78,9 @@ function getInputs() {
   return inputs;
 }
 
-
 // Add an example
 function addExample() {
-  const freq = parseFloat(select('#frequency').value());
+  const freq = parseFloat(select("#frequency").value());
   video.loadPixels();
   const inputs = getInputs();
   // Manual normalization of frequency
@@ -97,11 +95,11 @@ function trainModel() {
 
 // Training is done!
 function finishedTraining() {
-  console.log('done');
+  console.log("done");
 
   // Start sound
   osc = new p5.Oscillator();
-  osc.setType('sine');
+  osc.setType("sine");
   osc.amp(0.5);
   osc.freq(440);
   osc.start();
@@ -125,7 +123,7 @@ function gotFrequency(error, results) {
   frequency = parseFloat(results[0].value) * freqMax;
 
   // Display frequency
-  select('#prediction').html(frequency.toFixed(2));
+  select("#prediction").html(frequency.toFixed(2));
   // Set frequency
   osc.freq(parseFloat(frequency));
   // Predict again

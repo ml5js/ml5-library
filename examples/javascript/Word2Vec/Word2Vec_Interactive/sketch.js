@@ -41,7 +41,7 @@ function setup() {
     word2Vec.nearest(word, (err, result) => {
       let output = '';
       if (result) {
-        for (let i = 0; i < result.length; i++) {
+        for (let i = 0; i < result.length; i += 1) {
           output += result[i].word + '<br/>';
         }
       } else {

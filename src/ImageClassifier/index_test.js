@@ -153,7 +153,6 @@ describe('videoClassifier', () => {
   describe('classify', () => {
     it('Should support video', async () => {
       const results = await classifier.classify()
-      console.log(results)
       expect(results[0].label).not.toBe(null);
     });
   });
