@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import * as axios from 'axios';
 import { saveBlob } from '../utils/io';
 import nnUtils from './NeuralNetworkUtils';
 
@@ -615,8 +616,8 @@ class NeuralNetworkData {
       if (dataUrlOrJson instanceof Object) {
         json = Object.assign({}, dataUrlOrJson);
       } else {
-        const data = await fetch(dataUrlOrJson);
-        json = await data.json();
+        const {data} = await axios.get(dataUrlOrJson);
+        json = data;
       }
 
       // format the data.raw array
@@ -658,8 +659,8 @@ class NeuralNetworkData {
    */
   async loadBlob(dataUrlOrJson, inputLabels, outputLabels) {
     try {
-      const data = await fetch(dataUrlOrJson);
-      const text = await data.text();
+      const {data} = await axios.get(dataUrlOrJson);
+      const text = data; // await data.text();
 
       let result;
       if (nnUtils.isJsonOrString(text)) {
