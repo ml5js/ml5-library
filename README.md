@@ -242,6 +242,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/machenmusik"><img src="https://avatars3.githubusercontent.com/u/2080738?v=4" width="100px;" alt=""/><br /><sub><b>machenmusik</b></sub></a><br /><a href="#example-machenmusik" title="Examples">💡</a></td>
     <td align="center"><a href="https://github.com/pro-nav"><img src="https://avatars3.githubusercontent.com/u/45587765?v=4" width="100px;" alt=""/><br /><sub><b>Pranav Dudhane</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=pro-nav" title="Documentation">📖</a></td>
     <td align="center"><a href="http://www.tundiszasz.com"><img src="https://avatars3.githubusercontent.com/u/19189730?v=4" width="100px;" alt=""/><br /><sub><b>Tündi Szász</b></sub></a><br /><a href="#design-tundiszasz" title="Design">🎨</a> <a href="#ideas-tundiszasz" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/hellonun"><img src="https://avatars0.githubusercontent.com/u/43077909?v=4" width="100px;" alt=""/><br /><sub><b>hellonun</b></sub></a><br /><a href="#ideas-hellonun" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-hellonun" title="User Testing">📓</a></td>
   </tr>
 </table>
 

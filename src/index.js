@@ -32,6 +32,7 @@ import kmeans from "./KMeans";
 import cartoon from "./CartoonGAN";
 import universalSentenceEncoder from "./UniversalSentenceEncoder";
 import facemesh from "./Facemesh";
+import handpose from './Handpose';
 import p5Utils from "./utils/p5Utils";
 import communityStatement from "./utils/community";
 
@@ -58,6 +59,7 @@ const withPreload = {
   faceApi,
   universalSentenceEncoder,
   facemesh,
+  handpose,
 };
 
 // call community statement on load
