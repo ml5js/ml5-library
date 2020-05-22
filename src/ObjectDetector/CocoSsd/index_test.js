@@ -6,7 +6,7 @@
 // const { objectDetector } = ml5;
 
 const COCOSSD_DEFAULTS = {
-  base: 'lite_mobilenet_v2',
+  base: 'mobilenet_v2',
   modelUrl: undefined,
 }
 
@@ -24,7 +24,7 @@ describe('objectDetector with cocossd', () => {
   }
 
   async function getImageData() {
-    const arr = new Uint8ClampedArray(40000);
+    const arr = new Uint8ClampedArray(10000);
 
     // Iterate through every pixel
     for (let i = 0; i < arr.length; i += 4) {
