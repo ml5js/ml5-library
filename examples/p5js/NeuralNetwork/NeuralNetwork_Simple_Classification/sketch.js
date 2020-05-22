@@ -44,7 +44,7 @@ function finishedTraining(){
 }
 
 function createTrainingData(){
-  for(let i = 0; i < 400; i++){
+  for(let i = 0; i < 400; i += 1){
     if(i%2 === 0){
       const x = random(0, width/2);
       nn.addData( [x],  ['left'])

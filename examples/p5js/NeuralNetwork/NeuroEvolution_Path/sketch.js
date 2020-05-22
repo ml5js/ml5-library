@@ -2,16 +2,15 @@
 // Daniel Shiffman
 // http://natureofcode.com
 
-
 // How long should each generation live
-let lifetime; 
+let lifetime;
 let lifeCounter;
 
 // Population
-let population;  
+let population;
 
 // Target position
-let target;      
+let target;
 
 // Interface
 let info;
@@ -23,16 +22,15 @@ function setup() {
   // Move the target if you click on the canvas
   canvas.mousePressed(function() {
     target.x = mouseX;
-    target.y = mouseY; 
+    target.y = mouseY;
   });
 
   // Improve performance for many small neural networks
-  ml5.tf.setBackend('cpu');
+  ml5.tf.setBackend("cpu");
 
   // The number of cycles we will allow a generation to live
   lifetime = 200;
   lifeCounter = 0;
-
 
   // Arbitrary starting target
   target = createVector(20, height / 2);
@@ -44,16 +42,14 @@ function setup() {
   info = createP("");
   // Slider for speeding up simulation
   slider = createSlider(1, 50, 1);
-
 }
 
 function draw() {
-
   // Update the population
-  for (let n = 0; n < slider.value(); n++) {
+  for (let n = 0; n < slider.value(); n += 1) {
     if (lifeCounter < lifetime) {
       population.update();
-      lifeCounter++;
+      lifeCounter += 1;
       // Otherwise a new generation
     } else {
       lifeCounter = 0;
@@ -61,7 +57,6 @@ function draw() {
       population.calculateFitness();
       population.reproduction();
     }
-
   }
 
   // Draw target
@@ -75,5 +70,5 @@ function draw() {
   population.show();
 
   // Display some info
-  info.html(`Generation # ${population.generations}<br>Cycles left: ${(lifetime - lifeCounter)}`);
+  info.html(`Generation # ${population.generations}<br>Cycles left: ${lifetime - lifeCounter}`);
 }

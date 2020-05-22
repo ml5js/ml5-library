@@ -18,7 +18,7 @@ let testA;
 
 function preload() {
   images = [];
-  for (let i = 1; i < 7; i++) {
+  for (let i = 1; i < 7; i += 1) {
     const a = loadImage(`images/A_0${i}.png`)
     const b = loadImage(`images/B_0${i}.png`)
     images.push({
@@ -48,7 +48,7 @@ function setup() {
 
 
   // add data
-  for(let i = 0; i < images.length; i++){
+  for(let i = 0; i < images.length; i += 1){
     const item = images[i];
     // get back the image array
     item.image.loadPixels()

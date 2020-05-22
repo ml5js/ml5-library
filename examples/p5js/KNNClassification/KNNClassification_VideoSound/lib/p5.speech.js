@@ -128,7 +128,7 @@
   p5.Speech.prototype.listVoices = function() {
     if(this.isLoaded)
     {
-      for(var i = 0;i<this.voices.length;i++)
+      for(var i = 0;i<this.voices.length;i += 1)
       {
         console.log(this.voices[i].name);
       }

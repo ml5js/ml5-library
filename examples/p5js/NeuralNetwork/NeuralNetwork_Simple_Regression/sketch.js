@@ -12,61 +12,57 @@ let nn;
 let counter = 0;
 
 const options = {
-  task:'regression',
-  debug: true
-}
+  task: "regression",
+  debug: true,
+};
 
-function setup(){
+function setup() {
   createCanvas(400, 400);
   nn = ml5.neuralNetwork(options);
 
-
-  console.log(nn)
+  console.log(nn);
   createTrainingData();
   nn.normalizeData();
 
-  const trainingOptions={
+  const trainingOptions = {
     batchSize: 24,
-    epochs: 10
-  }
-  
-  nn.train(trainingOptions,finishedTraining); // if you want to change the training options
+    epochs: 10,
+  };
+
+  nn.train(trainingOptions, finishedTraining); // if you want to change the training options
   // nn.train(finishedTraining); // use the default training options
 }
 
-function finishedTraining(){
-
-  if(counter < 400){
+function finishedTraining() {
+  if (counter < 400) {
     nn.predict([counter], (err, results) => {
-      if(err){
+      if (err) {
         console.log(err);
         return;
       }
       console.log(results[0]);
-      const prediction = results[0]
+      const prediction = results[0];
       const x = counter;
-      const y = prediction.value
+      const y = prediction.value;
       fill(255, 0, 0);
       rectMode(CENTER);
       rect(x, y, 10, 10);
 
-      counter++;
+      counter += 1;
       finishedTraining();
-    })
+    });
   }
-  
 }
 
-function createTrainingData(){
-  for(let i = 0; i < width; i+=10){
-    const iters = floor(random(5, 20))
+function createTrainingData() {
+  for (let i = 0; i < width; i += 10) {
+    const iters = floor(random(5, 20));
     const spread = 50;
-    for(let j = 0; j < iters; j++){
-      const data = [i, height - i + floor(random(-spread, spread))]
+    for (let j = 0; j < iters; j += 1) {
+      const data = [i, height - i + floor(random(-spread, spread))];
       fill(0, 0, 255);
-      ellipse(data[0], data[1], 10, 10)
-      nn.addData([data[0]], [data[1]])
+      ellipse(data[0], data[1], 10, 10);
+      nn.addData([data[0]], [data[1]]);
     }
-    
   }
 }

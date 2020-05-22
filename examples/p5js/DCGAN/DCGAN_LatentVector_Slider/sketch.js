@@ -27,7 +27,7 @@ function setup() {
   createCanvas(600, 600);
 
   // create 2 arrays to hold random values for our latent vector
-  for (let i = 0; i < 128; i++) {
+  for (let i = 0; i < 128; i += 1) {
     a[i] = random(-1, 1);
     b[i] = random(-1, 1);
   }
@@ -42,7 +42,7 @@ function setup() {
 function generate() {
   const amt = slider.value();
   // fill the latent vector with the interpolation between a and b
-  for (let i = 0; i < 128; i++) {
+  for (let i = 0; i < 128; i += 1) {
     c[i] = lerp(a[i], b[i], amt);
   }
   dcgan.generate(displayImage, c);

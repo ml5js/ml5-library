@@ -20,7 +20,7 @@ function setup() {
   createCanvas(600, 600);
 
   // start with random vector
-  for (let i = 0; i < 128; i++) {
+  for (let i = 0; i < 128; i += 1) {
     vector[i] = random(-1, 1);
   }
 
@@ -30,7 +30,7 @@ function setup() {
 
 
 function walk() {
-  for (let i = 0; i < 128; i++) {
+  for (let i = 0; i < 128; i += 1) {
     vector[i] += random(-0.01, 0.01);
   }
 }
