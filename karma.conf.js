@@ -58,9 +58,9 @@ module.exports = (config) => {
       username: process.env.BROWSERSTACK_USERNAME,
       accessKey: process.env.BROWSERSTACK_ACCESS_KEY
     },
-    captureTimeout: 120000,
+    captureTimeout: 500000,
     reportSlowerThan: 500,
-    browserNoActivityTimeout: 180000,
+    browserNoActivityTimeout: 500000,
     customLaunchers: {
       bs_chrome_mac: {
         base: 'BrowserStack',
