@@ -31,6 +31,7 @@ import faceApi from './FaceApi';
 import kmeans from './KMeans';
 import cartoon from './CartoonGAN';
 import universalSentenceEncoder from './UniversalSentenceEncoder';
+import handpose from './Handpose';
 import p5Utils from './utils/p5Utils';
 import communityStatement from './utils/community';
 
@@ -55,7 +56,8 @@ const withPreload = {
   sentiment,
   bodyPix,
   faceApi,
-  universalSentenceEncoder
+  universalSentenceEncoder,
+  handpose,
 };
 
 // call community statement on load
