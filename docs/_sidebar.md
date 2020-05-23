@@ -44,7 +44,7 @@
     * [CVAE](/reference/cvae.md)
     * [DCGAN](/reference/dcgan.md)
     * [SketchRNN](/reference/sketchrnn.md)
-    * [YOLO](/reference/yolo.md)
+    * [ObjectDetector](/reference/object-detector.md)
   * **Sound** 📻
     * [SoundClassification](/reference/sound-classifier.md)
     * [PitchDetection](/reference/pitch-detection.md)
