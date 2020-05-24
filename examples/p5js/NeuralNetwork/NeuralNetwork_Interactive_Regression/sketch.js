@@ -53,6 +53,7 @@ function mouseClicked() {
 function startTraining() {
   // check if train data
   if (trainData.length === 0) {
+    // eslint-disable-next-line no-alert
     alert("Please add some training data by clicking inside the canvas");
     return;
   }
