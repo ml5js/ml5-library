@@ -35,8 +35,8 @@ function finishedTraining() {
 
 // TODO: normalize and encode values going into predict?
 function classify() {
-  const age = parseInt(select("#age").value());
-  const fare = parseInt(select("#fare").value());
+  const age = parseInt(select("#age").value(), 10);
+  const fare = parseInt(select("#fare").value(), 10);
   const fareClass = select("#fare_class").value();
   const sex = select("#sex").value();
 

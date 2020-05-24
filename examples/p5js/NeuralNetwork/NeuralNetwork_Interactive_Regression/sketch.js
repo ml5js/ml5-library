@@ -29,10 +29,10 @@ const trainParams = {
 
 buttonStartTrain.addEventListener("click", () => {
   // get input data
-  options.learningRate = parseFloat(inputNeuralNetworkLearningRate.value);
-  options.hiddenUnits = parseInt(inputNeuralNetworkHiddenUnits.value);
-  trainParams.epochs = parseInt(inputTrainEpochs.value);
-  trainParams.batchSize = parseInt(inputTrainBatchSize.value);
+  options.learningRate = parseFloat(inputNeuralNetworkLearningRate.value, 10);
+  options.hiddenUnits = parseInt(inputNeuralNetworkHiddenUnits.value, 10);
+  trainParams.epochs = parseInt(inputTrainEpochs.value, 10);
+  trainParams.batchSize = parseInt(inputTrainBatchSize.value, 10);
 
   // and start the training
   startTraining();
