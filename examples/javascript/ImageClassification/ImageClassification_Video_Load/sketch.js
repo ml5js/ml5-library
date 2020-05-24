@@ -22,10 +22,6 @@ navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
   video.play();
 });
 
-// Initialize the Image Classifier method with MobileNet passing the video as the
-// second argument and the getClassification function as the third
-ml5.imageClassifier(checkpoint).then(classifier => loop(classifier));
-
 const loop = classifier => {
   classifier.classify(video).then(results => {
     if (results.length > 0) {
@@ -34,3 +30,7 @@ const loop = classifier => {
     }
   });
 };
+
+// Initialize the Image Classifier method with MobileNet passing the video as the
+// second argument and the getClassification function as the third
+ml5.imageClassifier(checkpoint).then(classifier => loop(classifier));
