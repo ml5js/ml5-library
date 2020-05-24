@@ -29,6 +29,7 @@ module.exports = {
             variables: true,
           },
         ],
+        "no-unused-vars": ["error", { varsIgnorePattern: "^setup$|^draw$|^preload$" }],
       },
     },
   ],
