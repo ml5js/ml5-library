@@ -84,7 +84,7 @@ function doneTraining() {
       console.log(results);
       for (let i = 0; i < results.length; i += 1) {
         x = xMany[i][0];
-        y = results[i][0]["value"];
+        y = results[i][0].value;
         circle(x, y, 1);
       }
     }

@@ -131,10 +131,10 @@ function gotResults(err, result) {
     }
 
     document.querySelector("#confidenceA").textContent = `${
-      confidences["A"] ? confidences["A"] * 100 : 0
+      confidences.A ? confidences.A * 100 : 0
     } %`;
     document.querySelector("#confidenceB").textContent = `${
-      confidences["B"] ? confidences["B"] * 100 : 0
+      confidences.B ? confidences.B * 100 : 0
     } %`;
   }
 
@@ -145,8 +145,8 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  document.querySelector("#exampleA").textContent = counts["A"] || 0;
-  document.querySelector("#exampleB").textContent = counts["B"] || 0;
+  document.querySelector("#exampleA").textContent = counts.A || 0;
+  document.querySelector("#exampleB").textContent = counts.B || 0;
 }
 
 // Clear the examples in one label
