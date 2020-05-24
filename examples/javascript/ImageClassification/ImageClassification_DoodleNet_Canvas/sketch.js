@@ -74,8 +74,6 @@ function draw() {
     pX = x;
     pY = y;
   }
-  x = x;
-  y = y;
 
   // Set stroke weight to 10
   ctx.lineWidth = 10;
