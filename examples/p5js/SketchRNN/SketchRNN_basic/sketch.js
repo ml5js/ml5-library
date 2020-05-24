@@ -55,7 +55,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previousPen == "down") {
+    if (previousPen === "down") {
       stroke(0);
       strokeWeight(3.0);
       line(x, y, x + strokePath.dx, y + strokePath.dy);

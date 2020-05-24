@@ -108,7 +108,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previousPen == "down") {
+    if (previousPen === "down") {
       ctx.beginPath();
       ctx.lineCap = "round";
       ctx.moveTo(x, y);

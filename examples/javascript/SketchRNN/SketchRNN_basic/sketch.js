@@ -64,7 +64,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previousPen == "down") {
+    if (previousPen === "down") {
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 3;
 

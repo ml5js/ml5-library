@@ -52,7 +52,7 @@ function mouseClicked() {
 
 function startTraining() {
   // check if train data
-  if (trainData.length == 0) {
+  if (trainData.length === 0) {
     alert("Please add some training data by clicking inside the canvas");
     return;
   }
