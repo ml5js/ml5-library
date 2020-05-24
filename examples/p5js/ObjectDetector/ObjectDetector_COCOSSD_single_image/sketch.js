@@ -40,7 +40,7 @@ function draw() {
       noStroke();
       fill(0, 255, 0);
       text(
-        objects[i].label + " " + nfc(objects[i].confidence * 100.0, 2) + "%",
+        `${objects[i].label} ${nfc(objects[i].confidence * 100.0, 2)}%`,
         objects[i].x + 5,
         objects[i].y + 15,
       );

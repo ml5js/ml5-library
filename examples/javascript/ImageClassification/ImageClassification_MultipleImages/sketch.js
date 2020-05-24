@@ -41,7 +41,7 @@ function appendImages(arr) {
   const output = [];
   for (i = 0; i < arr.length; i += 1) {
     imgPath = arr[i];
-    output.push("images/dataset/" + imgPath);
+    output.push(`images/dataset/${imgPath}`);
   }
   return output;
 }

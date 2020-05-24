@@ -80,9 +80,9 @@ function setupButtons() {
     regressor.train(function(lossValue) {
       if (lossValue) {
         loss = lossValue;
-        document.querySelector("#loss").textContent = "Loss: " + loss;
+        document.querySelector("#loss").textContent = `Loss: ${loss}`;
       } else {
-        document.querySelector("#loss").textContent = "Done Training! Final Loss: " + loss;
+        document.querySelector("#loss").textContent = `Done Training! Final Loss: ${loss}`;
       }
     });
   });
