@@ -98,7 +98,7 @@ function download(content, fileName, contentType) {
 
 function savePredictions() {
   predictionsJSON = {
-    predictions: predictions
+    predictions
   };
   download(JSON.stringify(predictionsJSON), 'json.txt', 'text/plain');
 }

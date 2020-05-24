@@ -44,7 +44,7 @@ function imageReady(img) {
 
 function savePredictions() {
   predictionsJSON = {
-    predictions: predictions,
+    predictions,
   };
   saveJSON(predictionsJSON, "predictions.json");
 }
