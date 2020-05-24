@@ -179,13 +179,13 @@ function onMouseUp(e) {
 }
 
 function onMouseUpdate(e) {
-  let pos = getMousePos(document.querySelector('canvas'), e);
+  const pos = getMousePos(document.querySelector('canvas'), e);
   mouseX = pos.x;
   mouseY = pos.y;
 }
 
 function getMousePos(canvas, e) {
-  let rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top

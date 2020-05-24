@@ -32,13 +32,13 @@ let canvas;
 let request;
 // taken from p5.Sound
 function freqToMidi(f) {
-  let mathlog2 = Math.log(f / 440) / Math.log(2);
-  let m = Math.round(12 * mathlog2) + 69;
+  const mathlog2 = Math.log(f / 440) / Math.log(2);
+  const m = Math.round(12 * mathlog2) + 69;
   return m;
 };
 
 function map(n, start1, stop1, start2, stop2) {
-  let newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+  const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
   return newval;
 };
 

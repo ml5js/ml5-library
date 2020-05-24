@@ -110,14 +110,14 @@ function onMouseUp(e) {
 }
 
 function onMouseUpdate(e) {
-  let pos = getMousePos(canvas, e);
+  const pos = getMousePos(canvas, e);
   x = pos.x;
   y = pos.y;
 
 }
 
 function getMousePos(canvas, e) {
-  let rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top
