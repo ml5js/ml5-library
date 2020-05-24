@@ -16,7 +16,7 @@ Here are some principles that we try to uphold while developing `ml5-library`:
 
 ## Principles for ml5.js examples 
 
-In addition to the principles above, we try our best to write our `ml5-examples`:
+In addition to the principles above, we try our best to write our examples:
 
 |       Guideline                |              description            | 
 | ------------- | ------------ |               

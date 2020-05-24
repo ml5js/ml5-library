@@ -12,11 +12,10 @@
 
 When doing a release in ml5, the following repositories need to also be updated:
 1. ml5js/ml5-library
-2. ml5js/ml5-examples
-3. ml5js/ml5-website
-4. ml5js/ml5-boilerplate
+2. ml5js/ml5-website
+3. ml5js/ml5-boilerplate
 
-The following **Parts 1 - 4** go through the process of making a new ml5 release.
+The following **Parts 1 - 3** go through the process of making a new ml5 release.
 
 ***
 ### Part 1: `ml5-library`:
@@ -73,63 +72,9 @@ The following **Parts 1 - 4** go through the process of making a new ml5 release
   ```
 8. Make a new Github Release and Tag the release. Add release notes describing the changes for the new version.
 
-***
-### Part 2: `ml5-examples`
-
-In `ml5-examples` the **release** branch is our source of truth. Any fixes or new examples based on the **current ml5 version** will be directly merged into the **release** branch. 
-
-The **development** branch is used in conjunction with the ml5-library **development** branch. What is different from the **release** branch is that all of the `index.html` files have their ml5 set to `localhost:8080` rather than the ml5 CDN.
-
-If we are doing a new release, this means that the new examples and features added to the **development** branch of `ml5-examples` needs to be merged with the **release** branch.
-
-The one thing to note is that the following steps are to handle merge conflicts that arise from running `npm run update:ml5-dev` to convert the ml5 script src.
 
 ***
-1. Create a new branch from `release` with a name that matches the new release version: `v<#>.<#>.<#>` 
-   ```sh
-   $ (development): git checkout -b v0.4.2
-   ```
-2. Update the `version` in **package.json**. Update all of the `localhost` references to the ml5 CDN and create the new examples index.
-  ```sh
-  # Step 0: change the version in package.json from 0.4.1 to 0.4.2
-  # Step 1: update all of the localhost references to from ml5 CDN to localhosy
-  $ (v0.4.2): npm run update:ml5-dev
-  $ (v0.4.2): git add .
-  ```
-3. Merge the changes from **release** into `v<#>.<#>.<#>` branch. 
-  ```sh
-  $ (v0.4.2): git merge development
-  ```
-4. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `release`. Wait for tests to pass. **Squash and merge**.
-  ```sh
-  # Once you've squashed and merged `v0.4.2` to `development`...
-  # Step 1: switch to your development branch and pull in those changes
-  $ (v0.4.2): git checkout release
-  $ (release): git fetch
-  $ (release): git pull
-  ```
-5. Add all of your changes to `gh-pages` to publish the latest docs
-  ```sh
-  $ (release): git checkout gh-pages
-  $ (gh-pages): git merge release
-  $ (gh-pages): git push origin gh-pages
-  ```
-6. Merge all the latest changes from **release** to **development** and revert all of the ml5 URLs in `development` back to `localhost`:
-  ```sh
-  $ (gh-pages): git checkout development
-  $ (development): npm run update:ml5
-  $ (development): git add .
-  $ (development): git merge release 
-  # merge 
-  $ (development): npm run update:ml5-dev
-  $ (development): git add .
-  $ (development): git commit -m "sets ml5 to localhost"
-  $ (development): git push origin development
-  ```
-7. Make a new Github Release and Tag the release. Add release notes describing the changes for the new version.
-
-***
-### Part 3: `ml5-website`
+### Part 2: `ml5-website`
 ***
 1. Create a new branch from `master` with a name that matches the new release version: `v<#>.<#>.<#>` 
    ```sh
@@ -145,7 +90,7 @@ The one thing to note is that the following steps are to handle merge conflicts 
 
 
 ***
-### Part 4: `ml5-boilerplate`
+### Part 3: `ml5-boilerplate`
 ***
 1. Checkout `with-p5` update the version, add and commit your changes, and push up to the remote branch.
    ```sh

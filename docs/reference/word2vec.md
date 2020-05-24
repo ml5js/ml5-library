@@ -10,7 +10,7 @@
 
 Word2vec is a group of related models that are used to produce [word embeddings](https://en.wikipedia.org/wiki/Word2vec)</sup>. This method allows you to perform vector operations on a given set of input vectors.
 
-You can use the word models [we provide](https://github.com/ml5js/ml5-examples/tree/master/p5js/Word2Vec/data), trained on a corpus of english words (watch out for bias data!), or you can train your own vector models following [this tutorial](https://github.com/ml5js/ml5-data-and-training/tree/master/training). More of this soon!
+You can use the word models [we provide](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Word2Vec/Word2Vec_Interactive/data), trained on a corpus of english words (watch out for bias data!), or you can train your own vector models following [this tutorial](https://github.com/ml5js/ml5-data-and-training/tree/master/training). More of this soon!
 
 ## Quickstart
 
@@ -180,13 +180,13 @@ word2vec.getRandomWord(?callback);
 ## Examples
 
 **p5.js**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Word2Vec/Word2Vec_Interactive)
 
 **p5 web editor**
 * [Word2Vec_Interactive](https://editor.p5js.org/ml5/sketches/Word2Vec_Interactive)
 
 **plain javascript**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/Word2Vec/Word2Vec_Interactive)
 
 ## Demo
 

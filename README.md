@@ -70,15 +70,9 @@ For example:
 
 - [Getting Started](https://ml5js.org/getting-started/)
 - [API Reference](https://ml5js.org/reference/)
-- [Examples](https://github.com/ml5js/ml5-examples)
+- [Examples](https://github.com/ml5js/ml5-library/tree/development/examples)
 - [Community](https://ml5js.org/community)
 - [FAQ](https://ml5js.org/getting-started/faq/)
-
-## Standalone Examples
-
-You can find a collection of standalone examples in this repository: [github.com/ml5js/ml5-examples](https://github.com/ml5js/ml5-examples)
-
-These examples are meant to serve as an introduction to the library and machine learning concepts.
 
 ## Code of Conduct
 We believe in a friendly internet and community as much as we do in building friendly machine learning for the web. Please refer to our [CODE OF CONDUCT](CODE_OF_CONDUCT.md) for our rules for interacting with ml5 as a developer, contributor, or user.
