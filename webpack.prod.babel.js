@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // Copyright (c) 2018 ml5
 //
 // This software is released under the MIT License.

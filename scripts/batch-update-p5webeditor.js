@@ -1,4 +1,5 @@
-// require('dotenv').config();
+/* eslint-disable import/no-extraneous-dependencies */
+require("dotenv").config();
 const fs = require("fs");
 const rp = require("request-promise");
 const Q = require("q");
