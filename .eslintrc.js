@@ -18,6 +18,7 @@ module.exports = {
       files: ["examples/**"],
       globals: {
         ml5: false,
+        p5: false,
         ...p5Globals,
       },
       rules: {
