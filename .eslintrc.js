@@ -32,5 +32,11 @@ module.exports = {
         ],
       },
     },
+    {
+      files: ["**/**_test.js"],
+      globals: {
+        ml5: false,
+      },
+    },
   ],
 };
