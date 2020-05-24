@@ -30,6 +30,7 @@ module.exports = {
           },
         ],
         "no-unused-vars": ["error", { varsIgnorePattern: "^setup$|^draw$|^preload$" }],
+        "new-cap": 0,
       },
     },
   ],
