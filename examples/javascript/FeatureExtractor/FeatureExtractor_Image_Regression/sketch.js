@@ -20,7 +20,7 @@ const height = 480;
 let positionX = width / 2;
 
 function map(n, start1, stop1, start2, stop2) {
-  var newval = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+  let newval = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
   return newval;
 }
 

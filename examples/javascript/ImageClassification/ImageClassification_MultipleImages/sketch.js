@@ -86,8 +86,8 @@ async function loadImage(imgPath, idx) {
 
 
 function download(content, fileName, contentType) {
-  var a = document.createElement("a");
-  var file = new Blob([content], {
+  let a = document.createElement("a");
+  let file = new Blob([content], {
     type: contentType
   });
   a.href = URL.createObjectURL(file);

@@ -9,18 +9,18 @@ Image Classification using Feature Extractor with MobileNet
 === */
 
 // Grab all the DOM elements
-var video = document.getElementById('video');
-var videoStatus = document.getElementById('videoStatus');
-var loading = document.getElementById('loading');
-var catButton = document.getElementById('catButton');
-var dogButton = document.getElementById('dogButton');
-var amountOfCatImages = document.getElementById('amountOfCatImages');
-var amountOfDogImages = document.getElementById('amountOfDogImages');
-var train = document.getElementById('train');
-var loss = document.getElementById('loss');
-var result = document.getElementById('result');
-var confidence = document.getElementById('confidence');
-var predict = document.getElementById('predict');
+let video = document.getElementById('video');
+let videoStatus = document.getElementById('videoStatus');
+let loading = document.getElementById('loading');
+let catButton = document.getElementById('catButton');
+let dogButton = document.getElementById('dogButton');
+let amountOfCatImages = document.getElementById('amountOfCatImages');
+let amountOfDogImages = document.getElementById('amountOfDogImages');
+let train = document.getElementById('train');
+let loss = document.getElementById('loss');
+let result = document.getElementById('result');
+let confidence = document.getElementById('confidence');
+let predict = document.getElementById('predict');
 
 // A variable to store the total loss
 let totalLoss = 0;
