@@ -64,7 +64,7 @@ function drawLandmarks(detections) {
   // mouth
   ctx.beginPath();
   detections.parts.mouth.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
@@ -76,7 +76,7 @@ function drawLandmarks(detections) {
   // nose
   ctx.beginPath();
   detections.parts.nose.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
@@ -87,7 +87,7 @@ function drawLandmarks(detections) {
   // // left eye
   ctx.beginPath();
   detections.parts.leftEye.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
@@ -99,7 +99,7 @@ function drawLandmarks(detections) {
   // // right eye
   ctx.beginPath();
   detections.parts.rightEye.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
@@ -112,7 +112,7 @@ function drawLandmarks(detections) {
   // // right eyebrow
   ctx.beginPath();
   detections.parts.rightEyeBrow.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
@@ -124,7 +124,7 @@ function drawLandmarks(detections) {
   // // left eyeBrow
   ctx.beginPath();
   detections.parts.leftEyeBrow.forEach((item, idx) => {
-    if ((idx = 0)) {
+    if (idx === 0) {
       ctx.moveTo(item._x, item._y);
     } else {
       ctx.lineTo(item._x, item._y);
