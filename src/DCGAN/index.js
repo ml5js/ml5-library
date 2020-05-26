@@ -9,6 +9,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 */
 
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 import callCallback from '../utils/callcallback';
 import  p5Utils from '../utils/p5Utils';
 
@@ -44,8 +45,8 @@ class DCGANBase {
      * @return {this} the dcgan.
      */
   async loadModel() {
-    const modelInfo = await fetch(this.modelPath);
-    const modelInfoJson = await modelInfo.json();
+    const modelInfo = await axios.get(this.modelPath);
+    const modelInfoJson = modelInfo.data;
 
     this.modelInfo = modelInfoJson
         
