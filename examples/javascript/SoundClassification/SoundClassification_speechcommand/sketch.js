@@ -17,16 +17,14 @@ const options = { probabilityThreshold: 0.7 };
 let label;
 let confidence;
 
-
-
 async function setup() {
-  classifier = await ml5.soundClassifier('SpeechCommands18w', options);
+  classifier = await ml5.soundClassifier("SpeechCommands18w", options);
   // Create 'label' and 'confidence' div to hold results
-  
-  label = document.createElement('DIV');
-  label.textContent = 'label ...';
-  confidence = document.createElement('DIV');
-  confidence.textContent = 'Confidence ...';
+
+  label = document.createElement("DIV");
+  label.textContent = "label ...";
+  confidence = document.createElement("DIV");
+  confidence.textContent = "Confidence ...";
 
   document.body.appendChild(label);
   document.body.appendChild(confidence);
@@ -34,7 +32,6 @@ async function setup() {
   classifier.classify(gotResult);
 }
 setup();
-
 
 // A function to run when we get any errors and the results
 function gotResult(error, results) {
@@ -45,6 +42,6 @@ function gotResult(error, results) {
   // The results are in an array ordered by confidence.
   console.log(results);
   // Show the first label and confidence
-  label.textContent = 'Label: ' + results[0].label;
-  confidence.textContent = 'Confidence: ' + results[0].confidence.toFixed(4); 
+  label.textContent = `Label: ${results[0].label}`;
+  confidence.textContent = `Confidence: ${results[0].confidence.toFixed(4)}`;
 }

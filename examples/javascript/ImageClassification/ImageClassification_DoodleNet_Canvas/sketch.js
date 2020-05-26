@@ -12,7 +12,6 @@ This example uses a callback pattern to create the classifier
 // Initialize the Image Classifier method with DoodleNet.
 let classifier;
 
-
 let request;
 
 // A variable to hold the canvas image we want to classify
@@ -21,7 +20,7 @@ let canvas, ctx;
 // Two variable to hold the label and confidence of the result
 let label;
 let confidence;
-let button
+let button;
 const width = 280;
 const height = 280;
 
@@ -35,51 +34,46 @@ let mouseDown = false;
 setup();
 async function setup() {
   canvas = document.querySelector("#myCanvas");
-  ctx = canvas.getContext('2d');
+  ctx = canvas.getContext("2d");
 
-  classifier =  await ml5.imageClassifier('DoodleNet', onModelReady);
+  classifier = await ml5.imageClassifier("DoodleNet", onModelReady);
   // Create a canvas with 280 x 280 px
 
-  canvas.addEventListener('mousemove', onMouseUpdate);
-  canvas.addEventListener('mousedown', onMouseDown);
-  canvas.addEventListener('mouseup', onMouseUp);
+  canvas.addEventListener("mousemove", onMouseUpdate);
+  canvas.addEventListener("mousedown", onMouseDown);
+  canvas.addEventListener("mouseup", onMouseUp);
 
   // Create a clear canvas button
   button = document.querySelector("#clearBtn");
 
-  button.addEventListener('click', clearCanvas);
+  button.addEventListener("click", clearCanvas);
   // Create 'label' and 'confidence' div to hold results
   label = document.querySelector("#label");
   confidence = document.querySelector("#confidence");
 
-  requestAnimationFrame(draw)
+  requestAnimationFrame(draw);
 }
 
 function onModelReady() {
-  console.log('ready!')
+  console.log("ready!");
 }
 
-
 function clearCanvas() {
-  ctx.fillStyle = '#ebedef'
+  ctx.fillStyle = "#ebedef";
   ctx.fillRect(0, 0, width, height);
 }
 
-
 function draw() {
-  request = requestAnimationFrame(draw)
-    
+  request = requestAnimationFrame(draw);
+
   if (pX == null || pY == null) {
     ctx.beginPath();
-    ctx.fillStyle = '#ebedef'
+    ctx.fillStyle = "#ebedef";
     ctx.fillRect(0, 0, width, height);
 
-    pX = x
-    pY = y
+    pX = x;
+    pY = y;
   }
-  x = x
-  y = y
-
 
   // Set stroke weight to 10
   ctx.lineWidth = 10;
@@ -98,8 +92,6 @@ function draw() {
   pY = y;
 }
 
-
-
 function onMouseDown(e) {
   mouseDown = true;
 }
@@ -110,21 +102,18 @@ function onMouseUp(e) {
 }
 
 function onMouseUpdate(e) {
-  var pos = getMousePos(canvas, e);
+  const pos = getMousePos(canvas, e);
   x = pos.x;
   y = pos.y;
-
 }
 
 function getMousePos(canvas, e) {
-  var rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   return {
     x: e.clientX - rect.left,
-    y: e.clientY - rect.top
+    y: e.clientY - rect.top,
   };
 }
-
-
 
 function classifyCanvas() {
   classifier.classify(canvas, gotResult);
@@ -139,7 +128,6 @@ function gotResult(error, results) {
   // The results are in an array ordered by confidence.
   console.log(results);
   // Show the first label and confidence
-  label.textContent = 'Label: ' + results[0].label;
-  confidence.textContent = 'Confidence: ' + results[0].confidence.toFixed(4)
+  label.textContent = `Label: ${results[0].label}`;
+  confidence.textContent = `Confidence: ${results[0].confidence.toFixed(4)}`;
 }
-

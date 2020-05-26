@@ -11,7 +11,7 @@ SketchRNN
 // The SketchRNN model
 let model;
 // Start by drawing
-let previous_pen = 'down';
+let previousPen = "down";
 // Current location of drawing
 let x, y;
 // The current "stroke" of the drawing
@@ -29,10 +29,10 @@ function setup() {
   background(220);
   // Load the model
   // See a list of all supported models: https://github.com/ml5js/ml5-library/blob/master/src/SketchRNN/models.js
-  model = ml5.sketchRNN('cat', modelReady);
+  model = ml5.sketchRNN("cat", modelReady);
 
   // Button to start drawing
-  const button = select('#clear');
+  const button = select("#clear");
   button.mousePressed(clearDrawing);
 }
 
@@ -41,7 +41,7 @@ function modelReady() {
   canvas.show();
   // sketchRNN will begin when the mouse is released
   canvas.mouseReleased(startSketchRNN);
-  select('#status').html('model ready - sketchRNN will begin after you draw with the mouse');
+  select("#status").html("model ready - sketchRNN will begin after you draw with the mouse");
 }
 
 // Reset the drawing
@@ -63,7 +63,7 @@ function startSketchRNN() {
 }
 
 function draw() {
-  // If the mosue is pressed capture the user strokes 
+  // If the mosue is pressed capture the user strokes
   if (mouseIsPressed) {
     // Draw line
     stroke(0);
@@ -73,7 +73,7 @@ function draw() {
     const userStroke = {
       dx: mouseX - pmouseX,
       dy: mouseY - pmouseY,
-      pen: 'down'
+      pen: "down",
     };
     // Add to the array
     seedStrokes.push(userStroke);
@@ -82,7 +82,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previous_pen == 'down') {
+    if (previousPen === "down") {
       stroke(0);
       strokeWeight(3.0);
       line(x, y, x + strokePath.dx, y + strokePath.dy);
@@ -91,10 +91,10 @@ function draw() {
     x += strokePath.dx;
     y += strokePath.dy;
     // The pen state actually refers to the next stroke
-    previous_pen = strokePath.pen;
+    previousPen = strokePath.pen;
 
     // If the drawing is complete
-    if (strokePath.pen !== 'end') {
+    if (strokePath.pen !== "end") {
       strokePath = null;
       model.generate(gotStroke);
     }

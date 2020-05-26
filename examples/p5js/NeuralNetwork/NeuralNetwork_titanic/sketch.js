@@ -5,15 +5,15 @@ function setup() {
   noCanvas();
 
   const nnOptions = {
-    dataUrl: 'data/titanic_cleaned.csv',
-    inputs: ['fare_class','sex', 'age', 'fare'],
-    outputs: ['survived'],
-    task: 'classification',
-    debug: true
+    dataUrl: "data/titanic_cleaned.csv",
+    inputs: ["fare_class", "sex", "age", "fare"],
+    outputs: ["survived"],
+    task: "classification",
+    debug: true,
   };
 
-  neuralNetwork = ml5.neuralNetwork(nnOptions, modelReady)
-  submitButton = select('#submit');
+  neuralNetwork = ml5.neuralNetwork(nnOptions, modelReady);
+  submitButton = select("#submit");
   submitButton.mousePressed(classify);
   submitButton.hide();
 }
@@ -28,17 +28,17 @@ function whileTraining(epoch, logs) {
 }
 
 function finishedTraining() {
-  console.log('done!');
+  console.log("done!");
   submitButton.show();
   classify();
 }
 
 // TODO: normalize and encode values going into predict?
 function classify() {
-  const age = parseInt(select('#age').value());
-  const fare = parseInt(select('#fare').value());
-  const fare_class = select('#fare_class').value();
-  const sex = select('#sex').value();
+  const age = parseInt(select("#age").value(), 10);
+  const fare = parseInt(select("#fare").value(), 10);
+  const fareClass = select("#fare_class").value();
+  const sex = select("#sex").value();
 
   // let inputs = {
   //   age: age,
@@ -47,7 +47,7 @@ function classify() {
   //   sex: sex
   // };
 
-  const inputs = [fare_class, sex, age, fare];
+  const inputs = [fareClass, sex, age, fare];
   neuralNetwork.classify(inputs, gotResults);
 }
 
@@ -56,6 +56,6 @@ function gotResults(err, results) {
     console.error(err);
   } else {
     console.log(results);
-    select('#result').html(`prediction: ${results[0].label}`);
+    select("#result").html(`prediction: ${results[0].label}`);
   }
 }

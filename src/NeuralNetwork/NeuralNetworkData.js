@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 import { saveBlob } from '../utils/io';
 import nnUtils from './NeuralNetworkUtils';
 
@@ -615,8 +616,8 @@ class NeuralNetworkData {
       if (dataUrlOrJson instanceof Object) {
         json = Object.assign({}, dataUrlOrJson);
       } else {
-        const data = await fetch(dataUrlOrJson);
-        json = await data.json();
+        const {data} = await axios.get(dataUrlOrJson);
+        json = data;
       }
 
       // format the data.raw array
@@ -658,8 +659,8 @@ class NeuralNetworkData {
    */
   async loadBlob(dataUrlOrJson, inputLabels, outputLabels) {
     try {
-      const data = await fetch(dataUrlOrJson);
-      const text = await data.text();
+      const {data} = await axios.get(dataUrlOrJson);
+      const text = data; // await data.text();
 
       let result;
       if (nnUtils.isJsonOrString(text)) {
@@ -697,8 +698,8 @@ class NeuralNetworkData {
           console.log('data must be a json object containing an array called "data" or "entries');
         }
       } else {
-        loadedData = await fetch(filesOrPath);
-        const text = await loadedData.text();
+        loadedData = await axios.get(filesOrPath, {responseType:"text"});
+        const text = JSON.stringify(loadedData.data);
         if (nnUtils.isJsonOrString(text)) {
           loadedData = JSON.parse(text);
         } else {
@@ -814,15 +815,15 @@ class NeuralNetworkData {
     } else if (filesOrPath instanceof Object) {
       // filesOrPath = {model: URL, metadata: URL, weights: URL}
 
-      let modelMetadata = await fetch(filesOrPath.metadata);
-      modelMetadata = await modelMetadata.text();
+      let modelMetadata = await axios.get(filesOrPath.metadata, {responseType:"text"});
+      modelMetadata = JSON.stringify(modelMetadata.data);
       modelMetadata = JSON.parse(modelMetadata);
 
       this.meta = modelMetadata;
     } else {
       const metaPath = `${filesOrPath.substring(0, filesOrPath.lastIndexOf('/'))}/model_meta.json`;
-      let modelMetadata = await fetch(metaPath);
-      modelMetadata = await modelMetadata.json();
+      let modelMetadata = await axios.get(metaPath);
+      modelMetadata = modelMetadata.data;
 
       this.meta = modelMetadata;
     }

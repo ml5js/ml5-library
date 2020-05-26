@@ -46,17 +46,17 @@ function draw() {
 
     // Create a pink ellipse for the nose
     fill(213, 0, 143);
-    const nose = pose['nose'];
+    const nose = pose.nose;
     ellipse(nose.x, nose.y, 20, 20);
 
     // Create a yellow ellipse for the right eye
     fill(255, 215, 0);
-    const rightEye = pose['rightEye'];
+    const rightEye = pose.rightEye;
     ellipse(rightEye.x, rightEye.y, 20, 20);
 
     // Create a yellow ellipse for the right eye
     fill(255, 215, 0);
-    const leftEye = pose['leftEye'];
+    const leftEye = pose.leftEye;
     ellipse(leftEye.x, leftEye.y, 20, 20);
   }
 }

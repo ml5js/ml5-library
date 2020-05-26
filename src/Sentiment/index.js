@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import axios from "axios";
 import callCallback from '../utils/callcallback';
 import modelLoader from '../utils/modelLoader';
 
@@ -86,8 +87,8 @@ class Sentiment {
      * @public
      */
     this.model = await tf.loadLayersModel(movieReviews.model);
-    const metadataJson = await fetch(movieReviews.metadata);
-    const sentimentMetadata = await metadataJson.json();
+    const metadataJson = await axios.get(movieReviews.metadata);
+    const sentimentMetadata = metadataJson.data;
 
     this.indexFrom = sentimentMetadata.index_from;
     this.maxLen = sentimentMetadata.max_len;

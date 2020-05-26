@@ -40,7 +40,7 @@ class Population {
     let index = 0;
     let r = random(1);
     while (r > 0) {
-      r = r - this.population[index].fitness;
+      r -= this.population[index].fitness;
       index += 1;
     }
     index -= 1;
@@ -54,7 +54,7 @@ class Population {
       sum += p.calcFitness();
     }
     for (const p of this.population) {
-      p.fitness = p.fitness / sum;
+      p.fitness /= sum;
     }
   }
 

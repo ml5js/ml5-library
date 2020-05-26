@@ -602,7 +602,7 @@ neuralNetwork.predict(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array | Object.
-  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array is given, then the input values should match the order that the data are specified in the `inputs` of the constructor options.
   * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.predict()`.
 
@@ -623,7 +623,7 @@ neuralNetwork.predictMultiple(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array of arrays | Array of objects.
-  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specified in the `inputs` of the constructor options.
   * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.predictMultiple()`.
 
@@ -644,7 +644,7 @@ neuralNetwork.classify(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array | Object.
-  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array is given, then the input values should match the order that the data are specified in the `inputs` of the constructor options.
   * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.classify()`.
 
@@ -665,7 +665,7 @@ neuralNetwork.classifyMultiple(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array of arrays | Array of objects.
-  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specified in the `inputs` of the constructor options.
   * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.classifyMultiple()`.
 

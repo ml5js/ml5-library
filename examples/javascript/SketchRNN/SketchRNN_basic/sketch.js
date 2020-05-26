@@ -11,7 +11,7 @@ SketchRNN
 // The SketchRNN model
 let model;
 // Start by drawing
-let previous_pen = 'down';
+let previousPen = "down";
 // Current location of drawing
 let x, y;
 // The current "stroke" of the drawing
@@ -23,20 +23,19 @@ let canvas, ctx;
 const width = 640;
 const height = 480;
 
-
 async function setup() {
   canvas = createCanvas(640, 480);
-  ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#ebedef'
+  ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ebedef";
   ctx.fillRect(0, 0, width, height);
 
   // See a list of all supported models: https://github.com/ml5js/ml5-library/blob/master/src/SketchRNN/models.js
-  model = await ml5.sketchRNN('cat');
+  model = await ml5.sketchRNN("cat");
 
   // Button to reset drawing
-  button = document.querySelector('#clearBtn');
-  button.addEventListener('click', startDrawing);
-  
+  button = document.querySelector("#clearBtn");
+  button.addEventListener("click", startDrawing);
+
   // run sketchRNN
   startDrawing();
 
@@ -45,7 +44,7 @@ async function setup() {
 setup();
 
 function modelReady() {
-  console.log('model loaded');
+  console.log("model loaded");
   startDrawing();
 }
 
@@ -53,8 +52,8 @@ function modelReady() {
 function startDrawing() {
   clearCanvas();
   // Start in the middle
-  x = width/2;
-  y = height/2;
+  x = width / 2;
+  y = height / 2;
   model.reset();
   // Generate the first stroke path
   model.generate(gotStroke);
@@ -65,7 +64,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previous_pen == 'down') {
+    if (previousPen === "down") {
       ctx.strokeStyle = "#000000";
       ctx.lineWidth = 3;
 
@@ -74,16 +73,15 @@ function draw() {
       ctx.moveTo(x, y);
       ctx.lineTo(x + strokePath.dx, y + strokePath.dy);
       ctx.stroke();
-
     }
     // Move the pen
     x += strokePath.dx;
     y += strokePath.dy;
     // The pen state actually refers to the next stroke
-    previous_pen = strokePath.pen;
+    previousPen = strokePath.pen;
 
     // If the drawing is complete
-    if (strokePath.pen !== 'end') {
+    if (strokePath.pen !== "end") {
       strokePath = null;
       model.generate(gotStroke);
     }
@@ -95,12 +93,10 @@ function gotStroke(err, s) {
   strokePath = s;
 }
 
-
 function clearCanvas() {
-  ctx.fillStyle = '#ebedef'
+  ctx.fillStyle = "#ebedef";
   ctx.fillRect(0, 0, width, height);
 }
-
 
 function createCanvas(w, h) {
   const canvas = document.createElement("canvas");

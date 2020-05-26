@@ -37,7 +37,7 @@ function pickOne() {
   let index = 0;
   let r = random(1);
   while (r > 0) {
-    r = r - savedBirds[index].fitness;
+    r -= savedBirds[index].fitness;
     index += 1;
   }
   index -= 1;
