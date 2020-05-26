@@ -3,11 +3,11 @@
 
 ![friendly machine learning for the web](assets/header.png)
 
-## The ml5 ecosystem (last updated: 22, March 2019)
+## The ml5 ecosystem (last updated: 24, May 2020)
 
 ml5.js is comprised a number of sister repositories which you can find at the [ml5 github organization - github.com/ml5js](https://github.com/ml5js). As a contributor of ml5 you should be aware of the other parallel repositories of the ml5 project.
 
-- **The 3 main repositories you'll likely be working with**:
+- **The 2 main repositories you'll likely be working with**:
   + [ml5-library]([https://github.com/ml5js](https://github.com/ml5js/ml5-library))
     * this is the main ml5js library. When building the library, all of the files in the `/src` directory get bundled into the `ml5.js` library. Releases to the ml5 library get sent to `npm` and are hosted at https://unpkg.com/ (e.g. `https://unpkg.com/ml5@0.2.1/dist/ml5.min.js`). When adding new features or updates to the ml5 library, you should also add an example in the `examples/` subdirectory of this repo to showcase how your new feature works. Usually examples are submitted in a simple p5.js sketch, but they can also be in vanilla javascript.
   + [ml5-website](https://github.com/ml5js/ml5-website)
