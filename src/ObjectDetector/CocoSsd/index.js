@@ -15,7 +15,7 @@ import {
 } from '../../utils/imageUtilities';
 
 const DEFAULTS = {
-  base: 'mobilenet_v2',
+  base: 'lite_mobilenet_v2',
   modelUrl: undefined,
 }
 

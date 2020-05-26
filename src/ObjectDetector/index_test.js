@@ -3,14 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { objectDetector } = ml5;
+// const { objectDetector } = ml5;
 
 describe('ObjectDetector', () => {
   let detector;
 
   beforeAll(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
-    detector = await objectDetector('cocossd', () => {});
+    detector = await ml5.objectDetector('cocossd');
   });
 
   it('throws error when a non image is trying to be detected', async () => {

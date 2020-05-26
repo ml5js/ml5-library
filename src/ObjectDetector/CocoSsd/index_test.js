@@ -6,12 +6,12 @@
 // const { objectDetector } = ml5;
 
 const COCOSSD_DEFAULTS = {
-  base: 'mobilenet_v2',
+  base: 'lite_mobilenet_v2',
   modelUrl: undefined,
 }
 
 describe('objectDetector with cocossd', () => {
-  let detector;
+  let cocoDetector;
 
   async function getRobin() {
     const img = new Image();
@@ -43,25 +43,24 @@ describe('objectDetector with cocossd', () => {
 
     beforeAll(async () => {
       jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
-      detector = await ml5.objectDetector('cocossd');
-      console.log(detector)
+      cocoDetector = await ml5.objectDetector('cocossd');
     });
 
 
     it('Should instantiate with the following defaults', () => {
-      expect(detector.config.base).toBe(COCOSSD_DEFAULTS.base);
-      expect(detector.config.modelUrl).toBe(COCOSSD_DEFAULTS.modelUrl);
+      expect(cocoDetector.config.base).toBe(COCOSSD_DEFAULTS.base);
+      expect(cocoDetector.config.modelUrl).toBe(COCOSSD_DEFAULTS.modelUrl);
     });
 
     it('detects a robin', async () => {
       const robin = await getRobin();
-      const detection = await detector.detect(robin);
+      const detection = await cocoDetector.detect(robin);
       expect(detection[0].label).toBe('bird');
     });
 
     it('detects takes ImageData', async () => {
       const img = await getImageData();
-      const detection = await detector.detect(img);
+      const detection = await cocoDetector.detect(img);
       expect(detection).toEqual([]);
     });
 
