@@ -48,7 +48,7 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `new-generative-model-x`
 5. you jam on your new feature, commit your changes with meaningful commit messages, and push your changes to your new feature branch (e.g. `new-generative-model-x`)
 6. you should also add an example of your new feature to the `examples/` directory so that other people can learn how to use your new feature.
-7. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library. Important is step 7 below.
+7. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library.
 8. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
 9. hi-fives 👏 and hugs 🤗
 
@@ -315,9 +315,9 @@ Go to Github and wait for tests to pass, then `squash and merge` the newly creat
 npm run publish:npm
 ```
 
-7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
-8. Your new npm version should be released! 
-9. Lastly, go to Github and document that new release with `release notes`.
+10. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+11. Your new npm version should be released! 
+12. Lastly, go to Github and document that new release with `release notes`.
 
 
 ## Additional Resources
