@@ -80,9 +80,9 @@ function setupButtons() {
     classifier.train(function(lossValue) {
       if (lossValue) {
         loss = lossValue;
-        select("#loss").html("Loss: " + loss);
+        select("#loss").html(`Loss: ${loss}`);
       } else {
-        select("#loss").html("Done Training! Final Loss: " + loss);
+        select("#loss").html(`Done Training! Final Loss: ${loss}`);
       }
     });
   });
@@ -114,7 +114,7 @@ function gotResults(err, results) {
   }
   if (results && results[0]) {
     select("#result").html(results[0].label);
-    select("#confidence").html(results[0].confidence.toFixed(2) * 100 + "%");
+    select("#confidence").html(`${results[0].confidence.toFixed(2) * 100  }%`);
     classify();
   }
 }

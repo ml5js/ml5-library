@@ -122,8 +122,8 @@ function gotResults(err, result) {
       select("#confidence").html(`${confidences[result.label] * 100} %`);
     }
 
-    select("#confidenceA").html(`${confidences["A"] ? confidences["A"] * 100 : 0} %`);
-    select("#confidenceB").html(`${confidences["B"] ? confidences["B"] * 100 : 0} %`);
+    select("#confidenceA").html(`${confidences.A ? confidences.A * 100 : 0} %`);
+    select("#confidenceB").html(`${confidences.B ? confidences.B * 100 : 0} %`);
   }
 
   classify();
@@ -133,8 +133,8 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  select("#exampleA").html(counts["A"] || 0);
-  select("#exampleB").html(counts["B"] || 0);
+  select("#exampleA").html(counts.A || 0);
+  select("#exampleB").html(counts.B || 0);
 }
 
 // Clear the examples in one label

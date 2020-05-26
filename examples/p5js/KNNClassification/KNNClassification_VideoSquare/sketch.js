@@ -158,10 +158,10 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  select("#example1").html(counts["Up"] || 0);
-  select("#example2").html(counts["Right"] || 0);
-  select("#example3").html(counts["Down"] || 0);
-  select("#example4").html(counts["Left"] || 0);
+  select("#example1").html(counts.Up || 0);
+  select("#example2").html(counts.Right || 0);
+  select("#example3").html(counts.Down || 0);
+  select("#example4").html(counts.Left || 0);
 }
 
 // Clear the examples in one class

@@ -34,6 +34,6 @@ function gotResult(error, results) {
   }
   // The results are in an array ordered by confidence.
   console.log(results);
-  createDiv('Label: ' + results[0].label);
-  createDiv('Confidence: ' + nf(results[0].confidence, 0, 2));
+  createDiv(`Label: ${results[0].label}`);
+  createDiv(`Confidence: ${nf(results[0].confidence, 0, 2)}`);
 }

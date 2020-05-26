@@ -28,7 +28,7 @@ function getSentiment() {
   const prediction = sentiment.predict(text);
 
   // display sentiment result on html page
-  sentimentResult.html('Sentiment score: ' + prediction.score);
+  sentimentResult.html(`Sentiment score: ${prediction.score}`);
 }
 
 function modelReady() {

@@ -3,7 +3,7 @@ let video;
 let detections;
 
 // by default all options are set to true
-const detection_options = {
+const detectionOptions = {
   withLandmarks: true,
   withDescriptors: false,
 };
@@ -15,7 +15,7 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(width, height);
   // video.hide(); // Hide the video element, and just show the canvas
-  faceapi = ml5.faceApi(video, detection_options, modelReady);
+  faceapi = ml5.faceApi(video, detectionOptions, modelReady);
   textAlign(RIGHT);
 }
 

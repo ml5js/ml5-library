@@ -67,9 +67,9 @@ function setupButtons() {
     regressor.train(function(lossValue) {
       if (lossValue) {
         loss = lossValue;
-        select("#loss").html("Loss: " + loss);
+        select("#loss").html(`Loss: ${loss}`);
       } else {
-        select("#loss").html("Done Training! Final Loss: " + loss);
+        select("#loss").html(`Done Training! Final Loss: ${loss}`);
       }
     });
   });
