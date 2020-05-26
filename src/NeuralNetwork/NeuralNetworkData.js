@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import * as axios from 'axios';
+import axios from 'axios';
 import { saveBlob } from '../utils/io';
 import nnUtils from './NeuralNetworkUtils';
 
