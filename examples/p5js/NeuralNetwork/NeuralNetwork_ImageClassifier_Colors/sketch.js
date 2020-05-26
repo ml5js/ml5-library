@@ -68,7 +68,7 @@ function addData() {
   ]
 
   // method 1: adding data as objects
-  for(let i = 0; i < myData.length; i++){
+  for(let i = 0; i < myData.length; i += 1){
     const item = myData[i];
     const xInputObj = {
       pixelArray: item.value
@@ -86,7 +86,7 @@ function addData() {
     inputLabels: ['pixelArray'],
     outputLabels: ['label']
   }
-  for(let i = 0; i < myData.length; i++){
+  for(let i = 0; i < myData.length; i += 1){
     const item = myData[i]; 
     nn.addData([item.value], [item.label], labelsOptions)
   }

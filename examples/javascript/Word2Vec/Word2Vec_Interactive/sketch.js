@@ -41,8 +41,8 @@ function setup() {
     word2Vec.nearest(word, (err, result) => {
       let output = '';
       if (result) {
-        for (let i = 0; i < result.length; i++) {
-          output += result[i].word + '<br/>';
+        for (let i = 0; i < result.length; i += 1) {
+          output += `${result[i].word  }<br/>`;
         }
       } else {
         output = 'No word vector found';

@@ -9,7 +9,7 @@ describe('ObjectDetector', () => {
   let detector;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
     detector = await objectDetector('cocossd', () => {});
   });
 

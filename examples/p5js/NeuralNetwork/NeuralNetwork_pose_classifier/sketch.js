@@ -84,7 +84,7 @@ function gotResults(error, results) {
 function getInputs() {
   const keypoints = poses[0].pose.keypoints;
   const inputs = [];
-  for (let i = 0; i < keypoints.length; i++) {
+  for (let i = 0; i < keypoints.length; i += 1) {
     inputs.push(keypoints[i].position.x);
     inputs.push(keypoints[i].position.y);
   }
@@ -112,7 +112,7 @@ function draw() {
   // For one pose only (use a for loop for multiple poses!)
   if (poses.length > 0) {
     const pose = poses[0].pose;
-    for (let i = 0; i < pose.keypoints.length; i++) {
+    for (let i = 0; i < pose.keypoints.length; i += 1) {
       fill(213, 0, 143);
       noStroke();
       ellipse(pose.keypoints[i].position.x, pose.keypoints[i].position.y, 8);

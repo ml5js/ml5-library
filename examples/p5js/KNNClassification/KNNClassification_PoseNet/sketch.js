@@ -15,7 +15,7 @@ let poses = [];
 
 function setup() {
   const canvas = createCanvas(640, 480);
-  canvas.parent('videoContainer');
+  canvas.parent("videoContainer");
   video = createCapture(VIDEO);
   video.size(width, height);
 
@@ -26,7 +26,7 @@ function setup() {
   poseNet = ml5.poseNet(video, modelReady);
   // This sets up an event that fills the global variable "poses"
   // with an array every time new poses are detected
-  poseNet.on('pose', function(results) {
+  poseNet.on("pose", function(results) {
     poses = results;
   });
   // Hide the video element, and just show the canvas
@@ -41,8 +41,8 @@ function draw() {
   drawSkeleton();
 }
 
-function modelReady(){
-  select('#status').html('model Loaded')
+function modelReady() {
+  select("#status").html("model Loaded");
 }
 
 // Add the current frame from the video to the classifier
@@ -60,7 +60,7 @@ function classify() {
   // Get the total number of labels from knnClassifier
   const numLabels = knnClassifier.getNumLabels();
   if (numLabels <= 0) {
-    console.error('There is no examples in any label');
+    console.error("There is no examples in any label");
     return;
   }
   // Convert poses results to a 2d array [[score0, x0, y0],...,[score16, x16, y16]]
@@ -75,35 +75,35 @@ function classify() {
 function createButtons() {
   // When the A button is pressed, add the current frame
   // from the video with a label of "A" to the classifier
-  buttonA = select('#addClassA');
+  buttonA = select("#addClassA");
   buttonA.mousePressed(function() {
-    addExample('A');
+    addExample("A");
   });
 
   // When the B button is pressed, add the current frame
   // from the video with a label of "B" to the classifier
-  buttonB = select('#addClassB');
+  buttonB = select("#addClassB");
   buttonB.mousePressed(function() {
-    addExample('B');
+    addExample("B");
   });
 
   // Reset buttons
-  resetBtnA = select('#resetA');
+  resetBtnA = select("#resetA");
   resetBtnA.mousePressed(function() {
-    clearLabel('A');
+    clearLabel("A");
   });
-	
-  resetBtnB = select('#resetB');
+
+  resetBtnB = select("#resetB");
   resetBtnB.mousePressed(function() {
-    clearLabel('B');
+    clearLabel("B");
   });
 
   // Predict button
-  buttonPredict = select('#buttonPredict');
+  buttonPredict = select("#buttonPredict");
   buttonPredict.mousePressed(classify);
 
   // Clear all classes button
-  buttonClearAll = select('#clearAll');
+  buttonClearAll = select("#clearAll");
   buttonClearAll.mousePressed(clearAllLabels);
 }
 
@@ -118,23 +118,23 @@ function gotResults(err, result) {
     const confidences = result.confidencesByLabel;
     // result.label is the label that has the highest confidence
     if (result.label) {
-      select('#result').html(result.label);
-      select('#confidence').html(`${confidences[result.label] * 100} %`);
+      select("#result").html(result.label);
+      select("#confidence").html(`${confidences[result.label] * 100} %`);
     }
 
-    select('#confidenceA').html(`${confidences['A'] ? confidences['A'] * 100 : 0} %`);
-    select('#confidenceB').html(`${confidences['B'] ? confidences['B'] * 100 : 0} %`);
+    select("#confidenceA").html(`${confidences.A ? confidences.A * 100 : 0} %`);
+    select("#confidenceB").html(`${confidences.B ? confidences.B * 100 : 0} %`);
   }
 
   classify();
 }
 
-// Update the example count for each label	
+// Update the example count for each label
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  select('#exampleA').html(counts['A'] || 0);
-  select('#exampleB').html(counts['B'] || 0);
+  select("#exampleA").html(counts.A || 0);
+  select("#exampleB").html(counts.B || 0);
 }
 
 // Clear the examples in one label
@@ -150,12 +150,12 @@ function clearAllLabels() {
 }
 
 // A function to draw ellipses over the detected keypoints
-function drawKeypoints()  {
+function drawKeypoints() {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
     const pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j++) {
+    for (let j = 0; j < pose.keypoints.length; j += 1) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       const keypoint = pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
@@ -171,10 +171,10 @@ function drawKeypoints()  {
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     const skeleton = poses[i].skeleton;
     // For every skeleton, loop through all body connections
-    for (let j = 0; j < skeleton.length; j++) {
+    for (let j = 0; j < skeleton.length; j += 1) {
       const partA = skeleton[j][0];
       const partB = skeleton[j][1];
       stroke(255, 0, 0);

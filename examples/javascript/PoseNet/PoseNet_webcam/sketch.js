@@ -10,9 +10,9 @@ PoseNet using p5.js
 /* eslint-disable */
 
 // Grab elements, create settings, etc.
-var video = document.getElementById('video');
-var canvas = document.getElementById('canvas');
-var ctx = canvas.getContext('2d');
+var video = document.getElementById("video");
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
 
 // The detected positions will be inside an array
 let poses = [];
@@ -20,14 +20,14 @@ let poses = [];
 // Create a webcam capture
 if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
   navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-    video.srcObject=stream;
+    video.srcObject = stream;
     video.play();
   });
 }
 
 // A function to draw the video and poses into the canvas.
 // This function is independent of the result of posenet
-// This way the video will not seem slow if poseNet 
+// This way the video will not seem slow if poseNet
 // is not detecting a position
 function drawCameraIntoCanvas() {
   // Draw the video element into the canvas
@@ -42,7 +42,7 @@ drawCameraIntoCanvas();
 
 // Create a new poseNet method with a single detection
 const poseNet = ml5.poseNet(video, modelReady);
-poseNet.on('pose', gotPoses);
+poseNet.on("pose", gotPoses);
 
 // A function that gets called every time there's an update from the model
 function gotPoses(results) {
@@ -50,16 +50,16 @@ function gotPoses(results) {
 }
 
 function modelReady() {
-  console.log("model ready")
-  poseNet.multiPose(video)
+  console.log("model ready");
+  poseNet.multiPose(video);
 }
 
 // A function to draw ellipses over the detected keypoints
-function drawKeypoints()  {
+function drawKeypoints() {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
-    for (let j = 0; j < poses[i].pose.keypoints.length; j++) {
+    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
       let keypoint = poses[i].pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
@@ -74,9 +74,9 @@ function drawKeypoints()  {
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For every skeleton, loop through all body connections
-    for (let j = 0; j < poses[i].skeleton.length; j++) {
+    for (let j = 0; j < poses[i].skeleton.length; j += 1) {
       let partA = poses[i].skeleton[j][0];
       let partB = poses[i].skeleton[j][1];
       ctx.beginPath();

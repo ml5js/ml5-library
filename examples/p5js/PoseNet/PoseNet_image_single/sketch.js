@@ -7,7 +7,7 @@ function setup() {
 
   // create an image using the p5 dom library
   // call modelReady() when it is loaded
-  img = createImg('data/runner.jpg', imageReady);
+  img = createImg("data/runner.jpg", imageReady);
   // set the image size to the size of the canvas
   img.size(width, height);
 
@@ -16,30 +16,29 @@ function setup() {
 }
 
 // when the image is ready, then load up poseNet
-function imageReady(){
-
+function imageReady() {
   // set some options
   const options = {
     minConfidence: 0.1,
-    inputResolution: { "width": width, "height": height }
-  }
-    
+    inputResolution: { width, height },
+  };
+
   // assign poseNet
   poseNet = ml5.poseNet(modelReady, options);
   // This sets up an event that listens to 'pose' events
-  poseNet.on('pose', function (results) {
+  poseNet.on("pose", function(results) {
     poses = results;
   });
 }
 
 // when poseNet is ready, do the detection
 function modelReady() {
-  select('#status').html('Model Loaded');
-     
+  select("#status").html("Model Loaded");
+
   // When the model is ready, run the singlePose() function...
-  // If/When a pose is detected, poseNet.on('pose', ...) will be listening for the detection results 
+  // If/When a pose is detected, poseNet.on('pose', ...) will be listening for the detection results
   // in the draw() loop, if there are any poses, then carry out the draw commands
-  poseNet.singlePose(img)
+  poseNet.singlePose(img);
 }
 
 // draw() will not show anything until poses are found
@@ -50,17 +49,16 @@ function draw() {
     drawKeypoints(poses);
     noLoop(); // stop looping when the poses are estimated
   }
-
 }
 
 // The following comes from https://ml5js.org/docs/posenet-webcam
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
     const pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j++) {
+    for (let j = 0; j < pose.keypoints.length; j += 1) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       const keypoint = pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
@@ -77,10 +75,10 @@ function drawKeypoints() {
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < poses.length; i += 1) {
     const skeleton = poses[i].skeleton;
     // For every skeleton, loop through all body connections
-    for (let j = 0; j < skeleton.length; j++) {
+    for (let j = 0; j < skeleton.length; j += 1) {
       const partA = skeleton[j][0];
       const partB = skeleton[j][1];
       stroke(255);

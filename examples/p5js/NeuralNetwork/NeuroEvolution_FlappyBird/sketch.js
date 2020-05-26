@@ -13,31 +13,31 @@ let slider;
 function setup() {
   createCanvas(640, 480);
   // Improves performance for small neural networks and classifySync()
-  ml5.tf.setBackend('cpu');
+  ml5.tf.setBackend("cpu");
 
   // Slider for speeding up simulation
   slider = createSlider(1, 10, 1);
 
   // Create initial population of birds
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = new Bird();
   }
 }
 
 function draw() {
   // Speed up simulation
-  for (let n = 0; n < slider.value(); n++) {
+  for (let n = 0; n < slider.value(); n += 1) {
     // new pipes every N frames
-    if (counter % 75 == 0) {
+    if (counter % 75 === 0) {
       pipes.push(new Pipe());
     }
-    counter++;
+    counter += 1;
 
     // Run game
-    for (let i = pipes.length - 1; i >= 0; i--) {
+    for (let i = pipes.length - 1; i >= 0; i -= 1) {
       pipes[i].update();
 
-      for (let j = birds.length - 1; j >= 0; j--) {
+      for (let j = birds.length - 1; j >= 0; j -= 1) {
         if (pipes[i].hits(birds[j])) {
           // Save bird if it dies
           savedBirds.push(birds.splice(j, 1)[0]);
@@ -51,7 +51,7 @@ function draw() {
     }
 
     // Remove / save any birds that go offscreen
-    for (let i = birds.length - 1; i >= 0; i--) {
+    for (let i = birds.length - 1; i >= 0; i -= 1) {
       if (birds[i].offScreen()) {
         savedBirds.push(birds.splice(i, 1)[0]);
       }

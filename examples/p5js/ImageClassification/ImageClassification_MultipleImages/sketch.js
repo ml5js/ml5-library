@@ -17,8 +17,8 @@ const allImages = [];
 const predictions = [];
 
 function preload() {
-  classifier = ml5.imageClassifier('MobileNet');
-  data = loadJSON('assets/data.json');
+  classifier = ml5.imageClassifier("MobileNet");
+  data = loadJSON("assets/data.json");
 }
 
 function setup() {
@@ -29,9 +29,9 @@ function setup() {
 }
 
 function appendImages() {
-  for (i = 0; i < data.images.length; i++) {
+  for (i = 0; i < data.images.length; i += 1) {
     imgPath = data.images[i];
-    allImages.push('images/dataset/' + imgPath);
+    allImages.push(`images/dataset/${imgPath}`);
   }
 }
 
@@ -44,9 +44,9 @@ function imageReady(img) {
 
 function savePredictions() {
   predictionsJSON = {
-    predictions: predictions
+    predictions,
   };
-  saveJSON(predictionsJSON, 'predictions.json');
+  saveJSON(predictionsJSON, "predictions.json");
 }
 
 // When we get the results
@@ -58,13 +58,13 @@ function gotResult(err, results) {
 
   information = {
     name: allImages[currentIndex],
-    result: results
+    result: results,
   };
 
   predictions.push(information);
-  createDiv('Label: ' + results[0].label);
-  createDiv('Confidence: ' + nf(results[0].confidence, 0, 2));
-  currentIndex++;
+  createDiv(`Label: ${results[0].label}`);
+  createDiv(`Confidence: ${nf(results[0].confidence, 0, 2)}`);
+  currentIndex += 1;
   if (currentIndex <= allImages.length - 1) {
     loadImage(allImages[currentIndex], imageReady);
   } else {

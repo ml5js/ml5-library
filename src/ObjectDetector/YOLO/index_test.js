@@ -40,7 +40,7 @@ describe('YOLO', () => {
 
   describe('object detector with yolo', () =>{
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
       yolo = await ml5.objectDetector('yolo', { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
   
