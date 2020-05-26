@@ -79,7 +79,7 @@ class NeuralNetwork {
 
   /**
    * Set the optimizer function given the learning rate
-   * as a paramter
+   * as a parameter
    * @param {*} learningRate
    * @param {*} optimizer
    */
