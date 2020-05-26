@@ -29,10 +29,10 @@ const trainParams = {
 
 buttonStartTrain.addEventListener("click", () => {
   // get input data
-  options.learningRate = parseFloat(inputNeuralNetworkLearningRate.value);
-  options.hiddenUnits = parseInt(inputNeuralNetworkHiddenUnits.value);
-  trainParams.epochs = parseInt(inputTrainEpochs.value);
-  trainParams.batchSize = parseInt(inputTrainBatchSize.value);
+  options.learningRate = parseFloat(inputNeuralNetworkLearningRate.value, 10);
+  options.hiddenUnits = parseInt(inputNeuralNetworkHiddenUnits.value, 10);
+  trainParams.epochs = parseInt(inputTrainEpochs.value, 10);
+  trainParams.batchSize = parseInt(inputTrainBatchSize.value, 10);
 
   // and start the training
   startTraining();
@@ -52,7 +52,8 @@ function mouseClicked() {
 
 function startTraining() {
   // check if train data
-  if (trainData.length == 0) {
+  if (trainData.length === 0) {
+    // eslint-disable-next-line no-alert
     alert("Please add some training data by clicking inside the canvas");
     return;
   }
@@ -83,7 +84,7 @@ function doneTraining() {
       console.log(results);
       for (let i = 0; i < results.length; i += 1) {
         x = xMany[i][0];
-        y = results[i][0]["value"];
+        y = results[i][0].value;
         circle(x, y, 1);
       }
     }

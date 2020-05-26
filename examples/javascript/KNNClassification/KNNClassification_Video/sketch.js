@@ -144,9 +144,9 @@ function gotResults(err, result) {
       document.querySelector('#confidence').textContent = `${confidences[result.label] * 100} %`;
     }
 
-    document.querySelector('#confidenceRock').textContent = `${confidences['Rock'] ? confidences['Rock'] * 100 : 0} %`;
-    document.querySelector('#confidencePaper').textContent = `${confidences['Paper'] ? confidences['Paper'] * 100 : 0} %`;
-    document.querySelector('#confidenceScissor').textContent = `${confidences['Scissor'] ? confidences['Scissor'] * 100 : 0} %`;
+    document.querySelector('#confidenceRock').textContent = `${confidences.Rock ? confidences.Rock * 100 : 0} %`;
+    document.querySelector('#confidencePaper').textContent = `${confidences.Paper ? confidences.Paper * 100 : 0} %`;
+    document.querySelector('#confidenceScissor').textContent = `${confidences.Scissor ? confidences.Scissor * 100 : 0} %`;
   }
 
   classify();
@@ -156,9 +156,9 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  document.querySelector('#exampleRock').textContent = counts['Rock'] || 0;
-  document.querySelector('#examplePaper').textContent = counts['Paper'] || 0;
-  document.querySelector('#exampleScissor').textContent = counts['Scissor'] || 0;
+  document.querySelector('#exampleRock').textContent = counts.Rock || 0;
+  document.querySelector('#examplePaper').textContent = counts.Paper || 0;
+  document.querySelector('#exampleScissor').textContent = counts.Scissor || 0;
 }
 
 // Clear the examples in one label

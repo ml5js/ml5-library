@@ -20,7 +20,7 @@ const height = 480;
 let positionX = width / 2;
 
 function map(n, start1, stop1, start2, stop2) {
-  var newval = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
+  const newval = ((n - start1) / (stop1 - start1)) * (stop2 - start2) + start2;
   return newval;
 }
 
@@ -80,9 +80,9 @@ function setupButtons() {
     regressor.train(function(lossValue) {
       if (lossValue) {
         loss = lossValue;
-        document.querySelector("#loss").textContent = "Loss: " + loss;
+        document.querySelector("#loss").textContent = `Loss: ${loss}`;
       } else {
-        document.querySelector("#loss").textContent = "Done Training! Final Loss: " + loss;
+        document.querySelector("#loss").textContent = `Done Training! Final Loss: ${loss}`;
       }
     });
   });

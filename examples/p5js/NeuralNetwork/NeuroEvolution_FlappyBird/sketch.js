@@ -28,7 +28,7 @@ function draw() {
   // Speed up simulation
   for (let n = 0; n < slider.value(); n += 1) {
     // new pipes every N frames
-    if (counter % 75 == 0) {
+    if (counter % 75 === 0) {
       pipes.push(new Pipe());
     }
     counter += 1;

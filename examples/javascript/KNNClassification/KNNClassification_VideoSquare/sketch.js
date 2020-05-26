@@ -166,10 +166,10 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  document.querySelector('#example1').textContent = counts['Up'] || 0;
-  document.querySelector('#example2').textContent = counts['Right'] || 0;
-  document.querySelector('#example3').textContent = counts['Down'] || 0;
-  document.querySelector('#example4').textContent = counts['Left'] || 0;
+  document.querySelector('#example1').textContent = counts.Up || 0;
+  document.querySelector('#example2').textContent = counts.Right || 0;
+  document.querySelector('#example3').textContent = counts.Down || 0;
+  document.querySelector('#example4').textContent = counts.Left || 0;
 }
 
 // Clear the examples in one class

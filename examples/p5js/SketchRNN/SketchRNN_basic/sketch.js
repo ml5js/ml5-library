@@ -11,7 +11,7 @@ SketchRNN
 // The SketchRNN model
 let model;
 // Start by drawing
-let previous_pen = 'down';
+let previousPen = "down";
 // Current location of drawing
 let x, y;
 // The current "stroke" of the drawing
@@ -20,7 +20,7 @@ let strokePath;
 // For when SketchRNN is fixed
 function preload() {
   // See a list of all supported models: https://github.com/ml5js/ml5-library/blob/master/src/SketchRNN/models.js
-  model = ml5.sketchRNN('cat');
+  model = ml5.sketchRNN("cat");
 }
 
 function setup() {
@@ -28,15 +28,15 @@ function setup() {
   background(220);
 
   // Button to reset drawing
-  const button = createButton('clear');
+  const button = createButton("clear");
   button.mousePressed(startDrawing);
-  
+
   // run sketchRNN
   startDrawing();
 }
 
 function modelReady() {
-  console.log('model loaded');
+  console.log("model loaded");
   startDrawing();
 }
 
@@ -55,7 +55,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previous_pen == 'down') {
+    if (previousPen === "down") {
       stroke(0);
       strokeWeight(3.0);
       line(x, y, x + strokePath.dx, y + strokePath.dy);
@@ -64,10 +64,10 @@ function draw() {
     x += strokePath.dx;
     y += strokePath.dy;
     // The pen state actually refers to the next stroke
-    previous_pen = strokePath.pen;
+    previousPen = strokePath.pen;
 
     // If the drawing is complete
-    if (strokePath.pen !== 'end') {
+    if (strokePath.pen !== "end") {
       strokePath = null;
       model.generate(gotStroke);
     }
