@@ -1,4 +1,5 @@
 import * as tf from "@tensorflow/tfjs";
+import axios from 'axios';
 import callCallback from "../utils/callcallback";
 import { saveBlob } from "../utils/io";
 import { randomGaussian } from "../utils/random";
@@ -79,7 +80,7 @@ class NeuralNetwork {
 
   /**
    * Set the optimizer function given the learning rate
-   * as a paramter
+   * as a parameter
    * @param {*} learningRate
    * @param {*} optimizer
    */
@@ -244,14 +245,17 @@ class NeuralNetwork {
       // load the model
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else if (filesOrPath instanceof Object) {
-      // filesOrPath = {model: URL, metadata: URL, weights: URL}
-
-      let modelJson = await fetch(filesOrPath.model);
-      modelJson = await modelJson.text();
+      
+      // load the modelJson
+      const modelJsonResult = await axios.get(filesOrPath.model, {responseType:'text'});
+      const modelJson = JSON.stringify(modelJsonResult.data);
+      // TODO: browser File() API won't be available in node env
       const modelJsonFile = new File([modelJson], "model.json", { type: "application/json" });
-
-      let weightsBlob = await fetch(filesOrPath.weights);
-      weightsBlob = await weightsBlob.blob();
+      
+      // load the weights
+      const weightsBlobResult = await axios.get(filesOrPath.weights, {responseType:'blob'});
+      const weightsBlob = weightsBlobResult.data;
+      // TODO: browser File() API won't be available in node env
       const weightsBlobFile = new File([weightsBlob], "model.weights.bin", {
         type: "application/macbinary",
       });

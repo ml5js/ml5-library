@@ -20,7 +20,7 @@ function imageReady() {
   // set some options
   const options = {
     minConfidence: 0.1,
-    inputResolution: { width: width, height: height },
+    inputResolution: { width, height },
   };
 
   // assign poseNet

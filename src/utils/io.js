@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import axios from "axios";
+
 const saveBlob = async (data, name, type) => {
   const link = document.createElement('a');
   link.style.display = 'none';
@@ -13,8 +15,8 @@ const saveBlob = async (data, name, type) => {
   link.click();
 };
 
-const loadFile = async (path, callback) => fetch(path)
-  .then(response => response.json())
+const loadFile = async (path, callback) => axios.get(path)
+  .then(response => response.data)
   .then((json) => {
     if (callback) {
       callback(null, json);

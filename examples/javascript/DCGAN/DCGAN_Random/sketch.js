@@ -14,23 +14,23 @@ let canvas, ctx;
 
 async function make() {
   canvas = createCanvas(200, 200);
-  ctx = canvas.getContext('2d');
+  ctx = canvas.getContext("2d");
 
-  dcgan = await ml5.DCGAN('model/geo/manifest.json');
+  dcgan = await ml5.DCGAN("model/geo/manifest.json");
 
   // Button to generate an image
   // Create a generate button
-  button = document.createElement('button');
+  button = document.createElement("button");
   button.innerHTML = "generate";
   document.body.appendChild(button);
-  button.addEventListener('click', generate);
+  button.addEventListener("click", generate);
 
   // generate an image on load
-  generate()
+  generate();
 }
 
 // call app.map.init() once the DOM is loaded
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener("DOMContentLoaded", function() {
   make();
 });
 
@@ -44,19 +44,19 @@ function displayImage(err, result) {
     console.log(err);
     return;
   }
-  img = new ImageData(result.raw, 64, 64)
-  const canvasElement = document.createElement("canvas"); 
-  canvasElement.width  = 64;
+  img = new ImageData(result.raw, 64, 64);
+  const canvasElement = document.createElement("canvas");
+  canvasElement.width = 64;
   canvasElement.height = 64;
-  canvasElement_ctx = canvasElement.getContext('2d');
-  canvasElement_ctx.putImageData(img, 0, 0);
+  canvasElementCtx = canvasElement.getContext("2d");
+  canvasElementCtx.putImageData(img, 0, 0);
   ctx.drawImage(canvasElement, 0, 0, 200, 200);
 }
 
 // Helper Functions
-function createCanvas(w, h){
-  const canvas = document.createElement("canvas"); 
-  canvas.width  = w;
+function createCanvas(w, h) {
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
   canvas.height = h;
   document.body.appendChild(canvas);
   return canvas;

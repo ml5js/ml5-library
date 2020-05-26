@@ -55,7 +55,7 @@ function draw() {
     const pose = poses[0].pose;
 
     // Create a pink ellipse for the nose
-    const nose = pose['nose'];
+    const nose = pose.nose;
     ctx.fillStyle = 'rgb(213, 0, 143)';
     ctx.beginPath();
     ctx.arc(nose.x, nose.y, 10, 0, 2 * Math.PI);
@@ -63,7 +63,7 @@ function draw() {
     ctx.stroke(); 
 
     // Create a yellow ellipse for the right eye
-    const rightEye = pose['rightEye'];
+    const rightEye = pose.rightEye;
     ctx.fillStyle = 'rgb(255, 215, 0)'
     ctx.beginPath();
     ctx.arc(rightEye.x, rightEye.y, 10, 0, 2 * Math.PI);
@@ -71,7 +71,7 @@ function draw() {
     ctx.stroke(); 
 
     // Create a yellow ellipse for the right eye
-    const leftEye = pose['leftEye'];
+    const leftEye = pose.leftEye;
     ctx.fillStyle = 'rgb(255, 215, 0)'
     ctx.beginPath();
     ctx.arc(leftEye.x, leftEye.y, 10, 0, 2 * Math.PI);

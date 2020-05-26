@@ -27,8 +27,6 @@ class MySpeech {
     this.utterance = new SpeechSynthesisUtterance();
     // make a speech synthizer (this will load voices):
     this.synth = window.speechSynthesis;
-
-    this.onEnd;
   }
 
   speak(_phrase) {

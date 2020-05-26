@@ -96,7 +96,7 @@ const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, callba
 
 ***
 #### .detect()
-> Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results.
+> Given an image, will run face detection. If a video was passed in the constructor, then it only a callback is necessary to handle the results.
 
 ```js
 faceapi.detect(optionsOrCallback, configOrCallback, callback);
@@ -116,7 +116,7 @@ faceapi.detect(optionsOrCallback, configOrCallback, callback);
 
 ***
 #### .detectSingle()
-> Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results. `.detectSingle()` is more accurate.
+> Given an image, will run face detection. If a video was passed in the constructor, then it only a callback is necessary to handle the results. `.detectSingle()` is more accurate.
 
 ```js
 faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);

@@ -12,7 +12,7 @@ let nn;
 
 function setup() {
   const options = {
-    task: 'classification'
+    task: "classification",
   };
   nn = ml5.neuralNetwork(options);
 
@@ -21,11 +21,11 @@ function setup() {
   nn.normalizeData();
 
   // train the model
-  const training_options = {
+  const trainingOptions = {
     batchSize: 32,
-    epochs: 10
+    epochs: 10,
   };
-  nn.train(training_options, finishedTraining);
+  nn.train(trainingOptions, finishedTraining);
 }
 
 function addData() {
@@ -33,10 +33,10 @@ function addData() {
     let xVal, labelVal;
     if (i < 250) {
       xVal = i;
-      labelVal = 'a';
+      labelVal = "a";
     } else {
       xVal = i;
-      labelVal = 'b';
+      labelVal = "b";
     }
     const yVal = floor(random(500));
 
@@ -45,13 +45,13 @@ function addData() {
 }
 
 function finishedTraining() {
-  console.log('done');
+  console.log("done");
 
   nn.classify({ x: 0, y: 0.5 }, function(err, result) {
     if (err) {
       console.log(err);
       return;
     }
-    console.log('hi from callback', result);
+    console.log("hi from callback", result);
   });
 }

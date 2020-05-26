@@ -8,6 +8,7 @@ Word2Vec
 */
 
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 import callCallback from '../utils/callcallback';
 
 
@@ -30,10 +31,10 @@ class Word2Vec {
   }
 
   async loadModel() {
-    const json = await fetch(this.modelPath)
-      .then(response => response.json());
-    Object.keys(json.vectors).forEach((word) => {
-      this.model[word] = tf.tensor1d(json.vectors[word]);
+    const {data} = await axios.get(this.modelPath)
+    
+    Object.keys(data.vectors).forEach((word) => {
+      this.model[word] = tf.tensor1d(data.vectors[word]);
     });
     this.modelSize = Object.keys(this.model).length;
     this.modelLoaded = true;
