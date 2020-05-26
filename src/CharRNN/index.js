@@ -10,7 +10,7 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 */
 
 import * as tf from "@tensorflow/tfjs";
-import * as axios from "axios";
+import axios from "axios";
 import sampleFromDistribution from "./../utils/sample";
 import CheckpointLoader from "../utils/checkpointLoader";
 import callCallback from "../utils/callcallback";

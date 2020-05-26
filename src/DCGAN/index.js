@@ -9,7 +9,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 */
 
 import * as tf from '@tensorflow/tfjs';
-import * as axios from 'axios';
+import axios from 'axios';
 import callCallback from '../utils/callcallback';
 import  p5Utils from '../utils/p5Utils';
 

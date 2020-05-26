@@ -1,5 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
-import * as axios from "axios";
+import axios from "axios";
 import callCallback from '../utils/callcallback';
 import modelLoader from '../utils/modelLoader';
 

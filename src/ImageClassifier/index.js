@@ -9,7 +9,7 @@ Image Classifier using pre-trained networks
 
 import * as tf from "@tensorflow/tfjs";
 // eslint-disable-next-line no-unused-vars
-import * as axios from "axios";
+import axios from "axios";
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";

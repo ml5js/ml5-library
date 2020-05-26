@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import * as axios from "axios";
+import axios from "axios";
 
 const saveBlob = async (data, name, type) => {
   const link = document.createElement('a');
