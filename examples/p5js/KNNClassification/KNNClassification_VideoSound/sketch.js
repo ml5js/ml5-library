@@ -114,8 +114,8 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  select('#example1').html(counts['Hello'] || 0);
-  select('#example2').html(counts['Goodbye'] || 0);
+  select('#example1').html(counts.Hello || 0);
+  select('#example2').html(counts.Goodbye || 0);
 }
 
 // Clear all the examples in all classes

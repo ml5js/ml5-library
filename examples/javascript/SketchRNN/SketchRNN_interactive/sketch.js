@@ -11,7 +11,7 @@ SketchRNN
 // The SketchRNN model
 let model;
 // Start by drawing
-let previous_pen = 'down';
+let previousPen = "down";
 // Current location of drawing
 let pX = null;
 let pY = null;
@@ -33,20 +33,20 @@ let mouseDown = false;
 
 async function setup() {
   canvas = createCanvas(640, 480);
-  ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#ebedef'
+  ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ebedef";
   ctx.fillRect(0, 0, width, height);
   // Load the model
   // See a list of all supported models: https://github.com/ml5js/ml5-library/blob/master/src/SketchRNN/models.js
-  model = await ml5.sketchRNN('cat', modelReady);
+  model = await ml5.sketchRNN("cat", modelReady);
 
   // Button to start drawing
-  button = document.querySelector('#clearBtn');
-  button.addEventListener('click', clearDrawing);
+  button = document.querySelector("#clearBtn");
+  button.addEventListener("click", clearDrawing);
 
-  canvas.addEventListener('mousemove', onMouseUpdate);
-  canvas.addEventListener('mousedown', onMouseDown);
-  canvas.addEventListener('mouseup', onMouseUp);
+  canvas.addEventListener("mousemove", onMouseUpdate);
+  canvas.addEventListener("mousedown", onMouseDown);
+  canvas.addEventListener("mouseup", onMouseUp);
 
   requestAnimationFrame(draw);
 }
@@ -55,7 +55,7 @@ setup();
 // The model is ready
 function modelReady() {
   // sketchRNN will begin when the mouse is released
-  canvas.addEventListener('mouseup', startSketchRNN);
+  canvas.addEventListener("mouseup", startSketchRNN);
 }
 
 // Reset the drawing
@@ -76,14 +76,12 @@ function startSketchRNN() {
   model.generate(seedStrokes, gotStroke);
 }
 
-
-
 function draw() {
   requestAnimationFrame(draw);
   if (pX == null || pY == null) {
-    pX = mouseX
-    pY = mouseY
-  }  
+    pX = mouseX;
+    pY = mouseY;
+  }
 
   if (mouseDown) {
     // Set stroke weight to 10
@@ -97,12 +95,11 @@ function draw() {
     ctx.lineTo(pX, pY);
     ctx.stroke();
 
-
     // Create a "stroke path" with dx, dy, and pen
     const userStroke = {
       dx: mouseX - pX,
       dy: mouseY - pY,
-      pen: 'down'
+      pen: "down",
     };
     // Add to the array
     seedStrokes.push(userStroke);
@@ -111,7 +108,7 @@ function draw() {
   // If something new to draw
   if (strokePath) {
     // If the pen is down, draw a line
-    if (previous_pen == 'down') {
+    if (previousPen === "down") {
       ctx.beginPath();
       ctx.lineCap = "round";
       ctx.moveTo(x, y);
@@ -122,15 +119,15 @@ function draw() {
     x += strokePath.dx;
     y += strokePath.dy;
     // The pen state actually refers to the next stroke
-    previous_pen = strokePath.pen;
+    previousPen = strokePath.pen;
 
     // If the drawing is complete
-    if (strokePath.pen !== 'end') {
+    if (strokePath.pen !== "end") {
       strokePath = null;
       model.generate(gotStroke);
     }
   }
-  
+
   // set the new pX and pY
   pX = mouseX;
   pY = mouseY;
@@ -150,7 +147,7 @@ function createCanvas(w, h) {
 }
 
 function clearCanvas() {
-  ctx.fillStyle = '#ebedef'
+  ctx.fillStyle = "#ebedef";
   ctx.fillRect(0, 0, width, height);
 }
 
@@ -163,15 +160,15 @@ function onMouseUp(e) {
 }
 
 function onMouseUpdate(e) {
-  var pos = getMousePos(document.querySelector('canvas'), e);
+  const pos = getMousePos(document.querySelector("canvas"), e);
   mouseX = pos.x;
   mouseY = pos.y;
 }
 
 function getMousePos(canvas, e) {
-  var rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   return {
     x: e.clientX - rect.left,
-    y: e.clientY - rect.top
+    y: e.clientY - rect.top,
   };
 }

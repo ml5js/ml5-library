@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="Transfered style of paintings onto mountain image" src="_media/reference__header-styletransfer.png">
+    <img style="display:block; max-height:20rem" alt="Transferred style of paintings onto mountain image" src="_media/reference__header-styletransfer.png">
 </center>
 
 
