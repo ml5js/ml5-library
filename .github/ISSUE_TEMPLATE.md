@@ -20,7 +20,7 @@ I'm submitting a new issue. Please see the details below.
 
 
 ### → Step 3: Share an example of the issue 🦄
-> Here's some example code or a demonstration of my feature in this issue, separe GitHub repo, or in the https://editor.p5js.org or codepen/jsfiddle/Glitch/etc...
+> Here's some example code or a demonstration of my feature in this issue, separate GitHub repo, or in the https://editor.p5js.org or codepen/jsfiddle/Glitch/etc...
 
 
 
