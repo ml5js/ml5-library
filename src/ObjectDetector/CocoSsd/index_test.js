@@ -44,7 +44,6 @@
 //     beforeAll(async () => {
 //       jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
 //       cocoDetector = await ml5.objectDetector('cocossd');
-//       console.log(cocoDetector)
 //     });
 
 
