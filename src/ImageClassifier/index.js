@@ -8,6 +8,8 @@ Image Classifier using pre-trained networks
 */
 
 import * as tf from "@tensorflow/tfjs";
+// eslint-disable-next-line no-unused-vars
+import axios from "axios";
 import * as mobilenet from "@tensorflow-models/mobilenet";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
@@ -83,11 +85,11 @@ class ImageClassifier {
 
   async loadModelFrom(path = null) {
     try {
-      let result;
       let data;
       if (path !== null) {
-        result = await fetch(path);
-        data = await result.json();
+        const result = await axios.get(path);
+        // eslint-disable-next-line prefer-destructuring
+        data = result.data;
       }
 
       if (data.ml5Specs) {
@@ -98,12 +100,12 @@ class ImageClassifier {
         const prefix = split.slice(0, split.length - 1).join("/");
         const metadataUrl = `${prefix}/metadata.json`;
 
-        const metadataResponse = await fetch(metadataUrl);
-        if (!metadataResponse.ok) {
-          console.log("Tried to fetch metadata.json, but it seems to be missing.");
-          // throw Error(metadataResponse.statusText);
-        } else {
-          const metadata = await metadataResponse.json();
+        const metadataResponse = await axios.get(metadataUrl).catch((metadataError) => {
+          console.log("Tried to fetch metadata.json, but it seems to be missing.", metadataError);
+        });
+        if (metadataResponse) {
+          const metadata = metadataResponse.data;
+          
           if (metadata.labels) {
             this.mapStringToIndex = metadata.labels;
           }
@@ -112,6 +114,7 @@ class ImageClassifier {
       this.model = await tf.loadLayersModel(path);
       return this.model;
     } catch (err) {
+      console.error(err);
       return err;
     }
   }
