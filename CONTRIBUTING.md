@@ -3,11 +3,11 @@
 
 ![friendly machine learning for the web](assets/header.png)
 
-## The ml5 ecosystem (last updated: 22, March 2019)
+## The ml5 ecosystem (last updated: 24, May 2020)
 
 ml5.js is comprised a number of sister repositories which you can find at the [ml5 github organization - github.com/ml5js](https://github.com/ml5js). As a contributor of ml5 you should be aware of the other parallel repositories of the ml5 project.
 
-- **The 3 main repositories you'll likely be working with**:
+- **The 2 main repositories you'll likely be working with**:
   + [ml5-library]([https://github.com/ml5js](https://github.com/ml5js/ml5-library))
     * this is the main ml5js library. When building the library, all of the files in the `/src` directory get bundled into the `ml5.js` library. Releases to the ml5 library get sent to `npm` and are hosted at https://unpkg.com/ (e.g. `https://unpkg.com/ml5@0.2.1/dist/ml5.min.js`). When adding new features or updates to the ml5 library, you should also add an example in the `examples/` subdirectory of this repo to showcase how your new feature works. Usually examples are submitted in a simple p5.js sketch, but they can also be in vanilla javascript.
   + [ml5-website](https://github.com/ml5js/ml5-website)
@@ -48,7 +48,7 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `new-generative-model-x`
 5. you jam on your new feature, commit your changes with meaningful commit messages, and push your changes to your new feature branch (e.g. `new-generative-model-x`)
 6. you should also add an example of your new feature to the `examples/` directory so that other people can learn how to use your new feature.
-7. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library. Important is step 7 below.
+7. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library.
 8. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
 9. hi-fives 👏 and hugs 🤗
 
@@ -315,9 +315,9 @@ Go to Github and wait for tests to pass, then `squash and merge` the newly creat
 npm run publish:npm
 ```
 
-7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
-8. Your new npm version should be released! 
-9. Lastly, go to Github and document that new release with `release notes`.
+10. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+11. Your new npm version should be released! 
+12. Lastly, go to Github and document that new release with `release notes`.
 
 
 ## Additional Resources
