@@ -98,6 +98,7 @@ describe("objectDetector", () => {
    * Test YOLO object detector
    */
   describe("objectDetector: yolo", () => {
+    let yolo;
     beforeAll(async () => {
       yolo = await ml5.objectDetector("yolo", { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
