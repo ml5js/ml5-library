@@ -64,15 +64,15 @@ async function getImageData() {
 }
 
 describe("objectDetector", () => {
-  let cocoDetector;
-  let yolo;
+  jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
 
   /**
    * Test cocossd object detector
    */
   describe("objectDetector: cocossd", () => {
+    let cocoDetector;
+
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
       cocoDetector = await ml5.objectDetector("cocossd");
     });
 
@@ -99,7 +99,6 @@ describe("objectDetector", () => {
    */
   describe("objectDetector: yolo", () => {
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
       yolo = await ml5.objectDetector("yolo", { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
 

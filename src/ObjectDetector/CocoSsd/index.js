@@ -7,41 +7,39 @@
     COCO-SSD Object detection
     Wraps the coco-ssd model in tfjs to be used in ml5
 */
-import * as tf from '@tensorflow/tfjs';
-import * as cocoSsd from '@tensorflow-models/coco-ssd';
-import callCallback from '../../utils/callcallback';
-import {
-  isInstanceOfSupportedElement
-} from '../../utils/imageUtilities';
+import * as tf from "@tensorflow/tfjs";
+import * as cocoSsd from "@tensorflow-models/coco-ssd";
+import callCallback from "../../utils/callcallback";
+import { isInstanceOfSupportedElement } from "../../utils/imageUtilities";
 
 const DEFAULTS = {
-  base: 'lite_mobilenet_v2',
+  base: "lite_mobilenet_v2",
   modelUrl: undefined,
-}
+};
 
 class CocoSsdBase {
   /**
-     * Create CocoSsd model. Works on video and images. 
-     * @param {function} constructorCallback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
-     *    that will be resolved once the model has loaded.
-     */
+   * Create CocoSsd model. Works on video and images.
+   * @param {function} constructorCallback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+   *    that will be resolved once the model has loaded.
+   */
   constructor(video, options, constructorCallback) {
     this.video = video || null;
     this.modelReady = false;
     this.isPredicting = false;
     this.config = {
       base: options.base || DEFAULTS.base,
-      modelUrl: options.modelUrl || DEFAULTS.modelUrl
-    }
+      modelUrl: options.modelUrl || DEFAULTS.modelUrl,
+    };
     this.callback = constructorCallback;
+
     this.ready = callCallback(this.loadModel(), this.callback);
   }
 
   /**
-     * load model
-     */
+   * load model
+   */
   async loadModel() {
-
     this.model = await cocoSsd.load(this.config);
 
     this.modelReady = true;
@@ -49,28 +47,28 @@ class CocoSsdBase {
   }
 
   /**
-     * @typedef {Object} ObjectDetectorPrediction
-     * @property {number} x - top left x coordinate of the prediction box in pixels.
-     * @property {number} y - top left y coordinate of the prediction box in pixels.
-     * @property {number} width - width of the prediction box in pixels.
-     * @property {number} height - height of the prediction box in pixels.
-     * @property {string} label - the label given.
-     * @property {number} confidence - the confidence score (0 to 1).
-     * @property {ObjectDetectorPredictionNormalized} normalized - a normalized object of the predicition
-     */
+   * @typedef {Object} ObjectDetectorPrediction
+   * @property {number} x - top left x coordinate of the prediction box in pixels.
+   * @property {number} y - top left y coordinate of the prediction box in pixels.
+   * @property {number} width - width of the prediction box in pixels.
+   * @property {number} height - height of the prediction box in pixels.
+   * @property {string} label - the label given.
+   * @property {number} confidence - the confidence score (0 to 1).
+   * @property {ObjectDetectorPredictionNormalized} normalized - a normalized object of the predicition
+   */
 
   /**
-    * @typedef {Object} ObjectDetectorPredictionNormalized
-    * @property {number} x - top left x coordinate of the prediction box (0 to 1).
-    * @property {number} y - top left y coordinate of the prediction box (0 to 1).
-    * @property {number} width - width of the prediction box (0 to 1).
-    * @property {number} height - height of the prediction box (0 to 1).
-    */
+   * @typedef {Object} ObjectDetectorPredictionNormalized
+   * @property {number} x - top left x coordinate of the prediction box (0 to 1).
+   * @property {number} y - top left y coordinate of the prediction box (0 to 1).
+   * @property {number} width - width of the prediction box (0 to 1).
+   * @property {number} height - height of the prediction box (0 to 1).
+   */
   /**
-     * Detect objects that are in video, returns bounding box, label, and confidence scores
-     * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
-     * @returns {ObjectDetectorPrediction}
-     */
+   * Detect objects that are in video, returns bounding box, label, and confidence scores
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+   * @returns {ObjectDetectorPrediction}
+   */
   async detectInternal(imgToPredict) {
     this.isPredicting = true;
     const predictions = await this.model.detect(imgToPredict);
@@ -86,21 +84,21 @@ class CocoSsdBase {
           x: prediction.bbox[0] / imgToPredict.width,
           y: prediction.bbox[1] / imgToPredict.height,
           width: prediction.bbox[2] / imgToPredict.width,
-          height: prediction.bbox[3] / imgToPredict.height
-        }
-      }
-    })
+          height: prediction.bbox[3] / imgToPredict.height,
+        },
+      };
+    });
     this.isPredicting = false;
     return formattedPredictions;
   }
 
   /**
-     * Detect objects that are in video, returns bounding box, label, and confidence scores
-     * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
-     * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
-     *    that will be resolved once the prediction is done.
-     * @returns {ObjectDetectorPrediction}
-     */
+   * Detect objects that are in video, returns bounding box, label, and confidence scores
+   * @param {HTMLVideoElement|HTMLImageElement|HTMLCanvasElement|ImageData} subject - Subject of the detection.
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
+   *    that will be resolved once the prediction is done.
+   * @returns {ObjectDetectorPrediction}
+   */
   async detect(inputOrCallback, cb) {
     await this.ready;
     await tf.nextFrame();
@@ -110,15 +108,21 @@ class CocoSsdBase {
 
     if (isInstanceOfSupportedElement(inputOrCallback)) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
+    } else if (
+      typeof inputOrCallback === "object" &&
+      isInstanceOfSupportedElement(inputOrCallback.elt)
+    ) {
       imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.canvas)) {
+    } else if (
+      typeof inputOrCallback === "object" &&
+      isInstanceOfSupportedElement(inputOrCallback.canvas)
+    ) {
       imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
     } else if (typeof inputOrCallback === "function") {
       imgToPredict = this.video;
       callback = inputOrCallback;
     } else {
-      throw new Error('Detection subject not supported');
+      throw new Error("Detection subject not supported");
     }
 
     return callCallback(this.detectInternal(imgToPredict), callback);
@@ -132,24 +136,21 @@ const CocoSsd = (videoOr, optionsOr, cb) => {
 
   if (videoOr instanceof HTMLVideoElement) {
     video = videoOr;
-  } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
+  } else if (typeof videoOr === "object" && videoOr.elt instanceof HTMLVideoElement) {
     video = videoOr.elt; // Handle p5.js image
-  } else if (typeof videoOr === 'function') {
+  } else if (typeof videoOr === "function") {
     callback = videoOr;
-  } else if (typeof videoOr === 'object') {
+  } else if (typeof videoOr === "object") {
     options = videoOr;
   }
 
-  if (typeof optionsOr === 'object') {
+  if (typeof optionsOr === "object") {
     options = optionsOr;
-  } else if (typeof optionsOr === 'function') {
+  } else if (typeof optionsOr === "function") {
     callback = optionsOr;
   }
 
   return new CocoSsdBase(video, options, callback);
-}
-
-
-
+};
 
 export default CocoSsd;
