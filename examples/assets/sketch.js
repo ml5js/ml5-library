@@ -30,7 +30,7 @@ const $search = document.querySelector('.header-search__input');
 
 async function init(){
 
-  data = await fetch('../examples.json');
+  data = await fetch('./examples.json');
   data = await data.json();
 
   // initialize with all sections
@@ -60,7 +60,7 @@ function createExampleList(_example, _sectionDiv, _sectionTitle, _exampleKey){
     _sectionDiv.appendChild( weHeader )
     _sectionDiv.appendChild(weList);
   }
-    
+
 }
 
 function createSections(data){
@@ -71,7 +71,7 @@ function createSections(data){
     const sectionDiv = document.createElement('section');
     sectionDiv.classList.add(`section`);
     sectionDiv.classList.add(`section-${k.toLowerCase()}`);
-    
+
     // add a header
     const header = document.createElement("h2");
     header.classList.add(`section-header`);
@@ -82,19 +82,19 @@ function createSections(data){
     createExampleList(example, sectionDiv, 'p5.js demo', 'p5js');
     createExampleList(example, sectionDiv, 'plain javascript demo', 'javascript');
     createExampleList(example, sectionDiv, 'd3', 'd3');
-    
+
     $main.appendChild(sectionDiv)
   })
 }
 
 $search.addEventListener('keyup', (e) =>{
   const val = e.target.value;
-  
+
   const dataCopy = Object.assign({}, data);
   if(val.trim() === ""){
     createSections(dataCopy);
   } else {
-    
+
     Object.keys(dataCopy).forEach(k => {
       if(!k.toLowerCase().includes(val.toLowerCase())){
         delete dataCopy[k];
