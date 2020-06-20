@@ -1144,6 +1144,15 @@
         "doc",
         "content"
       ]
+    },
+    {
+      "login": "GregFrench",
+      "name": "Greg French",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/17938510?v=4",
+      "profile": "http://www.gregfrench.net/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
