@@ -121,26 +121,6 @@ word2vec.average(inputs, ?max, ?callback);
 ***
 
 ***
-#### .average()
-> Average a series of vectors.
-
-```js
-word2vec.average(inputs, ?max, ?callback);
-```
-
-📥 **Inputs**
-* **inputs**: An array of strings containing the inputs to be averaged.
-* **max**: Optional. The maximum results to return. Defaults to 1.
-* **callback**: Optional. A callback function that is called once the model has made the operation. If no callback is provided, it will return a promise that will be resolved once operation is completed.
-
-📤 **Outputs**
-
-* **Object**: Returns the closest vector of that average.
-
-***
-
-
-***
 ##### .nearest()
 > Find the nearest vector. Returns `max` array of values.
 
@@ -156,6 +136,32 @@ word2vec.nearest(inputs, ?max, ?callback);
 📤 **Outputs**
 
 * **Object**: Returns `max` array of values.
+***
+
+***
+##### .nearestFromSet()
+> Given an input word, this function finds the nearest word in given a set of words in an array. This allows you to answer a question like, "of these three animals--dog, cat, and mouse--which of them is closest to a skunk?" In this case the set would be ['dog', 'cat', 'mouse'] and the input word would be 'skunk'.
+
+```js
+word2vec.nearestFromSet(input, set, maxOrCb, cb);
+```
+
+📥 **Inputs**
+* **input**: The input vector string.
+* **set**: An array of words you would like test your input against.
+* **maxOrCb**: Optional. The maximum results to return. Defaults to 10.
+* **cb**: Optional. A callback function that is called once the model has made the operation. If no callback is provided, it will return a promise that will be resolved once operation is completed.
+
+📤 **Outputs**
+
+* **Object**: Returns `max` array of values.
+
+**Example 1**
+```js
+const results = await word2vecInstance.nearestFromSet('human', ['cat', 'ape', 'lamp'], 1);
+
+// results is {word: "cat", distance: 0.91829} 
+```
 ***
 
 ***
