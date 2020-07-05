@@ -132,7 +132,7 @@ class Word2Vec {
       return null;
     }
 
-    let result = Word2Vec.nearest(miniModel, vector, 1, max + 1);
+    const result = Word2Vec.nearest(miniModel, vector, 1, max + 1);
 
     if (callback) {
       callback(undefined, result);

@@ -80,19 +80,19 @@ describe('word2vec', () => {
     it('should return null when input word is fake', () => {
       word2vecInstance.nearestFromSet('asdfsda', ['cat', 'ape', 'lamp'])
       .then((nearest) => {
-        expect(nearest).to.be.null;
+        expect(nearest).toBe(null);
       });
     });
     it('should return null for an empty set', () => {
       word2vecInstance.nearestFromSet('dog', [])
       .then((nearest) => {
-        expect(nearest).to.be.null;
+        expect(nearest).toBe(null);
       });
     });
     it('should return null when word set is fake', () => {
       word2vecInstance.nearestFromSet('dog', ["lsdfjk", "slkjf"])
       .then((nearest) => {
-        expect(nearest).to.be.null;
+        expect(nearest).toBe(null);
       });
     });
     it('nearest to "human" in ["ape", "cat", "lamp"] is "ape", then "cat"', () => {
