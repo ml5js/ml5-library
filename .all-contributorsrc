@@ -1153,6 +1153,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "dalequark",
+      "name": "Dale Markowitz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2328571?v=4",
+      "profile": "https://daleonai.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
