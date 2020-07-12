@@ -3,13 +3,13 @@ let predictions = [];
 let img;
 
 function setup() {
-  createCanvas(640, 360);
+  // Create a canvas that's at least the size of the image.
+  createCanvas(270, 340);
 
   // create an image using the p5 dom library
   // call modelReady() when it is loaded
-  img = createImg("data/harriet.jpg", imageReady);
+  img = createImg("data/face.png", imageReady);
   // set the image size to the size of the canvas
-  img.size(width, height);
 
   img.hide(); // hide the image in the browser
   frameRate(1); // set the frameRate to 1 since we don't need it to be running quickly in this case
