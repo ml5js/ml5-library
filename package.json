@@ -63,6 +63,7 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-loader": "2.0.0",
+    "eslint-nibble": "^5.1.0",
     "eslint-plugin-import": "2.9.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
@@ -127,7 +128,6 @@
     "@tensorflow/tfjs": "^1.7.0",
     "@tensorflow/tfjs-vis": "^1.1.0",
     "axios": "^0.19.2",
-    "eslint-nibble": "^5.1.0",
     "events": "^3.0.0",
     "face-api.js": "~0.22.2",
     "onchange": "^6.1.0"
