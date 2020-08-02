@@ -8,7 +8,7 @@
 
 ## Description
 
-Create your own neural network and train it in the browser with the `ml5.neuralNetwork`. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network and do `classification` or `regression` tasks.
+Create your own neural network and train it in the browser with the `ml5.neuralNetwork`. Collect data to train your neural network or use existing data to train your neural network in real-time. Once it is trained, your neural network can do `classification` or `regression` tasks.
 
 
 ## Quickstart
@@ -156,7 +156,7 @@ function handleResults(error, result) {
       console.error(error);
       return;
     }
-    console.log(results); // {label: 'red', confidence: 0.8};
+    console.log(result); // {label: 'red', confidence: 0.8};
 }
 
 ```
@@ -602,7 +602,7 @@ neuralNetwork.predict(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array | Object.
-  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array is given, then the input values should match the order that the data are specified in the `inputs` of the constructor options.
   * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.predict()`.
 
@@ -623,7 +623,7 @@ neuralNetwork.predictMultiple(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array of arrays | Array of objects.
-  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specified in the `inputs` of the constructor options.
   * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.predictMultiple()`.
 
@@ -644,7 +644,7 @@ neuralNetwork.classify(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array | Object.
-  * If an array is given, then the input values should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array is given, then the input values should match the order that the data are specified in the `inputs` of the constructor options.
   * If an object is given, then the input values should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.classify()`.
 
@@ -665,7 +665,7 @@ neuralNetwork.classifyMultiple(inputs, callback);
 📥 **Inputs**
 
 * **inputs**: Required. Array of arrays | Array of objects.
-  * If an array of arrays is given, then the input values of each child array should match the order that the data are specifed in the `inputs` of the constructor options.
+  * If an array of arrays is given, then the input values of each child array should match the order that the data are specified in the `inputs` of the constructor options.
   * If an array of objects is given, then the input values of each child object should be given as a key/value pair. The keys must match the keys given in the inputs of the constructor options and/or the keys added when the data were added in `.addData()`.
 * **callback**: Required. Function. A function to handle the results of `.classifyMultiple()`.
 
@@ -773,21 +773,21 @@ neuralNetwork.load(?filesOrPath, ?callback);
 
 
 **p5.js**
-- [NeuralNetwork_Simple_Classification](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple_Classification)
-- [NeuralNetwork_Simple_Regression](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_Simple_Regression)
-- [NeuralNetwork_XOR](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_XOR)
-- [NeuralNetwork_basics](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_basics)
-- [NeuralNetwork_co2net](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_co2net)
-- [NeuralNetwork_color_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_color_classifier)
-- [NeuralNetwork_load_model](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_model)
-- [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
-- [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
-- [NeuralNetwork_multiple_layers](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_multiple_layers)
-- [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_face)
-- [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
-- [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
-- [NeuralNetwork_titanic](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_titanic)
-- [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-examples/tree/development/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
+- [NeuralNetwork_Simple_Classification](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Classification)
+- [NeuralNetwork_Simple_Regression](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Regression)
+- [NeuralNetwork_XOR](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_XOR)
+- [NeuralNetwork_basics](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_basics)
+- [NeuralNetwork_co2net](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_co2net)
+- [NeuralNetwork_color_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_color_classifier)
+- [NeuralNetwork_load_model](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_load_model)
+- [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
+- [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
+- [NeuralNetwork_multiple_layers](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_multiple_layers)
+- [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_musical_face)
+- [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
+- [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
+- [NeuralNetwork_titanic](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_titanic)
+- [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
 - [NeuralNetwork_Simple_Classification](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple_Classification)

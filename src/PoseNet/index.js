@@ -13,19 +13,20 @@ import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
 import callCallback from '../utils/callcallback';
 
+
 const DEFAULTS = {
-  architecture: 'MobileNetV1',
-  imageScaleFactor: 0.3,
-  outputStride: 16,
-  flipHorizontal: false,
-  minConfidence: 0.5,
-  maxPoseDetections: 5,
-  scoreThreshold: 0.5,
-  nmsRadius: 20,
-  detectionType: 'multiple',
-  inputResolution: 513,
-  multiplier: 0.75,
-  quantBytes: 2
+  architecture: 'MobileNetV1', // 'MobileNetV1', 'ResNet50'
+  outputStride: 16, // 8, 16, 32
+  flipHorizontal: false, // true, false
+  minConfidence: 0.5, 
+  maxPoseDetections: 5, // any number > 1
+  scoreThreshold: 0.5, 
+  nmsRadius: 20, // any number > 0
+  detectionType: 'multiple', // 'single'
+  inputResolution: 256, // or { width: 257, height: 200 }
+  multiplier: 0.75, // 1.01, 1.0, 0.75, or 0.50 -- only for MobileNet
+  quantBytes: 2, // 4, 2, 1
+  modelUrl: null, // url path to model
 };
 
 class PoseNet extends EventEmitter {
@@ -33,7 +34,6 @@ class PoseNet extends EventEmitter {
    * @typedef {Object} options
    * @property {string} architecture - default 'MobileNetV1',
    * @property {number} inputResolution - default 257,
-   * @property {number} imageScaleFactor - default 0.3
    * @property {number} outputStride - default 16
    * @property {boolean} flipHorizontal - default false
    * @property {number} minConfidence - default 0.5
@@ -41,8 +41,9 @@ class PoseNet extends EventEmitter {
    * @property {number} scoreThreshold - default 0.5
    * @property {number} nmsRadius - default 20
    * @property {String} detectionType - default single
-   * @property {multiplier} nmsRadius - default 0.75,
-   * @property {multiplier} quantBytes - default 2,
+   * @property {number} nmsRadius - default 0.75,
+   * @property {number} quantBytes - default 2,
+   * @property {string} modelUrl - default null
    */
   /**
    * Create a PoseNet model.
@@ -64,7 +65,6 @@ class PoseNet extends EventEmitter {
     this.modelUrl = options.modelUrl || null;
     this.architecture = options.architecture || DEFAULTS.architecture;
     this.detectionType = detectionType || options.detectionType || DEFAULTS.detectionType;
-    this.imageScaleFactor = options.imageScaleFactor || DEFAULTS.imageScaleFactor;
     this.outputStride = options.outputStride || DEFAULTS.outputStride;
     this.flipHorizontal = options.flipHorizontal || DEFAULTS.flipHorizontal;
     this.scoreThreshold = options.scoreThreshold || DEFAULTS.scoreThreshold;
@@ -234,7 +234,6 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   if (typeof optionsOrCallback === 'function') {
     callback = optionsOrCallback;
   } 
-
 
   return new PoseNet(video, options, detectionType, callback);
 };

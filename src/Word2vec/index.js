@@ -8,6 +8,7 @@ Word2Vec
 */
 
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 import callCallback from '../utils/callcallback';
 
 
@@ -30,10 +31,10 @@ class Word2Vec {
   }
 
   async loadModel() {
-    const json = await fetch(this.modelPath)
-      .then(response => response.json());
-    Object.keys(json.vectors).forEach((word) => {
-      this.model[word] = tf.tensor1d(json.vectors[word]);
+    const {data} = await axios.get(this.modelPath)
+    
+    Object.keys(data.vectors).forEach((word) => {
+      this.model[word] = tf.tensor1d(data.vectors[word]);
     });
     this.modelSize = Object.keys(this.model).length;
     this.modelLoaded = true;
@@ -101,6 +102,37 @@ class Word2Vec {
     } else {
       result = null;
     }
+
+    if (callback) {
+      callback(undefined, result);
+    }
+    return result;
+  }
+
+  /* Given a set of your own words, find the nearest neighbors */
+  async nearestFromSet(input, set, maxOrCb, cb) {
+    const { max, callback } = Word2Vec.parser(maxOrCb, cb, 10);
+    await this.ready;
+    const vector = this.model[input];
+
+    // If the input vector isn't found, bail out early.
+    if (!vector) {
+      if(callback)  callback(undefined, null);
+      return null;
+    }
+
+    const miniModel = {};
+    set.forEach((word) => {
+      if (this.model[word])   miniModel[word] = this.model[word];
+    });
+
+    // If none of the words in the set are found, also bail out
+    if (!miniModel.length) {
+      if(callback)  callback(undefined, null);
+      return null;
+    }
+
+    const result = Word2Vec.nearest(miniModel, vector, 1, max + 1);
 
     if (callback) {
       callback(undefined, result);

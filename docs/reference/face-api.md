@@ -96,7 +96,7 @@ const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, callba
 
 ***
 #### .detect()
-> Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results.
+> Given an image, will run face detection. If a video was passed in the constructor, then it only a callback is necessary to handle the results.
 
 ```js
 faceapi.detect(optionsOrCallback, configOrCallback, callback);
@@ -116,7 +116,7 @@ faceapi.detect(optionsOrCallback, configOrCallback, callback);
 
 ***
 #### .detectSingle()
-> Given an image, will run face detection. If a video was passed in the contructor, then it only a callback is necessary to handle the results. `.detectSingle()` is more accurate.
+> Given an image, will run face detection. If a video was passed in the constructor, then it only a callback is necessary to handle the results. `.detectSingle()` is more accurate.
 
 ```js
 faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);
@@ -139,18 +139,18 @@ faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);
 ## Examples
 
 **p5.js**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Image_Landmarks)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Image_Landmarks)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
 
 **p5 web editor**
 * [FaceApi_Image_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Image_Landmarks)
 * [FaceApi_Video_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Video_Landmarks)
 
 **plain javascript**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Image_Landmarks/)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks/)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-examples/tree/development/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Image_Landmarks/)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks/)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
 
 ## Demo
 

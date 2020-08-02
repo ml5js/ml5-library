@@ -11,6 +11,9 @@
 You can use neural networks to generate new content. A Generative Adversarial Network (GAN) is a machine learning architecture where two neural networks are adversaries competing. One neural network is a "generator", it makes new images. The other is a "discriminator" and tries to guess if the image is "fake" (made by the generator) or "real" (from the training data). Once the discriminator can no longer guess correctly, the model is trained! A DCGAN is a Deep Convolutional Generative Adversarial Network.
 
 ml5.js provides a few default pre-trained models for DCGAN, but you may consider training your own DCGAN to generate images of things you're interested in.
+
+There are documentation notes on how to train your own DCGAN model for use in ml5.js in the [DCGAN training repo](https://github.com/ml5js/training-dcgan). It should be noted that the setup for this requires knowledge of Python and a general understanding of cloud GPU services. Furthermore, the [ml5js/training-dcgan](https://github.com/ml5js/training-dcgan) repo is not actively maintained. For more up-to-date notes, you might also explore Gene Kogan's [Neural Aesthetic Course at ITP](https://ml4a.github.io/classes/itp-F18/06/#).
+
 ## Quickstart
 
 ```js
@@ -102,10 +105,10 @@ dcgan.generate(callback, ?latentVector);
 ## Examples
 
 **p5.js**
-* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector)
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_LatentVector_Slider)
-* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/p5js/DCGAN/DCGAN_Random)
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/DCGAN/DCGAN_Random)
 
 **p5 web editor**
 * [DCGAN_LatentVector](https://editor.p5js.org/ml5/sketches/DCGAN_LatentVector)
@@ -115,10 +118,10 @@ dcgan.generate(callback, ?latentVector);
 
 
 **plain javascript**
-* [DCGAN_LatentVector](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector)
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_LatentVector_Slider)
-* [DCGAN_Random](https://github.com/ml5js/ml5-examples/tree/development/javascript/DCGAN/DCGAN_Random)
+* [DCGAN_LatentVector](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector)
+* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
+* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_LatentVector_Slider)
+* [DCGAN_Random](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/DCGAN/DCGAN_Random)
 
 
 

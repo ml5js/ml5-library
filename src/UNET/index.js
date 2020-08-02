@@ -85,9 +85,9 @@ class UNET {
   }
 
   async convertToP5Image(tfBrowserPixelImage){
-      const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, this.config.imageSize, this.config.imageSize);
-      const p5Image1 = await p5Utils.blobToP5Image(blob1);
-      return p5Image1
+    const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, this.config.imageSize, this.config.imageSize);
+    const p5Image1 = await p5Utils.blobToP5Image(blob1);
+    return p5Image1
   }
 
   async segmentInternal(imgToPredict) {

@@ -96,16 +96,16 @@ soundclassifier.classify(callback);
 ## Examples
 
 **p5.js**
-* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/development/p5js/SoundClassification/SoundClassification_speechcommand)
-* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/development/p5js/SoundClassification/SoundClassification_speechcommand_load)
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/SoundClassification/SoundClassification_speechcommand_load)
 
 **p5 web editor**
 * [SoundClassification_speechcommand](https://editor.p5js.org/ml5/sketches/SoundClassification_speechcommand)
 * [SoundClassification_speechcommand_load](https://editor.p5js.org/ml5/sketches/SoundClassification_speechcommand_load)
 
 **plain javascript**
-* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-examples/tree/development/javascript/SoundClassification/SoundClassification_speechcommand)
-* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-examples/tree/development/javascript/SoundClassification/SoundClassification_speechcommand_load)
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/SoundClassification/SoundClassification_speechcommand_load)
 
 
 

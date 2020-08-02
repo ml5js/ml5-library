@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // Copyright (c) 2019 ml5
 // 
 // This software is released under the MIT License.
@@ -7,7 +8,7 @@ import { existsSync, mkdirSync, writeFileSync, lstatSync } from 'fs';
 import { join } from 'path';
 import assert from 'assert';
 import merge from 'webpack-merge';
-import common from './webpack.common.babel';
+import common, {developmentPort} from './webpack.common.babel';
 
 // this is the function to initialize manual-test folder when running `npm run start`
 (function checkExperimentsFolder() {
@@ -27,14 +28,14 @@ import common from './webpack.common.babel';
       <html>
       <head>
         <title>ml5.js manual test</title>
-        <script src="http://localhost:8080/ml5.js"></script>
+        <script src="http://localhost:${developmentPort}/ml5.js"></script>
       </head>
       <body>
         <script>
           // Your scripts would be written here
         </script>
       </body>
-      </html>`.replace(/      /g, '').trimLeft());
+      </html>`.replace(/ {6}/g, '').trimLeft());
   } else {
     assert(lstatSync(indexFile).isFile(), "./manual-test/index.html should be a readable file.");
   }

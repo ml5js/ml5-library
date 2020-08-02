@@ -1,0 +1,6 @@
+{
+    "description": "Aerial Images of Santiago, Chile 64x64 (16 MB)",
+    "model": "model/geo/model.json",
+    "modelSize": 128,
+    "modelLatentDim": 128
+}

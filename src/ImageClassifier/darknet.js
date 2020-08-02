@@ -3,13 +3,15 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import * as tf from '@tensorflow/tfjs';
-import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
-import IMAGENET_CLASSES_DARKNET from '../utils/IMAGENET_CLASSES_DARKNET';
+import * as tf from "@tensorflow/tfjs";
+import { getTopKClassesFromTensor } from "../utils/gettopkclasses";
+import IMAGENET_CLASSES_DARKNET from "../utils/IMAGENET_CLASSES_DARKNET";
 
 const DEFAULTS = {
-  DARKNET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json',
-  DARKNET_TINY_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json',
+  DARKNET_URL:
+    "https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json",
+  DARKNET_TINY_URL:
+    "https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json",
   IMAGE_SIZE_DARKNET: 256,
   IMAGE_SIZE_DARKNET_TINY: 224,
 };
@@ -17,15 +19,20 @@ const DEFAULTS = {
 function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement 
-      || img instanceof HTMLVideoElement 
-      || img instanceof HTMLCanvasElement
-      || img instanceof ImageData) {
+    if (
+      img instanceof HTMLImageElement ||
+      img instanceof HTMLVideoElement ||
+      img instanceof HTMLCanvasElement ||
+      img instanceof ImageData
+    ) {
       image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement 
-      || img.elt instanceof HTMLVideoElement 
-      || img.elt instanceof HTMLCanvasElement
-      || img.elt instanceof ImageData)) {
+    } else if (
+      typeof img === "object" &&
+      (img.elt instanceof HTMLImageElement ||
+        img.elt instanceof HTMLVideoElement ||
+        img.elt instanceof HTMLCanvasElement ||
+        img.elt instanceof ImageData)
+    ) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image and video.
     }
   } else {
@@ -45,10 +52,10 @@ export class Darknet {
   constructor(version) {
     this.version = version;
     switch (this.version) {
-      case 'reference':
+      case "reference":
         this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET;
         break;
-      case 'tiny':
+      case "tiny":
         this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET_TINY;
         break;
       default:
@@ -58,10 +65,10 @@ export class Darknet {
 
   async load() {
     switch (this.version) {
-      case 'reference':
+      case "reference":
         this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_URL);
         break;
-      case 'tiny':
+      case "tiny":
         this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_TINY_URL);
         break;
       default:
@@ -87,8 +94,8 @@ export class Darknet {
 }
 
 export async function load(version) {
-  if (version !== 'reference' && version !== 'tiny') {
-    throw new Error('Please select a version: darknet-reference or darknet-tiny');
+  if (version !== "reference" && version !== "tiny") {
+    throw new Error("Please select a version: darknet-reference or darknet-tiny");
   }
 
   const darknet = new Darknet(version);
