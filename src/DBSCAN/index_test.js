@@ -13,7 +13,7 @@ const DBSCAN_DEFAULTS = {
 describe("DBSCAN", () => {
   let dbscanModel;
   const dataurl =
-    "https://raw.githubusercontent.com/asvsfs/ml5-library/development/examples/dbscan/data/data.csv";
+    "https://raw.githubusercontent.com/asvsfs/ml5-library/dbscan/examples/dbscans/data/data.csv";
 
   beforeAll(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -22,8 +22,8 @@ describe("DBSCAN", () => {
   });
 
   it("Should create dbscan with all the defaults", async () => {
-    expect(dbscanModel.config.eps).toBe(DBSCAN_DEFAULTS.k);
-    expect(dbscanModel.config.minPts).toBe(DBSCAN_DEFAULTS.maxIter);
+    expect(dbscanModel.config.eps).toBe(DBSCAN_DEFAULTS.eps);
+    expect(dbscanModel.config.minPts).toBe(DBSCAN_DEFAULTS.minPts);
   });
 
   it("dbscanModel dataset : Should have length 3000", async () => {
