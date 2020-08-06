@@ -35,8 +35,7 @@ function make(eps) {
     'eps': eps,
     'minPts': 3,
   };
-  // if moon or circle data, set the options to 2 clusters
-  // could also be a 1-liner: options.k = (eps === 'moon' || eps === 'circle') ? 2: options.k;
+  // if moon or circle data, set the options to 0.1 and 0.16 eps
   if(eps === 'moon' ){
     options.eps = 0.1;
   }else if( eps === 'circle'){
