@@ -8,7 +8,7 @@
 DBSCAN Algorithm (with Euclidian distance). Influenced By jDBSCAN
 */
 
-import * as tf from "@tensorflow/tfjs-node";
+import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 
 /**
@@ -39,6 +39,11 @@ async function loadDataset(inputData) {
   return dataFlat;
 }
 
+const DEFAULTS = {
+  'eps': 50,
+  'minPts': 3,
+};
+
 class DBSCAN {
 
   /**
@@ -57,7 +62,7 @@ class DBSCAN {
       eps: options.eps || DEFAULTS.eps,
       minPts: options.minPts || DEFAULTS.minPts,
     };
-    this.last_cluster_id = 0;
+    this.lastClusterId = 0;
     this.status = [];
     this.load(dataset).then(callback);
     this.ready = callCallback(this.load(dataset), callback);
@@ -87,12 +92,12 @@ class DBSCAN {
     this.dataset.forEach((d, idx) => {
       if (d.status === undefined) {
         d.status = 0; // initlize as a noise point
-        let neighbours_indices = this.get_neighbours_indices(d);
-        if (neighbours_indices.length < this.config.minPts) { // Border or noise 
+        const neighboursIndices = this.getNeighboursIndices(d);
+        if (neighboursIndices.length < this.config.minPts) { // Border or noise 
           d.status = 0;
         } else {
-          this.increment_cluster_id()
-          this.extend(idx, neighbours_indices);
+          this.incrementClusterId()
+          this.extend(idx, neighboursIndices);
         }
       }
     });
@@ -100,77 +105,75 @@ class DBSCAN {
   
   /**
    * Extend cluster by running algorithm on neighbours and detect neighbours that are core points as well
-   * @param {number} point_index 
-   * @param {number[]} neighbours_indices
+   * @param {number} pointIndex 
+   * @param {number[]} neighboursIndices
   */
-  extend(t_point_idx, neighbours_indices) {
-    this.dataset[t_point_idx].clusterid = this.get_cluster_id();
-    this.dataset[t_point_idx].status = this.dataset[t_point_idx].clusterid;
-    for (let i = 0; i < neighbours_indices.length; i++) {
-      const curr_point_idx = neighbours_indices[i];
-
-      if (this.dataset[curr_point_idx].status === undefined) {
-        this.dataset[curr_point_idx].status = 0;
-        let curr_neighbours = this.get_neighbours_indices(
-          this.dataset[curr_point_idx]
+  extend(pointIndex, neighboursIndices) {
+    this.dataset[pointIndex].clusterid = this.getClusterId();
+    this.dataset[pointIndex].status = this.dataset[pointIndex].clusterid;
+    neighboursIndices.forEach(neighbourIndex=>{
+      if (this.dataset[neighbourIndex].status === undefined) { // Status unknown intialize as noise
+        this.dataset[neighbourIndex].status = 0;
+        const currNeighbours = this.getNeighboursIndices( // Neighbours of this point 
+          this.dataset[neighbourIndex]
         );
-        let curr_num_neighbours = curr_neighbours.length;
+        const currNumNeighbours = currNeighbours.length;
 
-        if (curr_num_neighbours >= this.config.minPts) {
-          this.extend(curr_point_idx, curr_neighbours);
+        if (currNumNeighbours >= this.config.minPts) {// If Neighbours are above minimum we go further and add this and potential neighbours to clusterId
+          this.extend(neighbourIndex, currNeighbours);
         }
       }
-
-      if (this.dataset[curr_point_idx].status < 1) {
-        this.dataset[curr_point_idx].status = this.dataset[
-          t_point_idx
+      if (this.dataset[neighbourIndex].status < 1) {
+        this.dataset[neighbourIndex].status = this.dataset[
+          pointIndex
         ].clusterid;
-        this.dataset[curr_point_idx].clusterid = this.dataset[
-          t_point_idx
+        this.dataset[neighbourIndex].clusterid = this.dataset[
+          pointIndex
         ].clusterid;
       }
-    }
+    })
   }
 
   /**
    * Return last generated cluster id
    */
-  get_cluster_id() {
-    return this.last_cluster_id;
+  getClusterId() {
+    return this.lastClusterId;
   }
   /**
    * increment cluster id
    */
-  increment_cluster_id() {
-    this.last_cluster_id++
+  incrementClusterId() {
+    this.lastClusterId+=1
   }
 
   /**
    * Find closest neighbours to each observation.
    */
-  get_neighbours_indices(t_point) {
+  getNeighboursIndices(point) {
     try {
-      let neighbours = tf.tidy(() => {
+      const neighbours = tf.tidy(() => {
         const { values, indices } = tf
-          .squaredDifference(t_point.tensor, this.dataTensor)
+          .squaredDifference(point.tensor, this.dataTensor)
           .sum(1)
           .sqrt()
           .topk(this.dataTensor.shape[0], true)
         return tf
           .stack([values.asType("float32"), indices.asType("float32")], 1)
           .arraySync()
-          .filter((v, idx) => {
+          .filter((v) => {
             return v[0] <= this.config.eps;
           })
-          .reduce((prev, cur, idx, res) => {
+          .reduce((prev, cur) => {
             prev.push(cur[1]);
             return prev;
           }, []);
       });
-      return neighbours;
+      return neighbours || [];
     } catch (error) {
       console.log(`error ${error}`);
     }
+    return []
   }
 }
 
