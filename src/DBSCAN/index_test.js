@@ -13,7 +13,7 @@ const DBSCAN_DEFAULTS = {
 describe("DBSCAN", () => {
   let dbscanModel;
   const dataurl =
-    "https://raw.githubusercontent.com/asvsfs/ml5-library/dbscan/examples/dbscans/data/data.csv";
+    "https://raw.githubusercontent.com/asvsfs/ml5-library/dbscan/examples/d3/DBSCAN/DBSCAN_Cluster/data/gaussian2d_1.55clusters.csv";
 
   beforeAll(async () => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -26,8 +26,8 @@ describe("DBSCAN", () => {
     expect(dbscanModel.config.minPts).toBe(DBSCAN_DEFAULTS.minPts);
   });
 
-  it("dbscanModel dataset : Should have length 3000", async () => {
+  it("dbscanModel dataset : Should have length 300", async () => {
     // await kmeansModel.load(dataurl)
-    expect(dbscanModel.dataset.length).toBe(3000);
+    expect(dbscanModel.dataset.length).toBe(300);
   });
 });
