@@ -6,7 +6,7 @@ Mostly.
 
 A number of the ml5 sketches don't currently work in the p5 web editor due to some of the ways that the editor handles data files and some of the network communication regarding making requests to external data (e.g. the big model files that allow ml5.js to run things like image detection, etc). 
 
-There are lots of developments in the p5 web editor as well as in ml5 to make sure these environments all play nicely together. If something doesn't work in the web editor, the best thing to do is to try and run things locally if possible. See [running a local web server tutorial](https://learn.ml5js.org/docs/#/tutorials/local-web-server).
+There are lots of developments in the p5 web editor as well as in ml5 to make sure these environments all play nicely together. If something doesn't work in the web editor, the best thing to do is to try and run things locally if possible. See [running a local web server tutorial](/docs/tutorials/local-web-server.md).
 
 Thanks!
 
