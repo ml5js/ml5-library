@@ -28,5 +28,4 @@ Please contact us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="ma
 
 ### How can I contribute?
 
-
 Please refer to the contributor documentation [on Github](https://github.com/ml5js/ml5-library/blob/development/CONTRIBUTING.md).
