@@ -27,5 +27,4 @@ Yes! Absolutely. We welcome all forms of socially and technically driven contrib
 Please contact us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>, or [Github](https://github.com/ml5js/ml5-library/issues).
 
 ### How can I contribute?
-
 Please refer to the contributor documentation [on Github](https://github.com/ml5js/ml5-library/blob/development/CONTRIBUTING.md).
