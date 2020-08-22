@@ -7,8 +7,8 @@
   ObjectDetection
 */
 
-import YOLO from "./YOLO/index";
-import CocoSsd from "./CocoSsd/index";
+import { YOLO } from "./YOLO/index";
+import {CocoSsd} from "./CocoSsd/index";
 
 class ObjectDetector {
   /**

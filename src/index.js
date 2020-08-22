@@ -11,7 +11,8 @@ import soundClassifier from "./SoundClassifier/";
 import KNNClassifier from "./KNNClassifier/";
 import featureExtractor from "./FeatureExtractor/";
 import word2vec from "./Word2vec/";
-import YOLO from "./ObjectDetector/YOLO";
+import {YOLO} from "./ObjectDetector/YOLO";
+import {CocoSsd} from "./ObjectDetector/CocoSsd";
 import objectDetector from "./ObjectDetector";
 import poseNet from "./PoseNet";
 import * as imageUtils from "./utils/imageUtilities";
@@ -36,6 +37,7 @@ import facemesh from "./Facemesh";
 import handpose from './Handpose';
 import p5Utils from "./utils/p5Utils";
 import communityStatement from "./utils/community";
+import * as testingUtils from "./utils/testingUtils";
 
 const withPreload = {
   charRNN,
@@ -54,6 +56,7 @@ const withPreload = {
   styleTransfer,
   word2vec,
   YOLO,
+  CocoSsd,
   objectDetector,
   uNet,
   sentiment,
@@ -77,4 +80,5 @@ module.exports = Object.assign({ p5Utils }, preloadRegister(withPreload), {
   tfvis,
   version,
   neuralNetwork,
+  testingUtils
 });
