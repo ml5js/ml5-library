@@ -38,6 +38,7 @@
     * [PoseNet](/reference/posenet.md)
     * [BodyPix](/reference/bodypix.md)
     * [UNET](/reference/unet.md)
+    * [Facemesh](/reference/facemesh.md)
     * [FaceApi](/reference/face-api.md)
     * [StyleTransfer](/reference/style-transfer.md)
     * [pix2pix](/reference/pix2pix.md)

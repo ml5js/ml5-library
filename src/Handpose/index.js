@@ -61,6 +61,9 @@ class Handpose extends EventEmitter {
    */
   async predict(inputOr, callback) {
     const input = this.getInput(inputOr);
+    if (!input) {
+      return [];
+    }
     const { flipHorizontal } = this.config;
     const predictions = await this.model.estimateHands(input, flipHorizontal);
     const result = predictions;

@@ -1153,6 +1153,25 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "dalequark",
+      "name": "Dale Markowitz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2328571?v=4",
+      "profile": "https://daleonai.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "RaglandCodes",
+      "name": "Ragland Asir",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39048764?v=4",
+      "profile": "http://raglandcodes.github.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

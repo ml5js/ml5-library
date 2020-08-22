@@ -3,6 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+const { getImageData, getRobin } = ml5.testingUtils;
+
 const COCOSSD_DEFAULTS = {
   base: "lite_mobilenet_v2",
   modelUrl: undefined,
@@ -15,30 +17,31 @@ const YOLO_DEFAULTS = {
   size: 416,
 };
 
-async function getRobin() {
-  const img = new Image();
-  img.crossOrigin = "";
-  img.src = "https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/bird.jpg";
-  await new Promise(resolve => {
-    img.onload = resolve;
-  });
-  return img;
-}
+const mockYoloObject = {
+  IOUThreshold: YOLO_DEFAULTS.IOUThreshold,
+  classProbThreshold: YOLO_DEFAULTS.classProbThreshold,
+  filterBoxesThreshold: YOLO_DEFAULTS.filterBoxesThreshold,
+  size: YOLO_DEFAULTS.size,
+  detect: () => {
+    return [{ label: "bird", confidence: 0.9 }];
+  },
+};
+const mockCocoObject = {
+  config: { ...COCOSSD_DEFAULTS },
+  detect: () => {
+    return [{ label: "bird", confidence: 0.9 }];
+  },
+};
 
-async function getImageData() {
-  const arr = new Uint8ClampedArray(20000);
-
-  // Iterate through every pixel
-  for (let i = 0; i < arr.length; i += 4) {
-    arr[i + 0] = 0; // R value
-    arr[i + 1] = 190; // G value
-    arr[i + 2] = 0; // B value
-    arr[i + 3] = 255; // A value
+function mockObjectDetector(modelName) {
+  switch (modelName) {
+    case "yolo":
+      return mockYoloObject;
+    case "cocossd":
+      return mockCocoObject;
+    default:
+      return mockCocoObject;
   }
-
-  // Initialize a new ImageData object
-  const img = new ImageData(arr, 200);
-  return img;
 }
 
 describe("objectDetector", () => {
@@ -47,31 +50,37 @@ describe("objectDetector", () => {
   /**
    * Test cocossd object detector
    */
+
   describe("objectDetector: cocossd", () => {
     let cocoDetector;
 
     beforeAll(async () => {
+      spyOn(ml5, "objectDetector").and.callFake(mockObjectDetector);
       cocoDetector = await ml5.objectDetector("cocossd");
     });
 
     it("Should instantiate with the following defaults", () => {
-      expect(cocoDetector.config.base).toBe(COCOSSD_DEFAULTS.base);
-      expect(cocoDetector.config.modelUrl).toBe(COCOSSD_DEFAULTS.modelUrl);
+      expect(ml5.objectDetector).toHaveBeenCalled();
+      expect(cocoDetector.config.toString()).toBe(COCOSSD_DEFAULTS.toString());
     });
 
     it("detects a robin", async () => {
+      spyOn(cocoDetector, "detect").and.returnValue([{ label: "bird", confidence: 0.9 }]);
+
       const robin = await getRobin();
       const detection = await cocoDetector.detect(robin);
       expect(detection[0].label).toBe("bird");
     });
 
     it("detects takes ImageData", async () => {
+      spyOn(cocoDetector, "detect").and.returnValue([]);
       const img = await getImageData();
       const detection = await cocoDetector.detect(img);
       expect(detection).toEqual([]);
     });
 
     it("throws error when a non image is trying to be detected", async () => {
+      spyOn(cocoDetector, "detect").and.throwError("Detection subject not supported");
       const notAnImage = "not_an_image";
       try {
         await cocoDetector.detect(notAnImage);
@@ -88,10 +97,12 @@ describe("objectDetector", () => {
   describe("objectDetector: yolo", () => {
     let yolo;
     beforeAll(async () => {
+      spyOn(ml5, "objectDetector").and.callFake(mockObjectDetector);
       yolo = await ml5.objectDetector("yolo", { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
 
     it("instantiates the YOLO classifier with defaults", () => {
+      expect(ml5.objectDetector).toHaveBeenCalled();
       expect(yolo.IOUThreshold).toBe(YOLO_DEFAULTS.IOUThreshold);
       expect(yolo.classProbThreshold).toBe(YOLO_DEFAULTS.classProbThreshold);
       expect(yolo.filterBoxesThreshold).toBe(YOLO_DEFAULTS.filterBoxesThreshold);
@@ -99,12 +110,14 @@ describe("objectDetector", () => {
     });
 
     it("detects a robin", async () => {
+      spyOn(yolo, "detect").and.returnValue([{ label: "bird", confidence: 0.9 }]);
       const robin = await getRobin();
       const detection = await yolo.detect(robin);
       expect(detection[0].label).toBe("bird");
     });
 
     it("detects takes ImageData", async () => {
+      spyOn(yolo, "detect").and.returnValue([]);
       const img = await getImageData();
       const detection = await yolo.detect(img);
       expect(detection).toEqual([]);

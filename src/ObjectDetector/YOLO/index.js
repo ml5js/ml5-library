@@ -36,7 +36,7 @@ const DEFAULTS = {
 // Size of the video
 const imageSize = 416;
 
-class YOLOBase extends Video {
+export class YOLOBase extends Video {
   /**
    * @deprecated Please use ObjectDetector class instead
    */
@@ -236,7 +236,7 @@ class YOLOBase extends Video {
   }
 }
 
-const YOLO = (videoOr, optionsOr, cb) => {
+export const YOLO = (videoOr, optionsOr, cb) => {
   let video = null;
   let options = {};
   let callback = cb;
@@ -260,4 +260,4 @@ const YOLO = (videoOr, optionsOr, cb) => {
   return new YOLOBase(video, options, callback);
 };
 
-export default YOLO;
+// export default YOLO;
