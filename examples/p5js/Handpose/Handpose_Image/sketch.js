@@ -2,30 +2,32 @@ let handpose;
 let predictions = [];
 let img;
 
+// load the image before the main program starts
+function preload(){
+  img = loadImage("data/hand.jpg");
+}
+
 function setup() {
   // Create a canvas that's at least the size of the image.
   createCanvas(400, 350);
-
-  // create an image using the p5 dom library
   // call modelReady() when it is loaded
-  img = createImg("data/hand.jpg", imageReady);
+  handpose = ml5.handpose(modelReady);
 
-  img.hide(); // hide the image in the browser
   frameRate(1); // set the frameRate to 1 since we don't need it to be running quickly in this case
-}
-
-// when the image is ready, then load up poseNet
-function imageReady() {
-  handpose = ml5.handpose(img, modelReady);
-
-  handpose.on("predict", results => {
-    predictions = results;
-  });
 }
 
 // when poseNet is ready, do the detection
 function modelReady() {
   console.log("Model ready!");
+  
+  // when the predict function is called, tell 
+  // handpose what to do with the results.
+  // in this case we assign the results to our global
+  // predictions variable
+  handpose.on("predict", results => {
+    predictions = results;
+  });
+
   handpose.predict(img);
 }
 
