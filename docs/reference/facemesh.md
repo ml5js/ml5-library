@@ -38,12 +38,23 @@ facemesh.on('predict', results => {
 ### Initialize
 You can initialize ml5.facemesh with an optional `video`, configuration `options` object, or a `callback` function.
 ```js
-const poseNet = ml5.facemesh(?video, ?options, ?callback);
+const facemesh = ml5.facemesh(?video, ?options, ?callback);
 ```
 
 #### Parameters
 * **video**: OPTIONAL. Optional HTMLVideoElement input to run predictions on.
 * **options**: OPTIONAL. A object that contains properties that effect the Facemesh model accuracy, results, etc. See documentation on the available options in [TensorFlow's Facemesh documentation](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#parameters-for-facemeshload).
+  ```js
+  const options = {
+  flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
+  maxContinuousChecks: 5, // How many frames to go without running the bounding box detector. Only relevant if maxFaces > 1. Defaults to 5.
+  detectionConfidence: 0.9, // Threshold for discarding a prediction. Defaults to 0.9.
+  maxFaces: 10, // The maximum number of faces detected in the input. Should be set to the minimum number for performance. Defaults to 10.
+  iouThreshold: 0.3, // A float representing the threshold for deciding whether boxes overlap too much in non-maximum suppression. Must be between [0, 1]. Defaults to 0.3.
+  scoreThreshold: 0.75, // defaults to 0.75
+  }
+  ```
+
 * **callback**: OPTIONAL. A function that is called once the model has loaded.
 
 ### Properties
@@ -73,74 +84,74 @@ const poseNet = ml5.facemesh(?video, ?options, ?callback);
 #### .predict()
 > A function that returns the results of a single face detection prediction.
 
-```js
-facemesh.predict(inputMedia, callback);
-```
+  ```js
+  facemesh.predict(inputMedia, callback);
+  ```
 
 📥 **Inputs**
 * **inputMedia**: REQUIRED. An HMTL or p5.js image, video, or canvas element that you'd like to run a single prediction on.
 
 * **callback**: OPTIONAL.  A callback function to handle new face detection predictions. For example:
 
-```js
-poseNet.predict(inputMedia, results => {
-  // do something with the results
-  console.log(results);
-});
-```
+  ```js
+  facemesh.predict(inputMedia, results => {
+    // do something with the results
+    console.log(results);
+  });
+  ```
 
 📤 **Outputs**
 
 * **Array**: Returns an array of objects describing each detected face. See the [Facemesh keypoints map](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#keypoints) to determine how the keypoint related to facial landmarks.
 
-```js
-[
-    {
-        faceInViewConfidence: 1, // The probability of a face being present.
-        boundingBox: { // The bounding box surrounding the face.
-            topLeft: [232.28, 145.26],
-            bottomRight: [449.75, 308.36],
-        },
-        mesh: [ // The 3D coordinates of each facial landmark.
-            [92.07, 119.49, -17.54],
-            [91.97, 102.52, -30.54],
-            ...
-        ],
-        scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
-            [322.32, 297.58, -17.54],
-            [322.18, 263.95, -30.54]
-        ],
-        annotations: { // Semantic groupings of the `scaledMesh` coordinates.
-            silhouette: [
-            [326.19, 124.72, -3.82],
-            [351.06, 126.30, -3.00],
-            ...
-            ],
-            ...
-        }
-    }
-]
-```
+  ```js
+  [
+      {
+          faceInViewConfidence: 1, // The probability of a face being present.
+          boundingBox: { // The bounding box surrounding the face.
+              topLeft: [232.28, 145.26],
+              bottomRight: [449.75, 308.36],
+          },
+          mesh: [ // The 3D coordinates of each facial landmark.
+              [92.07, 119.49, -17.54],
+              [91.97, 102.52, -30.54],
+              ...
+          ],
+          scaledMesh: [ // The 3D coordinates of each facial landmark, normalized.
+              [322.32, 297.58, -17.54],
+              [322.18, 263.95, -30.54]
+          ],
+          annotations: { // Semantic groupings of the `scaledMesh` coordinates.
+              silhouette: [
+              [326.19, 124.72, -3.82],
+              [351.06, 126.30, -3.00],
+              ...
+              ],
+              ...
+          }
+      }
+  ]
+  ```
 
 ***
 
 #### .on('predict', ...)
 > An event listener that returns the results when a new face detection prediction occurs.
 
-```js
-facemesh.on('predict', callback);
-```
+  ```js
+  facemesh.on('predict', callback);
+  ```
 
 📥 **Inputs**
 
 * **callback**: REQUIRED.  A callback function to handle new face detection predictions. For example:
 
-```js
-poseNet.on('predict', results => {
-  // do something with the results
-  console.log(results);
-});
-```
+  ```js
+  facemesh.on('predict', results => {
+    // do something with the results
+    console.log(results);
+  });
+  ```
 
 📤 **Outputs**
 
