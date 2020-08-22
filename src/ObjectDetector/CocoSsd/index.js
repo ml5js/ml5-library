@@ -17,7 +17,7 @@ const DEFAULTS = {
   modelUrl: undefined,
 };
 
-class CocoSsdBase {
+export class CocoSsdBase {
   /**
    * Create CocoSsd model. Works on video and images.
    * @param {function} constructorCallback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
@@ -129,7 +129,7 @@ class CocoSsdBase {
   }
 }
 
-const CocoSsd = (videoOr, optionsOr, cb) => {
+export const CocoSsd = (videoOr, optionsOr, cb) => {
   let video = null;
   let options = {};
   let callback = cb;
@@ -153,4 +153,4 @@ const CocoSsd = (videoOr, optionsOr, cb) => {
   return new CocoSsdBase(video, options, callback);
 };
 
-export default CocoSsd;
+// export default CocoSsd;
