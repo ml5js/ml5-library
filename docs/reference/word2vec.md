@@ -202,6 +202,51 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### Word2Vec - Model Biography
+
+- **Description**
+  - TBD
+- **Developer and Year**
+  - This ml5 implementation is based on Daniel Shiffman’s 2017 p5.js Word2Vec, who in turn credits both Allison Parrish and Anthony Liu.
+- **Purpose and Intended Users**
+  - TBD
+- **Hosted Location**
+  - ml5
+- **ml5 Contributor and Year**
+  - Ported by Cristóbal Valenzuela in 2018
+- **References**
+  - Developer [Daniel Shiffman](https://shiffman.net/)
+  - ml5 Contributor [Cristóbal Valenzuela](https://cvalenzuelab.com/)
+  - GitHub Repository [Daniel Shiffman’s p5.js Word2Vec](https://github.com/shiffman/p5-word2vec)
+  - GitHub Gist [Allison Parrish’s Understanding Word Vectors](https://gist.github.com/aparrish/2f562e3737544cf29aaf1af30362f469)
+  - GitHub Repository [Anthony Liu’s word2vecjson](https://github.com/turbomaze/word2vecjson)
+
+#### Word2Vec - Data Biography
+
+- **Description**
+  - You can train your own vector model or use sample data provided by ml5, which are the same as those provided by Anthony Liu.
+- **Source**
+  - TBD
+- **Collector and Year**
+  - TBD
+- **Collection Method**
+  - TBD
+- **Purpose and Intended Users**
+  - TBD
+- **References**
+  - GitHub Repository [Daniel Shiffman’s p5.js Word2Vec](https://github.com/shiffman/p5-word2vec)
+  - GitHub Repository [Anthony Liu’s word2vecjson](https://github.com/turbomaze/word2vecjson)
+
+
+
+
 ## Acknowledgements
 
 **Contributors**:
