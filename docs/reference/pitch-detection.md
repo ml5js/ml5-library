@@ -126,6 +126,68 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### PitchDetection - Model Biography
+
+- **Description**
+  - This model is based on the pre-trained model, CREPE: A Convolutional REpresentation for Pitch Estimation.
+- **Developer and Year**
+  - CREPE was developed by researchers from NYU’s  Music and Audio Research Laboratory and Center for Urban Science and Progress in 2018.
+- **Purpose and Intended Users**
+  - According to the paper, CREPE “is made freely available as an open-source Python module for easy application” in the research area of Audio and Speech Processing.
+- **Hosted Location**
+  - TBD
+- **ml5 Contributor and Year**
+  - Ported by Hannah Davis in 2018
+- **References**
+  - ml5 Contributor [Hannah Davis](http://www.hannahishere.com/)
+  - Website [Convolutional REpresentation for Pitch Estimation](https://marl.github.io/crepe/)
+  - Paper [CREPE: A Convolutional Representation for Pitch Estimation](https://arxiv.org/abs/1802.06182)
+  - GitHub Repository [CREPE](https://github.com/marl/crepe/tree/gh-pages)
+
+#### PitchDetection - Data Biography
+
+This model was trained on two datasets of synthesized audio: 
+
+##### RWC-synth
+- **Description**
+  - This dataset contains 6.16 hours of audio synthesized from the RWC Music Database, a copyright-cleared database. According to the website, the “RWC Music Database contains six original collections: the Popular Music Database (100 songs), Royalty-Free Music Database (15 songs), Classical Music Database (50 pieces), Jazz Music Database (50 pieces), Music Genre Database (100 pieces), and Musical Instrument Sound Database (50 instruments).” 
+- **Source**
+  - RWC Music Database
+- **Collector and Year**
+  - RWC Music Database Sub-Working Group
+- **Collection Method**
+  - According to the RWC Music Database website, “For all 315 musical pieces performed and recorded for the database, we prepared original audio signals, corresponding standard MIDI files, and text files of lyrics (for songs). For the 50 instruments, we captured individual sounds at half-tone intervals with several variations of playing styles, dynamics, instrument manufacturers, and musicians.”
+- **Purpose and Intended Users**
+  - The data are available for research purposes only in the field of music information processing. According to the website, “these collections will provide a benchmark that enables researchers to compare and evaluate their various systems and methods against a common standard.”
+- **References**
+  - Website [RWC Music Database](https://staff.aist.go.jp/m.goto/RWC-MDB/)
+  - Paper Masataka Goto, Hiroki Hashiguchi, Takuichi Nishimura, and Ryuichi Oka, “Rwc music database: Popular, classical and jazz music databases.,” in Proceedings of the 3rd ISMIR Conference, 2002, vol. 2, pp. 287–288.
+
+##### Medly DB
+
+- **Description**
+  - This dataset consists of 15.56 hours re-synthesized 230 monophone stems. 
+- **Source**
+  - The stems are from Medly DB: A Dataset of Multitrack Audio for Music Research. There are currently two versions of the MedlyDB available, and the model’s paper cites the first one.
+- **Collector and Year**
+  - The MedlyDB project is led by Rachel Bittner at NYU's Music and Audio Research Lab.
+- **Collection Method**
+  - TBD
+- **Purpose and Intended Users**
+  - The Medley DB website describes it as a curated “dataset of annotated, royalty-free multitrack recordings” intended for research in the area of melody extraction.
+- **References**
+  - Website [Medly DB: A Dataset of Multitrack Audio for Music Research](https://medleydb.weebly.com/)
+  - Website N [YU's Music and Audio Research Lab](http://steinhardt.nyu.edu/marl)
+  - Paper Rachel M Bittner, Justin Salamon, Mike Tierney, Matthias Mauch, Chris Cannam, and Juan Pablo Bello, “Medleydb: A multitrack dataset for annotation-intensive mir research.,” in Proceedings of the 15th ISMIR Conference, 2014, vol. 14, pp. 155–160.
+
+
 ## Acknowledgements
 
 **Contributors**:
