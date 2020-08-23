@@ -168,21 +168,19 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
   npm run manual-test
   ```
 
-  This creates a new folder called `/manual-test` in the project's root folder. Create an `index.html` file inside `/manual-test` and add the following:
+  This creates a new folder called `/manual-test` in the project's root folder. The `/manual-test` folder contains an `index.html` file with the following content:
 
   ```html
   <!DOCTYPE html>
   <html>
   <head>
-    <title>Test</title>
+    <title>ml5.js manual test</title>
     <script src="http://localhost:8080/ml5.js"></script>
   </head>
   <body>
-
     <script>
-
+      // Your scripts would be written here
     </script>
-
   </body>
   </html>
   ```
