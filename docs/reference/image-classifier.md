@@ -160,7 +160,10 @@ classifier.classify(?numberOfClasses , ?callback);
 
 ## Demo
 
-No demos yet - contribute one today!
+
+### Mask or No Mask Demo 
+* [Wearing a Mask or Not Demo] (https://gitdemo.arifnezami.com/mask_nomask_js/)
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/64c89YlJJgQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Tutorials
 
