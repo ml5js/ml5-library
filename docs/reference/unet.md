@@ -125,6 +125,49 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### U-Net Face - Model Biography
+
+- **Description**
+  - This model is a type of convolutional neural network (CNN) that finds patterns in the pixels of images (e.g. horizontal or vertical edges), and through successive layers of computation finds sets of patterns to identify more complex patterns (e.g. corners or circles), eventually detecting intricate patterns that it predicts belong to a particular category. The categories depend on how images in the model’s training dataset are labeled.
+  - The ml5 U-NET is trained for person and body-part segmentation in images and video. This means that the model can classify the pixel regions belonging to a person, as well as regions of the body.
+  - Technical information about how the U-Net model was designed is provided in the source website and associated paper linked below.
+- **Developer and Year**
+  - The model architecture was developed at the University of Freiburg, Germany, in 2015.
+- **Purpose and Intended Users**
+  - A U-Net is a type of model originally trained for biomedical image segmentation, such as to track cells. The University of Freiburg makes the model available without an accompanying license.
+- **Hosted Location**
+  - The model is hosted by Zaid Alyafeai.
+- **ml5 Contributor and Year**
+  - Ported by Zaid Alyafeai with additional contributions by Joey Lee in 2019.
+- **References**
+  - Website [U-Net: Convolutional Networks for Biomedical Image Segmentation, University of Freiburg, Germany](https://lmb.informatik.uni-freiburg.de/people/ronneber/u-net/)
+  - Developers / ml5 Contributors [Zaid Alyafeai](https://github.com/zaidalyafeai) and [Joey Lee](https://github.com/joeyklee)
+  - Paper [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597)
+
+#### U-Net Face - Data Biography
+
+- **Description**
+  - Though the original dataset contains photographs in which pixels are categorized and labeled for facial parts, the ml5 implementation only masks out the upper body of a person in an image or video.
+- **Source**
+  - The dataset is managed and available from Mut1ny, a software development and consulting company. There are two different datasets available which are referred to as a normal dataset and a larger commercial/research partner dataset.
+- **Collector and Year**
+  - Mut1ny
+- **Collection Method**
+  - Some of the labeled data are crowdsourced. Those who wish to use the full dataset are requested to make a financial donation or to contribute annotated images that were previously unlabeled. Mut1ny provides the images and a software tool for labeling pixel regions.
+- **Purpose and Intended Users**
+  - According to the Mut1ny website, the data were collected “to generate useful tools in different application areas, but also next-generation tools in the image/video space. This hopefully will allow visual creatives and potentially beyond to reduce the grind work and allow creatives to spen[d] more time on what they like to do best - being creative!”
+- **References**
+  - Website [Mut1ny](https://www.mut1ny.com/face-headsegmentation-dataset)
+  - Website [Mut1ny Patreon](https://www.patreon.com/mut1ny)
+
+
 
 ## Acknowledgements
 

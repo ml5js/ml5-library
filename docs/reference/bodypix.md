@@ -286,6 +286,54 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+TBD
+
+#### MobileNetV1 - Model Biography
+
+- **Description**
+  - MobileNet is a term that describes a type of machine learning model architecture that has been optimized to run on platforms with limited computational power, such as applications on mobile or embedded devices. MobileNets have several use cases, including image classification, object detection, and image segmentation. This particular MobileNet model is also a type of convolutional neural network (CNN) and was trained to detect people and 24 general regions of the body in an image or video.
+  - A CNN finds patterns in the pixels of images (e.g. horizontal or vertical edges), and through successive layers of computation finds sets of patterns to identify more complex patterns (e.g. corners or circles), eventually detecting intricate patterns that it predicts belong to a particular category (e.g. left face or rightUpperArmFront). The categories depend on how images in the model’s training dataset are labeled.
+  - ml5 defaults using a MobileNet created with TensorFlow.js, a JavaScript library from TensorFlow, an open source machine learning platform developed by Google.
+- **Developer and Year**
+  - Google’s TensorFlow.js team. The TensorFlow.js BodyPix models were developed by Dan Oved from NYU and Tyler Zhu at Google Research and additional contributors in 2019
+- **Purpose and Intended Users**
+  - From the website: TensorFlow is an open source machine learning platform that “has a comprehensive, flexible ecosystem of tools, libraries, and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML-powered applications.” This model is available for use in the ml5 library because Tensorflow licenses it with Apache License 2.0.
+- **Hosted Location**
+  - As of June 2019, ml5 imports MobileNetV1 from TensorFlow, hosted on the NPM database. This means that your ml5 sketch will automatically use the most recent version distributed on NPM. 
+- **ml5 Contributor and Year**
+  - Ported by Joey Lee in 2019
+- **References**
+  - Website [TensorFlow](https://www.tensorflow.org/)
+  - Developers [Dan Oved](https://www.danioved.com/) and [Tyler Zhu](https://ai.google/research/people/TylerZhu)
+  - ml5 Contributor [Joey Lee](https://jk-lee.com/)
+  - GitHub Repository [TensorFlow.js BodyPix - Person Segmentation in the Browser Repository](https://github.com/tensorflow/tfjs-models/tree/master/body-pix#acknowledgement)
+  - Article [Introducing BodyPix: Real-time Person Segmentation in the Browser with TensorFlow.js](https://medium.com/tensorflow/introducing-bodypix-real-time-person-segmentation-in-the-browser-with-tensorflow-js-f1948126c2a0)
+
+#### MobileNetV1- Data Biography
+
+- **Description**
+  - From the article, The model was trained on (1) images from the COCO dataset and also (2) images that were digitally generated, also referred to as a “simulated data.”
+- **Source**
+  - From the website: The COCO dataset is managed by a number of collaborators from both academic and commercial organizations for “large-scale object detection, segmentation, and captioning,” and according to the paper, images were collected from Flickr. 
+  - Per Karlsson from Google Research rendered the simulated images for the rest of the dataset.
+- **Collector and Year**
+  - The COCO database began in 2014.
+- **Collection Method**
+  - COCO methods for collecting images and annotating pixels into segments are described  in the paper.
+- **Purpose and Intended Users**
+  - The COCO dataset was created to advance computer vision research. 
+  - From the article, the reason for using a mixed dataset with simulated data: “It is time-consuming to manually annotate a large amount of training data for the task of segmenting pixels in an image into twenty four body part regions. Instead, we internally use computer graphics to render images with ground truth body part segmentation annotations. To train our model, we mixed the rendered images and real COCO images (with 2D keypoints and instance segmentation annotations).”
+- **References**
+  - Paper [Microsoft COCO: Common Objects in Context](https://arxiv.org/abs/1405.0312)
+  - Website [Microsoft COCO: Common Objects in Context](http://cocodataset.org/#home)
+  - Article [Introducing BodyPix: Real-time Person Segmentation in the Browser with TensorFlow.js](https://medium.com/tensorflow/introducing-bodypix-real-time-person-segmentation-in-the-browser-with-tensorflow-js-f1948126c2a0)
+
+
 ## Acknowledgements
 
 **Contributors**:

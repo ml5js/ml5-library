@@ -163,6 +163,44 @@ No demos yet - contribute one today!
 ### MagicFeature Tutorial 2 via CodingTrain
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/yNkAuWz5lnY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### ____MODELNAME____ - Model Biography
+
+- **Description**
+  - What does this model do? If unknown, then write TBD
+- **Developer and Year**
+  - Who developed it and when? If unknown, then write TBD
+- **Purpose and Intended Users**
+  - Why was it developed and for whom? If unknown, then write TBD
+- **Hosted Location**
+  - Where does ml5.js retrieve the model files from? If unknown, then write TBD
+- **ml5 Contributor and Year**
+  - Who ported it to ml5 and when? If unknown, then write TBD
+- **References**
+  - What sources did I consult for this information? If unknown, then write TBD
+
+#### ____MODELNAME____ - Data Biography
+
+- **Description**
+  - What is the data? If unknown, write TBD
+- **Source**
+  - Where did it come from? If unknown, write TBD
+- **Collector and Year**
+  - Who collected it and when? If unknown, write TBD
+- **Collection Method**
+  - How was the data collected? If unknown, write TBD
+- **Purpose and Intended Users**
+  - Why was the dataset developed and for whom? If unknown, write TBD
+- **References**
+  - What sources did I consult for this information? If unknown, write TBD
+
+
 
 ## Acknowledgements
 

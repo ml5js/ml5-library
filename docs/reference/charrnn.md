@@ -176,6 +176,50 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+TBD
+
+#### CharRNN - Model Biography
+
+- **Description**
+  - This is a type of neural network architecture for working with pre-trained models, and several example models are provided by ml5.
+- **Developer and Year**
+  - From the model training tutorial, the ml5 implementation is based on Sherjil Ozair’s char-rnn-tensorflow, which is inspired by Adrej Karpathy’s work in this area from 2015.
+- **Purpose and Intended Users**
+  - TBD
+- **Hosted Location**
+  - ml5
+- **ml5 Contributor and Year**
+  - Ported by Cristóbal Valenzuela with additional contributions from Memo Akten in 2018.
+- **References**
+  - Developers and ml5 Contributors [Cristóbal Valenzuela](https://cvalenzuelab.com/) and [Memo Akten](http://www.memo.tv/works/)
+  - ml5 [Pre-trained Models](https://github.com/ml5js/ml5-data-and-models/tree/master/models/lstm)
+  - ml5 Tutorial [Training a charRNN and using the model in ml5js](https://github.com/ml5js/training-charRNN)
+  - GitHub Repository [Sherjil Ozair’s char-rnn-tensorflow](https://github.com/sherjilozair/char-rnn-tensorflow)
+  - Article [The Unreasonable Effectiveness of Recurrent Neural Networks by Adrej Karpathy](http://karpathy.github.io/2015/05/21/rnn-effectiveness/)
+
+#### CharRNN - Data Biography
+
+- **Description**
+  - Users train a charRNN model on their own corpus.
+- **Source**
+  - ml5 also supplies some sample datasets on which to train a CharRNN model, compiled from public domains texts from Project Gutenberg
+- **Collector and Year**
+  - Starting in 2018, a number of contributors added sample datasets.
+- **Collection Method**
+  - TBD
+- **Purpose and Intended Users**
+  - TBD
+- **References**
+  - ml5 [Sample Datasets](https://github.com/ml5js/ml5-data-and-models/tree/master/datasets/text)
+  - Article [ml5: Friendly Open Source Machine Learning Library for the Web](https://medium.com/ml5js/ml5-friendly-open-source-machine-learning-library-for-the-web-e802b5da3b2)
+  - Website [Project Gutenberg](http://www.gutenberg.org/)
+
 ## Acknowledgements
 
 **Contributors**:

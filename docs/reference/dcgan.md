@@ -133,6 +133,51 @@ No demos yet - contribute one today!
 
 No demos yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+TBD
+
+#### DCGAN - Model Biography
+
+- **Description**
+  - This demonstrates how a pre-trained DCGAN model generates new images, in this case generated images of faces or aerial images of Santiago, Chile. DCGAN stands for deep convolutional generative adversarial networks, a type of neural network architecture.
+- **Developer and Year**
+  - The DCGAN architecture was introduced in 2015 by researchers from indico Research and Facebook AI. 
+  - The ml5 implementation is based on alantian's TensorFlow.js implementation, GAN Showcase. TensorFlow.js, a JavaScript library from TensorFlow, an open source machine learning platform developed by Google.
+- **Purpose and Intended Users**
+  - Generally speaking, and From the website: TensorFlow is an open source machine learning platform that “has a comprehensive, flexible ecosystem of tools, libraries, and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML-powered applications.”
+- **Hosted Location**
+  - Hosted by YG Zhang
+- **ml5 Contributor and Year**
+  - Ported by YG Zhang, Rui An, and Joey Lee in 2019
+- **References**
+  - ml5 Contributors [YG Zhang](http://ygzhang.com/), [Rui An](https://frankshammer42.me/), and [Joey Lee](https://github.com/joeyklee)
+  - GitHub Repository [Zhang’s DCGAN GitHub Repository](https://github.com/viztopia/ml5dcgan)
+  - GitHub Repository [Atlantian’s GAN Showcase](https://github.com/alantian/ganshowcase)
+  - Paper [Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks](https://arxiv.org/abs/1511.06434)
+  - Website [TensorFlow](https://www.tensorflow.org/)
+
+#### DCGAN - Data Biography
+
+- **Description**
+  - The training dataset for the various pretrained DCGAN models come from different sources. The aerial image generator are sourced from Mapbox Satellite. The face generator comes from a Hollywood celebrity dataset.
+- **Source**
+  - TBD
+- **Collector and Year**
+  - TBD
+- **Collection Method**
+  - TBD
+- **Purpose and Intended Users**
+  - TBD
+- **References**
+  - ml5 Contributor [Joey Lee](https://github.com/joeyklee)
+  - Website [Mapbox Satellite](https://www.mapbox.com/maps/satellite)
+
+
+
 ## Acknowledgements
 
 **Contributors**:

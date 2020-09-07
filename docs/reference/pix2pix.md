@@ -103,6 +103,50 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### Pix2Pix - Model Biography
+
+- **Description**
+  - This is a pre-trained Pix2Pix model that generates an output image based on a computer-drawn sketch.
+- **Developer and Year**
+  - According to Yining Shi, who ported the model to ml5 in 2018, the ml5 implementation is based on a TensorFlow model by affinelayer from 2017. TensorFlow is an open source machine learning platform developed by Google. 
+  - Follow up: The ml5 description at the top of the reference page states affinelayer’s implementation was based on [Christopher Hesse TensorFlow.js implementation](https://github.com/affinelayer/pix2pix-tensorflow/tree/master/server)
+- **Purpose and Intended Users**
+  - Generally speaking, and From the website: TensorFlow is an open source machine learning platform that “has a comprehensive, flexible ecosystem of tools, libraries, and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML-powered applications.”
+- **Hosted Location**
+  - Hosted by ml5
+- **ml5 Contributor and Year**
+  - Ported by Yining Shi in 2018.
+- **References**
+  - Developer and ml5 Contributor [Yining Shi](https://1023.io/)
+  - GitHub Repository [Shi’s pix2pix_tensorflowjs](https://github.com/yining1023/pix2pix_tensorflowjs)
+  - GitHub Repository [affinelayer’s pix2pix TensorFlow](https://github.com/affinelayer/pix2pix-tensorflow)
+  - Website [TensorFlow](https://www.tensorflow.org/)
+
+#### Pix2Pix - Data Biography
+
+- **Description**
+  - This demo was trained on images of Pikachu. From Shi’s GitHub Repository, the data consists of “305 images for training and 78 images for testing”.
+- **Source**
+  - The internet
+- **Collector and Year**
+  - Shi in 2018
+- **Collection Method**
+  - Shi scraped them from the internet. In the model’s GitHub repository Shi describes how the images were scraped and processed.
+- **Purpose and Intended Users**
+  - TBD
+- **References**
+  - GitHub Repository [Shi’s pix2pix_tensorflowjs](https://github.com/yining1023/pix2pix_tensorflowjs)
+
+
+
 ## Acknowledgements
 
 **Contributors**:
