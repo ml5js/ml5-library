@@ -182,7 +182,7 @@ No tutorials yet - contribute one today!
 
 ### Models Overview
 
-A nice description of the models overview
+TBD
 
 #### CharRNN - Model Biography
 
