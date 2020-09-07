@@ -218,7 +218,7 @@ A nice description of the models overview
 - **Purpose and Intended Users**
   - TBD
 - **Hosted Location**
-  - ml5
+  - Hosted by ml5
 - **ml5 Contributor and Year**
   - Ported by Cristóbal Valenzuela in 2018
 - **References**
