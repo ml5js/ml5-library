@@ -189,7 +189,7 @@ TBD
 - **Description**
   - This is a type of neural network architecture for working with pre-trained models, and several example models are provided by ml5.
 - **Developer and Year**
-  - From the model training tutorial, the ml5 implementation is based on Sherjil Ozair’s char-rnn-tensorflow, which is inspired by Adrej Karpathy;’s work in this area from 2015.
+  - From the model training tutorial, the ml5 implementation is based on Sherjil Ozair’s char-rnn-tensorflow, which is inspired by Adrej Karpathy’s work in this area from 2015.
 - **Purpose and Intended Users**
   - TBD
 - **Hosted Location**
