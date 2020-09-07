@@ -241,6 +241,7 @@ A nice description of the models overview
 - **Purpose and Intended Users**
   - TBD
 - **References**
+  - Article [ml5: Friendly Open Source Machine Learning Library for the Web](https://medium.com/ml5js/ml5-friendly-open-source-machine-learning-library-for-the-web-e802b5da3b2)
   - GitHub Repository [Daniel Shiffman’s p5.js Word2Vec](https://github.com/shiffman/p5-word2vec)
   - GitHub Repository [Anthony Liu’s word2vecjson](https://github.com/turbomaze/word2vecjson)
 
