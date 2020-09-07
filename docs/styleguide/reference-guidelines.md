@@ -188,17 +188,17 @@ A nice description of the models overview
 #### ____MODELNAME____ - Data Biography
 
 - **Description**
-  - TBD
+  - What is the data? If unknown, write TBD
 - **Source**
-  - TBD
+  - Where did it come from? If unknown, write TBD
 - **Collector and Year**
-  - TBD
+  - Who collected it and when? If unknown, write TBD
 - **Collection Method**
-  - TBD
+  - How was the data collected? If unknown, write TBD
 - **Purpose and Intended Users**
-  - TBD
+  - Why was the dataset developed and for whom? If unknown, write TBD
 - **References**
-  - TBD
+  - What sources did I consult for this information? If unknown, write TBD
 
 
 
