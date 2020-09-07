@@ -173,17 +173,17 @@ A nice description of the models overview
 #### ____MODELNAME____ - Model Biography
 
 - **Description**
-  - TBD
+  - What does this model do? If unknown, then write TBD
 - **Developer and Year**
-  - TBD
+  - Who developed it and when? If unknown, then write TBD
 - **Purpose and Intended Users**
-  - TBD
+  - Why was it developed and for whom? If unknown, then write TBD
 - **Hosted Location**
-  - TBD
+  - Where does ml5.js retrieve the model files from? If unknown, then write TBD
 - **ml5 Contributor and Year**
-  - TBD
+  - Who ported it to ml5 and when? If unknown, then write TBD
 - **References**
-  - TBD
+  - What sources did I consult for this information? If unknown, then write TBD
 
 #### ____MODELNAME____ - Data Biography
 
