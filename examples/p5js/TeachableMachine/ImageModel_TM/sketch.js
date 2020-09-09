@@ -22,6 +22,7 @@ let label = "";
 
 // Load the model first
 function preload() {
+  // eslint-disable-next-line prefer-template
   classifier = ml5.imageClassifier(imageModelURL + 'model.json');
 }
 
