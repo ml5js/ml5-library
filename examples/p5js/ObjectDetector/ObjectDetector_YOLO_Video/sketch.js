@@ -1,20 +1,18 @@
 let video;
 let detector;
-let detections;
+let detections = [];
+
+// Preload the model
+function preload() {
+  detector = ml5.objectDetector('yolo');
+}
 
 function setup() {
   createCanvas(480, 360);
-
   video = createCapture(VIDEO);
   video.size(width, height);
   video.hide();
-
-  detector = ml5.objectDetector('yolo', modelReady)
-}
-
-
-function modelReady() {
-  console.log('model loaded')
+  // Start detection
   detect();
 }
 
@@ -22,35 +20,34 @@ function detect() {
   detector.detect(video, gotResults);
 }
 
-function gotResults(err, results) {
-  if (err) {
-    console.log(err);
-    return
+// Get results
+function gotResults(error, results) {
+  if (error) {
+    console.error(error);
+    return;
   }
-
+  // Save results in global variables
   detections = results;
-
+  // Detect again
   detect();
 }
 
 function draw() {
+  // Draw video
   image(video, 0, 0, width, height);
 
-  if (detections) {
-    detections.forEach(detection => {
-      noStroke();
-      fill(255);
-      strokeWeight(2);
-      text(detection.label, detection.x + 4, detection.y + 10)
-
-      noFill();
-      strokeWeight(3);
-      if (detection.label === 'person') {
-        stroke(0, 255, 0);
-      } else {
-        stroke(0, 0, 255);
-      }
-      rect(detection.x, detection.y, detection.width, detection.height);
-    })
+  // Draw object detections
+  for (let i = 0; i < detections.length; i++) {
+    let object = detections[i];
+    noStroke();
+    fill(0, 100);
+    rect(object.x, object.y, textWidth(object.label + 4), 24);
+    fill(255);
+    textSize(16);
+    text(object.label, object.x + 4, object.y + 16)
+    noFill();
+    stroke(0, 255, 0);
+    strokeWeight(4);
+    rect(object.x, object.y, object.width, object.height);
   }
 }
