@@ -128,6 +128,54 @@ No demos yet - contribute one today!
 No tutorials yet - contribute one today!
 
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://ellennickles.site/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### SketchRNN - Model Biography
+
+- **Description**
+  - SketchRNN provides access to 114 pre-trained models to generate images from the input of your digital line drawings.
+- **Developer and Year**
+  - The original implementation of SketchRNN was created by Google Brain researchers, David Ha and Douglas Eck, as part of the open source research project, Magenta. It was built in TensorFlow and ported to Magenta.js in 2017.
+- **Purpose and Intended Users**
+  - From the paper, SketchRNN was developed to “train machines to draw and generalize abstract concepts in a manner similar to humans,” and by doing so, create a tool with many potential applications, such as assisting the creative processes of artists and designers and possibly helping people learn to draw. It is available for use in the ml5 library because Majenta.js uses the Apache 2.0 license.
+- **Hosted Location**
+  - The pre-trained SketchRNN models available in ml5 are hosted by Google.
+- **ml5 Contributor and Year**
+  - Ported by Reiichiro Nakano in 2018
+- **References**
+  - ml5 Contributor [Reiichiro Nakano](https://github.com/reiinakano)
+  - Article [Teaching Machines to Draw](https://ai.googleblog.com/2017/04/teaching-machines-to-draw.html)
+  - Paper [A Neural Representation of Sketch Drawings](https://arxiv.org/abs/1704.03477)
+  - Website [Magenta: Make Music and Art using Machine Learning](https://magenta.tensorflow.org/)
+  - Website [Magenta.js SketchRNN Documentation](https://magenta.github.io/magenta-js/sketch/)
+  - GitHub Repository [Magenta.js SketchRNN](https://github.com/magenta/magenta-js/tree/master/sketch)
+
+#### SketchRNN - Data Biography
+
+- **Description**
+  - SketchRNN’s developers created a dataset of vector hand-drawn sketches. Their paper explains that “QuickDraw consists of hundreds of classes of common objects. Each class of QuickDraw is a dataset of 70K training samples, in addition to 2.5K validation and 2.5K test samples. We use a data format that represents a sketch as a set of pen stroke actions,” such as “which direction to move, when to lift the pen up, and when to stop drawing.”
+- **Source**
+  - Google’s Quick, Draw! Dataset
+- **Collector and Year**
+  - From the website: Google released the Quick, Draw! game in 2016 and was developed as “an example of how you can use machine learning in fun ways” by the Google Creative Lab, Data Arts Team, and their collaborators as part of Google’s AI Experiments showcase.
+- **Collection Method**
+  - The sketches are crowdsourced from visitors’ contributions as they play Google’s Quick, Draw! Game, and they are publicly available to download.
+- **Purpose and Intended Users**
+  - According to the paper, the dataset is publicly available “to encourage further research and development in the area of generative vector image modelling.”
+- **References**
+  - Paper [A Neural Representation of Sketch Drawings](https://arxiv.org/abs/1704.03477)
+  - Website [Google’s Quick, Draw!](https://quickdraw.withgoogle.com/#)
+  - Website [Quick, Draw! The Data](https://quickdraw.withgoogle.com/data)
+
+
+
+
+
 ## Acknowledgements
 
 **Contributors**:
