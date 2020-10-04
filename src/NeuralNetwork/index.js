@@ -515,7 +515,7 @@ class DiyNeuralNetwork {
       options.whileTraining = [
         this.neuralNetworkVis.trainingVis(),
         {
-          onEpochEnd: null,
+          onEpochEnd: whileTrainingCb,
         },
       ];
     } else {
