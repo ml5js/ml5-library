@@ -37,7 +37,7 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 3. you make a comment on an existing issue or post your issue and indicate that you're curious to do your best to solve it 🔬
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `fix-detection-results`
 5. you jam on fixing the bug, commit your changes with meaningful commit messages, and push your changes to your bug fix branch (e.g. `fix-detection-results`)
-6. when ready, make a pull request to the `release` branch or `development` branch of ml5-library. Submit to the `release` branch if the bug you found was in the current ml5 release - the version of ml5 which is on npm. Submit to the `development` branch if the bug you found was in `development` branch of ml5-library.
+6. when ready, make a pull request to the `main` branch of ml5-library. Prepend "[NEEDS RELEASE]" to the title if the bug you found was in the current ml5 release - the version of ml5 which is on npm.
 7. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
 8. hi-fives 👏 and hugs 🤗
 
@@ -48,7 +48,7 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `new-generative-model-x`
 5. you jam on your new feature, commit your changes with meaningful commit messages, and push your changes to your new feature branch (e.g. `new-generative-model-x`)
 6. you should also add an example of your new feature to the `examples/` directory so that other people can learn how to use your new feature.
-7. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library.
+7. when ready, make a pull request to the `main` branch of ml5-library.
 8. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
 9. hi-fives 👏 and hugs 🤗
 
@@ -251,6 +251,8 @@ This last one is case sensitive!
 
 
 ## Making Releases (For the ml5 core team)
+
+**NOTE: This section needs to be updated to align with the new `main` branch structure.**
 
 Work in progress - we are working on making a few scripts to make it easier to make releases and deployments. For now, to address the long-winded process noted in https://github.com/ml5js/ml5-library/issues/387, we are experimenting with some devOps scripts.
 
