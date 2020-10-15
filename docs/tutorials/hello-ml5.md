@@ -13,11 +13,11 @@ This example showcases how you can use a [pre-trained model](https://youtu.be/yN
 
 <br/>
 
-ml5.js is growing every day, so be sure to see some of the other applications of ml5 in the [reference](/reference) section and their accompanying examples for the latest offerings.
+ml5.js is growing every day, so be sure to see some of the other applications of ml5 in the [reference](/reference/index) section and their accompanying examples for the latest offerings.
 
 ## Setup
 
-If you've arrived here, we assume you've checked out our [quickstart](/getting-started) page to get a simple ml5.js project set up. To get this to run, you'll need:
+If you've arrived here, we assume you've checked out our [quickstart](/) page to get a simple ml5.js project set up. To get this to run, you'll need:
 
 > + 📝 A text editor (e.g. [Atom](https://atom.io/), [VSCode](https://code.visualstudio.com/), [Sublimetext](https://www.sublimetext.com/))
 > + 💻 Your web browser: Chrome & Firefox preferred
