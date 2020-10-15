@@ -242,9 +242,9 @@ poseNet.multiPose(?input);
 ## Examples
 
 **p5.js**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_webcam)
 
 **p5 web editor**
 * [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/PoseNet_image_single)
@@ -252,9 +252,9 @@ poseNet.multiPose(?input);
 * [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/PoseNet_webcam)
 
 **plain javascript**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_webcam)
 
 ## Demo
 
@@ -354,4 +354,4 @@ Each model is a type of convolutional neural network (CNN). A CNN finds patterns
 
 ## Source Code
 
-* [/src/PoseNet](https://github.com/ml5js/ml5-library/tree/development/src/PoseNet)
+* [/src/PoseNet](https://github.com/ml5js/ml5-library/tree/main/src/PoseNet)

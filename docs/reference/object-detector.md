@@ -72,10 +72,10 @@ objectDetector.detect(input, ?callback);
 
 
 **p5.js**
-* [COCOSSD_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/ObjectDetector_COCOSSD_Video)
-* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/ObjectDetector_COCOSSD_single_image)
-* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/ObjectDetector_YOLO_single_image)
-* [YOLO_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ObjectDetector/ObjectDetector_YOLO_single_image)
+* [COCOSSD_Video](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ObjectDetector/ObjectDetector_COCOSSD_Video)
+* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ObjectDetector/ObjectDetector_COCOSSD_single_image)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ObjectDetector/ObjectDetector_YOLO_single_image)
+* [YOLO_Video](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ObjectDetector/ObjectDetector_YOLO_single_image)
 
 **p5 web editor**
 
@@ -85,10 +85,10 @@ objectDetector.detect(input, ?callback);
 * [YOLO_webcam](https://editor.p5js.org/ml5/sketches/ObjectDetector_YOLO_webcam)
 
 **plain javascript**
-* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/COCOSSD_single_image)
-* [COCOSSD_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/COCOSSD_webcam)
-* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/YOLO_single_image)
-* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ObjectDetector/YOLO_webcam)
+* [COCOSSD_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ObjectDetector/COCOSSD_single_image)
+* [COCOSSD_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ObjectDetector/COCOSSD_webcam)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ObjectDetector/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ObjectDetector/YOLO_webcam)
 
 ## Demo
 
@@ -197,4 +197,4 @@ Each model is a type of convolutional neural network (CNN). A CNN finds patterns
 
 ## Source Code
 
-* [/src/ObjectDetector](https://github.com/ml5js/ml5-library/tree/development/src/ObjectDetector)
+* [/src/ObjectDetector](https://github.com/ml5js/ml5-library/tree/main/src/ObjectDetector)

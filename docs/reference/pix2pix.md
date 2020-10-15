@@ -83,16 +83,16 @@ styleTransfer.transfer(canvas, ?callback);
 
 
 **p5.js**
-* [Pix2Pix_callback](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Pix2Pix/Pix2Pix_callback)
-* [Pix2Pix_promise](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Pix2Pix/Pix2Pix_promise)
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Pix2Pix/Pix2Pix_promise)
 
 **p5 web editor**
 * [Pix2Pix_callback](https://editor.p5js.org/ml5/sketches/Pix2Pix_callback)
 * [Pix2Pix_promise](https://editor.p5js.org/ml5/sketches/Pix2Pix_promise)
 
 **plain javascript**
-* [Pix2Pix_callback](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/Pix2Pix/Pix2Pix_callback)
-* [Pix2Pix_promise](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/Pix2Pix/Pix2Pix_promise)
+* [Pix2Pix_callback](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/Pix2Pix/Pix2Pix_callback)
+* [Pix2Pix_promise](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/Pix2Pix/Pix2Pix_promise)
 
 
 ## Demo
@@ -157,4 +157,4 @@ A nice description of the models overview
 
 ## Source Code
 
-[/src/Pix2pix](https://github.com/ml5js/ml5-library/tree/development/src/Pix2pix)
+[/src/Pix2pix](https://github.com/ml5js/ml5-library/tree/main/src/Pix2pix)
