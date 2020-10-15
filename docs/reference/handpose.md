@@ -46,11 +46,11 @@ const handpose = ml5.handpose(?video, ?options, ?callback);
 * **options**: OPTIONAL. A object that contains properties that effect the Handpose model accuracy, results, etc. See documentation on the available options in [TensorFlow's Handpose documentation](https://github.com/tensorflow/tfjs-models/tree/master/handpose#parameters-for-handposeload).
 ```js
 const options = {
-    flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
-    maxContinuousChecks: Infinity, // How many frames to go without running the bounding box detector. Defaults to infinity, but try a lower value if the detector is consistently producing bad predictions.
-    detectionConfidence: 0.8, // Threshold for discarding a prediction. Defaults to 0.8.
-    iouThreshold: 0.3, // A float representing the threshold for deciding whether boxes overlap too much in non-maximum suppression. Must be between [0, 1]. Defaults to 0.3.
-    scoreThreshold: 0.75, // A threshold for deciding when to remove boxes based on score in non-maximum suppression. Defaults to 0.75
+  flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
+  maxContinuousChecks: Infinity, // How many frames to go without running the bounding box detector. Defaults to infinity, but try a lower value if the detector is consistently producing bad predictions.
+  detectionConfidence: 0.8, // Threshold for discarding a prediction. Defaults to 0.8.
+  scoreThreshold: 0.75, // A threshold for removing multiple (likely duplicate) detections based on a "non-maximum suppression" algorithm. Defaults to 0.75
+  iouThreshold: 0.3, // A float representing the threshold for deciding whether boxes overlap too much in non-maximum suppression. Must be between [0, 1]. Defaults to 0.3.
 }
 ```
 
@@ -170,6 +170,11 @@ No demos yet - contribute one today!
 ## Tutorials
 
 No tutorials yet - contribute one today!
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+Coming soon!
 
 ## Acknowledgements
 
