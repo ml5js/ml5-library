@@ -102,16 +102,16 @@ yolo.detect(?input, ?callback);
 
 
 **p5.js**
-* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/YOLO/YOLO_single_image)
-* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/YOLO/YOLO_webcam)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/YOLO/YOLO_webcam)
 
 **p5 web editor**
 * [YOLO_single_image](https://editor.p5js.org/ml5/sketches/YOLO_single_image)
 * [YOLO_webcam](https://editor.p5js.org/ml5/sketches/YOLO_webcam)
 
 **plain javascript**
-* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/YOLO/YOLO_single_image)
-* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/YOLO/YOLO_webcam)
+* [YOLO_single_image](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/YOLO/YOLO_single_image)
+* [YOLO_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/YOLO/YOLO_webcam)
 
 ## Demo
 
@@ -131,4 +131,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/development/src/YOLO)
+* [/src/YOLO](https://github.com/ml5js/ml5-library/tree/main/src/YOLO)

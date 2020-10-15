@@ -32,7 +32,7 @@ describe('faceApi', () => {
   async function getImage() {
     const img = new Image();
     img.crossOrigin = true;
-    img.src = 'https://raw.githubusercontent.com/ml5js/ml5-library/development/examples/javascript/FaceApi/FaceApi_Image_Landmarks/assets/frida.jpg';
+    img.src = 'https://raw.githubusercontent.com/ml5js/ml5-library/main/examples/javascript/FaceApi/FaceApi_Image_Landmarks/assets/frida.jpg';
     await new Promise((resolve) => {
       img.onload = resolve;
     });

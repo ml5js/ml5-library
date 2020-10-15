@@ -161,8 +161,8 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
 ## Examples
 
 **p5.js**
-* [Facemesh_Image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Facemesh/Facemesh_Image)
-* [Facemesh_Webcam](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Facemesh/Facemesh_Webcam)
+* [Facemesh_Image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Facemesh/Facemesh_Image)
+* [Facemesh_Webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Facemesh/Facemesh_Webcam)
 
 **p5 web editor**
 * [Facemesh_Image](https://editor.p5js.org/ml5/sketches/Facemesh_Image)
@@ -188,4 +188,4 @@ Coming soon!
 
 ## Source Code
 
-* [/src/Facemesh](https://github.com/ml5js/ml5-library/tree/development/src/Facemesh)
+* [/src/Facemesh](https://github.com/ml5js/ml5-library/tree/main/src/Facemesh)
