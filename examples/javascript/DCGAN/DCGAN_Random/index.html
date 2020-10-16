@@ -15,18 +15,18 @@
 	<button onclick="generate()" style="display:block;">generate</button>
 
 	<script>
-	let dcgan;
-	let ctx = document.querySelector("canvas").getContext("2d");
+		let dcgan;
+		let ctx = document.querySelector("canvas").getContext("2d");
 
-	async function generate() {
-		// load the model if we haven't already:
-		if(!dcgan) dcgan = await ml5.DCGAN("model/geo/manifest.json");
-		
-		// generate an image and put it on our canvas:
-		let result = await dcgan.generate();
-		let img = new ImageData(result.raw, 64, 64);
-		ctx.putImageData(img, 0, 0);
-	}
+		async function generate() {
+			// load the model if we haven't already:
+			if(!dcgan) dcgan = await ml5.DCGAN("model/geo/manifest.json");
+
+			// generate an image and put it on our canvas:
+			let result = await dcgan.generate();
+			let img = new ImageData(result.raw, 64, 64);
+			ctx.putImageData(img, 0, 0);
+		}
 	</script>
 	
 </body>
