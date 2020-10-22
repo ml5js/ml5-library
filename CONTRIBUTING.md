@@ -37,8 +37,8 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 3. you make a comment on an existing issue or post your issue and indicate that you're curious to do your best to solve it 🔬
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `fix-detection-results`
 5. you jam on fixing the bug, commit your changes with meaningful commit messages, and push your changes to your bug fix branch (e.g. `fix-detection-results`)
-6. when ready, make a pull request to the `main` branch of ml5-library. Prepend "[NEEDS RELEASE]" to the title if the bug you found was in the current ml5 release - the version of ml5 which is on npm.
-7. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
+6. when ready, make a pull request to the `main` branch of ml5-library. Prepend "[NEEDS RELEASE]" to the title if the bug you found was in the current ml5 release - the version of ml5 which is on npm. 
+7. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, a `ready for release` label will be added to your PR and your changes will be merged in and release with the next public update to the library. 🎉
 8. hi-fives 👏 and hugs 🤗
 
 ### For new features or feature additions/updates
