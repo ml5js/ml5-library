@@ -11,7 +11,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import { checkP5 } from '../utils/p5Utils';
+import p5Utils from '../utils/p5Utils';
 
 class Cvae {
   /**
@@ -110,7 +110,7 @@ class Cvae {
     const src = URL.createObjectURL(await this.getBlob(canvas));
     let image;
     /* global loadImage */
-    if (checkP5()) image = await this.loadAsync(src); 
+    if (p5Utils.checkP5()) image = await this.loadAsync(src); 
     return { src, raws, image };
   }
 
