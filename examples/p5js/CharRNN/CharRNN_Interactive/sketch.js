@@ -23,12 +23,12 @@ function setup() {
   noCanvas();
 
   // Create the LSTM Generator passing it the model directory
-  charRNN = ml5.charRNN("models/woolf/", modelReady);
+  charRNN = ml5.charRNN('models/woolf/', modelReady);
 
   // Grab the DOM elements
-  textInput = select("#textInput");
-  lengthSlider = select("#lenSlider");
-  tempSlider = select("#tempSlider");
+  textInput = select('#textInput');
+  lengthSlider = select('#lenSlider');
+  tempSlider = select('#tempSlider');
 
   // Run generate anytime something changes
   textInput.input(changing);
@@ -40,7 +40,7 @@ function setup() {
 }
 
 function modelReady() {
-  select("#status").html("Model Loaded");
+  select('#status').html('Model Loaded');
   runningInference = false;
 }
 
@@ -73,11 +73,11 @@ function generate() {
     runningInference = true;
 
     // Update the status log
-    select("#status").html("Generating...");
+    select('#status').html('Generating...');
 
     // Update the length and temperature span elements
-    select("#length").html(lengthSlider.value());
-    select("#temperature").html(tempSlider.value());
+    select('#length').html(lengthSlider.value());
+    select('#temperature').html(tempSlider.value());
 
     // Here is the data for the LSTM generator
     const data = {
@@ -96,9 +96,9 @@ function generate() {
         console.error(err);
         return;
       }
-      select("#status").html("Ready!");
-      select("#original").html(original);
-      select("#prediction").html(result.sample);
+      select('#status').html('Ready!');
+      select('#original').html(original);
+      select('#prediction').html(result.sample);
     }
   }
 }
