@@ -71,7 +71,7 @@ function setupButtons() {
   // When the Dog button is pressed, add the current frame
   // from the video with a label of "dog" to the classifier
   document.querySelector("#addSample").addEventListener("click", function() {
-    regressor.addImage(slider.value);
+    regressor.addImage(parseFloat(slider.value));
     document.querySelector("#amountOfSamples").textContent = samples += 1;
   });
 
