@@ -2,7 +2,7 @@
 
 
 <center>
-    <img style="display:block; max-height:20rem" alt="A screenshot of a video video feed where a person sits at their chair inside of a bedroom while green dots are drawn over different locations on their face." src="_media/reference__header-facemesh.jpg">
+    <img style="display:block; max-height:20rem" alt="A screenshot of a video feed where a person sits at their chair inside of a bedroom while green dots are drawn over different locations on their face." src="_media/reference__header-facemesh.jpg">
 </center>
 
 
@@ -10,7 +10,7 @@
 
 Facemesh is a machine-learning model that allows for facial landmark detection in the browser. It can detect multiple faces at once and provides 486 3D facial landmarks that describe the geometry of each face. Facemesh works best when the faces in view take up a large percentage of the image or video frame and it may struggle with small/distant faces.
 
-The ml5.js Facemesh model is ported from the [TensorFlow.js Handpose implementation](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#keypoints).
+The ml5.js Facemesh model is ported from the [TensorFlow.js Facemesh implementation](https://github.com/tensorflow/tfjs-models/tree/master/facemesh).
 
 ## Quickstart
 
@@ -50,8 +50,8 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
   maxContinuousChecks: 5, // How many frames to go without running the bounding box detector. Only relevant if maxFaces > 1. Defaults to 5.
   detectionConfidence: 0.9, // Threshold for discarding a prediction. Defaults to 0.9.
   maxFaces: 10, // The maximum number of faces detected in the input. Should be set to the minimum number for performance. Defaults to 10.
+  scoreThreshold: 0.75, // A threshold for removing multiple (likely duplicate) detections based on a "non-maximum suppression" algorithm. Defaults to 0.75.
   iouThreshold: 0.3, // A float representing the threshold for deciding whether boxes overlap too much in non-maximum suppression. Must be between [0, 1]. Defaults to 0.3.
-  scoreThreshold: 0.75, // defaults to 0.75
   }
   ```
 
@@ -70,7 +70,7 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
 
 ***
 #### .model
-> *Object*. The bodyPix model.
+> *Object*. The Facemesh model.
 ***
 
 ***
@@ -176,10 +176,15 @@ No demos yet - contribute one today!
 
 No tutorials yet - contribute one today!
 
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+Coming soon!
+
 ## Acknowledgements
 
 **Contributors**:
-  * Ported to ml5.js by [Bomani Oseni McClendon](https://bomani.xyz/).
+  * Ported to ml5.js by [Bomani Oseni McClendon](https://bomani.rip/).
 
 ## Source Code
 
