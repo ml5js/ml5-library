@@ -1,4 +1,4 @@
-# CVAE: conditional Variational Autoencoder
+# CVAE: Conditional Variational Autoencoder
 
 
 <center>
