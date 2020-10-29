@@ -46,7 +46,7 @@ function modelReady() {
 
 // Has 500 milliseconds passed since the last time a change was made?
 function checkGenerate() {
-  let passed = millis() - last;
+  const passed = millis() - last;
   if (passed > 500 && !generated) {
     generate();
     generated = true;
@@ -88,17 +88,17 @@ function generate() {
 
     // Generate text with the charRNN
     charRNN.generate(data, gotData);
-
-    // Update the DOM elements with typed and generated text
-    function gotData(err, result) {
-      runningInference = false;
-      if (err) {
-        console.error(err);
-        return;
-      }
-      select('#status').html('Ready!');
-      select('#original').html(original);
-      select('#prediction').html(result.sample);
-    }
   }
+}
+
+// Update the DOM elements with typed and generated text
+function gotData(err, result) {
+  runningInference = false;
+  if (err) {
+    console.error(err);
+    return;
+  }
+  select('#status').html('Ready!');
+  select('#original').html(original);
+  select('#prediction').html(result.sample);
 }
