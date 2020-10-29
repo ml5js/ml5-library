@@ -30,7 +30,7 @@ function setup() {
   lengthSlider = select('#lenSlider');
   tempSlider = select('#tempSlider');
 
-  // Run generate anytime something changes
+  // Run "changing" anytime something changes
   textInput.input(changing);
   lengthSlider.input(changing);
   tempSlider.input(changing);
