@@ -22,6 +22,13 @@ const DEFAULTS = {
 class DiyNeuralNetwork {
   constructor(options, cb) {
     this.callback = cb;
+
+    // Is there a better way to handle a different 
+    // default learning rate for image classification tasks?
+    if (options.task === 'imageClassification') {
+      DEFAULTS.learningRate = 0.02;
+    }
+
     this.options =
       {
         ...DEFAULTS,
@@ -687,29 +694,29 @@ class DiyNeuralNetwork {
         layers = [
           {
             type: 'conv2d',
-            filters: 2,
-            kernelSize: 2,
-            strides: 2,
-            activation: 'relu',
-            kernelInitializer: 'varianceScaling',
-          },
-          {
-            type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
-          },
-          {
-            type: 'conv2d',
-            filters: 1,
-            kernelSize: 1,
+            filters: 8,
+            kernelSize: 5,
             strides: 1,
             activation: 'relu',
             kernelInitializer: 'varianceScaling',
           },
           {
             type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
+            poolSize: [2, 2],
+            strides: [2, 2],
+          },
+          {
+            type: 'conv2d',
+            filters: 16,
+            kernelSize: 5,
+            strides: 1,
+            activation: 'relu',
+            kernelInitializer: 'varianceScaling',
+          },
+          {
+            type: 'maxPooling2d',
+            poolSize: [2, 2],
+            strides: [2, 2],
           },
           {
             type: 'flatten',
