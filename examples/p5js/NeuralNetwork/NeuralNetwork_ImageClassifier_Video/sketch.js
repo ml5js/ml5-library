@@ -5,7 +5,7 @@
 
 /* ===
 ml5 Example
-Image classification using MobileNet and p5.js
+Image classification using Convolutional Neural Network
 This example uses a callback pattern to create the classifier
 === */
 let nn;
@@ -26,59 +26,22 @@ function setup() {
   video = createCapture(VIDEO);
   video.size(64, 64);
 
-  trainBtn = createButton("train");
+  trainBtn = createButton('train');
   trainBtn.mousePressed(train);
-  addDataBtn = createButton("addData");
+  addDataBtn = createButton('addData');
   addDataBtn.mousePressed(addData);
-  resultLabel = createDiv("I see:");
-
-  labelInput = createInput();
+  resultLabel = createDiv('');
+  labelInput = createInput('label');
 
   const options = {
-    task: "imageClassification",
+    task: 'imageClassification',
     debug: true,
     inputs: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
-    layers: [
-      {
-        type: "conv2d",
-        kernelSize: 5,
-        filters: 8,
-        strides: 1,
-        activation: "relu",
-        kernelInitializer: "varianceScaling",
-      },
-      {
-        type: "maxPooling2d",
-        poolSize: [2, 2],
-        strides: [2, 2],
-      },
-      {
-        type: "conv2d",
-        kernelSize: 5,
-        filters: 8,
-        strides: 1,
-        activation: "relu",
-        kernelInitializer: "varianceScaling",
-      },
-      {
-        type: "maxPooling2d",
-        poolSize: [2, 2],
-        strides: [2, 2],
-      },
-      {
-        type: "flatten",
-      },
-      {
-        type: "dense",
-        kernelInitializer: "varianceScaling",
-        activation: "softmax",
-      },
-    ],
   };
 
   // construct the neural network
   nn = ml5.neuralNetwork(options);
-  nn.loadData("daytime_nightime.json", train);
+  // nn.loadData('daytime_nightime.json', train);
 }
 
 function draw() {
@@ -86,13 +49,11 @@ function draw() {
 }
 
 function addData() {
-  console.log("adding data", labelInput.value());
+  console.log('adding data', labelInput.value());
   nn.addData({ image: video }, { label: labelInput.value() });
 }
 
 function train() {
-  // nn.normalizeData();
-
   const TRAINING_OPTIONS = {
     batchSize: 16,
     epochs: 4,
@@ -103,7 +64,7 @@ function train() {
 }
 
 function finishedTraining() {
-  console.log("finished training");
+  console.log('finished training');
   nn.classify([video], gotResults);
 }
 
@@ -112,9 +73,6 @@ function gotResults(err, result) {
     console.log(err);
     return;
   }
-
-  // image(video, 0,0, width, height)
-  resultLabel.elt.textContent = `I see ${result[0].label}`;
-
+  resultLabel.html(`${result[0].label}`);
   nn.classify([video], gotResults);
 }
