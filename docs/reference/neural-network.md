@@ -367,29 +367,29 @@ const nn = ml5.neuralNetwork(options);
   layers = [
     {
       type: 'conv2d',
-      filters: 2,
-      kernelSize: 2,
-      strides: 2,
-      activation: 'relu',
-      kernelInitializer: 'varianceScaling',
-    },
-    {
-      type: 'maxPooling2d',
-      poolSize: [1, 1],
-      strides: [1, 1],
-    },
-    {
-      type: 'conv2d',
-      filters: 1,
-      kernelSize: 1,
+      filters: 8,
+      kernelSize: 5,
       strides: 1,
       activation: 'relu',
       kernelInitializer: 'varianceScaling',
     },
     {
       type: 'maxPooling2d',
-      poolSize: [1, 1],
-      strides: [1, 1],
+      poolSize: [2, 2],
+      strides: [2, 2],
+    },
+    {
+      type: 'conv2d',
+      filters: 16,
+      kernelSize: 5,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling',
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [2, 2],
+      strides: [2, 2],
     },
     {
       type: 'flatten',
