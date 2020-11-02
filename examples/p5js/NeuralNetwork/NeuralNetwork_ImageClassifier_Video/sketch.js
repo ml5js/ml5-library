@@ -8,7 +8,7 @@ ml5 Example
 Image classification using Convolutional Neural Network
 This example uses a callback pattern to create the classifier
 === */
-let nn;
+let classifier;
 const IMAGE_WIDTH = 64;
 const IMAGE_HEIGHT = 64;
 const IMAGE_CHANNELS = 4;
@@ -40,8 +40,10 @@ function setup() {
   };
 
   // construct the neural network
-  nn = ml5.neuralNetwork(options);
-  // nn.loadData('daytime_nightime.json', train);
+  classifier = ml5.neuralNetwork(options);
+  
+  // An option to load sample data for quick testing
+  // classifier.loadData('daytime_nightime.json', train);
 }
 
 function draw() {
@@ -50,7 +52,7 @@ function draw() {
 
 function addData() {
   console.log('adding data', labelInput.value());
-  nn.addData({ image: video }, { label: labelInput.value() });
+  classifier.addData({ image: video }, { label: labelInput.value() });
 }
 
 function train() {
@@ -59,13 +61,13 @@ function train() {
     epochs: 4,
   };
 
-  nn.normalizeData();
-  nn.train(TRAINING_OPTIONS, finishedTraining);
+  classifier.normalizeData();
+  classifier.train(TRAINING_OPTIONS, finishedTraining);
 }
 
 function finishedTraining() {
   console.log('finished training');
-  nn.classify([video], gotResults);
+  classifier.classify([video], gotResults);
 }
 
 function gotResults(err, result) {
@@ -74,5 +76,5 @@ function gotResults(err, result) {
     return;
   }
   resultLabel.html(`${result[0].label}`);
-  nn.classify([video], gotResults);
+  classifier.classify([video], gotResults);
 }
