@@ -18,8 +18,6 @@ async function setup() {
   video = await getVideo();
   // load bodyPix with video
   bodypix = await ml5.bodyPix(options)
-  // run the segmentation on the video, handle the results in a callback
-  bodypix.segment(video, gotImage, options);
 }
 
 // when the dom is loaded, call make();
@@ -27,6 +25,10 @@ window.addEventListener('DOMContentLoaded', function() {
   setup();
 });
 
+function videoReady() {
+  // run the segmentation on the video, handle the results in a callback
+  bodypix.segment(video, gotImage, options);
+}
 
 function gotImage(err, result){
   if(err) {
@@ -48,6 +50,7 @@ async function getVideo(){
   videoElement.setAttribute("style", "display: none;"); 
   videoElement.width = width;
   videoElement.height = height;
+  videoElement.onloadeddata = videoReady;
   document.body.appendChild(videoElement);
 
   // Create a webcam capture
