@@ -11,7 +11,6 @@ BodyPix
 let bodypix;
 let video;
 let segmentation;
-let img;
 
 const options = {
   outputStride: 8, // 8, 16, or 32, default is 16
@@ -26,7 +25,7 @@ function setup() {
   createCanvas(320, 240);
 
   // load up your video
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, videoReady);
   video.size(width, height);
   // video.hide(); // Hide the video element, and just show the canvas
 
@@ -34,7 +33,9 @@ function setup() {
   createHSBPalette();
   // createRGBPalette();
   // createSimplePalette();
+}
 
+function videoReady() {
   bodypix.segmentWithParts(video, gotResults, options);
 }
 
