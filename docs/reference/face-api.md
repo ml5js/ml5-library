@@ -54,10 +54,10 @@ const faceapi = ml5.faceApi(videoOrOptionsOrCallback, optionsOrCallback?, callba
     withDescriptors: true,
     minConfidence: 0.5,
     MODEL_URLS: {
-      Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
-      FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_model-weights_manifest.json',
-      FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
-      FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/face-api/models/faceapi/face_recognition_model-weights_manifest.json',
+      Mobilenetv1Model: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/ssd_mobilenetv1_model-weights_manifest.json',
+      FaceLandmarkModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/face_landmark_68_model-weights_manifest.json',
+      FaceLandmark68TinyNet: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/face_landmark_68_tiny_model-weights_manifest.json',
+      FaceRecognitionModel: 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/faceapi/face_recognition_model-weights_manifest.json',
     },
   };
   ```
@@ -139,18 +139,18 @@ faceapi.detectSingle(optionsOrCallback, configOrCallback, callback);
 ## Examples
 
 **p5.js**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Image_Landmarks)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/FaceApi/FaceApi_Image_Landmarks)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/FaceApi/FaceApi_Video_Landmarks)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/FaceApi/FaceApi_Video_Landmarks_LocalModels)
 
 **p5 web editor**
 * [FaceApi_Image_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Image_Landmarks)
 * [FaceApi_Video_Landmarks](https://editor.p5js.org/ml5/sketches/FaceApi_Video_Landmarks)
 
 **plain javascript**
-* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Image_Landmarks/)
-* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks/)
-* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
+* [FaceApi_Image_Landmarks](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/FaceApi/FaceApi_Image_Landmarks/)
+* [FaceApi_Video_Landmarks](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/FaceApi/FaceApi_Video_Landmarks/)
+* [FaceApi_Video_Landmarks_LocalModels](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/FaceApi/FaceApi_Video_Landmarks_LocalModels/)
 
 ## Demo
 
@@ -289,4 +289,4 @@ Each model is a type of convolutional neural network (CNN). A CNN finds patterns
 
 ## Source Code
 
-* [/src/FaceApi](https://github.com/ml5js/ml5-library/tree/development/src/FaceApi)
+* [/src/FaceApi](https://github.com/ml5js/ml5-library/tree/main/src/FaceApi)

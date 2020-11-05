@@ -1,56 +1,51 @@
+// Copyright (c) 2020 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+/* ===
+ml5 Example
+Object Detection using COCOSSD
+This example uses a callback pattern to create the classifier
+=== */
+
 let video;
 let detector;
-let detections;
+let detections = [];
 
 function setup() {
-  createCanvas(480, 360);
-    
+  createCanvas(640, 480);
   video = createCapture(VIDEO);
-  video.size(width, height);
+  video.size(640, 480);
   video.hide();
-
-  detector = ml5.objectDetector('cocossd', modelReady)
+  // Models available are 'cocossd', 'yolo'
+  detector = ml5.objectDetector('cocossd', modelReady);
 }
 
-
-function modelReady(){
-  console.log('model loaded')
-  detect();
-}
-
-function detect(){
-  detector.detect(video, gotResults);
-}
-
-function gotResults(err, results){
-  if(err){
-    console.log(err);
-    return
+function gotDetections(error, results) {
+  if (error) {
+    console.error(error);
   }
-
   detections = results;
+  detector.detect(video, gotDetections);
+}
 
-  detect();
+function modelReady() {
+  detector.detect(video, gotDetections);
 }
 
 function draw() {
-  image(video, 0, 0, width, height);
+  image(video, 0, 0);
 
-  if (detections) {
-    detections.forEach(detection => {
-      noStroke();
-      fill(255);
-      strokeWeight(2);
-      text(detection.label, detection.x + 4, detection.y + 10)
-
-      noFill();
-      strokeWeight(3);
-      if(detection.label === 'person'){
-        stroke(0, 255, 0);
-      } else {
-        stroke(0,0, 255);
-      }
-      rect(detection.x, detection.y, detection.width, detection.height);  
-    })
-  } 
+  for (let i = 0; i < detections.length; i++) {
+    let object = detections[i];
+    stroke(0, 255, 0);
+    strokeWeight(4);
+    noFill();
+    rect(object.x, object.y, object.width, object.height);
+    noStroke();
+    fill(255);
+    textSize(24);
+    text(object.label, object.x + 10, object.y + 24);
+  }
 }

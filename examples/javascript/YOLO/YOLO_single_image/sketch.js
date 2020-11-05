@@ -61,10 +61,10 @@ function draw(){
       
     ctx.font = "16px Arial";
     ctx.fillStyle = "green";
-    ctx.fillText(objects[i].label, objects[i].x * width + 4, objects[i].y * height + 16); 
+    ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y + 16); 
 
     ctx.beginPath();
-    ctx.rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
+    ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
     ctx.strokeStyle = "green";
     ctx.stroke();
     ctx.closePath();

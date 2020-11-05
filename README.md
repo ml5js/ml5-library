@@ -1,8 +1,5 @@
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
-[![All Contributors](https://img.shields.io/badge/all_contributors-86-orange.svg?style=flat-square)](#contributors)
-
-
-[![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)](https://www.browserstack.com/automate/public-build/QVNDdlkvMzNYSmhRRWlweXlIOTBENkd0MDBCOUJlbmFVZFRneFIzNlh4az0tLXA4S0loSGNlVUc2V2I3cVdLdXBKdGc9PQ==--8a5e5bfd3eafbba0702c02ec57ffec9d627a78ef)[![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
+[![All Contributors](https://img.shields.io/badge/all_contributors-86-orange.svg?style=flat-square)](#contributors) [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=eEtiK0lGeGpGZ2svSGd0WWJnclo3SGtxdEZ5anFmOE4zaFRyOUJkTFhHbz0tLWo1eUNzd0hpQUZjR2Rya0hIQjhIUHc9PQ==--45955c1082b17348f534b62689f945967b4e459e)](https://automate.browserstack.com/public-build/eEtiK0lGeGpGZ2svSGd0WWJnclo3SGtxdEZ5anFmOE4zaFRyOUJkTFhHbz0tLWo1eUNzd0hpQUZjR2Rya0hIQjhIUHc9PQ==--45955c1082b17348f534b62689f945967b4e459e) [![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
 [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/ml5js)
 
 
@@ -32,11 +29,11 @@ There are several ways you can use the ml5.js library:
 
 <p id="latest-version">
 
-* You can use the latest version (0.5.0) by adding it to the head section of your HTML document:
+* You can use the latest version (0.6.0) by adding it to the head section of your HTML document:
 
-**v0.5.0**
+**v0.6.0**
 
-    <script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
     
@@ -57,7 +54,7 @@ There are several ways you can use the ml5.js library:
 
 For example:
 ```html
-<script src="https://unpkg.com/ml5@0.5.0/dist/ml5.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
@@ -70,13 +67,13 @@ For example:
 
 - [Getting Started](https://ml5js.org/getting-started/)
 - [API Reference](https://ml5js.org/reference/)
-- [Examples](https://github.com/ml5js/ml5-library/tree/development/examples)
+- [Examples](https://github.com/ml5js/ml5-library/tree/main/examples)
 - [Community](https://ml5js.org/community)
 - [FAQ](https://ml5js.org/getting-started/faq/)
 
 ## Standalone Examples
 
-You can find a collection of standalone examples in this repository within the `examples/` directory. You can also test working hosted of the examples online on the ml5.js examples index website (TODO: Add a link). 
+You can find a collection of standalone examples in this repository within the `examples/` directory. You can also test working hosted of the examples online on the [ml5.js examples index website](https://examples.ml5js.org/). 
 
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 

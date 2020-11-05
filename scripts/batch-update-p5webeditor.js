@@ -6,7 +6,7 @@ const Q = require("q");
 const { ok } = require("assert");
 
 // TODO: Change branchName if necessary
-const branchName = "release";
+const branchName = "main";
 const branchRef = `?ref=${branchName}`;
 const baseUrl = "https://api.github.com/repos/ml5js/ml5-examples/contents";
 const clientId = process.env.GITHUB_ID;
