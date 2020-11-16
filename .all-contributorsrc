@@ -1114,6 +1114,64 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tundiszasz",
+      "name": "Tündi Szász",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/19189730?v=4",
+      "profile": "http://www.tundiszasz.com",
+      "contributions": [
+        "design",
+        "ideas"
+      ]
+    },
+    {
+      "login": "hellonun",
+      "name": "hellonun",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/43077909?v=4",
+      "profile": "https://github.com/hellonun",
+      "contributions": [
+        "ideas",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "pgrimaud",
+      "name": "Pierre Grimaud",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1866496?v=4",
+      "profile": "https://github.com/pgrimaud",
+      "contributions": [
+        "doc",
+        "content"
+      ]
+    },
+    {
+      "login": "GregFrench",
+      "name": "Greg French",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/17938510?v=4",
+      "profile": "http://www.gregfrench.net/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "dalequark",
+      "name": "Dale Markowitz",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/2328571?v=4",
+      "profile": "https://daleonai.com",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
+    },
+    {
+      "login": "RaglandCodes",
+      "name": "Ragland Asir",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39048764?v=4",
+      "profile": "http://raglandcodes.github.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

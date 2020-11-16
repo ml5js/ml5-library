@@ -5,85 +5,64 @@
 
 /* ===
 ml5 Example
-Image classification using MobileNet and p5.js
+Image classification using Convolutional Neural Network
 This example uses a callback pattern to create the classifier
 === */
+
 let nn;
 const IMAGE_WIDTH = 64;
 const IMAGE_HEIGHT = 64;
 const IMAGE_CHANNELS = 4;
 
-let images;
+const images = [];
 let testA;
 
 function preload() {
-  images = [];
-  for (let i = 1; i < 7; i++) {
-    const a = loadImage(`images/A_0${i}.png`)
-    const b = loadImage(`images/B_0${i}.png`)
-    images.push({
-      image: a,
-      label: 'a'
-    })
-    images.push({
-      image: b,
-      label: 'b'
-    })
+  for (let i = 1; i < 7; i += 1) {
+    const a = loadImage(`images/A_0${i}.png`);
+    const b = loadImage(`images/B_0${i}.png`);
+    images.push({ image: a, label: 'A' });
+    images.push({ image: b, label: 'B' });
   }
-
-  testA = loadImage(`images/A_test.png`)
-
+  testA = loadImage(`images/A_test.png`);
 }
 
 function setup() {
+  createCanvas(128, 128);
+  image(testA, 0, 0, width, height);
 
   const options = {
+    inputs: [IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
     task: 'imageClassification',
     debug: true,
-    inputs:[IMAGE_WIDTH, IMAGE_HEIGHT, IMAGE_CHANNELS],
-  }
+  };
 
   // construct the neural network
   nn = ml5.neuralNetwork(options);
 
-
   // add data
-  for(let i = 0; i < images.length; i++){
-    const item = images[i];
-    // get back the image array
-    item.image.loadPixels()
-    const imageArray = Array.from(item.image.pixels);
-    const labels = item.label;
-    nn.addData({pixelArray:imageArray}, {label: labels});
+  for (let i = 0; i < images.length; i += 1) {
+    nn.addData({ image: images[i].image }, { label: images[i].label });
   }
 
-  // normalize the data
+  // normalize data
   nn.normalizeData();
 
-  // train
-  const TRAINING_OPTIONS = {
-    batchSize: 2,
-    epochs: 10,
-  }
-
-  nn.train(TRAINING_OPTIONS, finishedTraining)
-
+  nn.train({ epochs: 20 }, finishedTraining);
 }
-
 
 function finishedTraining() {
-  console.log("finished training");
-
-  testA.loadPixels();
-  const test = Array.from(testA.pixels);
-  nn.classify([test], gotResults)
-
+  console.log('finished training');
+  // method 1: you can pass in an object with a matching key and the p5 image
+  nn.classify({ image: testA }, gotResults);
 }
 
-function gotResults(err, result) {
+function gotResults(err, results) {
   if (err) {
     console.log(err);
-    return
+    return;
   }
-  console.log(result);
+  console.log(results);
+  const percent = 100 * results[0].confidence;
+  createP(`${results[0].label} ${nf(percent, 2, 1)}%`);
 }

@@ -23,7 +23,7 @@ const DEFAULTS = {
 async function getImage() {
   const img = new Image();
   img.crossOrigin = true;
-  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/bird.jpg';
+  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg';
   await new Promise((resolve) => {
     img.onload = resolve;
   });
@@ -94,8 +94,8 @@ describe('imageClassifier', () => {
       it('Should support p5 elements with an image on .elt', async () => {
         const img = await getImage();
         await classifier.classify({
-            elt: img
-          })
+          elt: img
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
 
@@ -108,16 +108,16 @@ describe('imageClassifier', () => {
       it('Should support p5 elements with canvas on .canvas', async () => {
         const canvas = await getCanvas();
         await classifier.classify({
-            canvas
-          })
+          canvas
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
 
       it('Should support p5 elements with canvas on .elt', async () => {
         const canvas = await getCanvas();
         await classifier.classify({
-            elt: canvas
-          })
+          elt: canvas
+        })
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
     });
@@ -130,7 +130,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/pelican.mp4' /* TODO add univeral url */;
+    video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/pelican.mp4' /* TODO add univeral url */;
     video.width = 200;
     video.height = 200;
     return video;
@@ -153,7 +153,6 @@ describe('videoClassifier', () => {
   describe('classify', () => {
     it('Should support video', async () => {
       const results = await classifier.classify()
-      console.log(results)
       expect(results[0].label).not.toBe(null);
     });
   });

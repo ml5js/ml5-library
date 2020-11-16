@@ -12,8 +12,8 @@ let objectDetector;
 let status;
 let objects = [];
 let canvas, ctx;
-let width = 640;
-let height = 420;
+const width = 640;
+const height = 420;
 
 async function make() {
   img = new Image();
@@ -57,7 +57,7 @@ function draw() {
   ctx.fillRect(0, 0, width, height);
 
   ctx.drawImage(img, 0, 0);
-  for (let i = 0; i < objects.length; i++) {
+  for (let i = 0; i < objects.length; i += 1) {
 
     ctx.font = "16px Arial";
     ctx.fillStyle = "green";

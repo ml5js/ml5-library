@@ -45,6 +45,6 @@ function classifyVideo() {
 // When we get a result
 function gotResult(err, results) {
   // The results are in an array ordered by confidence.
-  resultsP.html('Label: ' + results[0].label + ' ' + nf(results[0].confidence, 0, 2));
+  resultsP.html(`Label: ${results[0].label  } ${nf(results[0].confidence, 0, 2)}`);
   classifyVideo();
 }

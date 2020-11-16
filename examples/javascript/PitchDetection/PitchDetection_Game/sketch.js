@@ -15,30 +15,30 @@ const voiceHigh = 500;
 let audioStream;
 let stream;
 
-let width = 410;
-let height = 320;
+const width = 410;
+const height = 320;
 
 // Circle variables
-let circleSize = 42;
+const circleSize = 42;
 const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 // Text variables
 let goalNote = 0;
 let currentNote = '';
-let currentText = '';
+const currentText = '';
 let textCoordinates;
 let canvas;
 
 let request;
 // taken from p5.Sound
 function freqToMidi(f) {
-  var mathlog2 = Math.log(f / 440) / Math.log(2);
-  var m = Math.round(12 * mathlog2) + 69;
+  const mathlog2 = Math.log(f / 440) / Math.log(2);
+  const m = Math.round(12 * mathlog2) + 69;
   return m;
 };
 
 function map(n, start1, stop1, start2, stop2) {
-  var newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+  const newval = (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
   return newval;
 };
 
@@ -70,7 +70,7 @@ function modelLoaded() {
 function getPitch() {
   pitch.getPitch(function (err, frequency) {
     if (frequency) {
-      let midiNum = freqToMidi(frequency);
+      const midiNum = freqToMidi(frequency);
       currentNote = scale[midiNum % 12];
       document.querySelector('#currentNote').textContent = currentNote;
     }

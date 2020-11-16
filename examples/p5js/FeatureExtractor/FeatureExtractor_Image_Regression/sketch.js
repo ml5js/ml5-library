@@ -23,7 +23,7 @@ function setup() {
   // Append it to the videoContainer DOM element
   video.hide();
   // Extract the features from MobileNet
-  featureExtractor = ml5.featureExtractor('MobileNet', modelReady);
+  featureExtractor = ml5.featureExtractor("MobileNet", modelReady);
   // Create a new regressor using those features and give the video we want to use
   regressor = featureExtractor.regression(video, videoReady);
   // Create the UI buttons
@@ -39,12 +39,12 @@ function draw() {
 
 // A function to be called when the model has been loaded
 function modelReady() {
-  select('#modelStatus').html('Model loaded!');
+  select("#modelStatus").html("Model loaded!");
 }
 
 // A function to be called when the video has loaded
 function videoReady() {
-  select('#videoStatus').html('Video ready!');
+  select("#videoStatus").html("Video ready!");
 }
 
 // Classify the current frame.
@@ -54,28 +54,28 @@ function predict() {
 
 // A util function to create UI buttons
 function setupButtons() {
-  slider = select('#slider');
+  slider = select("#slider");
   // When the Dog button is pressed, add the current frame
   // from the video with a label of "dog" to the classifier
-  select('#addSample').mousePressed(function() {
+  select("#addSample").mousePressed(function() {
     regressor.addImage(slider.value());
-    select('#amountOfSamples').html(samples++);
+    select("#amountOfSamples").html((samples += 1));
   });
 
   // Train Button
-  select('#train').mousePressed(function() {
+  select("#train").mousePressed(function() {
     regressor.train(function(lossValue) {
       if (lossValue) {
         loss = lossValue;
-        select('#loss').html('Loss: ' + loss);
+        select("#loss").html(`Loss: ${loss}`);
       } else {
-        select('#loss').html('Done Training! Final Loss: ' + loss);
+        select("#loss").html(`Done Training! Final Loss: ${loss}`);
       }
     });
   });
 
   // Predict Button
-  select('#buttonPredict').mousePressed(predict);
+  select("#buttonPredict").mousePressed(predict);
 }
 
 // Show the results

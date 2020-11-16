@@ -15,8 +15,8 @@ let featureExtractor;
 let currentWord;
 let myVoice;
 let canvas, ctx;
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 
 // adapted from https://github.com/IDMNYU/p5.js-speech/blob/master/lib/p5.speech.js
 class MySpeech {
@@ -144,8 +144,8 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  document.querySelector('#example1').textContent = counts['Hello'] || 0;
-  document.querySelector('#example2').textContent = counts['Goodbye'] || 0;
+  document.querySelector('#example1').textContent = counts.Hello || 0;
+  document.querySelector('#example2').textContent = counts.Goodbye || 0;
 }
 
 // Clear all the examples in all classes

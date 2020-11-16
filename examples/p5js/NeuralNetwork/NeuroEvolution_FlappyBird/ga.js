@@ -6,28 +6,28 @@
 
 // Create the next generation
 function nextGeneration() {
-console.log('next generation');
+  console.log("next generation");
   // Calculate fitness values
   calculateFitness();
-  
+
   // Create new population of birds
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     birds[i] = reproduce();
   }
 
   // Release all the memory
-  for (let i = 0; i < TOTAL; i++) {
+  for (let i = 0; i < TOTAL; i += 1) {
     savedBirds[i].brain.dispose();
   }
   // Clear the array
   savedBirds = [];
 }
 
-// Create a child bird from two parents 
+// Create a child bird from two parents
 function reproduce() {
-  let brainA = pickOne();
-  let brainB = pickOne();
-  let childBrain = brainA.crossover(brainB);
+  const brainA = pickOne();
+  const brainB = pickOne();
+  const childBrain = brainA.crossover(brainB);
   childBrain.mutate(0.1);
   return new Bird(childBrain);
 }
@@ -37,21 +37,21 @@ function pickOne() {
   let index = 0;
   let r = random(1);
   while (r > 0) {
-    r = r - savedBirds[index].fitness;
-    index++;
+    r -= savedBirds[index].fitness;
+    index += 1;
   }
-  index--;
-  let bird = savedBirds[index];
+  index -= 1;
+  const bird = savedBirds[index];
   return bird.brain;
 }
 
 // Normalize all fitness values
 function calculateFitness() {
   let sum = 0;
-  for (let bird of savedBirds) {
+  for (const bird of savedBirds) {
     sum += bird.score;
   }
-  for (let bird of savedBirds) {
+  for (const bird of savedBirds) {
     bird.fitness = bird.score / sum;
   }
 }

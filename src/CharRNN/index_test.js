@@ -29,7 +29,7 @@ describe('charRnn', () => {
   let rnn;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; //set extra long interval due to issues with CharRNN generation time
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // set extra long interval due to issues with CharRNN generation time
     rnn  = await charRNN(RNN_MODEL_URL, undefined);
   });
 

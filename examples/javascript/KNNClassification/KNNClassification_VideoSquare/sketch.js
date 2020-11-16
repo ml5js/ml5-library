@@ -14,8 +14,8 @@ const squareSize = 100;
 // Create a KNN classifier
 const knnClassifier = ml5.KNNClassifier();
 let featureExtractor;
-let width = 640;
-let height = 480;
+const width = 640;
+const height = 480;
 let canvas, ctx;
 
 async function setup() {
@@ -132,24 +132,24 @@ function gotResults(err, result) {
       document.querySelector('#confidence').textContent =`${confidences[result.label] * 100} %`;
 
       switch(result.label) {
-        case 'Up':
-          posY-=2;
-          break;
+      case 'Up':
+        posY-=2;
+        break;
 
-        case 'Down':
-          posY+=2;
-          break;
+      case 'Down':
+        posY+=2;
+        break;
 
-        case 'Left':
-          posX+=2;
-          break;
+      case 'Left':
+        posX+=2;
+        break;
 
-        case 'Right':
-          posX-=2;
-          break;
+      case 'Right':
+        posX-=2;
+        break;
         
-        default:
-          console.log(`Sorry, unknown label: ${result.label}`);
+      default:
+        console.log(`Sorry, unknown label: ${result.label}`);
       }
       // Border checking
       if (posY < 0) posY = 0;
@@ -166,10 +166,10 @@ function gotResults(err, result) {
 function updateCounts() {
   const counts = knnClassifier.getCountByLabel();
 
-  document.querySelector('#example1').textContent = counts['Up'] || 0;
-  document.querySelector('#example2').textContent = counts['Right'] || 0;
-  document.querySelector('#example3').textContent = counts['Down'] || 0;
-  document.querySelector('#example4').textContent = counts['Left'] || 0;
+  document.querySelector('#example1').textContent = counts.Up || 0;
+  document.querySelector('#example2').textContent = counts.Right || 0;
+  document.querySelector('#example3').textContent = counts.Down || 0;
+  document.querySelector('#example4').textContent = counts.Left || 0;
 }
 
 // Clear the examples in one class

@@ -11,6 +11,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import p5Utils from '../utils/p5Utils';
 
 class Cvae {
   /**
@@ -57,10 +58,10 @@ class Cvae {
 
   loadAsync(url){
     return new Promise((resolve, reject) => {
-        if(!this.ready) reject();
-        loadImage(url, (img) => {
-            resolve(img);
-        });
+      if(!this.ready) reject();
+      loadImage(url, (img) => {
+        resolve(img);
+      });
     });
   };
 
@@ -72,12 +73,6 @@ class Cvae {
         resolve(blob);
       });
     });
-  }
-
-  checkP5() {
-    if (typeof window !== 'undefined' && window.p5 && this
-        && window.p5.Image && typeof window.p5.Image === 'function') return true;
-    return false;
   }
 
   async generateInternal(label) {
@@ -115,7 +110,7 @@ class Cvae {
     const src = URL.createObjectURL(await this.getBlob(canvas));
     let image;
     /* global loadImage */
-    if (this.checkP5()) image = await this.loadAsync(src); 
+    if (p5Utils.checkP5()) image = await this.loadAsync(src); 
     return { src, raws, image };
   }
 

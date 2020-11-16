@@ -9,23 +9,23 @@ Webcam Image Classification using a pre-trained customized model and p5.js
 This example uses p5 preload function to create the classifier
 === */
 
-// Global variable to store the classifier
 let classifier;
 
 // Label (start by showing listening)
 let label = "listening";
 
 // Teachable Machine model URL:
-let soundModelURL = 'https://teachablemachine.withgoogle.com/models/h3p9R41J/model.json';
+const soundModelURL = 'https://teachablemachine.withgoogle.com/models/h3p9R41J/';
 
 
 function preload() {
   // Load the model
-  classifier = ml5.soundClassifier(soundModelURL);
+  classifier = ml5.soundClassifier(soundModelURL + 'model.json');
 }
 
 function setup() {
   createCanvas(320, 240);
+  createP("Clap your hands!");
   // Start classifying
   // The sound model will continuously listen to the microphone
   classifier.classify(gotResult);

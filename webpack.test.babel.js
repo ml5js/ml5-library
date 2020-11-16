@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // Copyright (c) 2019 ml5
 // 
 // This software is released under the MIT License.
@@ -34,7 +35,7 @@ import common, {developmentPort} from './webpack.common.babel';
           // Your scripts would be written here
         </script>
       </body>
-      </html>`.replace(/      /g, '').trimLeft());
+      </html>`.replace(/ {6}/g, '').trimLeft());
   } else {
     assert(lstatSync(indexFile).isFile(), "./manual-test/index.html should be a readable file.");
   }

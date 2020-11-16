@@ -14,26 +14,16 @@ let nn;
 let data;
 
 let counter = 0;
-const testInputs = [
-  100,
-  50000,
-  100000,
-  500000,
-  2500000,
-  5000000,
-  10000000,
-  15000000,
-]
+const testInputs = [100, 50000, 100000, 500000, 2500000, 5000000, 10000000, 15000000];
 
 // Options for Neural Network
 const options = {
-  inputs: ['population_cdp'],
-  outputs: ['scope1_ghg_emissions_tons_co2e'],
-  dataUrl: 'data/co2stats.csv',
-  task: 'regression',
-  debug: true
+  inputs: ["population_cdp"],
+  outputs: ["scope1_ghg_emissions_tons_co2e"],
+  dataUrl: "data/co2stats.csv",
+  task: "regression",
+  debug: true,
 };
-
 
 function setup() {
   createCanvas(400, 400);
@@ -42,7 +32,6 @@ function setup() {
 
   // Step 1: Create Neural Network
   nn = ml5.neuralNetwork(options, modelLoaded);
-
 }
 
 function modelLoaded() {
@@ -50,37 +39,29 @@ function modelLoaded() {
 
   // visualize the training data
   nn.data.training.forEach(row => {
-    const {
-      xs,
-      ys
-    } = row;
+    const { xs, ys } = row;
     const x = map(xs.population_cdp, 0, 1, 0, width);
     const y = map(ys.scope1_ghg_emissions_tons_co2e, 0, 1, height, 0);
     ellipse(x, y, 2, 2);
-  })
+  });
 
   const trainingOptions = {
     epochs: 50,
-    batchSize: 12
-  }
-  nn.train(trainingOptions, finishedTraining)
+    batchSize: 12,
+  };
+  nn.train(trainingOptions, finishedTraining);
 }
 
 function finishedTraining() {
-
   if (counter < testInputs.length) {
-    const input = testInputs[counter]
+    const input = testInputs[counter];
     nn.predict([input], (err, result) => {
-
       if (err) {
         console.log(err);
         return;
       }
-      console.log(result)
-      const {
-        inputs,
-        outputs
-      } = nn.neuralNetworkData.meta;
+      console.log(result);
+      const { inputs, outputs } = nn.neuralNetworkData.meta;
 
       const inputMin = inputs.population_cdp.min;
       const inputMax = inputs.population_cdp.max;
@@ -92,13 +73,12 @@ function finishedTraining() {
 
       rectMode(CENTER);
       fill(255, 0, 0);
-      text(`pop:${input}`, x, y)
-      text(`tons_co2e:${result[0].value}`, x, y + 10)
+      text(`pop:${input}`, x, y);
+      text(`tons_co2e:${result[0].value}`, x, y + 10);
       rect(x, y, 6, 6);
 
-      counter++;
+      counter += 1;
       finishedTraining();
-    })
+    });
   }
-
 }

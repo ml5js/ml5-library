@@ -66,4 +66,4 @@ const flippedImage = ml5.flipImage(input);
 
 ## Source Code
 
-* [/src/utils/](https://github.com/ml5js/ml5-library/tree/development/src/utils)
+* [/src/utils/](https://github.com/ml5js/ml5-library/tree/main/src/utils)

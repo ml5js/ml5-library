@@ -17,9 +17,9 @@ let ctx;
 
 async function setup() {
   // Grab elements, create settings, etc.
-   video = document.getElementById('video');
-   canvas = document.getElementById('canvas');
-   ctx = canvas.getContext('2d');
+  video = document.getElementById('video');
+  canvas = document.getElementById('canvas');
+  ctx = canvas.getContext('2d');
   const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
   video.srcObject = stream;
@@ -52,10 +52,10 @@ function draw() {
 
   // For one pose only (use a for loop for multiple poses!)
   if (poses.length > 0) {
-    let pose = poses[0].pose;
+    const pose = poses[0].pose;
 
     // Create a pink ellipse for the nose
-    let nose = pose['nose'];
+    const nose = pose.nose;
     ctx.fillStyle = 'rgb(213, 0, 143)';
     ctx.beginPath();
     ctx.arc(nose.x, nose.y, 10, 0, 2 * Math.PI);
@@ -63,7 +63,7 @@ function draw() {
     ctx.stroke(); 
 
     // Create a yellow ellipse for the right eye
-    let rightEye = pose['rightEye'];
+    const rightEye = pose.rightEye;
     ctx.fillStyle = 'rgb(255, 215, 0)'
     ctx.beginPath();
     ctx.arc(rightEye.x, rightEye.y, 10, 0, 2 * Math.PI);
@@ -71,7 +71,7 @@ function draw() {
     ctx.stroke(); 
 
     // Create a yellow ellipse for the right eye
-    let leftEye = pose['leftEye'];
+    const leftEye = pose.leftEye;
     ctx.fillStyle = 'rgb(255, 215, 0)'
     ctx.beginPath();
     ctx.arc(leftEye.x, leftEye.y, 10, 0, 2 * Math.PI);

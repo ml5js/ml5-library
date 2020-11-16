@@ -14,7 +14,7 @@ For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/
 // So the input images can only be 256x256 or 512x512, or multiple of 256
 const SIZE = 256;
 let inputImg, canvas, outputContainer, statusMsg, pix2pix, clearBtn, transferBtn, modelReady = false, isTransfering = false;
-let mouseIsPressed = false;
+const mouseIsPressed = false;
 let outputImg;
 
 let pX = null;
@@ -136,7 +136,7 @@ function transfer() {
   statusMsg.textContent = 'Applying Style Transfer...!';
 
   // Apply pix2pix transformation
-  let canvasEl = document.querySelector('canvas');
+  const canvasEl = document.querySelector('canvas');
   pix2pix.transfer(canvasEl, function(err, result) {
     if (err) {
       console.log(err);
@@ -179,13 +179,13 @@ function onMouseUp(e) {
 }
 
 function onMouseUpdate(e) {
-  var pos = getMousePos(document.querySelector('canvas'), e);
+  const pos = getMousePos(document.querySelector('canvas'), e);
   mouseX = pos.x;
   mouseY = pos.y;
 }
 
 function getMousePos(canvas, e) {
-  var rect = canvas.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   return {
     x: e.clientX - rect.left,
     y: e.clientY - rect.top

@@ -42,7 +42,7 @@ function setup() {
   trainButton.mousePressed(trainModel);
 
   // Create the model
-  let options = {
+  const options = {
     inputs: 34,
     outputs: 2,
     task: 'classification',
@@ -54,7 +54,7 @@ function setup() {
 // Train the model
 function trainModel() {
   brain.normalizeData();
-  let options = {
+  const options = {
     epochs: 25
   }
   brain.train(options, finishedTraining);
@@ -68,7 +68,7 @@ function finishedTraining() {
 // Classify
 function classify() {
   if (poses.length > 0) {
-    let inputs = getInputs();
+    const inputs = getInputs();
     brain.classify(inputs, gotResults);
   }
 }
@@ -82,9 +82,9 @@ function gotResults(error, results) {
 }
 
 function getInputs() {
-  let keypoints = poses[0].pose.keypoints;
-  let inputs = [];
-  for (let i = 0; i < keypoints.length; i++) {
+  const keypoints = poses[0].pose.keypoints;
+  const inputs = [];
+  for (let i = 0; i < keypoints.length; i += 1) {
     inputs.push(keypoints[i].position.x);
     inputs.push(keypoints[i].position.y);
   }
@@ -94,8 +94,8 @@ function getInputs() {
 //  Add a training example
 function addExample() {
   if (poses.length > 0) {
-    let inputs = getInputs();
-    let target = dataLabel.value();
+    const inputs = getInputs();
+    const target = dataLabel.value();
     brain.addData(inputs, [target]);
   }
 }
@@ -111,8 +111,8 @@ function draw() {
   strokeWeight(2);
   // For one pose only (use a for loop for multiple poses!)
   if (poses.length > 0) {
-    let pose = poses[0].pose;
-    for (let i = 0; i < pose.keypoints.length; i++) {
+    const pose = poses[0].pose;
+    for (let i = 0; i < pose.keypoints.length; i += 1) {
       fill(213, 0, 143);
       noStroke();
       ellipse(pose.keypoints[i].position.x, pose.keypoints[i].position.y, 8);

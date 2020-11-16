@@ -61,23 +61,23 @@ function modelReady() {
 function generate() {
   // prevent starting inference if we've already started another instance
   // TODO: is there better JS way of doing this?
- if(!runningInference) {
+  if(!runningInference) {
     runningInference = true;
 
     // Update the status log
     status.innerHTML = 'Generating...';
 
     // Grab the original text
-    let original = textInput.value;
+    const original = textInput.value;
     // Make it to lower case
-    let txt = original.toLowerCase();
+    const txt = original.toLowerCase();
 
     // Check if there's something to send
     if (txt.length > 0) {
       // This is what the LSTM generator needs
       // Seed text, temperature, length to outputs
       // TODO: What are the defaults?
-      let data = {
+      const data = {
         seed: txt,
         temperature: tempSlider.value,
         length: lengthSlider.value

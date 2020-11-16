@@ -17,11 +17,18 @@ const DEFAULTS = {
   debug: false,
   learningRate: 0.2,
   hiddenUnits: 16,
-  noTraining: false
+  noTraining: false,
 };
 class DiyNeuralNetwork {
   constructor(options, cb) {
     this.callback = cb;
+
+    // Is there a better way to handle a different
+    // default learning rate for image classification tasks?
+    if (options.task === 'imageClassification') {
+      DEFAULTS.learningRate = 0.02;
+    }
+
     this.options =
       {
         ...DEFAULTS,
@@ -100,7 +107,7 @@ class DiyNeuralNetwork {
    */
   init(callback) {
     // check if the a static model should be built based on the inputs and output properties
-    if(this.options.noTraining === true){
+    if (this.options.noTraining === true) {
       this.createLayersNoTraining();
     }
 
@@ -118,7 +125,7 @@ class DiyNeuralNetwork {
    * createLayersNoTraining
    */
   createLayersNoTraining() {
-    // Create sample data based on options 
+    // Create sample data based on options
     const { inputs, outputs, task } = this.options;
     if (task === 'classification') {
       for (let i = 0; i < outputs.length; i += 1) {
@@ -126,7 +133,7 @@ class DiyNeuralNetwork {
         this.addData(inputSample, [outputs[i]]);
       }
     } else {
-      const inputSample  = new Array(inputs).fill(0);
+      const inputSample = new Array(inputs).fill(0);
       const outputSample = new Array(outputs).fill(0);
       this.addData(inputSample, outputSample);
     }
@@ -143,7 +150,7 @@ class DiyNeuralNetwork {
     return tf.tidy(() => {
       const weights = this.neuralNetwork.model.getWeights();
       const weightCopies = [];
-      for (let i = 0; i < weights.length; i+=1) {
+      for (let i = 0; i < weights.length; i += 1) {
         weightCopies[i] = weights[i].clone();
       }
       nnCopy.neuralNetwork.model.setWeights(weightCopies);
@@ -515,7 +522,7 @@ class DiyNeuralNetwork {
       options.whileTraining = [
         this.neuralNetworkVis.trainingVis(),
         {
-          onEpochEnd: null,
+          onEpochEnd: whileTrainingCb,
         },
       ];
     } else {
@@ -687,29 +694,29 @@ class DiyNeuralNetwork {
         layers = [
           {
             type: 'conv2d',
-            filters: 2,
-            kernelSize: 2,
-            strides: 2,
-            activation: 'relu',
-            kernelInitializer: 'varianceScaling',
-          },
-          {
-            type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
-          },
-          {
-            type: 'conv2d',
-            filters: 1,
-            kernelSize: 1,
+            filters: 8,
+            kernelSize: 5,
             strides: 1,
             activation: 'relu',
             kernelInitializer: 'varianceScaling',
           },
           {
             type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
+            poolSize: [2, 2],
+            strides: [2, 2],
+          },
+          {
+            type: 'conv2d',
+            filters: 16,
+            kernelSize: 5,
+            strides: 1,
+            activation: 'relu',
+            kernelInitializer: 'varianceScaling',
+          },
+          {
+            type: 'maxPooling2d',
+            poolSize: [2, 2],
+            strides: [2, 2],
           },
           {
             type: 'flatten',
@@ -1029,8 +1036,6 @@ class DiyNeuralNetwork {
     return unformattedResults;
   }
 
-
-
   /**
    * classify
    * @param {*} _input
@@ -1188,7 +1193,8 @@ class DiyNeuralNetwork {
    * mutate the weights of a model
    * @param {*} rate
    * @param {*} mutateFunction
-   */  
+   */
+
   mutate(rate, mutateFunction) {
     this.neuralNetwork.mutate(rate, mutateFunction);
   }
@@ -1196,7 +1202,8 @@ class DiyNeuralNetwork {
   /**
    * create a new neural network with crossover
    * @param {*} other
-   */  
+   */
+
   crossover(other) {
     const nnCopy = this.copy();
     nnCopy.neuralNetwork.crossover(other.neuralNetwork);

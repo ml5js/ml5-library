@@ -5,89 +5,63 @@
 
 /* ===
 ml5 Example
-Image classification using MobileNet and p5.js
+Classification with Convolutional Neural Network
 This example uses a callback pattern to create the classifier
 === */
-let nn;
+let cnn;
 
 function setup() {
-
+  createCanvas(200, 200);
   const options = {
+    inputs: [16, 16, 3],
     task: 'imageClassification',
-    inputs: [2, 2, 4],
-    debug: true
-  }
-  nn = ml5.neuralNetwork(options);
-
+    debug: true,
+  };
+  cnn = ml5.neuralNetwork(options);
   addData();
-  nn.train({
-    epochs: 20,
-    batchSize: 2
-  }, finishedTraining)
-
+  cnn.train({ epochs: 50 }, finishedTraining);
 }
 
 function finishedTraining() {
-  nn.classify([
-    0, 0, 255, 255, 0, 0, 255, 255,
-    0, 0, 255, 255, 0, 0, 255, 255
-  ], gotResults)
-
+  const r = random(255);
+  const g = random(255);
+  const b = random(255);
+  background(r, g, b);
+  const newPixels = [];
+  for (let i = 0; i < 256; i += 1) {
+    newPixels.push(r, g, b);
+  }
+  cnn.classify({ pixels: newPixels }, gotResults);
 }
 
-function gotResults(err, result) {
+function gotResults(err, results) {
   if (err) {
-    console.error(err)
+    console.error(err);
   }
-  console.log(result)
+  console.log(results);
+  const percent = 100 * results[0].confidence;
+  createP(`${results[0].label} ${nf(percent, 2, 1)}%`);
 }
 
 function addData() {
-  const myData = [{
-      label: "red-square",
-      value: [
-        255, 0, 0, 255, 255, 0, 0, 255,
-        255, 0, 0, 255, 255, 0, 0, 255
-      ]
-    },
-    {
-      label: "green-square",
-      value: [
-        0, 255, 0, 255, 0, 255, 0, 255,
-        0, 255, 0, 255, 0, 255, 0, 255
-      ]
-    },
-    {
-      label: "blue-square",
-      value: [
-        0, 0, 255, 255, 0, 0, 255, 255,
-        0, 0, 255, 255, 0, 0, 255, 255
-      ]
-    }
-
-  ]
-
-  // method 1: adding data as objects
-  for(let i = 0; i < myData.length; i++){
-    const item = myData[i];
-    const xInputObj = {
-      pixelArray: item.value
-    }
-
-    const yInputObj = {
-      label: item.label
-    }
-    nn.addData(xInputObj, yInputObj)
+  const redPixels = [];
+  for (let i = 0; i < 256; i += 1) {
+    redPixels.push(random(255), 0, 0);
   }
 
-  
-  // method 2:adding data as arrays with
-  const labelsOptions = {
-    inputLabels: ['pixelArray'],
-    outputLabels: ['label']
+  const bluePixels = [];
+  for (let i = 0; i < 256; i += 1) {
+    bluePixels.push(0, 0, random(255));
   }
-  for(let i = 0; i < myData.length; i++){
-    const item = myData[i]; 
-    nn.addData([item.value], [item.label], labelsOptions)
+
+  const greenPixels = [];
+  for (let i = 0; i < 256; i += 1) {
+    greenPixels.push(0, random(255), 0);
   }
+
+  cnn.addData({ pixels: redPixels }, { label: 'red' });
+  cnn.addData({ pixels: bluePixels }, { label: 'blue' });
+  cnn.addData({ pixels: greenPixels }, { label: 'green' });
+
+  cnn.normalizeData();
 }

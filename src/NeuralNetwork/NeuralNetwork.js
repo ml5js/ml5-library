@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 import callCallback from '../utils/callcallback';
 import { saveBlob } from '../utils/io';
 import { randomGaussian } from '../utils/random';
@@ -79,7 +80,7 @@ class NeuralNetwork {
 
   /**
    * Set the optimizer function given the learning rate
-   * as a paramter
+   * as a parameter
    * @param {*} learningRate
    * @param {*} optimizer
    */
@@ -137,7 +138,6 @@ class NeuralNetwork {
 
     return result;
   }
-
 
   /**
    * returns the prediction as an array
@@ -245,14 +245,16 @@ class NeuralNetwork {
       // load the model
       this.model = await tf.loadLayersModel(tf.io.browserFiles([model, weights]));
     } else if (filesOrPath instanceof Object) {
-      // filesOrPath = {model: URL, metadata: URL, weights: URL}
-
-      let modelJson = await fetch(filesOrPath.model);
-      modelJson = await modelJson.text();
+      // load the modelJson
+      const modelJsonResult = await axios.get(filesOrPath.model, { responseType: 'text' });
+      const modelJson = JSON.stringify(modelJsonResult.data);
+      // TODO: browser File() API won't be available in node env
       const modelJsonFile = new File([modelJson], 'model.json', { type: 'application/json' });
 
-      let weightsBlob = await fetch(filesOrPath.weights);
-      weightsBlob = await weightsBlob.blob();
+      // load the weights
+      const weightsBlobResult = await axios.get(filesOrPath.weights, { responseType: 'blob' });
+      const weightsBlob = weightsBlobResult.data;
+      // TODO: browser File() API won't be available in node env
       const weightsBlobFile = new File([weightsBlob], 'model.weights.bin', {
         type: 'application/macbinary',
       });
@@ -285,17 +287,18 @@ class NeuralNetwork {
    * mutate the weights of a model
    * @param {*} rate
    * @param {*} mutateFunction
-   */  
+   */
+
   mutate(rate = 0.1, mutateFunction) {
     tf.tidy(() => {
       const weights = this.model.getWeights();
       const mutatedWeights = [];
-      for (let i = 0; i < weights.length; i+=1) {
+      for (let i = 0; i < weights.length; i += 1) {
         const tensor = weights[i];
         const { shape } = weights[i];
         // TODO: Evaluate if this should be sync or not
         const values = tensor.dataSync().slice();
-        for (let j = 0; j < values.length; j+=1) {
+        for (let j = 0; j < values.length; j += 1) {
           if (Math.random() < rate) {
             if (mutateFunction) {
               values[j] = mutateFunction(values[j]);
@@ -320,14 +323,14 @@ class NeuralNetwork {
       const weightsA = this.model.getWeights();
       const weightsB = other.model.getWeights();
       const childWeights = [];
-      for (let i = 0; i < weightsA.length; i+=1) {
+      for (let i = 0; i < weightsA.length; i += 1) {
         const tensorA = weightsA[i];
         const tensorB = weightsB[i];
         const { shape } = weightsA[i];
         // TODO: Evaluate if this should be sync or not
         const valuesA = tensorA.dataSync().slice();
         const valuesB = tensorB.dataSync().slice();
-        for (let j = 0; j < valuesA.length; j+=1) {
+        for (let j = 0; j < valuesA.length; j += 1) {
           if (Math.random() < 0.5) {
             valuesA[j] = valuesB[j];
           }
@@ -338,7 +341,5 @@ class NeuralNetwork {
       this.model.setWeights(childWeights);
     });
   }
-
-
 }
 export default NeuralNetwork;

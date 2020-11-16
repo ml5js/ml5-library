@@ -54,8 +54,8 @@ function modelReady() {
 function generate() {
   // prevent starting inference if we've already started another instance
   // TODO: is there better JS way of doing this?
- if(!runningInference) {
-   runningInference = true;
+  if(!runningInference) {
+    runningInference = true;
 
     // Update the status log
     status.innerHTML = 'Generating...';
@@ -65,14 +65,14 @@ function generate() {
     temperatureText.innerHTML = tempSlider.value;
 
     // Grab the original text
-    let original = textInput.value;
+    const original = textInput.value;
     // Make it to lower case
-    let txt = original.toLowerCase();
+    const txt = original.toLowerCase();
 
     // Check if there's something
     if (txt.length > 0) {
       // Here is the data for the LSTM generator
-      let data = {
+      const data = {
         seed: txt,
         temperature: tempSlider.value,
         length: lengthSlider.value
@@ -91,7 +91,7 @@ function generate() {
     } else {
       // Clear everything
       originalText.innerHTML = '';
-        predictionText.innerHTML = '';
+      predictionText.innerHTML = '';
     }
   }
 }

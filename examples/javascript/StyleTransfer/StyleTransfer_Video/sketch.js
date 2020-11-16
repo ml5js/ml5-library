@@ -15,8 +15,8 @@ let isTransferring = false;
 let resultImg;
 let canvas, ctx;
 let toggleButton;
-let width = 320;
-let height = 240;
+const width = 320;
+const height = 240;
 
 async function setup() {
   canvas = createCanvas(width, height);
@@ -87,7 +87,7 @@ async function getVideo() {
 
   // Create a webcam capture
   const capture = await navigator.mediaDevices.getUserMedia({
-      video: true
+    video: true
   })
   videoElement.srcObject = capture;
   videoElement.play();
