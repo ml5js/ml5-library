@@ -15,9 +15,12 @@ let detections = [];
 
 function setup() {
   createCanvas(640, 480);
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, videoReady);
   video.size(640, 480);
   video.hide();
+}
+
+function videoReady() {
   // Models available are 'cocossd', 'yolo'
   detector = ml5.objectDetector('cocossd', modelReady);
 }
@@ -37,8 +40,8 @@ function modelReady() {
 function draw() {
   image(video, 0, 0);
 
-  for (let i = 0; i < detections.length; i++) {
-    let object = detections[i];
+  for (let i = 0; i < detections.length; i += 1) {
+    const object = detections[i];
     stroke(0, 255, 0);
     strokeWeight(4);
     noFill();
