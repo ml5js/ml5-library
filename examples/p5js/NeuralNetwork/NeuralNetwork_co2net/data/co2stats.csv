@@ -1,0 +1,151 @@
+val,city_name,city_name_cdp,reporting_year_cdp,scope1_ghg_emissions_tons_co2e,year_of_emission,latitude_degrees,longitude_degrees,country,region,population_cdp,population_year_cdp
+1,Abington,Abington Township,2016,193345,2010,40.1,-75.099722,USA,North America,55310,2010
+2,Addis Ababa,Addis Ababa City Administration,2016,3708292,2012,9.03,38.74,Ethiopia,Africa,3384569,2008
+3,Adelaide,City of Adelaide,2016,63724,2013,-34.929,138.601,Australia,Oceania,23169,2015
+7,"Ajax, ON","Town of Ajax, ON",2016,6354,2008,43.858,-79.036389,Canada,North America,109600,2011
+8,Albany,City of Albany,2017,663997,2010,42.653,-73.757222,USA,North America,97856,2010
+9,"Alton, IL","City of Alton, IL",2016,138542,2013,38.901,-90.159722,USA,North America,26581,2015
+10,Amman,Greater Amman Municipality,2016,3322603,2014,31.95,35.932778,Jordan,"North Africa, Middle East, West Asia",3604459,2015
+11,Amsterdam,City of Amsterdam,2016,2161000,2016,52.367,4.9,Netherlands,Europe,822272,2015
+14,"Arlington, VA","City of Arlington, VA",2016,1257464,2015,38.881,-77.1372613,USA,North America,216700,2015
+16,Athens,City of Athens,2016,1260355,2014,37.984,23.727806,Greece,Europe,664046,2011
+17,Atlanta,City of Atlanta,2016,3548215,2014,33.755,-84.39,USA,North America,443775,2013
+18,Auckland,Auckland Council,2016,9133523,2013,-36.841,174.74,New Zealand,Oceania,1569900,2015
+19,Austin,City of Austin,2016,6439000,2013,30.267,-97.733333,USA,North America,888204,2015
+21,Baltimore,City of Baltimore,2017,4019044,2014,39.283,-76.616667,USA,North America,614664,2016
+28,Barreiro,Barreiro,2016,203441,2014,38.667,-9.066667,Portugal,Europe,78764,2011
+29,Basel,Basel-Stadt,2017,783932,2016,47.567,7.6,Switzerland,Europe,198206,2016
+30,Batangas,Batangas City,2016,344419,2010,13.83,121,Philippines,Southeast Asia,332458,2015
+32,Belo Horizonte,Municipality of Belo Horizonte,2016,2804787,2013,-19.917,-43.933333,Brazil,Latin America & Caribbean,2502557,2015
+38,Blacksburg,Town of Blacksburg,2017,124461.79,2015,37.23,-80.417778,USA,North America,44215,2015
+39,Bogor,Bogor City Government,2017,954020,2014,-6.597,106.7972,Indonesia,Southeast Asia,1047922,2015
+40,Bogotá,Bogotá Distrito Capital,2016,10679585.14,2015,4.711,-74.072222,Colombia,Latin America & Caribbean,7878783,2015
+43,Boston,City of Boston,2016,3603270,2014,42.358,-71.063611,USA,North America,646000,2013
+44,Boulder,City of Boulder,2016,741287,2012,40.027,-105.251945,USA,North America,104810,2015
+45,Bournemouth,City of Bournemouth,2016,350775,2013,50.72,-1.88,United Kingdom,Europe,191400,2015
+46,Brasília,City of Brasília,2016,7739830,2012,-15.79,-47.88,Brazil,Latin America & Caribbean,1409671,2015
+50,Buenos Aires,City of Buenos Aires,2016,15561157,2014,-34.603,-58.381667,Argentina,Latin America & Caribbean,3054267,2015
+52,Burlington,City of Burlington,2016,368077,2010,44.476,-73.211944,USA,North America,42284,2015
+53,Calgary,City of Calgary,2016,10448332,2015,51.05,-114.066667,Canada,North America,1203915,2015
+54,Canberra,Canberra,2016,1757500,2015,-35.307,149.124417,Australia,Oceania,400000,2016
+55,Cape Town,City of Cape Town,2016,9783734,2012,-33.925,18.423889,South Africa,Africa,3918830,2014
+56,Caracas,Alcaldía Metropolitana de Caracas,2016,14364103,2015,10.481,-66.903611,Venezuela,Latin America & Caribbean,3518590,2015
+58,Cascais,Cascais,2016,565382,2010,38.7,-9.416667,Portugal,Europe,208122,2014
+63,Chicago,City of Chicago,2017,16951471,2015,41.837,-87.684722,USA,North America,2720546,2015
+65,Cleveland,City of Cleveland,2016,7750563,2010,41.482,-81.669722,USA,North America,396815,2010
+68,Columbus,City of Columbus,2016,5487400,2015,39.983,-82.983333,USA,North America,835957,2014
+70,Curitiba,Municipality of Curitiba,2016,2686488,2013,-25.417,-49.25,Brazil,Latin America & Caribbean,1751907,2010
+72,Dallas,City of Dallas,2016,119881,2010,32.776,-96.796667,USA,North America,1257676,2013
+76,"Davis, CA","City of Davis, CA",2016,348437,2010,38.554,-121.738056,USA,North America,65600,2010
+78,Denver,City of Denver,2016,4557000,2014,39.762,-104.881105,USA,North America,663862,2014
+79,Detroit,City of Detroit,2016,5520240,2012,42.331,-83.045833,USA,North America,688701,2013
+80,District of Columbia,District of Columbia,2016,3132786,2013,38.905,-77.016389,USA,North America,672228,2015
+82,Durban,City of Durban,2016,11681810,2014,-29.883,31.05,South Africa,Africa,3555868,2015
+83,Durham,City of Durham,2016,1973070,2015,35.989,-78.907222,USA,North America,250815,2015
+84,Edmonton,City of Edmonton,2016,10215142,2014,53.533,-113.5,Canada,North America,878000,2014
+86,"Emeryville, CA","City of Emeryville, CA",2016,127138,2014,37.831,-122.285278,USA,North America,10570,2014
+87,Eugene,City of Eugene,2016,1106250,2015,44.052,-123.086667,USA,North America,151190,2013
+88,Faro,Faro,2016,128,2010,37.033,-7.916667,Portugal,Europe,61214,2014
+90,Flagstaff,City of Flagstaff,2016,621293.07,2014,35.199,-111.631111,USA,North America,68667,2013
+91,Florianópolis,Prefeitura de Florianópolis,2016,1305206,2013,-27.572,-48.6256,Brazil,Latin America & Caribbean,550000,2010
+98,Gladsaxe Kommune,Gladsaxe Kommune,2017,247599,2015,55.733,12.483333,Denmark,Europe,67347,2015
+101,Greater London,Greater London Authority,2016,20620000,2013,51.507,-0.1275,United Kingdom,Europe,8600000,2015
+110,"Hamilton, ON",City of Hamilton,2016,6304593,2012,43.25,-79.866667,Canada,North America,519949,2011
+114,Hayward,City of Hayward,2016,861854,2015,37.669,-122.080796,USA,North America,158985,2015
+119,Helsinki,City of Helsinki,2016,2096206,2014,60.171,24.9375,Finland,Europe,612664,2014
+121,"Hermosa Beach, CA","City of Hermosa Beach, CA",2016,123218,2012,33.866,-118.399722,USA,North America,19750,2015
+123,Hjørring,Municipality of Hjørring,2016,289000,2014,57.467,9.983333,Denmark,Europe,65308,2016
+124,Hoeje-Taastrup Kommune,Hoeje-Taastrup Kommune,2016,173000,2014,55.648,12.27,Denmark,Europe,50002,2016
+126,Hong Kong,Government of Hong Kong Special Administrative Region,2017,44876460,2014,22.3,114.2,China,East Asia,7336600,2016
+127,Houston,City of Houston,2016,16075539,2014,29.763,-95.383056,USA,North America,2195914,2013
+133,Incheon,Incheon Metropolitan City,2016,57719912,2015,37.483,126.633333,South Korea,East Asia,2983484,2015
+134,Indianapolis,City of Indianapolis,2017,726155.11,2013,39.791,-86.148,USA,North America,853000,2015
+136,Iowa,City of Iowa City,2016,590282,2013,41.66,-91.5342,USA,North America,73415,2015
+149,Johannesburg,City of Johannesburg,2016,9068358,2014,-26.204,28.045556,South Africa,Africa,4764381,2015
+150,Kadiovacik,Village of Kadiovacik,2016,404.65,2015,38.343,26.553367,Turkey,"North Africa, Middle East, West Asia",216,2016
+152,Kaohsiung,Kaohsiung City Government,2016,43502687.67,2014,22.633,120.266667,Taiwan,East Asia,2778729,2015
+154,Knoxville,City of Knoxville,2016,2061435,2012,35.973,-83.942222,USA,North America,184281,2014
+158,La Paz,Municipalidad de La Paz,2016,1152922.4,2012,-16.5,-68.15,Bolivia,Latin America & Caribbean,789541,2015
+159,Lagos,City of Lagos,2016,29426266,2014,6.455,3.384082,Nigeria,Africa,21000000,2016
+160,Lahti,City of Lahti,2017,717200,2015,60.983,25.65,Finland,Europe,119452,2016
+162,Lakewood,City of Lakewood,2016,553900,2007,39.705,-105.081389,USA,North America,149643,2014
+164,"Lancaster, PA","City of Lancaster, PA",2017,364183,2016,40.04,-76.304444,USA,North America,60000,2016
+166,Las Vegas,City of Las Vegas,2016,11002925,2014,36.175,-115.136389,USA,North America,621970,2016
+167,Lausanne,Ville de Lausanne,2016,456843,2013,46.52,6.6335,Switzerland,Europe,140000,2015
+171,Lima,Metropolitan Municipality of Lima,2016,12378734,2012,-12.043,-77.028333,Peru,Latin America & Caribbean,8755262,2014
+173,Lisbon,City of Lisbon,2016,1023910,2014,38.714,-9.139444,Portugal,Europe,547773,2011
+175,Ljubljana,City of Ljubljana,2017,1829808,2014,46.056,14.508333,Slovenia,Europe,288307,2016
+176,"London, ON","City of London, ON",2016,2771000,2014,42.984,-81.2497,Canada,North America,375000,2014
+177,Los Altos Hills,Los Altos Hills,2016,47552,2015,37.371,-122.1375,USA,North America,8334,2013
+178,Los Angeles,City of Los Angeles,2016,19595119,2013,34.05,-118.25,USA,North America,3928864,2014
+181,Madrid,Ayuntamiento de Madrid,2016,6795577,2013,40.383,-3.716667,Spain,Europe,3156572,2015
+183,Makati,City Government of Makati,2016,462586,2011,14.55,121.03,Philippines,Southeast Asia,529039,2010
+185,Manchester,Greater Manchester,2016,9587290,2013,53.467,-2.233333,United Kingdom,Europe,2762000,2014
+186,Melbourne,City of Melbourne,2016,785326,2015,-37.814,144.963056,Australia,Oceania,137889,2016
+187,Mexico City,Mexico City,2016,16842493.45,2014,19.433,-99.133333,Mexico,Latin America & Caribbean,8874724,2014
+188,Milano,Comune di Milano,2016,3728678,2013,45.467,9.183333,Italy,Europe,1350680,2014
+189,Minneapolis,City of Minneapolis,2016,2890572,2014,44.983,-93.266667,USA,North America,407207,2014
+190,Moita,Município de Moita,2016,49910,2013,38.65,-8.983333,Portugal,Europe,66029,2011
+191,Montreal,Ville de Montreal,2016,13634331,2009,45.5,-73.566667,Canada,North America,1886481,2011
+195,Nagoya,City of Nagoya,2016,7690000,2013,35.183,136.9,Japan,East Asia,2274511,2015
+202,Nashville and Davidson,Metropolitan Government of Nashville and Davidson County,2017,6680194,2014,36.155,-86.761944,USA,North America,678889,2015
+204,New Orleans,City of New Orleans,2016,2419891,2014,29.95,-90.066667,USA,North America,389617,2015
+205,New Taipei,New Taipei City Government,2016,6149934,2014,25.011,121.445833,Taiwan,East Asia,3966818,2014
+206,New York City,New York City,2017,38962264,2015,40.713,-74.0059,USA,North America,8537673,2016
+209,North Vancouver,City of North Vancouver,2017,182896,2015,49.317,-123.066667,Canada,North America,52898,2016
+210,Oakland,City of Oakland,2017,956414,2015,37.804,-122.270833,USA,North America,419000,2015
+211,Okayama,City of Okayama,2016,114000,2013,34.65,133.916667,Japan,East Asia,705917,2015
+213,Oslo,City of Oslo,2016,1094422,2013,59.95,10.75,Norway,Europe,658390,2016
+214,Palmas,Prefeitura de Palmas,2016,589055.31,2013,-10.184,-48.333611,Brazil,Latin America & Caribbean,272726,2015
+215,Palo Alto,City of Palo Alto,2016,152631,2015,37.429,-122.138056,USA,North America,66955,2015
+216,Paris,City of Paris,2016,3359242,2014,48.857,2.3508,France,Europe,2265886,2015
+219,Philadelphia,City of Philadelphia,2016,12397594.06,2012,39.95,-75.166667,USA,North America,1560297,2014
+222,"Piedmont, CA","City of Piedmont, CA",2016,17876,2011,37.817,-122.233333,USA,North America,11082,2013
+225,Pingtung,Pingtung County Government,2017,2768427.4,2013,22.675,120.491414,Taiwan,East Asia,835792,2016
+226,Pittsburgh,City of Pittsburgh,2016,2073556,2013,40.44,-79.976389,USA,North America,305704,2016
+227,"Portland, OR","City of Portland, OR",2016,4610317,2014,45.52,-122.681944,USA,North America,619360,2014
+230,Pretoria Tshwane,Pretoria - Tshwane,2016,4648959,2015,-25.667,28.333333,South Africa,Africa,3200000,2016
+236,Quito,Distrito Metropolitano de Quito,2016,4653611,2011,-0.217,-78.516667,Ecuador,Latin America & Caribbean,2239191,2010
+238,Ravenna,Comune di Ravenna,2016,11115,2014,44.417,12.2,Italy,Europe,158911,2015
+239,Recife,Municipality of Recife,2017,1333830,2015,-8.05,-34.9,Brazil,Latin America & Caribbean,1625583,2016
+240,Reno,City of Reno,2017,1371400,2014,39.527,-119.821944,USA,North America,236995,2014
+241,Reykjavík,City of Reykjavík,2016,346630,2013,64.133,-21.933333,Iceland,Europe,122460,2015
+242,"Richmond, VA","City of Richmond, VA",2016,1470127,2013,37.533,-77.466667,USA,North America,217853,2014
+243,Rio de Janeiro,Prefeitura do Rio de Janeiro,2016,16171534,2012,-22.908,-43.196389,Brazil,Latin America & Caribbean,6476631,2015
+247,Rotterdam,Gemeente Rotterdam,2017,17840039,2016,51.917,4.5,Netherlands,Europe,624000,2014
+248,Salvador,City of Salvador,2016,3242166,2013,-12.975,-38.476667,Brazil,Latin America & Caribbean,2902927,2014
+249,San Antonio,City of San Antonio,2016,7214051,2013,29.417,-98.5,USA,North America,1400000,2012
+252,San Francisco,City of San Francisco,2016,4186111,2012,37.783,-122.416667,USA,North America,864816,2015
+254,San Luis Potosí,Ayuntamiento de San Luis Potosí,2016,1096122.89,2015,22.151,-100.976111,Mexico,Latin America & Caribbean,824229,2015
+255,Santa Monica,City of Santa Monica,2017,119026,2015,34.022,-118.481389,USA,North America,92000,2014
+257,Santarém,Santarém,2016,245483,2006,39.233,-8.683333,Portugal,Europe,61752,2011
+258,Santiago,Región Metropolitana de Santiago,2016,23120027.8,2013,-33.45,-70.666667,Chile,Latin America & Caribbean,7314176,2015
+260,Santiago de Guayaquil,Santiago de Guayaquil,2016,5429899,2014,-2.183,-79.883333,Ecuador,Latin America & Caribbean,2350915,2010
+263,Savannah,City of Savannah,2017,2381327,2014,32.017,-81.116667,USA,North America,145674,2015
+264,Seattle,City of Seattle,2016,5150000,2012,47.61,-122.333056,USA,North America,662400,2015
+268,Seoul,Seoul Metropolitan Government,2016,25082520,2013,37.567,126.966667,South Korea,East Asia,10297138,2015
+276,"Somerville, MA","City of Somerville, MA",2016,461798,2014,42.388,-71.1,USA,North America,78900,2014
+277,Sorocaba,Prefeitura de Sorocaba,2016,980290,2012,-23.502,-47.458056,Brazil,Latin America & Caribbean,644919,2015
+278,St Louis,City of St Louis,2016,2481945.42,2014,38.627,-90.197778,USA,North America,319294,2010
+279,Stockholm,City of Stockholm,2017,1834343,2015,59.329,18.068611,Sweden,Europe,923516,2015
+281,Suwon,Suwon City,2016,3670140,2013,37.267,127.016667,South Korea,East Asia,1221973,2015
+283,Sydney,City of Sydney,2016,359064,2015,-33.865,151.209444,Australia,Oceania,205339,2015
+285,Taipei City,Taipei City Government,2016,6493593,2014,25.033,121.633333,Taiwan,East Asia,2704810,2015
+288,Taoyuan,Taoyuan City Hall,2017,21143194.6,2014,24.991,121.314328,Taiwan,East Asia,2153521,2017
+291,Tokyo,Tokyo Metropolitan Government,2016,27611000,2014,35.683,139.683333,Japan,East Asia,13513734,2015
+294,Toronto,City of Toronto,2016,16151019,2013,43.7,-79.4,Canada,North America,2753100,2011
+296,Tucson,City of Tucson,2016,2571089,2012,32.222,-110.926389,USA,North America,529845,2015
+297,Turku,City of Turku,2016,421200,2013,60.45,22.266667,Finland,Europe,186000,2015
+300,Udine,Comune di Udine,2016,438005,2013,46.067,13.233333,Italy,Europe,99528,2013
+302,"University City, MO","University City, MO",2016,266265,2005,38.664,-90.327778,USA,North America,35371,2010
+305,Vancouver,City of Vancouver,2016,2389748,2014,49.25,-123.1,Canada,North America,603500,2011
+306,Venezia,Comune di Venezia,2016,955471,2005,45.438,12.335833,Italy,Europe,263104,2016
+307,Vilnius,Vilnius City Municipality,2016,1994560,2013,54.683,25.283333,Lithuania,Europe,542626,2015
+309,Warsaw,City of Warsaw,2016,7930452,2014,52.233,21.016667,Poland,Europe,1626514,2016
+311,Wellington,Wellington City Council,2017,621179,2014,-41.289,174.777222,New Zealand,Oceania,209102,2017
+314,"Windsor, ON",City of Windsor,2016,2475703,2014,42.283,-83,Canada,North America,210891,2011
+315,Winnipeg,City of Winnipeg,2016,5167453,1998,49.899,-97.139167,Canada,North America,718400,2015
+327,Yilan,Yilan County,2016,6911264.55,2013,24.751,121.759167,Taiwan,East Asia,458777,2014
+329,Yokohama,City of Yokohama,2016,12572000,2013,35.444,139.638056,Japan,East Asia,3719589,2015
+330,Yonkers,City of Yonkers,2016,982940,2010,40.941,-73.864444,USA,North America,199766,2013
+331,Zaragoza,City of Zaragoza,2016,1175162.74,2014,41.65,-0.883333,Spain,Europe,661108,2015

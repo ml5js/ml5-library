@@ -48,7 +48,7 @@ const randomSample = (arr, k, withReplacement = false) => {
     }
     sample = arr.map(a => [a, Math.random()]).sort((a, b) => {
       return a[1] < b[1] ? -1 : 1;}).slice(0, k).map(a => a[0]); 
-    };
+  };
   return sample;
 };
 

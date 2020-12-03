@@ -9,12 +9,7 @@ I'm making a Pull Request(PR). Please see the details below.
 
 **A good PR 🌟**
 
-### → Step 1:  Which branch are you submitting to? 🌲
-> Development (for new features or updates), Release (for bug fixes), or ___________?
-
-
-
-### → Step 2: Describe your Pull Request 📝
+### → Step 1: Describe your Pull Request 📝
 > Fixing a Bug? Adding an Update? Submitting a New Feature? Does it introduce a breaking change?
 
 
@@ -23,15 +18,15 @@ I'm making a Pull Request(PR). Please see the details below.
 
 **A great PR 🌟🌟**
 
-### → Step 3: Share a Relevant Example 🦄
-> Here's some example code or a link to another PR in https://github.com/ml5js/ml5-examples OR in the https://editor.p5js.org or codepen/jsfiddle/etc...
+### → Step 2: Share a Relevant Example 🦄
+> Here's some example code or a demonstration of my feature as a part of this pull request, a separate pull request, in the https://editor.p5js.org, or codepen/jsfiddle/etc...
 
 
 
 
 **The best PR 🌟🌟🌟**
 
-### → Step 4: Screenshots or Relevant Documentation 🖼
+### → Step 3: Screenshots or Relevant Documentation 🖼
 > Here's some helpful screenshots and/or documentation of the new feature 
 
 

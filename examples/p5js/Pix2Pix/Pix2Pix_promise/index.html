@@ -1,0 +1,37 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pix2Pix Edges2Pikachu Example</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+
+  <style></style>
+</head>
+
+<body>
+  <h1>Pix2Pix Edges2Pichaku Example</h1>
+  <p>1. Press your mouse to draw a Pikachu on the canvas below.</p>
+  <p>2. Click 'Transfer' button.</p>
+  <p>3. A colored Pikachu image will appear in 1s.</p>
+  <p>4. Click 'Clear' button to clear the canvas and draw again.</p>
+  <p id="status">Loading Model... Please wait...</p>
+  <div class="flex">
+    <div>
+      <div id="canvasContainer"></div>
+      <div id="btnContainer" class="flex flex-space-between">
+        <button id="clearBtn">Clear</button><br />
+        <button id="transferBtn" class="btn">Transfer</button>
+      </div>
+    </div>
+    <div id="transferContainer">
+    </div>
+    <div id="output"></div>
+  </div>
+
+  <script src="sketch.js"></script>
+</body>
+
+</html>

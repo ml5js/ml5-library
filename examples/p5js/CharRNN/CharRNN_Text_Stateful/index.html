@@ -1,0 +1,36 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Stateful CharRNN Text Generation Example using p5.js</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
+  <style></style>
+</head>
+
+<body>
+  <h1>Stateful CharRNN Text Generation Example using p5.js</h1>
+  <p>Instead of feeding every single character every frame to predict the next character, we feed only the last character, and instruct the CharRNN to remember its internal state.</p>
+  <p>This example uses a pre-trained model on a corpus of <a href="https://en.wikipedia.org/wiki/Virginia_Woolf">Virginia Woolf</a></p>
+  <p>seed text:
+    <input id="textInput" value="The sky was blue and "                              />
+  </p>
+  <p>temperature:
+    <input id="tempSlider" type="range" min="0.01" max="1" step="0.01"                             /><span id="temperature">0.5</span>
+  </p>
+  <p><button id="reset">Reset</button><button id="start">Start</button><button id="single">Single</button></p>
+  <p id="status">Loading Model</p>
+  <div id="canvasContainer"></div>
+
+  <p id="result"></p>
+
+  <hr />
+  <h2>Acknowledgements</h2>
+  <p>
+  This work was supported through a residency at the <a href="http://studioforcreativeinquiry.org/" target="_blank">Frank-Ratchye STUDIO for Creative Inquiry</a> at Carnegie Mellon University, Pittsburgh, October 2018, with additional support from the Sylvia and David Steiner Speaker Series.
+  </p>
+  <script src="sketch.js"></script>
+
+</body>
+
+</html>

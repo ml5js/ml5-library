@@ -3,17 +3,15 @@
 
 ![friendly machine learning for the web](assets/header.png)
 
-## The ml5 ecosystem (last updated: 22, March 2019)
+## The ml5 ecosystem (last updated: 24, May 2020)
 
 ml5.js is comprised a number of sister repositories which you can find at the [ml5 github organization - github.com/ml5js](https://github.com/ml5js). As a contributor of ml5 you should be aware of the other parallel repositories of the ml5 project.
 
-- **The 3 main repositories you'll likely be working with**:
+- **The 2 main repositories you'll likely be working with**:
   + [ml5-library]([https://github.com/ml5js](https://github.com/ml5js/ml5-library))
-    * this is the main ml5js library. When building the library, all of the files in the `/src` directory get bundled into the `ml5.js` library. Releases to the ml5 library get sent to `npm` and are hosted at https://unpkg.com/ (e.g. `https://unpkg.com/ml5@0.2.1/dist/ml5.min.js`)
-  + [ml5-examples](https://github.com/ml5js/ml5-examples)
-    * the ml5-examples repo showcases the functionality of the ml5-library. When submitting new features or updates to the ml5 library, you should also make a pull request to the ml5-examples repo to showcase how your new feature works. Usually examples are submitted in a simple p5.js sketch, but they can also be in vanilla javascript.
+    * this is the main ml5js library. When building the library, all of the files in the `/src` directory get bundled into the `ml5.js` library. Releases to the ml5 library get sent to `npm` and are hosted at https://unpkg.com/ (e.g. `https://unpkg.com/ml5@0.2.1/dist/ml5.min.js`). When adding new features or updates to the ml5 library, you should also add an example in the `examples/` subdirectory of this repo to showcase how your new feature works. Usually examples are submitted in a simple p5.js sketch, but they can also be in vanilla javascript.
   + [ml5-website](https://github.com/ml5js/ml5-website)
-    * the ml5-website is what you see here: https://ml5js.org/. As we make changes to the ml5 API and examples, the website also needs to be updated. For now, we're working with a manual process to updating changes, but we're working on development processes to help sync all these efforts. For now, make sure to update the ml5-examples and ml5-website when making changes to ml5-library and vice-versa.
+    * the ml5-website is what you see here: https://ml5js.org/. As we make changes to the ml5 API and examples, the website also needs to be updated. For now, we're working with a manual process to updating changes, but we're working on development processes to help sync all these efforts. For now, make sure to update the ml5-website when making changes to ml5-library and vice-versa.
 - **Data and models**:
   + [ml5-data-and-models](https://github.com/ml5js/ml5-data-and-models)
     * This repository stores data sets and pre-trained models you can use in ml5.js.
@@ -39,8 +37,8 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 3. you make a comment on an existing issue or post your issue and indicate that you're curious to do your best to solve it 🔬
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `fix-detection-results`
 5. you jam on fixing the bug, commit your changes with meaningful commit messages, and push your changes to your bug fix branch (e.g. `fix-detection-results`)
-6. when ready, make a pull request to the `release` branch or `development` branch of ml5-library. Submit to the `release` branch if the bug you found was in the current ml5 release - the version of ml5 which is on npm. Submit to the `development` branch if the bug you found was in `developmpent` branch of ml5-library.
-7. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
+6. when ready, make a pull request to the `main` branch of ml5-library. Prepend "[NEEDS RELEASE]" to the title if the bug you found was in the current ml5 release - the version of ml5 which is on npm. 
+7. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, a `ready for release` label will be added to your PR and your changes will be merged in and release with the next public update to the library. 🎉
 8. hi-fives 👏 and hugs 🤗
 
 ### For new features or feature additions/updates
@@ -49,8 +47,8 @@ Preamble: If you're interested in to contribute to the ml5 project, just know yo
 3. you make a comment on an existing issue or post your issue and indicate that you're curious to do your best to add this to ml5-library 🔬
 4. you create a new branch on your `forked` copy of the ml5-library and call it something meaningful like `new-generative-model-x`
 5. you jam on your new feature, commit your changes with meaningful commit messages, and push your changes to your new feature branch (e.g. `new-generative-model-x`)
-6. when ready, make a pull request to the `development` branch of ml5-library. Submit to the `development` since your feature is part of the new frontier of the ml5-library. Important is step 7 below.
-7. you should also submit a pull request to ml5-examples with an example of your new feature so the ml5 dev team can run your proposed feature and provide feedback.
+6. you should also add an example of your new feature to the `examples/` directory so that other people can learn how to use your new feature.
+7. when ready, make a pull request to the `main` branch of ml5-library.
 8. the ml5 dev team will review your changes and quite likely correspond with you on your changes. When all looks good, your changes will be merged in. 🎉
 9. hi-fives 👏 and hugs 🤗
 
@@ -170,21 +168,19 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
   npm run manual-test
   ```
 
-  This creates a new folder called `/manual-test` in the project's root folder. Create an `index.html` file inside `/manual-test` and add the following:
+  This creates a new folder called `/manual-test` in the project's root folder. The `/manual-test` folder contains an `index.html` file with the following content:
 
   ```html
   <!DOCTYPE html>
   <html>
   <head>
-    <title>Test</title>
+    <title>ml5.js manual test</title>
     <script src="http://localhost:8080/ml5.js"></script>
   </head>
   <body>
-
     <script>
-
+      // Your scripts would be written here
     </script>
-
   </body>
   </html>
   ```
@@ -235,7 +231,7 @@ NVM_HOMEBREW="/usr/local/opt/nvm/nvm.sh"
 
   Just be sure to add files before running commitizen!
 
-7. (OPTIONAL) Push your code and submit a Pull Request! Remember if you make a pull request on a new features or feature update you should make a parallel pull request to the ml5-examples repo so that others can use your new feature and test it out.
+7. (OPTIONAL) Push your code and submit a Pull Request!
 
 ## Running Unit Tests
 
@@ -255,6 +251,8 @@ This last one is case sensitive!
 
 
 ## Making Releases (For the ml5 core team)
+
+**NOTE: This section needs to be updated to align with the new `main` branch structure.**
 
 Work in progress - we are working on making a few scripts to make it easier to make releases and deployments. For now, to address the long-winded process noted in https://github.com/ml5js/ml5-library/issues/387, we are experimenting with some devOps scripts.
 
@@ -317,40 +315,9 @@ Go to Github and wait for tests to pass, then `squash and merge` the newly creat
 npm run publish:npm
 ```
 
-7. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
-8. Your new npm version should be released!
-
-Now what is important is that you:
-
-1. go to Github and document that new release with `release notes`.
-2. go to `ml5-examples` and make sure you have the latest development branch stuff:
-
-  ```
-  git checkout development
-  git fetch
-  git pull
-  ```
-
-3. then make a new branch for deployment e.g. `new-release-v0.3.2` and update the ml5 references on all examples:
-
-  ```
-  git checkout -b new-release-v0.3.2
-  npm run update-ml5 0.3.2
-  git add .
-  git commit -m "update examples to v0.3.2"
-  ```
-
-4. Fix any merge conflicts if necessary
-
-  ```
-  git push origin new-release-v0.3.2
-  git tag v0.3.2
-  git push --tags
-  ```
-
-5. Merge `new-release-v0.3.2` with `release`
-6. Add release notes to the latest release
-7. Merge `release` with `master` (for the github pages & website)
+10. Enter your multi-factor auth when prompted where it says `OTP` (one time password): `your OTP code`
+11. Your new npm version should be released! 
+12. Lastly, go to Github and document that new release with `release notes`.
 
 
 ## Additional Resources

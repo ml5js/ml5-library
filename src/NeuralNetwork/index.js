@@ -17,10 +17,18 @@ const DEFAULTS = {
   debug: false,
   learningRate: 0.2,
   hiddenUnits: 16,
+  noTraining: false,
 };
 class DiyNeuralNetwork {
   constructor(options, cb) {
     this.callback = cb;
+
+    // Is there a better way to handle a different
+    // default learning rate for image classification tasks?
+    if (options.task === 'imageClassification') {
+      DEFAULTS.learningRate = 0.02;
+    }
+
     this.options =
       {
         ...DEFAULTS,
@@ -76,6 +84,13 @@ class DiyNeuralNetwork {
     this.save = this.save.bind(this);
     this.load = this.load.bind(this);
 
+    // release model
+    this.dispose = this.dispose.bind(this);
+
+    // neuroevolution
+    this.mutate = this.mutate.bind(this);
+    this.crossover = this.crossover.bind(this);
+
     // Initialize
     this.init(this.callback);
   }
@@ -91,6 +106,11 @@ class DiyNeuralNetwork {
    * @param {*} callback
    */
   init(callback) {
+    // check if the a static model should be built based on the inputs and output properties
+    if (this.options.noTraining === true) {
+      this.createLayersNoTraining();
+    }
+
     if (this.options.dataUrl !== null) {
       this.ready = this.loadDataFromUrl(this.options, callback);
     } else if (this.options.modelUrl !== null) {
@@ -99,6 +119,43 @@ class DiyNeuralNetwork {
     } else {
       this.ready = true;
     }
+  }
+
+  /**
+   * createLayersNoTraining
+   */
+  createLayersNoTraining() {
+    // Create sample data based on options
+    const { inputs, outputs, task } = this.options;
+    if (task === 'classification') {
+      for (let i = 0; i < outputs.length; i += 1) {
+        const inputSample = new Array(inputs).fill(0);
+        this.addData(inputSample, [outputs[i]]);
+      }
+    } else {
+      const inputSample = new Array(inputs).fill(0);
+      const outputSample = new Array(outputs).fill(0);
+      this.addData(inputSample, outputSample);
+    }
+
+    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
+    this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
+  }
+
+  /**
+   * copy
+   */
+  copy() {
+    const nnCopy = new DiyNeuralNetwork(this.options);
+    return tf.tidy(() => {
+      const weights = this.neuralNetwork.model.getWeights();
+      const weightCopies = [];
+      for (let i = 0; i < weights.length; i += 1) {
+        weightCopies[i] = weights[i].clone();
+      }
+      nnCopy.neuralNetwork.model.setWeights(weightCopies);
+      return nnCopy;
+    });
   }
 
   /**
@@ -465,7 +522,7 @@ class DiyNeuralNetwork {
       options.whileTraining = [
         this.neuralNetworkVis.trainingVis(),
         {
-          onEpochEnd: null,
+          onEpochEnd: whileTrainingCb,
         },
       ];
     } else {
@@ -637,29 +694,29 @@ class DiyNeuralNetwork {
         layers = [
           {
             type: 'conv2d',
-            filters: 2,
-            kernelSize: 2,
-            strides: 2,
-            activation: 'relu',
-            kernelInitializer: 'varianceScaling',
-          },
-          {
-            type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
-          },
-          {
-            type: 'conv2d',
-            filters: 1,
-            kernelSize: 1,
+            filters: 8,
+            kernelSize: 5,
             strides: 1,
             activation: 'relu',
             kernelInitializer: 'varianceScaling',
           },
           {
             type: 'maxPooling2d',
-            poolSize: [1, 1],
-            strides: [1, 1],
+            poolSize: [2, 2],
+            strides: [2, 2],
+          },
+          {
+            type: 'conv2d',
+            filters: 16,
+            kernelSize: 5,
+            strides: 1,
+            activation: 'relu',
+            kernelInitializer: 'varianceScaling',
+          },
+          {
+            type: 'maxPooling2d',
+            poolSize: [2, 2],
+            strides: [2, 2],
           },
           {
             type: 'flatten',
@@ -743,6 +800,14 @@ class DiyNeuralNetwork {
    */
 
   /**
+   * synchronous predict
+   * @param {*} _input
+   */
+  predictSync(_input) {
+    return this.predictSyncInternal(_input);
+  }
+
+  /**
    * predict
    * @param {*} _input
    * @param {*} _cb
@@ -761,6 +826,14 @@ class DiyNeuralNetwork {
   }
 
   /**
+   * synchronous classify
+   * @param {*} _input
+   */
+  classifySync(_input) {
+    return this.classifySyncInternal(_input);
+  }
+
+  /**
    * classify
    * @param {*} _input
    * @param {*} _cb
@@ -776,6 +849,66 @@ class DiyNeuralNetwork {
    */
   classifyMultiple(_input, _cb) {
     return callCallback(this.classifyInternal(_input), _cb);
+  }
+
+  /**
+   * synchronous predict internal
+   * @param {*} _input
+   * @param {*} _cb
+   */
+  predictSyncInternal(_input) {
+    const { meta } = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
+
+    const inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+
+    const unformattedResults = this.neuralNetwork.predictSync(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const labels = Object.keys(meta.outputs);
+
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return labels.map((item, idx) => {
+          // check to see if the data were normalized
+          // if not, then send back the values, otherwise
+          // unnormalize then return
+          let val;
+          let unNormalized;
+          if (meta.isNormalized) {
+            const { min, max } = meta.outputs[item];
+            val = nnUtils.unnormalizeValue(unformattedResult[idx], min, max);
+            unNormalized = unformattedResult[idx];
+          } else {
+            val = unformattedResult[idx];
+          }
+
+          const d = {
+            [labels[idx]]: val,
+            label: item,
+            value: val,
+          };
+
+          // if unNormalized is not undefined, then
+          // add that to the output
+          if (unNormalized) {
+            d.unNormalizedValue = unNormalized;
+          }
+
+          return d;
+        });
+      });
+
+      // return single array if the length is less than 2,
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
+      return formattedResults;
+    }
+
+    // if no meta exists, then return unformatted results;
+    return unformattedResults;
   }
 
   /**
@@ -835,6 +968,71 @@ class DiyNeuralNetwork {
     }
 
     // if no meta exists, then return unformatted results;
+    return unformattedResults;
+  }
+
+  /**
+   * synchronous classify internal
+   * @param {*} _input
+   * @param {*} _cb
+   */
+  classifySyncInternal(_input) {
+    const { meta } = this.neuralNetworkData;
+    const headers = Object.keys(meta.inputs);
+
+    let inputData;
+
+    if (this.options.task === 'imageClassification') {
+      // get the inputData for classification
+      // if it is a image type format it and
+      // flatten it
+      inputData = this.searchAndFormat(_input);
+      if (Array.isArray(inputData)) {
+        inputData = inputData.flat();
+      } else {
+        inputData = inputData[headers[0]];
+      }
+
+      if (meta.isNormalized) {
+        // TODO: check to make sure this property is not static!!!!
+        const { min, max } = meta.inputs[headers[0]];
+        inputData = this.neuralNetworkData.normalizeArray(Array.from(inputData), { min, max });
+      } else {
+        inputData = Array.from(inputData);
+      }
+
+      inputData = tf.tensor([inputData], [1, ...meta.inputUnits]);
+    } else {
+      inputData = this.formatInputsForPredictionAll(_input, meta, headers);
+    }
+
+    const unformattedResults = this.neuralNetwork.classifySync(inputData);
+    inputData.dispose();
+
+    if (meta !== null) {
+      const label = Object.keys(meta.outputs)[0];
+      const vals = Object.entries(meta.outputs[label].legend);
+
+      const formattedResults = unformattedResults.map(unformattedResult => {
+        return vals
+          .map((item, idx) => {
+            return {
+              [item[0]]: unformattedResult[idx],
+              label: item[0],
+              confidence: unformattedResult[idx],
+            };
+          })
+          .sort((a, b) => b.confidence - a.confidence);
+      });
+
+      // return single array if the length is less than 2,
+      // otherwise return array of arrays
+      if (formattedResults.length < 2) {
+        return formattedResults[0];
+      }
+      return formattedResults;
+    }
+
     return unformattedResults;
   }
 
@@ -976,6 +1174,40 @@ class DiyNeuralNetwork {
 
       return this.neuralNetwork.model;
     });
+  }
+
+  /**
+   * dispose and release memory for a model
+   */
+  dispose() {
+    this.neuralNetwork.dispose();
+  }
+
+  /**
+   * ////////////////////////////////////////////////////////////
+   * New methods for Neuro Evolution
+   * ////////////////////////////////////////////////////////////
+   */
+
+  /**
+   * mutate the weights of a model
+   * @param {*} rate
+   * @param {*} mutateFunction
+   */
+
+  mutate(rate, mutateFunction) {
+    this.neuralNetwork.mutate(rate, mutateFunction);
+  }
+
+  /**
+   * create a new neural network with crossover
+   * @param {*} other
+   */
+
+  crossover(other) {
+    const nnCopy = this.copy();
+    nnCopy.neuralNetwork.crossover(other.neuralNetwork);
+    return nnCopy;
   }
 }
 

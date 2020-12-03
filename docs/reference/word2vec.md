@@ -10,7 +10,7 @@
 
 Word2vec is a group of related models that are used to produce [word embeddings](https://en.wikipedia.org/wiki/Word2vec)</sup>. This method allows you to perform vector operations on a given set of input vectors.
 
-You can use the word models [we provide](https://github.com/ml5js/ml5-examples/tree/master/p5js/Word2Vec/data), trained on a corpus of english words (watch out for bias data!), or you can train your own vector models following [this tutorial](https://github.com/ml5js/ml5-data-and-training/tree/master/training). More of this soon!
+You can use the word models [we provide](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Word2Vec/Word2Vec_Interactive/data), trained on a corpus of english words (watch out for bias data!), or you can train your own vector models following [this tutorial](https://github.com/ml5js/ml5-data-and-training/tree/master/training). More of this soon!
 
 ## Quickstart
 
@@ -121,26 +121,6 @@ word2vec.average(inputs, ?max, ?callback);
 ***
 
 ***
-#### .average()
-> Average a series of vectors.
-
-```js
-word2vec.average(inputs, ?max, ?callback);
-```
-
-📥 **Inputs**
-* **inputs**: An array of strings containing the inputs to be averaged.
-* **max**: Optional. The maximum results to return. Defaults to 1.
-* **callback**: Optional. A callback function that is called once the model has made the operation. If no callback is provided, it will return a promise that will be resolved once operation is completed.
-
-📤 **Outputs**
-
-* **Object**: Returns the closest vector of that average.
-
-***
-
-
-***
 ##### .nearest()
 > Find the nearest vector. Returns `max` array of values.
 
@@ -156,6 +136,32 @@ word2vec.nearest(inputs, ?max, ?callback);
 📤 **Outputs**
 
 * **Object**: Returns `max` array of values.
+***
+
+***
+##### .nearestFromSet()
+> Given an input word, this function finds the nearest word in given a set of words in an array. This allows you to answer a question like, "of these three animals--dog, cat, and mouse--which of them is closest to a skunk?" In this case the set would be ['dog', 'cat', 'mouse'] and the input word would be 'skunk'.
+
+```js
+word2vec.nearestFromSet(input, set, maxOrCb, cb);
+```
+
+📥 **Inputs**
+* **input**: The input vector string.
+* **set**: An array of words you would like test your input against.
+* **maxOrCb**: Optional. The maximum results to return. Defaults to 10.
+* **cb**: Optional. A callback function that is called once the model has made the operation. If no callback is provided, it will return a promise that will be resolved once operation is completed.
+
+📤 **Outputs**
+
+* **Object**: Returns `max` array of values.
+
+**Example 1**
+```js
+const results = await word2vecInstance.nearestFromSet('human', ['cat', 'ape', 'lamp'], 1);
+
+// results is {word: "cat", distance: 0.91829} 
+```
 ***
 
 ***
@@ -180,13 +186,13 @@ word2vec.getRandomWord(?callback);
 ## Examples
 
 **p5.js**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/p5js/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Word2Vec/Word2Vec_Interactive)
 
 **p5 web editor**
 * [Word2Vec_Interactive](https://editor.p5js.org/ml5/sketches/Word2Vec_Interactive)
 
 **plain javascript**
-* [Word2Vec_Interactive](https://github.com/ml5js/ml5-examples/tree/development/javascript/Word2Vec/Word2Vec_Interactive)
+* [Word2Vec_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/Word2Vec/Word2Vec_Interactive)
 
 ## Demo
 
@@ -195,6 +201,52 @@ No demos yet - contribute one today!
 ## Tutorials
 
 No tutorials yet - contribute one today!
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+A nice description of the models overview
+
+#### Word2Vec - Model Biography
+
+- **Description**
+  - TBD
+- **Developer and Year**
+  - This ml5 implementation is based on Daniel Shiffman’s 2017 p5.js Word2Vec, who in turn credits both Allison Parrish and Anthony Liu.
+- **Purpose and Intended Users**
+  - TBD
+- **Hosted Location**
+  - Hosted by ml5
+- **ml5 Contributor and Year**
+  - Ported by Cristóbal Valenzuela in 2018
+- **References**
+  - Developer [Daniel Shiffman](https://shiffman.net/)
+  - ml5 Contributor [Cristóbal Valenzuela](https://cvalenzuelab.com/)
+  - GitHub Repository [Daniel Shiffman’s p5.js Word2Vec](https://github.com/shiffman/p5-word2vec)
+  - GitHub Gist [Allison Parrish’s Understanding Word Vectors](https://gist.github.com/aparrish/2f562e3737544cf29aaf1af30362f469)
+  - GitHub Repository [Anthony Liu’s word2vecjson](https://github.com/turbomaze/word2vecjson)
+
+#### Word2Vec - Data Biography
+
+- **Description**
+  - You can train your own vector model or use sample data provided by ml5, which are the same as those provided by Anthony Liu.
+- **Source**
+  - TBD
+- **Collector and Year**
+  - TBD
+- **Collection Method**
+  - TBD
+- **Purpose and Intended Users**
+  - TBD
+- **References**
+  - Article [ml5: Friendly Open Source Machine Learning Library for the Web](https://medium.com/ml5js/ml5-friendly-open-source-machine-learning-library-for-the-web-e802b5da3b2)
+  - GitHub Repository [Daniel Shiffman’s p5.js Word2Vec](https://github.com/shiffman/p5-word2vec)
+  - GitHub Repository [Anthony Liu’s word2vecjson](https://github.com/turbomaze/word2vecjson)
+
+
+
 
 ## Acknowledgements
 
@@ -206,4 +258,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/Word2vec/](https://github.com/ml5js/ml5-library/tree/development/src/Word2vec)
+* [/src/Word2vec/](https://github.com/ml5js/ml5-library/tree/main/src/Word2vec)

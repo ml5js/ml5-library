@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.4.3",
+  "version": "0.6.0",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
@@ -10,9 +10,12 @@
   "scripts": {
     "commit": "git-cz",
     "prebuild": "rimraf dist",
-    "start": "webpack-dev-server --open --config webpack.dev.babel.js",
+    "develop": "npm-run-all --parallel start examples:serve examples:watch",
+    "start": "webpack-dev-server --config webpack.dev.babel.js",
+    "lint": "eslint . --ext .js; exit 0",
+    "lint:nibble": "npx eslint-nibble --ext .js .",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
-    "build": "webpack --config webpack.prod.babel.js",
+    "build": "webpack --config webpack.prod.babel.js --config-name ml5",
     "test": "./node_modules/karma/bin/karma start karma.conf.js",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
@@ -21,7 +24,12 @@
     "update:docs": "node ./scripts/updateDocVersions.js $oldversion",
     "publish:npm": "npm run build && npm publish",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "examples:serve": "live-server ./examples --port=8081 --mount=/:./examples --wait=250",
+    "examples:update-json": "node scripts/update-examples-json.js",
+    "examples:watch": "onchange -f 'addDir unlinkDir' './examples' -- npm run examples:update-json",
+    "preexamples:build": "rimraf dist_examples",
+    "examples:build": "npm run examples:update-json && webpack --config webpack.prod.babel.js --config-name examples"
   },
   "repository": {
     "type": "git",
@@ -31,7 +39,7 @@
     "machine learning"
   ],
   "author": "NYU ITP <cvalenzuela@nyu.edu> (https://github.com/ml5js)",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/ml5js/ml5-library/issues"
   },
@@ -47,12 +55,15 @@
     "babel-preset-env": "1.6.1",
     "babel-register": "6.26.0",
     "commitizen": "4.0.3",
+    "copy-webpack-plugin": "^5.1.1",
     "cz-conventional-changelog": "2.1.0",
     "docsify-cli": "^4.3.0",
+    "dotenv": "^8.2.0",
     "eslint": "4.18.2",
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-loader": "2.0.0",
+    "eslint-nibble": "^5.1.0",
     "eslint-plugin-import": "2.9.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
@@ -65,14 +76,18 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-safari-launcher": "1.0.0",
     "karma-webpack": "3.0.0",
-    "npm-run-all": "^4.1.2",
+    "live-server": "^1.2.1",
+    "npm-run-all": "^4.1.5",
+    "q": "^1.5.1",
+    "recursive-readdir": "^2.2.2",
     "regenerator-runtime": "0.11.1",
+    "request-promise": "^4.2.5",
     "rimraf": "2.6.2",
     "semantic-release": "^15.13.26",
     "uglifyjs-webpack-plugin": "^1.2.5",
     "webpack": "4.1.1",
     "webpack-cli": "2.0.10",
-    "webpack-dev-server": "3.1.11",
+    "webpack-dev-server": "3.10.3",
     "webpack-merge": "^4.1.2"
   },
   "config": {
@@ -95,17 +110,26 @@
       "transform-object-rest-spread"
     ]
   },
+  "peerDependencies": {
+    "@tensorflow/tfjs-core": "^1.2.9",
+    "@tensorflow/tfjs-converter": "^1.2.9"
+  },
   "dependencies": {
     "@magenta/sketch": "0.2.0",
     "@tensorflow-models/body-pix": "1.1.2",
     "@tensorflow-models/coco-ssd": "^2.0.0",
+    "@tensorflow-models/facemesh": "0.0.3",
+    "@tensorflow-models/handpose": "0.0.3",
     "@tensorflow-models/knn-classifier": "1.2.1",
     "@tensorflow-models/mobilenet": "2.0.3",
-    "@tensorflow-models/posenet": "2.1.3",
+    "@tensorflow-models/posenet": "^2.2.1",
     "@tensorflow-models/speech-commands": "0.3.9",
-    "@tensorflow/tfjs": "~1.2.1",
+    "@tensorflow-models/universal-sentence-encoder": "^1.2.2",
+    "@tensorflow/tfjs": "^1.7.0",
     "@tensorflow/tfjs-vis": "^1.1.0",
+    "axios": "^0.19.2",
     "events": "^3.0.0",
-    "face-api.js": "0.20.1"
+    "face-api.js": "~0.22.2",
+    "onchange": "^6.1.0"
   }
 }

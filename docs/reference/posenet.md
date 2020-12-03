@@ -242,9 +242,9 @@ poseNet.multiPose(?input);
 ## Examples
 
 **p5.js**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/p5js/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PoseNet/PoseNet_webcam)
 
 **p5 web editor**
 * [PoseNet_image_single](https://editor.p5js.org/ml5/sketches/PoseNet_image_single)
@@ -252,9 +252,9 @@ poseNet.multiPose(?input);
 * [PoseNet_webcam](https://editor.p5js.org/ml5/sketches/PoseNet_webcam)
 
 **plain javascript**
-* [PoseNet_image_single](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_image_single)
-* [PoseNet_part_selection](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_part_selection)
-* [PoseNet_webcam](https://github.com/ml5js/ml5-examples/tree/development/javascript/PoseNet/PoseNet_webcam)
+* [PoseNet_image_single](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_image_single)
+* [PoseNet_part_selection](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_part_selection)
+* [PoseNet_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PoseNet/PoseNet_webcam)
 
 ## Demo
 
@@ -264,6 +264,84 @@ No demos yet - contribute one today!
 
 ### PoseNet on The Coding Train
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/OIo-DIOkNVg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+There are two model versions available for use with ml5’s implementation of PoseNet, “MobileNetV1” and “ResNet50.” 
+
+Each model is a type of convolutional neural network (CNN). A CNN finds patterns in the pixels of images (e.g. horizontal or vertical edges), and through successive layers of computation finds sets of patterns to identify more complex patterns (e.g. corners or circles), eventually detecting intricate patterns that it predicts belong to a particular category (e.g. right eye or left elbow). The categories depend on how images in the model’s training dataset are labeled.
+
+#### MobileNetV1 - Model Biography
+
+* **Description**
+  * MobileNet is a term that describes a type of machine learning model architecture that has been optimized to run on platforms with limited computational power, such as applications on mobile or embedded devices. MobileNets have several use cases, including image classification, object detection, and image segmentation. This particular MobileNet model was trained to detect people and 17 different key points on the body.
+  * ml5 defaults using a MobileNet created with TensorFlow.js, a JavaScript library from TensorFlow, an open source machine learning platform developed by Google.
+* **Developer and Year**
+  * Google’s TensorFlow.js team. The TensorFlow version was ported to TensorFlow.js by Dan Oved in collaboration with Google Researchers, George Papandreou and [Tyler (Lixuan) Zhu](https://research.google/people/TylerZhu/).
+* **Purpose and Intended Users**
+  * From the website: TensorFlow is an open source machine learning platform that “has a comprehensive, flexible ecosystem of tools, libraries, and community resources that lets researchers push the state-of-the-art in ML and developers easily build and deploy ML-powered applications.” This model is available for use in the ml5 library because Tensorflow licenses it with Apache License 2.0.
+* **Hosted Location**
+  * As of June 2019, ml5 imports MobileNetV1 from TensorFlow, hosted on the NPM database. This means that your ml5 sketch will automatically use the most recent version distributed on NPM. 
+* **ml5 Contributor and Year**
+  * Ported by Cristóbal Valenzuela in 2018
+* **References**
+  * Website [TensorFlow](https://www.tensorflow.org/)
+  * Developers [Dan Oved](https://www.danioved.com/), George Papandreou, and [Tyler (Lixuan) Zhu](https://research.google/people/TylerZhu/)
+  * ml5 Contributor [Cristóbal Valenzuela](https://cvalenzuelab.com/)
+  * GitHub Repository [TensorFlow.js Pose Detection in the Browser: PoseNet Model](https://github.com/tensorflow/tfjs-models/tree/master/posenet)
+  * NPM Readme [Pose Detection in the Browser: PoseNet Model](https://www.npmjs.com/package/@tensorflow-models/posenet)
+  * Article: [Real-time Human Pose Estimation in the Browser with TensorFlow.js](https://medium.com/tensorflow/real-time-human-pose-estimation-in-the-browser-with-tensorflow-js-7dd0bc881cd5)
+
+#### MobileNetV1 - Data Biography
+* **Description**
+  * According to Dan Oved, the model was trained on images from the COCO dataset.
+* **Source**
+  * From the website: The COCO dataset is managed by a number of collaborators from both academic and commercial organizations for “large-scale object detection, segmentation, and captioning,” and according to the paper, images were collected from Flickr. 
+* **Collector and Year**
+  * The COCO database began in 2014.
+* **Collection Method**
+  * COCO methods for collecting images and annotating pixels into segments are described  in the paper.
+* **Purpose and Intended Users**
+  * The COCO dataset was created to advance computer vision research. 
+* **References**
+  - TensorFlow.js PoseNet Developer [Dan Oved](https://www.danioved.com/)
+  - Paper [Microsoft COCO: Common Objects in Context](https://arxiv.org/abs/1405.0312)
+  - Website [Microsoft COCO: Common Objects in Context](http://cocodataset.org/#home)
+
+#### ResNet50 - Model Biography
+
+- **Description**
+  - ResNet is a term that describes a type of machine learning model architecture that contains more computational layers than a MobileNet model. Because of its larger size, it is slower but yields more accurate results. 
+  - As of PoseNet 2.0, a ResNet50 model version is available to import from TensorFlow and may be specified in your ml5 script.
+- **Developer and Year**
+  - Google’s TensorFlow.js team
+- **Purpose and Intended Users**
+  - Same as above
+- **Hosted Location**
+  - ml5 imports ResNet50 from TensorFlow, hosted on the NPM database. This means that if you specify ResNet in your ml5 sketch, it will automatically use the most recent version distributed on NPM. 
+- **ml5 Contributor and Year**
+  - Same as above
+- **References**
+  - Same as above
+
+#### ResNet50 - Data Biography
+
+- **Description**
+  - Same as above
+- **Source**
+  - Same as above
+- **Collector and Year**
+  - Same as above
+- **Collection Method**
+  - Same as above
+- **Purpose and Intended Users**
+  - Same as above
+- **References**
+  - Same as above
 
 
 ## Acknowledgements
@@ -276,4 +354,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/PoseNet](https://github.com/ml5js/ml5-library/tree/development/src/PoseNet)
+* [/src/PoseNet](https://github.com/ml5js/ml5-library/tree/main/src/PoseNet)
