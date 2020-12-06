@@ -28,6 +28,14 @@ class DiyNeuralNetwork {
     if (options.task === 'imageClassification') {
       DEFAULTS.learningRate = 0.02;
     }
+    
+    if (typeof options.debug === 'string' {
+      if (options.debug === "true") {
+        options.debug = true;
+      } else {
+        options.debug = false; 
+      }
+    }
 
     this.options =
       {
