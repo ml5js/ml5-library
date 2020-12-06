@@ -28,20 +28,20 @@ class DiyNeuralNetwork {
     if (options.task === 'imageClassification') {
       DEFAULTS.learningRate = 0.02;
     }
-    
-    if (typeof options.debug === 'string') {
-      if (options.debug === 'true') {
-        options.debug = true;
-      } else {
-        options.debug = false; 
-      }
-    }
 
     this.options =
       {
         ...DEFAULTS,
         ...options,
       } || DEFAULTS;
+
+    if (typeof this.options.debug === 'string') {
+      if (this.options.debug === 'true') {
+        this.options.debug = true;
+      } else {
+        this.options.debug = false; 
+      }
+    }
 
     this.neuralNetwork = new NeuralNetwork();
     this.neuralNetworkData = new NeuralNetworkData();
