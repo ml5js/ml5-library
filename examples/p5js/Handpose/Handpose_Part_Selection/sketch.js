@@ -11,7 +11,7 @@ function setup() {
 
   // This sets up an event that fills the global variable "predictions"
   // with an array every time new hand poses are detected
-  handpose.on('predict', function(results) {
+  handpose.on("predict", function(results) {
     hands = results;
   });
 
@@ -20,7 +20,7 @@ function setup() {
 }
 
 function modelReady() {
-  console.log('Model ready!');
+  console.log("Model ready!");
 }
 
 function draw() {
