@@ -518,7 +518,7 @@ class DiyNeuralNetwork {
     };
 
     // if debug mode is true, then use tf vis
-    if (this.options.debug === true) {
+    if (this.options.debug) {
       options.whileTraining = [
         this.neuralNetworkVis.trainingVis(),
         {
