@@ -21,7 +21,7 @@ function setup() {
   poseNet = ml5.poseNet(video, modelReady);
   // This sets up an event that fills the global variable "poses"
   // with an array every time new poses are detected
-  poseNet.on("pose", function(results) {
+  poseNet.on('pose', function(results) {
     poses = results;
   });
   // Hide the video element, and just show the canvas
@@ -29,7 +29,7 @@ function setup() {
 }
 
 function modelReady() {
-  select("#status").html("Model Loaded");
+  select('#status').html('Model Loaded');
 }
 
 function draw() {
@@ -69,7 +69,12 @@ function drawSkeleton() {
       const partA = skeleton[j][0];
       const partB = skeleton[j][1];
       stroke(255, 0, 0);
-      line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
+      line(
+        partA.position.x,
+        partA.position.y,
+        partB.position.x,
+        partB.position.y
+      );
     }
   }
 }
