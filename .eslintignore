@@ -1,4 +1,4 @@
 dist
 dist_examples
 **/lib
-
+node_modules
