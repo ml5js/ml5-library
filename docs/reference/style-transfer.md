@@ -86,16 +86,16 @@ styletransfer.transfer(input, ?callback);
 
 
 **p5.js**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/StyleTransfer/StyleTransfer_Video)
+* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/StyleTransfer/StyleTransfer_Image)
+* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/StyleTransfer/StyleTransfer_Video)
 
 **p5 web editor**
 * [StyleTransfer_Image](https://editor.p5js.org/ml5/sketches/StyleTransfer_Image)
 * [StyleTransfer_Video](https://editor.p5js.org/ml5/sketches/StyleTransfer_Video)
 
 **plain javascript**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/StyleTransfer/StyleTransfer_Video)
+* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/StyleTransfer/StyleTransfer_Image)
+* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/StyleTransfer/StyleTransfer_Video)
 
 ## Demo
 
@@ -107,7 +107,7 @@ No tutorials yet - contribute one today!
 
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 
@@ -156,4 +156,4 @@ TBD
 
 ## Source Code
 
-* [/src/StyleTransfer/](https://github.com/ml5js/ml5-library/tree/development/src/StyleTransfer)
+* [/src/StyleTransfer/](https://github.com/ml5js/ml5-library/tree/main/src/StyleTransfer)

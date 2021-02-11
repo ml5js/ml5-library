@@ -13,11 +13,11 @@ This example showcases how you can use a [pre-trained model](https://youtu.be/yN
 
 <br/>
 
-ml5.js is growing every day, so be sure to see some of the other applications of ml5 in the [reference](/reference) section and their accompanying examples for the latest offerings.
+ml5.js is growing every day, so be sure to see some of the other applications of ml5 in the [reference](/reference/index) section and their accompanying examples for the latest offerings.
 
 ## Setup
 
-If you've arrived here, we assume you've checked out our [quickstart](/getting-started) page to get a simple ml5.js project set up. To get this to run, you'll need:
+If you've arrived here, we assume you've checked out our [quickstart](/) page to get a simple ml5.js project set up. To get this to run, you'll need:
 
 > + 📝 A text editor (e.g. [Atom](https://atom.io/), [VSCode](https://code.visualstudio.com/), [Sublimetext](https://www.sublimetext.com/))
 > + 💻 Your web browser: Chrome & Firefox preferred
@@ -44,7 +44,7 @@ Your project directory should look something like this:
 
 ## Demo
 
-This example is built with p5.js. You can also find the same example without p5.js [here](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/ImageClassification/ImageClassification).
+This example is built with p5.js. You can also find the same example without p5.js [here](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ImageClassification/ImageClassification).
 
 <br/>
 
@@ -200,7 +200,7 @@ Some guiding questions you might start to think about are:
 1. When classifying an image with MobileNet, does the computer see people? If not, why do you think that is?
 2. Do you notice that MobileNet is better at classifying some animals over others? Why do you think that is?
 
-## [Source](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ImageClassification/ImageClassification)
+## [Source](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ImageClassification/ImageClassification)
 
-- [ml5.js image classification on Github](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/ImageClassification/ImageClassification)
+- [ml5.js image classification on Github](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ImageClassification/ImageClassification)
 - [ml5.js image classification on p5 web editor](https://editor.p5js.org/ml5/sketches/ImageClassification)

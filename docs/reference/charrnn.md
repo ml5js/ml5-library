@@ -10,7 +10,7 @@
 
 RNN and LSTMs (Long Short Term Memory networks) are a type of Neural Network architecture useful for working with sequential data (like characters in text or the musical notes of a song) where the order of the that sequence matters. This class allows you run a model pre-trained on a body of text to generate new text.
 
-You can train your own models using this tutorial or use this set of pre trained models.
+You can train your own models [following the instructions in the training-charRNN repo](https://github.com/ml5js/training-charRNN). There is also a selection of [pre-trained model examples available](https://github.com/ml5js/ml5-data-and-models/tree/main/models/charRNN).
 
 ## Quickstart
 
@@ -153,9 +153,9 @@ charrnn.reset();
 ## Examples
 
 **p5.js**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CharRNN/CharRNN_Text_Stateful)
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
 
@@ -164,9 +164,9 @@ charrnn.reset();
 * [CharRNN_Text_Stateful](https://editor.p5js.org/ml5/sketches/CharRNN_Text_Stateful)
 
 **plain javascript**
-* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Interactive)
-* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Text)
-* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CharRNN/CharRNN_Text_Stateful)
+* [CharRNN_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/CharRNN/CharRNN_Interactive)
+* [CharRNN_Text](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/CharRNN/CharRNN_Text)
+* [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/CharRNN/CharRNN_Text_Stateful)
 
 ## Demo
 

@@ -108,13 +108,13 @@ unet.segment(?video, ?callback);
 ## Examples
 
 **p5.js**
-* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/UNET/UNET_webcam)
+* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/UNET/UNET_webcam)
 
 **p5 web editor**
 * [UNET_webcam](https://editor.p5js.org/ml5/sketches/UNET_webcam)
 
 **plain javascript**
-* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/UNET/UNET_webcam)
+* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/UNET/UNET_webcam)
 
 
 ## Demo
@@ -126,7 +126,7 @@ No demos yet - contribute one today!
 No tutorials yet - contribute one today!
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 
@@ -180,4 +180,4 @@ A nice description of the models overview
 
 ## Source Code
 
-* [/src/UNET/](https://github.com/ml5js/ml5-library/tree/development/src/UNET)
+* [/src/UNET/](https://github.com/ml5js/ml5-library/tree/main/src/UNET)

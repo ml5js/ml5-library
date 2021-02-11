@@ -33,7 +33,7 @@ console.log(prediction);
 ### Initialize
 
 ```js
-const magic = ml5.Sentiment(model, ?callback);
+const sentiment = ml5.sentiment(model, ?callback);
 ```
 
 #### Parameters
@@ -80,13 +80,13 @@ sentiment.predict(text);
 ## Examples
 
 **p5.js**
-* [Sentiment_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/Sentiment/Sentiment_Interactive)
+* [Sentiment_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Sentiment/Sentiment_Interactive)
 
 **p5 web editor**
 * [Sentiment_Interactive](https://editor.p5js.org/ml5/sketches/Sentiment_Interactive)
 
 **plain javascript**
-* [Sentiment_Interactive](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/Sentiment/Sentiment_Interactive)
+* [Sentiment_Interactive](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/Sentiment/Sentiment_Interactive)
 
 ## Demo
 
@@ -98,7 +98,7 @@ No tutorials yet - contribute one today!
 
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 
@@ -150,4 +150,4 @@ A nice description of the models overview
 
 ## Source Code
 
-[/src/Sentiment/](https://github.com/ml5js/ml5-library/tree/development/src/Sentiment)
+[/src/Sentiment/](https://github.com/ml5js/ml5-library/tree/main/src/Sentiment)

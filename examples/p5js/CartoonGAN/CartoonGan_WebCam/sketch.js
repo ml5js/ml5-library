@@ -1,36 +1,33 @@
-let cartoonGan;
+let cartoonGAN;
 let video;
+let cartoonImg;
 
-function setup(){
-  createCanvas(400, 400);
-  
-  video = createCapture(VIDEO);
-  video.size(256, 256);
-  // hide the video element so we only see the transformed output
-  video.hide();
-
-  cartoonGan = ml5.cartoon(modelLoaded);
+function preload() {
+  cartoonGAN = ml5.cartoon();
 }
 
-function modelLoaded(){
-  // once the model is loaded call generate();
-  generate();
+function setup() {
+  createCanvas(320, 240);
+  video = createCapture(VIDEO, videoReady);
+  video.size(320, 240);
 }
 
-function generate(){
-  cartoonGan.generate(video, gotResults)
+function videoReady() {
+  cartoonGAN.generate(video, gotResults);
 }
 
-function gotResults(err, result){
-  if(err){
-    console.error(err);
+function draw() {
+  background(0);
+  if (cartoonImg) {
+    image(cartoonImg, 0, 0, width, height);
+  }
+}
+
+function gotResults(error, result) {
+  if (error) {
+    console.error(error);
     return;
   }
-
-  // render this result
-  image(result.image, 0,0, width, height);
-
-  // call generate
-  generate();
+  cartoonImg = result.image;
+  cartoonGAN.generate(video, gotResults);
 }
-

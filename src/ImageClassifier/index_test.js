@@ -23,7 +23,7 @@ const DEFAULTS = {
 async function getImage() {
   const img = new Image();
   img.crossOrigin = true;
-  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/bird.jpg';
+  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg';
   await new Promise((resolve) => {
     img.onload = resolve;
   });
@@ -130,7 +130,7 @@ describe('videoClassifier', () => {
   async function getVideo() {
     const video = document.createElement('video');
     video.crossOrigin = true;
-    video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/pelican.mp4' /* TODO add univeral url */;
+    video.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/pelican.mp4' /* TODO add univeral url */;
     video.width = 200;
     video.height = 200;
     return video;

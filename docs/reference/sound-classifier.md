@@ -96,16 +96,16 @@ soundclassifier.classify(callback);
 ## Examples
 
 **p5.js**
-* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/SoundClassification/SoundClassification_speechcommand)
-* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/SoundClassification/SoundClassification_speechcommand_load)
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/SoundClassification/SoundClassification_speechcommand_load)
 
 **p5 web editor**
 * [SoundClassification_speechcommand](https://editor.p5js.org/ml5/sketches/SoundClassification_speechcommand)
 * [SoundClassification_speechcommand_load](https://editor.p5js.org/ml5/sketches/SoundClassification_speechcommand_load)
 
 **plain javascript**
-* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/SoundClassification/SoundClassification_speechcommand)
-* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/SoundClassification/SoundClassification_speechcommand_load)
+* [SoundClassification_speechcommand](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/SoundClassification/SoundClassification_speechcommand)
+* [SoundClassification_speechcommand_load](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/SoundClassification/SoundClassification_speechcommand_load)
 
 
 
@@ -119,7 +119,7 @@ No demos yet - contribute one today!
 <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/cO4UP2dX944" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 
@@ -177,4 +177,4 @@ This method allows you to use a provided pre-trained model or import a model tha
 
 ## Source Code
 
-* [/src/SoundClassifier/](https://github.com/ml5js/ml5-library/tree/development/src/SoundClassifier)
+* [/src/SoundClassifier/](https://github.com/ml5js/ml5-library/tree/main/src/SoundClassifier)

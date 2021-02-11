@@ -38,23 +38,23 @@ function draw() {
   // unless the model is loaded, do not draw anything to canvas
   if (status !== undefined) {
     image(img, 0, 0);
-
+    
     for (let i = 0; i < objects.length; i += 1) {
       noStroke();
       fill(0, 255, 0);
       text(
         `${objects[i].label} ${nfc(objects[i].confidence * 100.0, 2)}%`,
-        objects[i].x * width + 5,
-        objects[i].y * height + 15,
+        objects[i].x + 5,
+        objects[i].y + 15,
       );
       noFill();
       strokeWeight(4);
       stroke(0, 255, 0);
       rect(
-        objects[i].x * width,
-        objects[i].y * height,
-        objects[i].w * width,
-        objects[i].h * height,
+        objects[i].x,
+        objects[i].y,
+        objects[i].width,
+        objects[i].height,
       );
     }
   }

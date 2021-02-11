@@ -31,9 +31,12 @@ const data = [
   {r:255, g:0, b:0, color:'red-ish'},
   {r:254, g:0, b:0, color:'red-ish'},
   {r:253, g:0, b:0, color:'red-ish'},
+  {r:0, g:255, b:0, color:'green-ish'},
+  {r:0, g:254, b:0, color:'green-ish'},
+  {r:0, g:253, b:0, color:'green-ish'},
   {r:0, g:0, b:255, color:'blue-ish'},
   {r:0, g:0, b:254, color:'blue-ish'},
-  {r:0, g:0, b:253, color:'blue-ish'},
+  {r:0, g:0, b:253, color:'blue-ish'}
 ];
 
 // Step 2: set your neural network options
@@ -101,10 +104,10 @@ External data: `"data/colorData.json"`
 ```json
 [
   {"r":255, "g":0, "b":0, "color": "red-ish"},
-  {"r":254, "g":0, "b":0, "color": "red-ish"}
+  {"r":254, "g":0, "b":0, "color": "red-ish"},
   {"r":253, "g":0, "b":0, "color": "red-ish"},
-  {"r":0,   "g":0, "b":255, "color": "blue-ish"}
-  {"r":0,   "g":0, "b":254, "color": "blue-ish"}
+  {"r":0,   "g":0, "b":255, "color": "blue-ish"},
+  {"r":0,   "g":0, "b":254, "color": "blue-ish"},
   {"r":0,   "g":0, "b":253, "color": "blue-ish"}
 ];
 ```
@@ -367,29 +370,29 @@ const nn = ml5.neuralNetwork(options);
   layers = [
     {
       type: 'conv2d',
-      filters: 2,
-      kernelSize: 2,
-      strides: 2,
-      activation: 'relu',
-      kernelInitializer: 'varianceScaling',
-    },
-    {
-      type: 'maxPooling2d',
-      poolSize: [1, 1],
-      strides: [1, 1],
-    },
-    {
-      type: 'conv2d',
-      filters: 1,
-      kernelSize: 1,
+      filters: 8,
+      kernelSize: 5,
       strides: 1,
       activation: 'relu',
       kernelInitializer: 'varianceScaling',
     },
     {
       type: 'maxPooling2d',
-      poolSize: [1, 1],
-      strides: [1, 1],
+      poolSize: [2, 2],
+      strides: [2, 2],
+    },
+    {
+      type: 'conv2d',
+      filters: 16,
+      kernelSize: 5,
+      strides: 1,
+      activation: 'relu',
+      kernelInitializer: 'varianceScaling',
+    },
+    {
+      type: 'maxPooling2d',
+      poolSize: [2, 2],
+      strides: [2, 2],
     },
     {
       type: 'flatten',
@@ -773,21 +776,21 @@ neuralNetwork.load(?filesOrPath, ?callback);
 
 
 **p5.js**
-- [NeuralNetwork_Simple_Classification](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Classification)
-- [NeuralNetwork_Simple_Regression](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Regression)
-- [NeuralNetwork_XOR](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_XOR)
-- [NeuralNetwork_basics](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_basics)
-- [NeuralNetwork_co2net](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_co2net)
-- [NeuralNetwork_color_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_color_classifier)
-- [NeuralNetwork_load_model](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_load_model)
-- [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
-- [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
-- [NeuralNetwork_multiple_layers](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_multiple_layers)
-- [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_musical_face)
-- [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
-- [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
-- [NeuralNetwork_titanic](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_titanic)
-- [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
+- [NeuralNetwork_Simple_Classification](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Classification)
+- [NeuralNetwork_Simple_Regression](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_Simple_Regression)
+- [NeuralNetwork_XOR](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_XOR)
+- [NeuralNetwork_basics](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_basics)
+- [NeuralNetwork_co2net](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_co2net)
+- [NeuralNetwork_color_classifier](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_color_classifier)
+- [NeuralNetwork_load_model](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_load_model)
+- [NeuralNetwork_load_saved_data](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_load_saved_data)
+- [NeuralNetwork_lowres_pixels](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_lowres_pixels)
+- [NeuralNetwork_multiple_layers](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_multiple_layers)
+- [NeuralNetwork_musical_face](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_musical_face)
+- [NeuralNetwork_musical_mouse](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_musical_mouse)
+- [NeuralNetwork_pose_classifier](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_pose_classifier)
+- [NeuralNetwork_titanic](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_titanic)
+- [NeuralNetwork_xy_classifier](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/NeuralNetwork/NeuralNetwork_xy_classifier)
 
 **p5 web editor**
 - [NeuralNetwork_Simple_Classification](https://editor.p5js.org/ml5/sketches/NeuralNetwork_Simple_Classification)
@@ -842,4 +845,4 @@ No demos yet - contribute one today!
 
 ## Source Code
 
-* [/src/NeuralNetwork](https://github.com/ml5js/ml5-library/tree/development/src/NeuralNetwork)
+* [/src/NeuralNetwork](https://github.com/ml5js/ml5-library/tree/main/src/NeuralNetwork)

@@ -2,7 +2,7 @@
 export const getRobin = async () => {
   const img = new Image();
   img.crossOrigin = "";
-  img.src = "https://cdn.jsdelivr.net/gh/ml5js/ml5-library@development/assets/bird.jpg";
+  img.src = "https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg";
   await new Promise(resolve => {
     img.onload = resolve;
   });

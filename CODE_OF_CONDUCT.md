@@ -41,7 +41,7 @@ We like these hashtags: #noCodeSnobs (because we value community over efficiency
 
 Our community is always looking for enthusiasts to help in all different ways.
 
--  **Develop**. [GitHub](https://github.com/ml5js/ml5-library) is the main place where code is collected, issues are documented, and discussions about code are had. Check out the [contributing documentation to get started](https://github.com/ml5js/ml5-library/blob/development/CONTRIBUTING.md) with developing the library.
+-  **Develop**. [GitHub](https://github.com/ml5js/ml5-library) is the main place where code is collected, issues are documented, and discussions about code are had. Check out the [contributing documentation to get started](https://github.com/ml5js/ml5-library/blob/main/CONTRIBUTING.md) with developing the library.
 -  **Document**. Everyone loves documentation. Help is needed porting examples, and adding documentation, and creating tutorials.
 -  **Teach**. Teach a workshop, a class, a friend, a collaborator! Tag [@ml5js on Twitter](https://twitter.com/ml5js?lang=en) and we will do our best to share what you're doing.
 -  **Create**. ml5.js is looking for designers, artists, coders, programmers to bring your creative and amazing work to show and inspire other people. Submit your work to info@ml5js.org.
