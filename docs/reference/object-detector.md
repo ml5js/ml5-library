@@ -16,7 +16,7 @@ Real-time object detection system using either [YOLO](https://pjreddie.com/darkn
 const video = document.getElementById('video');
 
 // Create a ObjectDetector method
-const objectDetector = ml5.ObjectDetector('cocossd', {}, modelLoaded);
+const objectDetector = ml5.objectDetector('cocossd', {}, modelLoaded);
 
 // When the model is loaded
 function modelLoaded() {
@@ -35,9 +35,9 @@ objectDetector.detect(video, (err, results) => {
 ### Initialize
 
 ```js
-const objectDetector = ml5.ObjectDetector(modelNameOrUrl);
+const objectDetector = ml5.objectDetector(modelNameOrUrl);
 // OR
-const objectDetector = ml5.ObjectDetector(modelNameOrUrl, ?options, ?callback);
+const objectDetector = ml5.objectDetector(modelNameOrUrl, ?options, ?callback);
 ```
 
 #### Parameters
@@ -100,7 +100,7 @@ No demos yet - contribute one today!
 <iframe width="560" height="315" src="https://www.youtube.com/embed/QEzRxnuaZCk"  frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 

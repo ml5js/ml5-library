@@ -11,7 +11,6 @@ BodyPix
 let bodypix;
 let video;
 let segmentation;
-let img;
 
 const options = {
   outputStride: 8, // 8, 16, or 32, default is 16
@@ -25,8 +24,12 @@ function preload() {
 function setup() {
   createCanvas(320, 240);
   // load up your video
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, videoReady);
   video.size(width, height);
+  
+}
+
+function videoReady() {
   bodypix.segment(video, gotResults);
 }
 

@@ -134,7 +134,7 @@ No demos yet - contribute one today!
 No demos yet - contribute one today!
 
 ## Model and Data Provenance
-> A project started by [Ellen Nickles](https://ellennickles.site/)
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
 
 ### Models Overview
 

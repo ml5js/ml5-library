@@ -8,8 +8,11 @@ function preload() {
 
 function setup() {
   createCanvas(320, 240);
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, videoReady);
   video.size(320, 240);
+}
+
+function videoReady() {
   cartoonGAN.generate(video, gotResults);
 }
 
