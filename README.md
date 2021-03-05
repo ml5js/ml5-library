@@ -29,11 +29,11 @@ There are several ways you can use the ml5.js library:
 
 <p id="latest-version">
 
-* You can use the latest version (0.6.0) by adding it to the head section of your HTML document:
+* You can use the latest version (0.6.1) by adding it to the head section of your HTML document:
 
-**v0.6.0**
+**v0.6.1**
 
-    <script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.6.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
     
@@ -54,7 +54,7 @@ There are several ways you can use the ml5.js library:
 
 For example:
 ```html
-<script src="https://unpkg.com/ml5@0.6.0/dist/ml5.min.js" type="text/javascript"></script>
+<script src="https://unpkg.com/ml5@0.6.1/dist/ml5.min.js" type="text/javascript"></script>
 ```
 
 * You can also reference "latest", but we do not recommend this as your code may break as we update ml5.
@@ -78,7 +78,7 @@ You can find a collection of standalone examples in this repository within the `
 These examples are meant to serve as an introduction to the library and machine learning concepts.
 
 ## Code of Conduct
-We believe in a friendly internet and community as much as we do in building friendly machine learning for the web. Please refer to our [CODE OF CONDUCT](CODE_OF_CONDUCT.md) for our rules for interacting with ml5 as a developer, contributor, or user.
+We believe in a friendly internet and community as much as we do in building friendly machine learning for the web. Please refer to our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct/) for our rules for interacting with ml5 as a developer, contributor, or as a person using the library.
 
 ## Contributing
 Want to be a **contributor 🏗 to the ml5.js library**? If yes and you're interested to submit new features, fix bugs, or help develop the ml5.js ecosystem, please go to our [CONTRIBUTING](CONTRIBUTING.md) documentation to get started.
