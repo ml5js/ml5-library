@@ -250,6 +250,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mennosc"><img src="https://avatars.githubusercontent.com/u/47506398?v=4?s=100" width="100px;" alt=""/><br /><sub><b>mennosc</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=mennosc" title="Code">💻</a></td>
     <td align="center"><a href="http://netabomani.com"><img src="https://avatars.githubusercontent.com/u/38016578?v=4?s=100" width="100px;" alt=""/><br /><sub><b>neta</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=netanoir" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=netanoir" title="Documentation">📖</a></td>
     <td align="center"><a href="https://kojikoji.ga"><img src="https://avatars.githubusercontent.com/u/474225?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Koji</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=koji" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=koji" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/josephrocca"><img src="https://avatars.githubusercontent.com/u/1167575?v=4?s=100" width="100px;" alt=""/><br /><sub><b>josephrocca</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=josephrocca" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=josephrocca" title="Documentation">📖</a></td>
   </tr>
 </table>
 
