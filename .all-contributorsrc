@@ -1192,6 +1192,26 @@
       ]
     },
     {
+      "login": "netanoir",
+      "name": "neta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38016578?v=4",
+      "profile": "http://netabomani.com",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "koji",
+      "name": "Koji",
+      "avatar_url": "https://avatars.githubusercontent.com/u/474225?v=4",
+      "profile": "https://kojikoji.ga",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
       "login": "josephrocca",
       "name": "josephrocca",
       "avatar_url": "https://avatars.githubusercontent.com/u/1167575?v=4",
