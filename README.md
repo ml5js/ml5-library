@@ -246,6 +246,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://daleonai.com"><img src="https://avatars1.githubusercontent.com/u/2328571?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Dale Markowitz</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=dalequark" title="Code">💻</a> <a href="#ideas-dalequark" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://raglandcodes.github.io"><img src="https://avatars3.githubusercontent.com/u/39048764?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ragland Asir</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=RaglandCodes" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/altruios"><img src="https://avatars.githubusercontent.com/u/49083558?v=4?s=100" width="100px;" alt=""/><br /><sub><b>altruios</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=altruios" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/mennosc"><img src="https://avatars.githubusercontent.com/u/47506398?v=4?s=100" width="100px;" alt=""/><br /><sub><b>mennosc</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=mennosc" title="Code">💻</a></td>
   </tr>
 </table>
