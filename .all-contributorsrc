@@ -1170,9 +1170,10 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/33449313?v=4",
       "profile": "http://tlsaeger.de",
       "contributions": [
-        "doc",
+        "doc"
       ]
-     },
+    },
+    {
       "login": "altruios",
       "name": "altruios",
       "avatar_url": "https://avatars.githubusercontent.com/u/49083558?v=4",
@@ -1180,8 +1181,8 @@
       "contributions": [
         "doc"
       ]
-     },
-     {
+    },
+    {
       "login": "mennosc",
       "name": "mennosc",
       "avatar_url": "https://avatars.githubusercontent.com/u/47506398?v=4",
