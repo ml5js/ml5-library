@@ -1220,6 +1220,16 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "lmccart",
+      "name": "Lauren Lee McCarthy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/191056?v=4",
+      "profile": "http://p5js.org",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
