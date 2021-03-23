@@ -1172,6 +1172,16 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tlsaeger",
+      "name": "Tom-Lucas Säger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33449313?v=4",
+      "profile": "http://tlsaeger.de",
+      "contributions": [
+        "doc",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
