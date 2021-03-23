@@ -1190,6 +1190,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "en3sis",
+      "name": "Sorin Curescu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/940170?v=4",
+      "profile": "https://www.suse.com/",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
