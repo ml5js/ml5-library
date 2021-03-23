@@ -1190,6 +1190,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "josephrocca",
+      "name": "josephrocca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1167575?v=4",
+      "profile": "https://github.com/josephrocca",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
