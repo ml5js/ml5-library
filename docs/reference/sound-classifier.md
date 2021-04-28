@@ -10,7 +10,7 @@
 
 The ml5.soundClassifier() allows you to classify audio. With the right pre-trained models, you can detect whether a certain noise was made (e.g. a clapping sound or a whistle) or a certain word was said (e.g. Up, Down, Yes, No). At this moment, with the ml5.soundClassifier(), you can use your own custom pre-trained speech commands or use the the "SpeechCommands18w" which can recognize "the ten digits from "zero" to "nine", "up", "down", "left", "right", "go", "stop", "yes", "no", as well as the additional categories of "unknown word" and "background noise"."
 
-**Train your own sound classifier model with Teachable Machine**: If you'd like to train your own custom sound classification model, try [Google's Teachable Machine](https://teachablemachine.withgoogle.com/io19).
+**Train your own sound classifier model with Teachable Machine**: If you'd like to train your own custom sound classification model, try [Google's Teachable Machine](https://teachablemachine.withgoogle.com).
 
 ## Quickstart
 
