@@ -14,6 +14,8 @@ The library is supported by code examples, tutorials, and sample data sets with 
 
 ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](https://p5js.org/).
 
+Please read our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct), which establishes our commitment to make ml5.js a friendly and welcoming environment.
+
 ## Usage
 
 There are several ways you can use the ml5.js library:
