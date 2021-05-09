@@ -20,7 +20,7 @@ Please read our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct), whi
 
 ## Usage
 
-There are several ways you can use the ml5.js library:
+Before getting started with ml5.js, review our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct). There are several ways you can use the ml5.js library:
 
 
 
