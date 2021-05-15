@@ -36,8 +36,8 @@ Your project directory should look something like this:
 
 **Where**:
 
-* 📂**/hello-ml5**: is the root project folder
-  * &ensp; 📂**/images**: is a folder that contains your image
+* 📂**hello-ml5/**: is the root project folder
+  * &ensp; 📂**images/**: is a folder that contains your image
     * &ensp; &ensp; &ensp; 🖼 **bird.png**: is a .png image of a bird (it can also be something else!)
   * &ensp; 🗒**index.html**: is an .html file that has your html markup and library references
   * &ensp; 🗒**sketch.js**: is where you'll be writing your javascript
