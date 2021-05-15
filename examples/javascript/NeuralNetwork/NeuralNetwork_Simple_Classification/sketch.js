@@ -14,36 +14,37 @@ let canvas, ctx;
 const options = {
   inputs: 1,
   outputs: 2,
-  task: 'classification',
-  debug: true
-}
+  task: "classification",
+  debug: true,
+};
 
 // Function will be fired when the page is loaded
 // Same as setup function of p5
-window.onload = function (){
+window.onload = function () {
   canvas = document.querySelector("canvas");
   ctx = canvas.getContext("2d");
-  
+
   canvas.width = 400;
   canvas.height = 400;
-  
+  canvas.style.background = "#eee";
+
   nn = ml5.neuralNetwork(options);
 
   // console.log(nn)
   createTrainingData();
   nn.normalizeData();
 
-  const trainingOptions={
+  const trainingOptions = {
     batchSize: 24,
-    epochs: 32
-  }
-  
-  nn.train(trainingOptions,finishedTraining); // if you want to change the training options
-  // nn.train(finishedTraining); // use the default training options
-}
+    epochs: 32,
+  };
 
-function finishedTraining(){
-  nn.classify([300], function(err, result){
+  nn.train(trainingOptions, finishedTraining); // if you want to change the training options
+  // nn.train(finishedTraining); // use the default training options
+};
+
+function finishedTraining() {
+  nn.classify([300], function (err, result) {
     if (err) {
       console.error(err);
     } else {
@@ -52,14 +53,14 @@ function finishedTraining(){
   });
 }
 
-function createTrainingData(){
-  for(let i = 0; i < 400; i += 1){
-    if(i%2 === 0){
-      const x = Math.random() * (canvas.width/2);
-      nn.addData( [x],  ['left'])
+function createTrainingData() {
+  for (let i = 0; i < 400; i += 1) {
+    if (i % 2 === 0) {
+      const x = Math.random() * (canvas.width / 2);
+      nn.addData([x], ["left"]);
     } else {
-      const x = (Math.random() * (canvas.width/2)) + canvas.width/2;
-      nn.addData( [x],  ['right'])
+      const x = Math.random() * (canvas.width / 2) + canvas.width / 2;
+      nn.addData([x], ["right"]);
     }
   }
 }
