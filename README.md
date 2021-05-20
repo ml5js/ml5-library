@@ -1,3 +1,5 @@
+**Read our [ml5.js Code of Conduct and software licence](https://github.com/ml5js/Code-of-Conduct) here!**
+
 # ![ml5](https://user-images.githubusercontent.com/10605821/41332516-2ee26714-6eac-11e8-83e4-a40b8761e764.png)
 [![All Contributors](https://img.shields.io/badge/all_contributors-86-orange.svg?style=flat-square)](#contributors) [![BrowserStack Status](https://automate.browserstack.com/badge.svg?badge_key=eEtiK0lGeGpGZ2svSGd0WWJnclo3SGtxdEZ5anFmOE4zaFRyOUJkTFhHbz0tLWo1eUNzd0hpQUZjR2Rya0hIQjhIUHc9PQ==--45955c1082b17348f534b62689f945967b4e459e)](https://automate.browserstack.com/public-build/eEtiK0lGeGpGZ2svSGd0WWJnclo3SGtxdEZ5anFmOE4zaFRyOUJkTFhHbz0tLWo1eUNzd0hpQUZjR2Rya0hIQjhIUHc9PQ==--45955c1082b17348f534b62689f945967b4e459e) [![Version](https://img.shields.io/npm/v/ml5.svg?style=flat-square)](https://www.npmjs.com/package/ml5)
 [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/ml5js)
@@ -14,9 +16,11 @@ The library is supported by code examples, tutorials, and sample data sets with 
 
 ml5.js is heavily inspired by [Processing](https://processing.org/) and [p5.js](https://p5js.org/).
 
+Please read our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct), which establishes our commitment to make ml5.js a friendly and welcoming environment.
+
 ## Usage
 
-There are several ways you can use the ml5.js library:
+Before getting started with ml5.js, review our [Code of Conduct](https://github.com/ml5js/Code-of-Conduct). There are several ways you can use the ml5.js library:
 
 
 
