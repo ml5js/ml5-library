@@ -13,6 +13,7 @@ import featureExtractor from "./FeatureExtractor/";
 import word2vec from "./Word2vec/";
 import {YOLO} from "./ObjectDetector/YOLO";
 import {CocoSsd} from "./ObjectDetector/CocoSsd";
+import moveNet from "./MoveNet";
 import objectDetector from "./ObjectDetector";
 import poseNet from "./PoseNet";
 import * as imageUtils from "./utils/imageUtilities";
@@ -63,6 +64,7 @@ const withPreload = {
   universalSentenceEncoder,
   facemesh,
   handpose,
+  moveNet
 };
 
 // call community statement on load
