@@ -1,6 +1,6 @@
 # Frequently Asked Questions (FAQ)
 
-### Can I use ml5.js in the [p5 web editor](editor.p5js.org)?
+### Can I use ml5.js in the [p5 web editor](https://editor.p5js.org)?
 
 Mostly.
 
