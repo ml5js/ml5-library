@@ -158,6 +158,7 @@ charrnn.reset();
 * [CharRNN_Text_Stateful](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CharRNN/CharRNN_Text_Stateful)
 
 **p5 web editor**
+
 Please be advised, that due to an incompatibility of the p5 web-editor and the weights that are used in this example, this example does not work in the p5 we-editor. 
 Please use the p5.js example locally. Learn more about how to run examples locally [here.](https://github.com/ml5js/ml5-library/blob/main/examples/README.md#setup)
 <!-- * [CharRNN_Interactive](https://editor.p5js.org/ml5/sketches/CharRNN_Interactive)
