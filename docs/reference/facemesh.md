@@ -10,7 +10,7 @@
 
 Facemesh is a machine-learning model that allows for facial landmark detection in the browser. It can detect multiple faces at once and provides 486 3D facial landmarks that describe the geometry of each face. Facemesh works best when the faces in view take up a large percentage of the image or video frame and it may struggle with small/distant faces.
 
-The ml5.js Facemesh model is ported from the [TensorFlow.js Facemesh implementation](https://github.com/tensorflow/tfjs-models/tree/master/facemesh).
+The ml5.js Facemesh model is ported from the [TensorFlow.js Facemesh implementation](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection).
 
 ## Quickstart
 
@@ -43,7 +43,7 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
 
 #### Parameters
 * **video**: OPTIONAL. Optional HTMLVideoElement input to run predictions on.
-* **options**: OPTIONAL. A object that contains properties that effect the Facemesh model accuracy, results, etc. See documentation on the available options in [TensorFlow's Facemesh documentation](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#parameters-for-facemeshload).
+* **options**: OPTIONAL. A object that contains properties that effect the Facemesh model accuracy, results, etc. See documentation on the available options in [TensorFlow's Facemesh documentation](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#parameters-for-facelandmarksdetectionload).
   ```js
   const options = {
   flipHorizontal: false, // boolean value for if the video should be flipped, defaults to false
@@ -102,7 +102,7 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
 
 📤 **Outputs**
 
-* **Array**: Returns an array of objects describing each detected face. See the [Facemesh keypoints map](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#keypoints) to determine how the keypoint related to facial landmarks.
+* **Array**: Returns an array of objects describing each detected face. See the [Facemesh keypoints map](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#keypoints) to determine how the keypoint related to facial landmarks.
 
   ```js
   [
@@ -155,7 +155,7 @@ const facemesh = ml5.facemesh(?video, ?options, ?callback);
 
 📤 **Outputs**
 
-* **Array**: Returns an array of objects describing each detected face as an array of objects exactly like the output of the `.predict()` method described above. See the [Facemesh keypoints map](https://github.com/tensorflow/tfjs-models/tree/master/facemesh#keypoints) to determine how the keypoint related to facial landmarks.
+* **Array**: Returns an array of objects describing each detected face as an array of objects exactly like the output of the `.predict()` method described above. See the [Facemesh keypoints map](https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection#keypoints) to determine how the keypoint related to facial landmarks.
 
 
 ## Examples
