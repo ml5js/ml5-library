@@ -565,6 +565,42 @@ describe('NeuralNetwork', () => {
   });
 });
 
+ /**
+   * Describes the Neural network dataset
+   */
+  describe('NeuralNetwork data', () => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+      it('Should throw error if all labels are the same', () => {
+        const nn = neuralNetwork({
+          task: 'regression',
+        });
+        
+        for (let i = 0; i < 100; i++) 
+          nn.addData([1], [1]);
+        
+        nn.normalizeData();
+        
+        expect(() => {
+          nn.train()
+        }).toThrow(new Error("Error in data: There must be more than 1 label in data"));
+      });
+
+      it('Should not throw error if labels are different', () => {
+        const nn = neuralNetwork({
+          task: 'regression',
+        });
+        
+        for (let i = 0; i < 100; i++) 
+          nn.addData([1], [i]);
+        
+        nn.normalizeData();
+        
+        expect(() => {
+          nn.train()
+        }).not.toThrow(new Error("Error in data: There must be more than 1 label in data"));
+      });
+  });
+
 // /**
 //    * NeuralNetworkData
 //    */

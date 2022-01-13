@@ -21,6 +21,9 @@ class NeuralNetworkData {
       raw: [], // array of {xs:{}, ys:{}}
     };
 
+    // Keep track of labels, make sure there's at least two or training will fail
+    this.labels = new Map();
+
     // methods
     // summarize data
     this.createMetadata = this.createMetadata.bind(this);
@@ -56,6 +59,9 @@ class NeuralNetworkData {
     this.findEntries = this.findEntries.bind(this);
     this.formatRawData = this.formatRawData.bind(this);
     this.csvToJSON = this.csvToJSON.bind(this);
+    // Check if there's more than 1 label in the dataset
+    this.checkLabels = this.checkLabels.bind(this);
+    this.getLabels = this.getLabels.bind(this);
   }
 
   /**
@@ -250,6 +256,7 @@ class NeuralNetworkData {
    * @param {*} yInputObj, {key: value}, key must be the name of the property value must be a String, Number, or Array
    */
   addData(xInputObj, yInputObj) {
+    this.labels.set(Object.values(yInputObj).toString(), {})
     this.data.raw.push({
       xs: xInputObj,
       ys: yInputObj,
@@ -954,6 +961,23 @@ class NeuralNetworkData {
     });
 
     return parentCopy;
+  }
+
+  /**
+   * Checks the number of labels in the data, make sure there's more than 1 or training will fail
+   * @returns True if there's more than one label
+   */
+  checkLabels() {
+    return [...this.labels.keys()].length > 1;
+  }
+
+  /**
+  * If data was loaded from URL, we go through looking for labels
+  */
+  getLabels() {
+    this.data.raw.forEach((item) => {
+      this.labels.set(Object.values(item.ys).toString(), {})
+    })
   }
 }
 
