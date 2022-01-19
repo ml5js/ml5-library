@@ -6,7 +6,7 @@
 </center>
 
 ## word2vec has been disabled
-We've intentionally disabled the word2vec function after recognizing it has the potential to produce harmful outputs while using the pre-trained model files included in our examples. We'll consider reenabling the word2vec function along with changes to address these issues in a future release of ml5.js. You can find further updates about this topic on the [Twitter account](https://twitter.com/ml5js) and [GitHub](https://github.com/ml5js/ml5-library/issues/1238).
+We've intentionally disabled the word2vec function after recognizing it has the potential to produce harmful outputs while using the pre-trained model files included in our examples. We'll consider reenabling the word2vec function along with changes to address these issues in a future release of ml5.js. You can find further updates about this topic on the [Twitter account](https://twitter.com/ml5js/status/1445762321444315147) and [GitHub](https://github.com/ml5js/ml5-library/issues/1238).
 
 ---
 ## Description
