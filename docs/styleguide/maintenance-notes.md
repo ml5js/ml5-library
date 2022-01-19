@@ -10,7 +10,7 @@
 
 ## Overview:
 
-1. Create a new branch from `development` with a name that matches the new release version: `v<#>.<#>.<#>` 
+1. Create a new branch from `main` with a name that matches the new release version: `v<#>.<#>.<#>` 
    ```sh
    $ (development): git checkout -b v0.4.2
    ```
@@ -26,23 +26,15 @@
    $ (v0.4.2): git commit -m "bumps version and updates ml5 version number"
    $ (v0.4.2): git push origin v0.4.2
   ```
-3. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `development`. Wait for tests to pass. **Squash and merge**.
+3. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `main`. Wait for tests to pass. **Squash and merge**.
   ```sh
   # Once you've squashed and merged `v0.4.2` to `development`...
   # Step 1: switch to your development branch and pull in those changes
-  $ (v0.4.2): git checkout development
+  $ (v0.4.2): git checkout main
   $ (development): git fetch
   $ (development): git pull
   ```
-4. With these changes now in `development` make a new **Pull Request** to merge `development` into `release`. Wait for tests to pass. **Squash and merge**.
-  ```sh
-  # Once you've squashed and merged `development` to `release`...
-  # Step 1: switch to your release branch and pull in those changes
-  $ (development): git checkout release
-  $ (release): git fetch
-  $ (release): git pull
-  ```
-5. **Install the dependencies** to ensure you've got all the latest dependencies and **Build the library** to prepare for the release.
+5. **Install the dependencies**: With these changes now in `main`, we need to ensure you've got all the latest dependencies and **Build the library** to prepare for the release.
   ```sh
   $ (release): npm install
   $ (release): npm run build
