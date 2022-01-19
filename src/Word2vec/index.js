@@ -14,7 +14,7 @@ const word2vec = () => {
     `potential to produce harmful outputs while using the model files included in our ` +
     `examples. We'll consider reenabling the word2vec function along with changes to ` +
     `address these issues in a future release of ml5.js. You can find further updates ` +
-    `about this topic on our Twitter account (https://twitter.com/ml5js) and GitHub ` +
+    `about this topic on our Twitter account (https://twitter.com/ml5js/status/1445762321444315147) and GitHub ` +
     `(https://github.com/ml5js/ml5-library/issues/1238).`,
   );
 };
