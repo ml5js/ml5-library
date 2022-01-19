@@ -98,14 +98,14 @@ In an **index.html** file, copy and paste the following and open up that file in
 
 ## Join Our Community {docsify-ignore}
 
-Coming soon
+We are on [Discord](https://discord.gg/3CVauZMSt7)
 
 
 ## Contribute to ml5.js {docsify-ignore}
 
 ml5 is an open source project that values all contributions. ml5 contributions often take the shape of workshops, design contributions, helping to answer people's questions on Github, flagging bugs in code, fixing bugs, adding new features, and more.
 
-If you'd like to contribute, you're welcome to browse through the issues in our [Github](https://github.com/ml5js/ml5-library/issues) or create a new issue. If you're still unsure of where to start, feel free to ping us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>
+If you'd like to contribute, you're welcome to browse through the issues in our [Github](https://github.com/ml5js/ml5-library/issues) or create a new issue. If you're still unsure of where to start, feel free to ping us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>, or join our [Discord](https://discord.gg/3CVauZMSt7)
 
 ## Support {docsify-ignore}
 
