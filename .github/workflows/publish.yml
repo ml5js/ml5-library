@@ -1,8 +1,7 @@
-name: Node.js CI
-
-release:
-  types: [created]
-
+name: Publishing to NPM
+on:
+  release:
+    types: [created]
 jobs:
   build:
     runs-on: ubuntu-latest
