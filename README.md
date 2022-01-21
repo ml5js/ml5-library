@@ -5,7 +5,6 @@
 [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/ml5js)
 
 
-
 **_This project is currently in development._**
 
 ## Friendly machine learning for the web!
