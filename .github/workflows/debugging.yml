@@ -1,0 +1,18 @@
+name: Debugging
+
+on:
+  push:
+    branches:
+      - joeyklee.devops-publish-workflow
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12.x"
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: echo "passed npm ci"
