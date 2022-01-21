@@ -3,7 +3,7 @@ on:
   release:
     branches:
       - main
-    types: created
+    types: released
 jobs:
   build:
     runs-on: ubuntu-latest
