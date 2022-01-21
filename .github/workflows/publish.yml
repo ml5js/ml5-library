@@ -6,6 +6,8 @@ name: Node.js Package
 on:
   release:
     types: [released]
+    branches:
+      - main
 
 jobs:
   publish-npm:
