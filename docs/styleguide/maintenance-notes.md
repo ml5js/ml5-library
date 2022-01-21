@@ -1,8 +1,39 @@
 # Maintenance Guidelines & DevOps (Internal)
 
+# Making a ml5 release (latest - Jan 21, 2021)
+
+## Before merging in a PR from a contributor:
+
+1. make sure to tag it with one of the following in the PR:
+   - SEMVER/patch
+   - SEMVER/minor
+   - SEMVER/major
+
+## Before tagging a release releasing: bump the package version 
+1. open a PR to bump the package version: e.g. `git checkout -b v0.8.12`
+2. bump the package version number that matches the `SEMVER/patch | SEMVER/minor | SEMVER/major`
+   - e.g. `SEMVER/patch`: `0.8.11` would become -> `0.8.12`
+   - e.g. `SEMVER/minor`: `0.8.11` would become -> `0.9.00`
+   - e.g. `SEMVER/major`: `0.8.11` would become -> `1.0.0`
+3. run `npm i` <--- this makes sure your bumped package version makes it into the `package-lock.json`
+4. run `npm run update:readme` <----- captures the version bump in the readme
+5. run `git add .`
+6. run `git commit -m "chore: bumps package"`
+7. push this to your feature branch.
+8. make a PR and merge to `main`
+
+## Once we merge the PR to `main`:
+1. simply go to the `releases` sidebar >
+<img width="1332" alt="Screen Shot 2022-01-21 at 12 58 26 PM" src="https://user-images.githubusercontent.com/3622055/150599297-44e00536-9399-4cc0-be5b-d0b09761d651.png">
+2. go to the latest draft and click the edit button
+<img width="1332" alt="Screen Shot 2022-01-21 at 12 58 31 PM" src="https://user-images.githubusercontent.com/3622055/150599360-cba6d7ec-44eb-49da-977a-a7de5f071795.png">
+3. click: publish the release
+
+
+
 
 ***
-# Making a ml5 release
+# Making a ml5 release (deprecation notice - Jan, 21, 2021 - this is how we made releases prior to the github actions workflow under .github/workflows/publish.yml)
 
 ## setup:
 1. **Admin access** to the ml5 `npm` [account](https://www.npmjs.com/package/ml5) and [two-factor authentication setup](https://docs.npmjs.com/about-two-factor-authentication) for `npm`
