@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.8.11",
+  "version": "0.8.12",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
