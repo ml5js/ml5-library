@@ -289,8 +289,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://p5js.org"><img src="https://avatars.githubusercontent.com/u/191056?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lauren Lee McCarthy</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lmccart" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=lmccart" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://www.suse.com/"><img src="https://avatars.githubusercontent.com/u/940170?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sorin Curescu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=en3sis" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=en3sis" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://www.suse.com/"><img src="https://avatars.githubusercontent.com/u/69870077?v=4?s=100" width="100px;" alt="Tim Smith"/><br /><sub><b>Tim Smith</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=timscodebase" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=timscodebase" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://www.suse.com/"><img src="https://avatars.githubusercontent.com/u/940170?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sorin Curescu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=en3sis" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/mofanke"><img src="https://avatars.githubusercontent.com/u/54242816?v=4?s=100" width="100px;" alt=""/><br /><sub><b>mofanke</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Amofanke" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=mofanke" title="Code">💻</a></td>
   </tr>
 </table>
 
