@@ -1239,6 +1239,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "mofanke",
+      "name": "mofanke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54242816?v=4",
+      "profile": "https://github.com/mofanke",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
