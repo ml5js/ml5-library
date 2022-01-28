@@ -472,6 +472,10 @@ class DiyNeuralNetwork {
     let options;
     let whileTrainingCb;
     let finishedTrainingCb;
+
+    if (!(this.neuralNetworkData.checkLabels()))
+      throw new Error("Error in data: There must be more than 1 label in data")
+    
     if (
       typeof optionsOrCallback === 'object' &&
       typeof optionsOrWhileTraining === 'function' &&
