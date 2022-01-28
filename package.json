@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
@@ -63,7 +63,7 @@
     "eslint-config-airbnb-base": "12.1.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-loader": "2.0.0",
-    "eslint-nibble": "^5.1.0",
+    "eslint-nibble": "^8.0.1",
     "eslint-plugin-import": "2.9.0",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "ghooks": "2.0.2",
