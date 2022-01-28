@@ -47,15 +47,17 @@ Before getting started with ml5.js, review our [Code of Conduct](https://github.
 
 
 
+
 <p id="latest-version">
 
-* You can use the latest version (0.9.0) by adding it to the head section of your HTML document:
+* You can use the latest version (0.9.1) by adding it to the head section of your HTML document:
 
-**v0.9.0**
+**v0.9.1**
 
-    <script src="https://unpkg.com/ml5@0.9.0/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.9.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
     
     
     
