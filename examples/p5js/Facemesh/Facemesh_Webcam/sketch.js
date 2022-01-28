@@ -11,7 +11,7 @@ function setup() {
 
   // This sets up an event that fills the global variable "predictions"
   // with an array every time new predictions are made
-  facemesh.on("predict", results => {
+  facemesh.on("face", results => {
     predictions = results;
   });
 
@@ -26,7 +26,7 @@ function modelReady() {
 function draw() {
   image(video, 0, 0, width, height);
 
-  // We can call both functions to draw all keypoints
+  // We call function to draw all keypoints
   drawKeypoints();
 }
 

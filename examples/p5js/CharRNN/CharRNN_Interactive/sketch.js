@@ -19,11 +19,13 @@ let runningInference = true;
 let generated = false;
 let last;
 
+let original;
+
 function setup() {
   noCanvas();
 
   // Create the LSTM Generator passing it the model directory
-  charRNN = ml5.charRNN('models/woolf/', modelReady);
+  charRNN = ml5.charRNN('https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/charRNN/woolf/', modelReady);
 
   // Grab the DOM elements
   textInput = select('#textInput');
@@ -62,7 +64,7 @@ function changing() {
 // Generate new text!
 function generate() {
   // Grab the original text
-  const original = textInput.value();
+ original = textInput.value();
   // Make it to lower case
   const txt = original.toLowerCase();
 

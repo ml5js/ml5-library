@@ -27,7 +27,7 @@ let resultText;
 function setup() {
 
   // Create the LSTM Generator passing it the model directory
-  charRNN = ml5.charRNN('./models/woolf/', modelReady);
+  charRNN = ml5.charRNN('https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/charRNN/woolf/', modelReady);
 
   // Grab the DOM elements
   textInput = document.querySelector('#textInput');

@@ -752,15 +752,6 @@
       ]
     },
     {
-      "login": "nicoleflloyd",
-      "name": "nicoleflloyd",
-      "avatar_url": "https://avatars3.githubusercontent.com/u/35693567?v=4",
-      "profile": "https://github.com/nicoleflloyd",
-      "contributions": [
-        "design"
-      ]
-    },
-    {
       "login": "hx2A",
       "name": "Jim",
       "avatar_url": "https://avatars3.githubusercontent.com/u/4044283?v=4",
@@ -1171,6 +1162,92 @@
       "profile": "http://raglandcodes.github.io",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "tlsaeger",
+      "name": "Tom-Lucas Säger",
+      "avatar_url": "https://avatars.githubusercontent.com/u/33449313?v=4",
+      "profile": "http://tlsaeger.de",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "altruios",
+      "name": "altruios",
+      "avatar_url": "https://avatars.githubusercontent.com/u/49083558?v=4",
+      "profile": "https://github.com/altruios",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "mennosc",
+      "name": "mennosc",
+      "avatar_url": "https://avatars.githubusercontent.com/u/47506398?v=4",
+      "profile": "https://github.com/mennosc",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "netanoir",
+      "name": "neta",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38016578?v=4",
+      "profile": "http://netabomani.com",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "koji",
+      "name": "Koji",
+      "avatar_url": "https://avatars.githubusercontent.com/u/474225?v=4",
+      "profile": "https://kojikoji.ga",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "josephrocca",
+      "name": "josephrocca",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1167575?v=4",
+      "profile": "https://github.com/josephrocca",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "lmccart",
+      "name": "Lauren Lee McCarthy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/191056?v=4",
+      "profile": "http://p5js.org",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    },
+    {
+      "login": "en3sis",
+      "name": "Sorin Curescu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/940170?v=4",
+      "profile": "https://www.suse.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mofanke",
+      "name": "mofanke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/54242816?v=4",
+      "profile": "https://github.com/mofanke",
+      "contributions": [
+        "bug",
+        "code"
       ]
     }
   ],

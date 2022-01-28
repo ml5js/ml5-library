@@ -33,7 +33,7 @@ console.log(prediction);
 ### Initialize
 
 ```js
-const magic = ml5.Sentiment(model, ?callback);
+const sentiment = ml5.sentiment(model, ?callback);
 ```
 
 #### Parameters

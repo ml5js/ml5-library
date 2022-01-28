@@ -31,6 +31,9 @@ const data = [
   {r:255, g:0, b:0, color:'red-ish'},
   {r:254, g:0, b:0, color:'red-ish'},
   {r:253, g:0, b:0, color:'red-ish'},
+  {r:0, g:255, b:0, color:'green-ish'},
+  {r:0, g:254, b:0, color:'green-ish'},
+  {r:0, g:253, b:0, color:'green-ish'},
   {r:0, g:0, b:255, color:'blue-ish'},
   {r:0, g:0, b:254, color:'blue-ish'},
   {r:0, g:0, b:253, color:'blue-ish'}
@@ -99,14 +102,19 @@ function handleResults(error, result) {
 
 External data: `"data/colorData.json"`
 ```json
-[
-  {"r":255, "g":0, "b":0, "color": "red-ish"},
-  {"r":254, "g":0, "b":0, "color": "red-ish"},
-  {"r":253, "g":0, "b":0, "color": "red-ish"},
-  {"r":0,   "g":0, "b":255, "color": "blue-ish"},
-  {"r":0,   "g":0, "b":254, "color": "blue-ish"},
-  {"r":0,   "g":0, "b":253, "color": "blue-ish"}
-];
+{
+  "entries": [
+    {"r":255, "g":0, "b":0, "color":"red-ish"},
+    {"r":254, "g":0, "b":0, "color":"red-ish"},
+    {"r":253, "g":0, "b":0, "color":"red-ish"},
+    {"r":0, "g":255, "b":0, "color":"green-ish"},
+    {"r":0, "g":254, "b":0, "color":"green-ish"},
+    {"r":0, "g":253, "b":0, "color":"green-ish"},
+    {"r":0, "g":0, "b":255, "color":"blue-ish"},
+    {"r":0, "g":0, "b":254, "color":"blue-ish"},
+    {"r":0, "g":0, "b":253, "color":"blue-ish"}
+  ]
+}
 ```
 In your JavaScript: `"script.js"`
 ```js
@@ -114,6 +122,8 @@ In your JavaScript: `"script.js"`
 const options = {
   dataUrl: "data/colorData.json",
   task: 'classification',
+  inputs:['r', 'g', 'b'],
+  outputs:['color']
   debug: true
 }
 
@@ -700,7 +710,7 @@ neuralNetwork.saveData(?outputName, ?callback);
 > loads the data to `neuralNetwork.data.data.raw`
 
 ```js
-neuralnetwork.loadData(?filesOrPath, ?callback);
+neuralnetwork.loadData(filesOrPath, ?callback);
 ```
 
 📥 **Inputs**
@@ -737,7 +747,7 @@ neuralNetwork.save(?outputName, ?callback);
 > Loads a pre-trained model
 
 ```js
-neuralNetwork.load(?filesOrPath, ?callback);
+neuralNetwork.load(filesOrPath, ?callback);
 ```
 
 📥 **Inputs**

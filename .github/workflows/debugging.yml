@@ -1,0 +1,26 @@
+name: Debugging
+
+on:
+  push:
+    branches:
+      - joeyklee.devops-publish-workflow
+
+jobs:
+  debugging:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Reconfigure git to use HTTP authentication
+        run: >
+          git config --global url."https://github.com/".insteadOf
+          ssh://git@github.com/
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "12.x"
+          registry-url: https://registry.npmjs.org/
+      - run: npm i
+      - run: echo "passed npm i"
+      - run: npm run build
+      - run: echo "passed build"

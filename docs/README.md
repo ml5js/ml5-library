@@ -12,11 +12,11 @@ ml5.js is machine learning _for the web_ in your web browser. Through some cleve
 
 ### Quickstart
 
-The fastest way to get started exploring the creative possibilities of ml5.js are to either:
+The fastest way to get started exploring the creative possibilities of ml5.js are:
 
-1. Download a ml5.js project boilerplate. You can download a zip file here: [ml5 project boilerplate](https://github.com/ml5js/ml5-boilerplate/releases). <br/> Or...
-2. Open this [p5 web editor sketch with ml5.js added](https://editor.p5js.org/ml5/sketches/ml5_boilerplate).
-3. You can also copy and paste the cdn link to the ml5 library here:
+1. If you're interested in using p5.js with ml5.js, you can [start with our boilerplate p5.js web editor sketch](https://editor.p5js.org/ml5/sketches/qqhYX2QmN) or [copy the p5.js + ml5.js boilerplate files from GitHub](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ml5Boilerplate/ml5Boilerplate_Version).
+2. If you're interested in using ml5.js without p5.js, [copy the ml5.js-only boilerplate files from GitHub](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/ml5Boilerplate/ml5Boilerplate_Version). View [this boilerplate code live on our examples site](https://examples.ml5js.org/javascript/ml5Boilerplate/ml5Boilerplate_Version/) to see the expected output.
+3. Alternatively, you can copy and paste the CDN link to the ml5.js library:
 
   ```html
   <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
@@ -98,14 +98,14 @@ In an **index.html** file, copy and paste the following and open up that file in
 
 ## Join Our Community {docsify-ignore}
 
-Coming soon
+We are on [Discord](https://discord.gg/3CVauZMSt7)
 
 
 ## Contribute to ml5.js {docsify-ignore}
 
 ml5 is an open source project that values all contributions. ml5 contributions often take the shape of workshops, design contributions, helping to answer people's questions on Github, flagging bugs in code, fixing bugs, adding new features, and more.
 
-If you'd like to contribute, you're welcome to browse through the issues in our [Github](https://github.com/ml5js/ml5-library/issues) or create a new issue. If you're still unsure of where to start, feel free to ping us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>
+If you'd like to contribute, you're welcome to browse through the issues in our [Github](https://github.com/ml5js/ml5-library/issues) or create a new issue. If you're still unsure of where to start, feel free to ping us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="mailto:hello@ml5js.org">hello@ml5js.org</a>, or join our [Discord](https://discord.gg/3CVauZMSt7)
 
 ## Support {docsify-ignore}
 
