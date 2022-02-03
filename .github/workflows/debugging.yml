@@ -31,7 +31,7 @@ jobs:
       - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
       # bump the package version
       # - run: echo "name ${{ steps.release_drafter.outputs.name }}"
-      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      - run: npm run update:packageVersion ${{ steps.latest_release.outputs.release }}
       # # update the readme
       - run: npm run update:readme
       # # install to update package-lock.json
