@@ -54,6 +54,6 @@ jobs:
       # build it!
       - run: npm run build
       # publish with the name - should only be the numbers like 0.9.5
-      - run: npm publish ${{ steps.latest_release.outputs.release }}
+      - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
