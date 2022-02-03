@@ -24,8 +24,15 @@ jobs:
         with:
           node-version: "12.x"
           registry-url: https://registry.npmjs.org/
+      - uses: release-drafter/release-drafter@v5
+        id: release_drafter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "bumping package to ${{ steps.release_drafter.outputs.name }}"
+      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      - run: npm run update:readme
       - run: npm ci
       - run: npm run build
-      - run: npm publish
+      - run: npm publish ${{ steps.release_drafter.outputs.name }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
