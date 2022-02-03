@@ -27,8 +27,7 @@ jobs:
       - uses: pozetroninc/github-action-get-latest-release@master
         id: latest_release
         with:
-          owner: ml5
-          repo: ml5-library
+          repository: ${{ github.repository }}
       - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
       # bump the package version
       # - run: echo "name ${{ steps.release_drafter.outputs.name }}"

@@ -24,11 +24,10 @@ jobs:
         with:
           node-version: "12.x"
           registry-url: https://registry.npmjs.org/
-      - uses: pozetroninc/github-action-get-latest-release@master
+      - uses: ml5/github-action-get-latest-release@master
         id: latest_release
         with:
-          owner: ml5
-          repo: ml5-library
+          repository: ${{ github.repository }}
       # - uses: release-drafter/release-drafter@v5
       #   id: release_drafter
       #   env:
