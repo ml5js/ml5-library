@@ -19,6 +19,8 @@ let runningInference = true;
 let generated = false;
 let last;
 
+let original;
+
 function setup() {
   noCanvas();
 
@@ -62,7 +64,7 @@ function changing() {
 // Generate new text!
 function generate() {
   // Grab the original text
-  const original = textInput.value();
+ original = textInput.value();
   // Make it to lower case
   const txt = original.toLowerCase();
 

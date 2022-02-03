@@ -1,0 +1,23 @@
+name-template: $RESOLVED_VERSION
+tag-template: $RESOLVED_VERSION
+version-resolver:
+  major:
+    labels:
+      - "SEMVER/major"
+  minor:
+    labels:
+      - "SEMVER/minor"
+  patch:
+    labels:
+      - "SEMVER/patch"
+  default: patch
+categories:
+  - title: Bug Fixes
+    labels:
+      - bug
+      - fix
+      - bugfix
+template: |
+  ## Changes
+
+  $CHANGES

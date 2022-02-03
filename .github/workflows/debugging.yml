@@ -1,0 +1,54 @@
+# name: Debugging
+
+# on:
+#   push:
+#     branches:
+#       - joeyklee.devops-debugging
+
+# jobs:
+#   debugging:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           persist-credentials: false
+#       - name: Reconfigure git to use HTTP authentication
+#         run: >
+#           git config --global url."https://github.com/".insteadOf
+#           ssh://git@github.com/
+#       - uses: actions/setup-node@v2
+#         with:
+#           node-version: "12.x"
+#           registry-url: https://registry.npmjs.org/
+#       # - uses: release-drafter/release-drafter@v5
+#       #   id: release_drafter
+#       #   env:
+#       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#       - uses: pozetroninc/github-action-get-latest-release@master
+#         id: latest_release
+#         with:
+#           repository: ${{ github.repository }}
+#       - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
+#       # bump the package version
+#       # - run: echo "name ${{ steps.release_drafter.outputs.name }}"
+#       - run: npm run update:packageVersion ${{ steps.latest_release.outputs.release }}
+#       # # update the readme
+#       - run: npm run update:readme
+#       # # install to update package-lock.json
+#       # - run: npm ci
+#       - name: Commit
+#         run: |
+#           git config --global user.name 'ml5'
+#           git config --global user.email 'admin@ml5js.org'
+#           git commit -am "bumps package, readme, and package-lock"
+#       - name: Push changes
+#         uses: ad-m/github-push-action@master
+#         with:
+#           github_token: ${{ secrets.ML5_LIBRARY_PAT }}
+#           branch: ${{ github.ref }}
+#       # - run: echo "passed npm ci"
+#       # run the build
+#       # - run: npm run build
+#       # - run: echo "passed build"
+#       # run the build
+#       # - run: npm publish ${{ steps.release_drafter.outputs.tag_name }}
