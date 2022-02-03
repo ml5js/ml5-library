@@ -24,7 +24,12 @@ jobs:
         id: release_drafter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "testing ${{ steps.release_drafter.data.tag_name }}"
+        run: echo "name ${{ steps.release_drafter.outputs.name }}"
+        run: echo "tag_name ${{ steps.release_drafter.outputs.tag_name }}"
+        run: echo "id ${{ steps.release_drafter.outputs.id }}"
+      - run: echo "name ${{ steps.release_drafter.outputs.name }}"
+      - run: echo "tag_name ${{ steps.release_drafter.outputs.tag_name }}"
+      - run: echo "id ${{ steps.release_drafter.outputs.id }}"
       # - run: npm ci
       # - run: echo "passed npm ci"
       # - run: npm run build
