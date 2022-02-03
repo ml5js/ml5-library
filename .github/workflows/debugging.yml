@@ -24,9 +24,6 @@ jobs:
         id: release_drafter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "name ${{ steps.release_drafter.outputs.name }}"
-        run: echo "tag_name ${{ steps.release_drafter.outputs.tag_name }}"
-        run: echo "id ${{ steps.release_drafter.outputs.id }}"
       - run: echo "name ${{ steps.release_drafter.outputs.name }}"
       - run: echo "tag_name ${{ steps.release_drafter.outputs.tag_name }}"
       - run: echo "id ${{ steps.release_drafter.outputs.id }}"
