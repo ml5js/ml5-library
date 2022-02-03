@@ -20,12 +20,18 @@ jobs:
         with:
           node-version: "12.x"
           registry-url: https://registry.npmjs.org/
-      - uses: release-drafter/release-drafter@v5
-        id: release_drafter
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - uses: release-drafter/release-drafter@v5
+      #   id: release_drafter
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: pozetroninc/github-action-get-latest-release@master
+        id: latest_release
+        with:
+          owner: ml5
+          repo: ml5-library
+      - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
       # bump the package version
-      - run: echo "name ${{ steps.release_drafter.outputs.name }}"
+      # - run: echo "name ${{ steps.release_drafter.outputs.name }}"
       # - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
       # # update the readme
       # - run: npm run update:readme
