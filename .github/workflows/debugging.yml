@@ -25,6 +25,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.tag_name }}
+      - name: setup git config
+        run: |
+          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
+          git config user.name "GitHub Actions Bot for ml5"
+          git config user.email "<>"
       - name: commit changes
         run: |
           # add, commit, and push
