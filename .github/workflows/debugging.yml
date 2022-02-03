@@ -24,7 +24,7 @@ jobs:
         id: release_drafter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "testing ${{ steps.release_drafter.output.tag_name }}"
+      - run: echo "testing ${{ steps.release_drafter }}"
       # - run: npm ci
       # - run: echo "passed npm ci"
       # - run: npm run build
