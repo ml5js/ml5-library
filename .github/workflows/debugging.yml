@@ -26,7 +26,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.tag_name }}
       - name: commit changes
-        run:
+        run: |
           # add, commit, and push
           git add .
           git commit -m "bumps package"
