@@ -20,7 +20,12 @@ jobs:
         with:
           node-version: "12.x"
           registry-url: https://registry.npmjs.org/
-      - run: npm i
-      - run: echo "passed npm i"
-      - run: npm run build
-      - run: echo "passed build"
+      - uses: release-drafter/release-drafter@v5
+        id: release_drafter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo ${{ steps.release_drafter.data.tag_name }}
+      # - run: npm ci
+      # - run: echo "passed npm ci"
+      # - run: npm run build
+      # - run: echo "passed build"
