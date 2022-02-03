@@ -26,11 +26,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # bump the package version
       - run: echo "name ${{ steps.release_drafter.outputs.name }}"
-      # - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
       # update the readme
-      # - run: npm run update:readme
+      - run: npm run update:readme
       # install to update package-lock.json
       # - run: npm ci
+      - name: Commit
+        run: |
+          git config --global user.name 'ml5'
+          git config --global user.email 'admin@ml5js.org'
+          git commit -am "bumps package, readme, and package-lock"
+          git push
       # - run: echo "passed npm ci"
       # run the build
       # - run: npm run build
