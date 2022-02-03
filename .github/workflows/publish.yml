@@ -29,10 +29,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo "bumping package to ${{ steps.release_drafter.outputs.name }}"
+      # bump the package version
       - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      # bump the readme
       - run: npm run update:readme
+      # install packages
       - run: npm ci
+      # commit the package, package-lock, and readme changes
+      - name: Commit
+        run: |
+          git config --global user.name 'ml5'
+          git config --global user.email 'admin@ml5js.org'
+          git commit -am "bumps package, readme, and package-lock"
+      # push changes to main
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+      # build it!
       - run: npm run build
+      # publish with the name - should only be the numbers like 0.9.5
       - run: npm publish ${{ steps.release_drafter.outputs.name }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
