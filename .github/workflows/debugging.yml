@@ -24,9 +24,12 @@ jobs:
         id: release_drafter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "name ${{ steps.release_drafter.outputs.name }}"
-      - run: echo "tag_name ${{ steps.release_drafter.outputs.tag_name }}"
-      - run: echo "id ${{ steps.release_drafter.outputs.id }}"
+      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.tag_name }}
+      - name: commit changes
+        run: git add add .
+          git commit -m "bumps package"
+          git push origin
+      - run: echo "bump package and commit complete!"
       # - run: npm ci
       # - run: echo "passed npm ci"
       # - run: npm run build
