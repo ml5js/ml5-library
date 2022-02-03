@@ -24,13 +24,17 @@ jobs:
         with:
           node-version: "12.x"
           registry-url: https://registry.npmjs.org/
-      - uses: release-drafter/release-drafter@v5
-        id: release_drafter
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "bumping package to ${{ steps.release_drafter.outputs.name }}"
+      - uses: ml5/github-action-get-latest-release@master
+        id: latest_release
+        with:
+          repository: ${{ github.repository }}
+      # - uses: release-drafter/release-drafter@v5
+      #   id: release_drafter
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
       # bump the package version
-      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      - run: npm run update:packageVersion ${{ steps.latest_release.outputs.release }}
       # bump the readme
       - run: npm run update:readme
       # install packages
@@ -46,10 +50,10 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+          branch: main
       # build it!
       - run: npm run build
       # publish with the name - should only be the numbers like 0.9.5
-      - run: npm publish ${{ steps.release_drafter.outputs.name }}
+      - run: npm publish ${{ steps.latest_release.outputs.release }}
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
