@@ -3,7 +3,7 @@ name: Debugging
 on:
   push:
     branches:
-      - joeyklee.devops-publish-workflow
+      - joeyklee.devops-debugging
 
 jobs:
   debugging:
@@ -31,21 +31,21 @@ jobs:
       - run: echo "bumping package to ${{ steps.latest_release.outputs.release }}"
       # bump the package version
       # - run: echo "name ${{ steps.release_drafter.outputs.name }}"
-      # - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
       # # update the readme
-      # - run: npm run update:readme
+      - run: npm run update:readme
       # # install to update package-lock.json
-      # # - run: npm ci
-      # - name: Commit
-      #   run: |
-      #     git config --global user.name 'ml5'
-      #     git config --global user.email 'admin@ml5js.org'
-      #     git commit -am "bumps package, readme, and package-lock"
-      # - name: Push changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: ${{ github.ref }}
+      # - run: npm ci
+      - name: Commit
+        run: |
+          git config --global user.name 'ml5'
+          git config --global user.email 'admin@ml5js.org'
+          git commit -am "bumps package, readme, and package-lock"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.ML5_LIBRARY_PAT }}
+          branch: ${{ github.ref }}
       # - run: echo "passed npm ci"
       # run the build
       # - run: npm run build
