@@ -24,20 +24,16 @@ jobs:
         id: release_drafter
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.tag_name }}
-      - name: setup git config
-        run: |
-          # setup the username and email. I tend to use 'GitHub Actions Bot' with no email by default
-          git config user.name "GitHub Actions Bot for ml5"
-          git config user.email "<>"
-      - name: commit changes
-        run: |
-          # add, commit, and push
-          git add .
-          git commit -m "bumps package"
-          git push origin
-      - run: echo "bump package and commit complete!"
+      # bump the package version
+      - run: echo "name ${{ steps.release_drafter.outputs.name }}"
+      # - run: npm run update:packageVersion ${{ steps.release_drafter.outputs.name }}
+      # update the readme
+      # - run: npm run update:readme
+      # install to update package-lock.json
       # - run: npm ci
       # - run: echo "passed npm ci"
+      # run the build
       # - run: npm run build
       # - run: echo "passed build"
+      # run the build
+      # - run: npm publish ${{ steps.release_drafter.outputs.tag_name }}
