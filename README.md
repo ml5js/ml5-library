@@ -328,6 +328,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ikko Ashimine</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=eltociear" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Mudasar-Makandar"><img src="https://avatars.githubusercontent.com/u/46401916?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mudasar-Makandar</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3AMudasar-Makandar" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=Mudasar-Makandar" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/amirfeqhi"><img src="https://avatars.githubusercontent.com/u/26363996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Amir Feqhi</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=amirfeqhi" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/danidask"><img src="https://avatars.githubusercontent.com/u/9405129?v=4?s=100" width="100px;" alt=""/><br /><sub><b>DasK</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=danidask" title="Code">💻</a> <a href="#ideas-danidask" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
