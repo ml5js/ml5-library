@@ -1277,6 +1277,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "danidask",
+      "name": "DasK",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9405129?v=4",
+      "profile": "https://github.com/danidask",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
