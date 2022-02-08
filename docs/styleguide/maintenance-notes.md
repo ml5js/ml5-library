@@ -6,9 +6,13 @@
 
 1. make sure to tag it with one of the following in the PR:
    - SEMVER/patch
+     - e.g. `SEMVER/patch`: `0.8.11` would become -> `0.8.12`
    - SEMVER/minor
+     - e.g. `SEMVER/minor`: `0.8.11` would become -> `0.9.0`
    - SEMVER/major
+     - e.g. `SEMVER/major`: `0.8.11` would become -> `1.0.0`
 
+NOTE: if you are unsure quite likely it will be a `SEMVER/patch` for "...when you make backwards compatible bug fixes.". You can learn more about [Semantic Versioning](https://semver.org/).
 
 ## Once we merge the PR to `main`:
 
