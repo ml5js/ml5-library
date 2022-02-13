@@ -61,15 +61,21 @@ Before getting started with ml5.js, review our [Code of Conduct](https://github.
 
 
 
+
+
+
 <p id="latest-version">
 
-* You can use the latest version (0.9.8) by adding it to the head section of your HTML document:
+* You can use the latest version (0.10.1) by adding it to the head section of your HTML document:
 
-**v0.9.8**
+**v0.10.1**
 
-    <script src="https://unpkg.com/ml5@0.9.8/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.10.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
+    
+    
     
     
     
@@ -321,6 +327,10 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://p5js.org"><img src="https://avatars.githubusercontent.com/u/191056?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Lauren Lee McCarthy</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lmccart" title="Code">💻</a> <a href="https://github.com/ml5js/ml5-library/commits?author=lmccart" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.suse.com/"><img src="https://avatars.githubusercontent.com/u/940170?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Sorin Curescu</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=en3sis" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/mofanke"><img src="https://avatars.githubusercontent.com/u/54242816?v=4?s=100" width="100px;" alt=""/><br /><sub><b>mofanke</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3Amofanke" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=mofanke" title="Code">💻</a></td>
+    <td align="center"><a href="https://bandism.net/"><img src="https://avatars.githubusercontent.com/u/22633385?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ikko Ashimine</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=eltociear" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/Mudasar-Makandar"><img src="https://avatars.githubusercontent.com/u/46401916?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Mudasar-Makandar</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/issues?q=author%3AMudasar-Makandar" title="Bug reports">🐛</a> <a href="https://github.com/ml5js/ml5-library/commits?author=Mudasar-Makandar" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/amirfeqhi"><img src="https://avatars.githubusercontent.com/u/26363996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Amir Feqhi</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=amirfeqhi" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/danidask"><img src="https://avatars.githubusercontent.com/u/9405129?v=4?s=100" width="100px;" alt=""/><br /><sub><b>DasK</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=danidask" title="Code">💻</a> <a href="#ideas-danidask" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 

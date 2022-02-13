@@ -1249,6 +1249,44 @@
         "bug",
         "code"
       ]
+    },
+    {
+      "login": "eltociear",
+      "name": "Ikko Ashimine",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22633385?v=4",
+      "profile": "https://bandism.net/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Mudasar-Makandar",
+      "name": "Mudasar-Makandar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46401916?v=4",
+      "profile": "https://github.com/Mudasar-Makandar",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "amirfeqhi",
+      "name": "Amir Feqhi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/26363996?v=4",
+      "profile": "https://github.com/amirfeqhi",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "danidask",
+      "name": "DasK",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9405129?v=4",
+      "profile": "https://github.com/danidask",
+      "contributions": [
+        "code",
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7,
