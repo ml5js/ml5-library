@@ -30,8 +30,14 @@ class BodyPix {
   /**
      * Create BodyPix.
      * @param {HTMLVideoElement} video - An HTMLVideoElement.
-     * @param {object} options - An object with options.
-     * @param {function} callback - A callback to be called when the model is ready.
+     * @param {{
+     *  multiplier: Number;
+     *  outputStride: Number;
+     *  segmentationThreshold: Number;
+     *  palette: Object;
+     *  returnTensors: Boolean;
+     * }} options - An object with options.
+     * @param {Function} callback - A callback to be called when the model is ready.
      */
   constructor(video, options, callback) {
     this.video = video;
