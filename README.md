@@ -334,6 +334,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/amirfeqhi"><img src="https://avatars.githubusercontent.com/u/26363996?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Amir Feqhi</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=amirfeqhi" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/danidask"><img src="https://avatars.githubusercontent.com/u/9405129?v=4?s=100" width="100px;" alt=""/><br /><sub><b>DasK</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=danidask" title="Code">💻</a> <a href="#ideas-danidask" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/asvsfs"><img src="https://avatars.githubusercontent.com/u/119840?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Amir</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=asvsfs" title="Code">💻</a> <a href="#example-asvsfs" title="Examples">💡</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
