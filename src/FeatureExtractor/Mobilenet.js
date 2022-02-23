@@ -15,6 +15,7 @@ import { saveBlob } from "../utils/io";
 import callCallback from "../utils/callcallback";
 
 const IMAGE_SIZE = 224;
+const IMAGE_RESIZE_DIMENSIONS = [IMAGE_SIZE, IMAGE_SIZE];
 const BASE_URL = "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v";
 const DEFAULTS = {
   version: 1,
@@ -110,7 +111,7 @@ class Mobilenet {
       outputs: layer.output,
     });
     if (this.video) {
-      await this.mobilenetFeatures.predict(imgToTensor(this.video)); // Warm up
+      await this.mobilenetFeatures.predict(imgToTensor(this.video, IMAGE_RESIZE_DIMENSIONS)); // Warm up
     }
     return this;
   }
@@ -231,8 +232,7 @@ class Mobilenet {
   async addImageInternal(imgToAdd, label) {
     await this.ready;
     tf.tidy(() => {
-      const imageResize = imgToAdd === this.video ? null : [IMAGE_SIZE, IMAGE_SIZE];
-      const processedImg = imgToTensor(imgToAdd, imageResize);
+      const processedImg = imgToTensor(imgToAdd, IMAGE_RESIZE_DIMENSIONS);
       const prediction = this.mobilenetFeatures.predict(processedImg);
       let y;
       if (this.usageType === "classifier") {
@@ -379,8 +379,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClasses = tf.tidy(() => {
-      const imageResize = imgToPredict === this.video ? null : [IMAGE_SIZE, IMAGE_SIZE];
-      const processedImg = imgToTensor(imgToPredict, imageResize);
+      const processedImg = imgToTensor(imgToPredict, IMAGE_RESIZE_DIMENSIONS);
       const predictions = this.jointModel.predict(processedImg);
       return Array.from(predictions.as1D().dataSync());
     });
@@ -442,8 +441,7 @@ class Mobilenet {
     await tf.nextFrame();
     this.isPredicting = true;
     const predictedClass = tf.tidy(() => {
-      const imageResize = imgToPredict === this.video ? null : [IMAGE_SIZE, IMAGE_SIZE];
-      const processedImg = imgToTensor(imgToPredict, imageResize);
+      const processedImg = imgToTensor(imgToPredict, IMAGE_RESIZE_DIMENSIONS);
       const predictions = this.jointModel.predict(processedImg);
       return predictions.as1D();
     });
@@ -537,7 +535,7 @@ class Mobilenet {
         let resized = normalized;
         if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
           const alignCorners = true;
-          resized = tf.image.resizeBilinear(normalized, [IMAGE_SIZE, IMAGE_SIZE], alignCorners);
+          resized = tf.image.resizeBilinear(normalized, IMAGE_RESIZE_DIMENSIONS, alignCorners);
         }
 
         // Reshape so we can pass it to predict.

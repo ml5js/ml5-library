@@ -1,6 +1,6 @@
 let handpose;
 let video;
-let predictions = [];
+let hands = [];
 
 function setup() {
   createCanvas(640, 480);
@@ -11,8 +11,8 @@ function setup() {
 
   // This sets up an event that fills the global variable "predictions"
   // with an array every time new hand poses are detected
-  handpose.on("predict", results => {
-    predictions = results;
+  handpose.on("hand", results => {
+    hands = results;
   });
 
   // Hide the video element, and just show the canvas
@@ -32,10 +32,10 @@ function draw() {
 
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
-  for (let i = 0; i < predictions.length; i += 1) {
-    const prediction = predictions[i];
-    for (let j = 0; j < prediction.landmarks.length; j += 1) {
-      const keypoint = prediction.landmarks[j];
+  for (let i = 0; i < hands.length; i += 1) {
+    const hand = hands[i];
+    for (let j = 0; j < hand.landmarks.length; j += 1) {
+      const keypoint = hand.landmarks[j];
       fill(0, 255, 0);
       noStroke();
       ellipse(keypoint[0], keypoint[1], 10, 10);

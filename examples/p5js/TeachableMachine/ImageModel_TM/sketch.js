@@ -12,7 +12,7 @@ This example uses p5 preload function to create the classifier
 // Classifier Variable
 let classifier;
 // Model URL
-const imageModelURL = 'https://teachablemachine.withgoogle.com/models/bXy2kDNi/model.json';
+const imageModelURL = 'https://teachablemachine.withgoogle.com/models/bXy2kDNi/';
 
 // Video
 let video;
@@ -22,7 +22,8 @@ let label = "";
 
 // Load the model first
 function preload() {
-  classifier = ml5.imageClassifier(imageModelURL);
+  // eslint-disable-next-line prefer-template
+  classifier = ml5.imageClassifier(imageModelURL + 'model.json');
 }
 
 function setup() {

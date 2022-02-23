@@ -1,8 +1,37 @@
 # Maintenance Guidelines & DevOps (Internal)
 
+# Making a ml5 release (latest - Jan 21, 2021)
+
+## Before merging in a PR from a contributor:
+
+1. make sure to tag it with one of the following in the PR:
+   - SEMVER/patch
+     - e.g. `SEMVER/patch`: `0.8.11` would become -> `0.8.12`
+   - SEMVER/minor
+     - e.g. `SEMVER/minor`: `0.8.11` would become -> `0.9.0`
+   - SEMVER/major
+     - e.g. `SEMVER/major`: `0.8.11` would become -> `1.0.0`
+
+NOTE: if you are unsure quite likely it will be a `SEMVER/patch` for "...when you make backwards compatible bug fixes.". You can learn more about [Semantic Versioning](https://semver.org/).
+
+## Once we merge the PR to `main`:
+
+1. simply go to the `releases` sidebar >
+<img width="1332" alt="Screen Shot 2022-01-21 at 12 58 26 PM" src="https://user-images.githubusercontent.com/3622055/150599297-44e00536-9399-4cc0-be5b-d0b09761d651.png">
+2. go to the latest draft and click the edit button
+<img width="1332" alt="Screen Shot 2022-01-21 at 12 58 31 PM" src="https://user-images.githubusercontent.com/3622055/150599360-cba6d7ec-44eb-49da-977a-a7de5f071795.png">
+3. click: publish the release -- this will trigger a github workflow that will:
+   * get the latest tag version
+   * update the package.json
+   * update the readme with the latest version (pulled from the package.json)
+   * run npm install
+   * add, commit, and push those changes to `main`
+   * build the library
+   * and publish to npm
+
 
 ***
-# Making a ml5 release
+# Making a ml5 release (deprecation notice - Jan, 21, 2021 - this is how we made releases prior to the github actions workflow under .github/workflows/publish.yml)
 
 ## setup:
 1. **Admin access** to the ml5 `npm` [account](https://www.npmjs.com/package/ml5) and [two-factor authentication setup](https://docs.npmjs.com/about-two-factor-authentication) for `npm`
@@ -10,7 +39,7 @@
 
 ## Overview:
 
-1. Create a new branch from `development` with a name that matches the new release version: `v<#>.<#>.<#>` 
+1. Create a new branch from `main` with a name that matches the new release version: `v<#>.<#>.<#>` 
    ```sh
    $ (development): git checkout -b v0.4.2
    ```
@@ -26,23 +55,15 @@
    $ (v0.4.2): git commit -m "bumps version and updates ml5 version number"
    $ (v0.4.2): git push origin v0.4.2
   ```
-3. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `development`. Wait for tests to pass. **Squash and merge**.
+3. Make a **Pull Request** to merge `v<#>.<#>.<#>` to `main`. Wait for tests to pass. **Squash and merge**.
   ```sh
   # Once you've squashed and merged `v0.4.2` to `development`...
   # Step 1: switch to your development branch and pull in those changes
-  $ (v0.4.2): git checkout development
+  $ (v0.4.2): git checkout main
   $ (development): git fetch
   $ (development): git pull
   ```
-4. With these changes now in `development` make a new **Pull Request** to merge `development` into `release`. Wait for tests to pass. **Squash and merge**.
-  ```sh
-  # Once you've squashed and merged `development` to `release`...
-  # Step 1: switch to your release branch and pull in those changes
-  $ (development): git checkout release
-  $ (release): git fetch
-  $ (release): git pull
-  ```
-5. **Install the dependencies** to ensure you've got all the latest dependencies and **Build the library** to prepare for the release.
+5. **Install the dependencies**: With these changes now in `main`, we need to ensure you've got all the latest dependencies and **Build the library** to prepare for the release.
   ```sh
   $ (release): npm install
   $ (release): npm run build

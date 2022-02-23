@@ -1,12 +1,12 @@
 # Frequently Asked Questions (FAQ)
 
-### Can I use ml5.js in the [p5 web editor](editor.p5js.org)?
+### Can I use ml5.js in the [p5 web editor](https://editor.p5js.org)?
 
 Mostly.
 
 A number of the ml5 sketches don't currently work in the p5 web editor due to some of the ways that the editor handles data files and some of the network communication regarding making requests to external data (e.g. the big model files that allow ml5.js to run things like image detection, etc). 
 
-There are lots of developments in the p5 web editor as well as in ml5 to make sure these environments all play nicely together. If something doesn't work in the web editor, the best thing to do is to try and run things locally if possible. See [running a local web server tutorial](/docs/tutorials/local-web-server.md).
+There are lots of developments in the p5 web editor as well as in ml5 to make sure these environments all play nicely together. If something doesn't work in the web editor, the best thing to do is to try and run things locally if possible. See [running a local web server tutorial](/tutorials/local-web-server.md).
 
 Thanks!
 
@@ -28,4 +28,4 @@ Please contact us at [@ml5js on twitter](https://twitter.com/ml5js), <a href="ma
 
 ### How can I contribute?
 
-Please refer to the contributor documentation [on Github](https://github.com/ml5js/ml5-library/blob/development/CONTRIBUTING.md).
+Please refer to the contributor documentation [on Github](https://github.com/ml5js/ml5-library/blob/main/CONTRIBUTING.md).

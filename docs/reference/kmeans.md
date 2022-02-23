@@ -90,16 +90,18 @@ const kmeans = ml5.kmeans(data, ?options, ?callback);
 ## Examples
 
 **p5.js**
-* [KMeans_imageSegmentation](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/KMeans/KMeans_imageSegmentation/)
+* [KMeans_imageSegmentation](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/KMeans/KMeans_imageSegmentation/)
+* [KMeans_mouseClustering](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/KMeans/KMeans_mouseClustering)
 
 **p5 web editor**
 * [KMeans_imageSegmentation](https://editor.p5js.org/ml5/sketches/KMeans_imageSegmentation/)
+* [KMeans_mouseClustering](https://editor.p5js.org/ml5/sketches/KMeans_mouseClustering)
 
 **plain javascript**
 * coming soon
 
 **d3.js**
-* [KMeans_GaussianClusterDemo](https://github.com/ml5js/ml5-library/tree/development/examples/d3/KMeans/KMeans_GaussianClusterDemo)
+* [KMeans_GaussianClusterDemo](https://github.com/ml5js/ml5-library/tree/main/examples/d3/KMeans/KMeans_GaussianClusterDemo)
 
 ## Demo
 
@@ -120,4 +122,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-* [/src/KMeans](https://github.com/ml5js/ml5-library/tree/development/src/KMeans)
+* [/src/KMeans](https://github.com/ml5js/ml5-library/tree/main/src/KMeans)

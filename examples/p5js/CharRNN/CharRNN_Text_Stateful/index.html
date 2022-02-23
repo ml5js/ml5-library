@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Stateful CharRNN Text Generation Example using p5.js</title>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
   <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
-
-
   <style></style>
-
 </head>
 
 <body>
@@ -21,7 +16,7 @@
     <input id="textInput" value="The sky was blue and "                              />
   </p>
   <p>temperature:
-    <input id="tempSlider" type="range" min="0" max="1" step="0.01"                             /><span id="temperature">0.5</span>
+    <input id="tempSlider" type="range" min="0.01" max="1" step="0.01"                             /><span id="temperature">0.5</span>
   </p>
   <p><button id="reset">Reset</button><button id="start">Start</button><button id="single">Single</button></p>
   <p id="status">Loading Model</p>

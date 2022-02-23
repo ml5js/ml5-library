@@ -24,7 +24,7 @@ Please refer to [#1](https://github.com/ml5js/ml5-examples/issues/1) (thanks [@d
 
 ## Organizing Examples of different features
 
-If you're interested to make example, you can organize them as heirarchy like so:
+If you're interested to make example, you can organize them as hierarchy like so:
 
 ```
 /FeatureName

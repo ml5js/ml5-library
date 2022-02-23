@@ -85,13 +85,13 @@ cvae.generate(label, callback);
 ## Examples
 
 **p5.js**
-* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/development/examples/p5js/CVAE/CVAE_QuickDraw)
+* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CVAE/CVAE_QuickDraw)
 
 **p5 web editor**
 * [CVAE_QuickDraw](https://editor.p5js.org/ml5/sketches/CVAE_QuickDraw)
 
 **plain javascript**
-* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/development/examples/javascript/CVAE/CVAE_QuickDraw)
+* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/CVAE/CVAE_QuickDraw)
 
 
 ## Demo
@@ -101,6 +101,50 @@ No demos yet - contribute one today!
 ## Tutorials
 
 No tutorials yet - contribute one today!
+
+## Model and Data Provenance
+> A project started by [Ellen Nickles](https://github.com/ellennickles/)
+
+### Models Overview
+
+TBD
+
+#### CVAE - Model Biography
+
+- **Description**
+  - CVAE stands for Conditional  variational auto-encoder, a type of neural network architecture.
+- **Developer and Year**
+  - CVAE was developed by researchers from NEC Laboratories America, Inc. and the University of Michigan, Ann Arbor, in 2015.
+- **Purpose and Intended Users**
+  - TBD
+- **Hosted Location**
+  - Hosted by ml5
+- **ml5 Contributor and Year**
+  - Ported by Wenhe Eric Li in 2019
+- **References**
+  - ml5 Contributor [Wenhe Eric Li](https://portfolio.steins.live/)
+  - Paper [Learning Structured Output Representation using Deep Conditional Generative Models](https://pdfs.semanticscholar.org/3f25/e17eb717e5894e0404ea634451332f85d287.pdf)
+  - Website [Neural Information Processing Systems Conference Proceedings](https://papers.nips.cc/paper/5775-learning-structured-output-representation-using-deep-conditional-generative-models')
+
+#### CVAE - Data Biography
+
+- **Description**
+  - You provide images for training the model from Google’s Google’s Quick, Draw! Dataset. See Dingsu (Derek) Wang’s tutorial in the ml5 GitHub repository on how to train a ml5 CVAE model using your own dataset from that source. 
+- **Source**
+  - Google’s Quick, Draw! Dataset
+- **Collector and Year**
+  - From the website: Google released the Quick, Draw! game in 2016 and was developed as “an example of how you can use machine learning in fun ways” by the Google Creative Lab, Data Arts Team, and their collaborators as part of Google’s AI Experiments showcase.
+- **Collection Method**
+  - The sketches are crowdsourced from visitors’ contributions as they play Google’s Quick, Draw! Game, and they are publicly available to download.
+- **Purpose and Intended Users**
+  - According to the paper, the dataset is publicly available “to encourage further research and development in the area of generative vector image modelling.”
+- **References**
+  - Website [Google’s Quick, Draw!](https://quickdraw.withgoogle.com/#)
+  - Website [Quick, Draw! The Data](https://quickdraw.withgoogle.com/data)
+  - GitHub Repository [ml5 Training CVAE Tutorial by Dingsu (Derek) Wang](https://github.com/ml5js/training_CVAE)
+
+
+
 
 ## Acknowledgements
 
@@ -113,4 +157,4 @@ No tutorials yet - contribute one today!
 
 ## Source Code
 
-[/src/CVAE/](https://github.com/ml5js/ml5-library/tree/development/src/CVAE)
+[/src/CVAE/](https://github.com/ml5js/ml5-library/tree/main/src/CVAE)
