@@ -3,11 +3,11 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { handpose } = ml5;
+import handpose from './index';
 
 const HANDPOSE_IMG = 'https://i.imgur.com/EZXOjqh.jpg';
 
-describe('Facemesh', () => {
+describe('Handpose', () => {
   let handposeInstance;
   let testImage;
 
@@ -20,13 +20,14 @@ describe('Facemesh', () => {
   }
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     handposeInstance = await handpose();
   });
 
   it('detects poses in image', async () => {
     testImage = await loadHTMLImageElement(HANDPOSE_IMG);
     const handPredictions = await handposeInstance.predict(testImage);
+    expect(handPredictions).not.toHaveLength(0);
     expect(handPredictions[0].landmarks).toBeDefined();
   });
 });

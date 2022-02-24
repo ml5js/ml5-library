@@ -82,6 +82,9 @@ module.exports = {
   // An enum that specifies notification mode. Requires { notify: true }
   // notifyMode: "failure-change",
 
+  // Allows the test suite to pass when no files are found.
+  passWithNoTests: true,
+
   // A preset that is used as a base for Jest's configuration
   // preset: undefined,
 
@@ -115,7 +118,7 @@ module.exports = {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ["jest-canvas-mock"],
+  setupFiles: ["canvas"],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -130,7 +133,9 @@ module.exports = {
   testEnvironment: "jsdom",
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  testEnvironmentOptions: {
+    resources: "usable" // Load image resources
+  },
 
   // Adds a location field to test results
   // testLocationInResults: false,
@@ -147,7 +152,10 @@ module.exports = {
   // ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  // testRegex: [],
+  testRegex: [
+    "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
+    "_test\\.js"
+  ],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,

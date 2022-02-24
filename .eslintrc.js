@@ -38,10 +38,13 @@ module.exports = {
       },
     },
     {
-      files: ["**/**_test.js"],
+      files: ["**/**_test.js", "**/**.test.js"],
       globals: {
         ml5: false,
       },
+      env: {
+        jest: true,
+      }
     },
   ],
 };

@@ -3,10 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { pitchDetection } = ml5;
-
-describe('pitchDetection', () => {
-  let pitch;
+describe('PitchDetection', () => {
+  // TODO: write tests
 
   // beforeAll(async () => {
   // });

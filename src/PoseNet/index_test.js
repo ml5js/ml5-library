@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { poseNet } = ml5;
+import poseNet from './index';
 
 const POSENET_IMG = 'https://github.com/ml5js/ml5-adjacent/raw/master/02_ImageClassification_Video/starter.png';
 
@@ -33,7 +33,7 @@ describe('PoseNet', () => {
   }
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     net = await poseNet();
   });
 

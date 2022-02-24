@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { featureExtractor } = ml5;
+import featureExtractor from './index';
 
 const FEATURE_EXTRACTOR_DEFAULTS = {
   learningRate: 0.0001,
@@ -17,7 +17,7 @@ describe('featureExtractor with Mobilenet', () => {
   let classifier;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     classifier = await featureExtractor('MobileNet', {});
   });
 

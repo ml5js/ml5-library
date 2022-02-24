@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 
-const { styleTransfer } = ml5;
+import styleTransfer from './index';
 
 const STYLE_TRANSFER_MODEL = 'https://rawgit.com/ml5js/ml5-data-and-models/master/models/style-transfer/matta/';
 const STYLE_TRANSFER_DEFAULTS = {
@@ -23,7 +23,7 @@ describe('styleTransfer', () => {
   }
 
   beforeAll(async () => {
-    // jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    // jest.setTimeout(100000);
     // style = styleTransfer(STYLE_TRANSFER_MODEL);
   });
 

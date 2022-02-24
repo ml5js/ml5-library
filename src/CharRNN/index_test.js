@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { charRNN } = ml5;
+import charRNN from './index';
 
 const RNN_MODEL_URL = 'https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/lstm/woolf';
 
@@ -29,7 +29,7 @@ describe('charRnn', () => {
   let rnn;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000; // set extra long interval due to issues with CharRNN generation time
+    jest.setTimeout(20000); // set extra long interval due to issues with CharRNN generation time
     rnn  = await charRNN(RNN_MODEL_URL, undefined);
   });
 

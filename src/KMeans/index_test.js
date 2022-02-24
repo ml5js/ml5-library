@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { kmeans } = ml5;
+import kmeans from './index';
 
 const KMEANS_DEFAULTS = {
   k: 2,
@@ -17,7 +17,7 @@ describe("kMeans", () => {
     "https://raw.githubusercontent.com/ml5js/ml5-library/main/examples/d3/KMeans/KMeans_GaussianClusterDemo/data/gaussian2d_2clusters.csv";
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     kmeansModel = await kmeans(dataurl, KMEANS_DEFAULTS, () => {});
     await kmeansModel.load(dataurl);
   });

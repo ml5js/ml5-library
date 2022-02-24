@@ -3,9 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const {
-  imageClassifier
-} = ml5;
+import imageClassifier from './index';
 
 const TM_URL = 'https://storage.googleapis.com/tm-models/WfgKPytY/model.json';
 
@@ -49,7 +47,7 @@ describe('imageClassifier', () => {
   describe('with Teachable Machine model', () => {
     
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+      jest.setTimeout(30000);
       classifier = await imageClassifier(TM_URL, undefined, {});
     });
 
@@ -69,7 +67,7 @@ describe('imageClassifier', () => {
   describe('imageClassifier with Mobilenet', () => {
 
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+      jest.setTimeout(30000);
       classifier = await imageClassifier('MobileNet', undefined, {});
     });
 
@@ -137,7 +135,7 @@ describe('videoClassifier', () => {
   }
 
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    jest.setTimeout(30000);
     const video = await getVideo();
     // FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
     classifier = await imageClassifier('MobileNet', video, {});

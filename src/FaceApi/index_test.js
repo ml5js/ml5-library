@@ -3,9 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const {
-  faceApi
-} = ml5;
+import "cross-fetch/polyfill";
+import faceApi from "./index";
 
 const FACEAPI_DEFAULTS = {
   withLandmarks: true,
@@ -49,7 +48,7 @@ describe('faceApi', () => {
   // }
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+    jest.setTimeout(15000);
     faceapi = await faceApi();
   });
  

@@ -54,11 +54,14 @@
     "@babel/register": "^7.16.5",
     "@babel/runtime": "^7.16.5",
     "@babel/runtime-corejs3": "^7.16.5",
+    "@tensorflow/tfjs-node": "^3.13.0",
     "all-contributors-cli": "^6.10.0",
     "babel-jest": "^27.4.5",
     "babel-loader": "8.2.3",
+    "canvas": "^2.9.0",
     "commitizen": "4.0.3",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-fetch": "^3.1.5",
     "cz-conventional-changelog": "2.1.0",
     "docsify-cli": "^4.3.0",
     "dotenv": "^8.2.0",
@@ -72,7 +75,6 @@
     "ghooks": "2.0.2",
     "html-webpack-plugin": "^3.0.7",
     "jest": "^27.4.5",
-    "jest-canvas-mock": "^2.3.1",
     "live-server": "^1.2.1",
     "npm-run-all": "^4.1.5",
     "q": "^1.5.1",
@@ -97,8 +99,8 @@
     "README.md"
   ],
   "peerDependencies": {
-    "@tensorflow/tfjs-core": "^1.2.9",
-    "@tensorflow/tfjs-converter": "^1.2.9"
+    "@tensorflow/tfjs-converter": "^1.2.9",
+    "@tensorflow/tfjs-core": "^1.2.9"
   },
   "dependencies": {
     "@magenta/sketch": "0.2.0",

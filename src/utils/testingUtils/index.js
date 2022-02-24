@@ -1,4 +1,16 @@
 
+export const asyncLoadImage = async (src) => {
+  const img = new Image();
+  if (src.startsWith('http')) {
+    img.crossOrigin = "true";
+  }
+  img.src = src;
+  await new Promise(resolve => {
+    img.onload = resolve;
+  });
+  return img;
+}
+
 export const getRobin = async () => {
   const img = new Image();
   img.crossOrigin = "";
