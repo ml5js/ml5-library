@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { getImageData, getRobin } from "../utils/testingUtils";
+import { getRobin, randomImageData } from "../utils/testingUtils";
 import objectDetector from "./index";
 
 const ml5 = { objectDetector };
@@ -77,7 +77,7 @@ describe("objectDetector", () => {
 
     it("detects takes ImageData", async () => {
       jest.spyOn(cocoDetector, "detect").mockReturnValue([]);
-      const img = await getImageData();
+      const img = randomImageData();
       const detection = await cocoDetector.detect(img);
       expect(detection).toEqual([]);
     });
@@ -121,7 +121,7 @@ describe("objectDetector", () => {
 
     it("detects takes ImageData", async () => {
       jest.spyOn(yolo, "detect").mockReturnValue([]);
-      const img = await getImageData();
+      const img = randomImageData();
       const detection = await yolo.detect(img);
       expect(detection).toEqual([]);
     });

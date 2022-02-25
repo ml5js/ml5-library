@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import {asyncLoadImage, getRobin} from '../utils/testingUtils';
+import { asyncLoadImage } from '../utils/testingUtils';
 import uNet from './index';
 
 // test image

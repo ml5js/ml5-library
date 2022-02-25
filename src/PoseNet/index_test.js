@@ -3,6 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { asyncLoadImage } from "../utils/testingUtils";
 import poseNet from './index';
 
 const POSENET_IMG = 'https://github.com/ml5js/ml5-adjacent/raw/master/02_ImageClassification_Video/starter.png';
@@ -24,14 +25,6 @@ const POSENET_DEFAULTS = {
 describe('PoseNet', () => {
   let net;
 
-  async function getImage() {
-    const img = new Image();
-    img.crossOrigin = '';
-    img.src = POSENET_IMG;
-    await new Promise((resolve) => { img.onload = resolve; });
-    return img;
-  }
-
   beforeAll(async () => {
     jest.setTimeout(10000);
     net = await poseNet();
@@ -45,9 +38,9 @@ describe('PoseNet', () => {
     expect(net.quantBytes).toBe(POSENET_DEFAULTS.quantBytes);
   });
 
-  // it('detects poses in image', async () => {
-  //   const image = await getImage();
-  //   const pose = net.singlePose(image);
-  //   // expect(pose).toBe('');
-  // });
+  it('detects poses in image', async () => {
+     const image = await asyncLoadImage(POSENET_IMG);
+     const pose = net.singlePose(image);
+     // TODO expect(pose).not.toHaveLength(0);
+  });
 });

@@ -3,6 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
+import { getRobin } from "../utils/testingUtils";
 import imageClassifier from './index';
 
 const TM_URL = 'https://storage.googleapis.com/tm-models/WfgKPytY/model.json';
@@ -18,18 +19,8 @@ const DEFAULTS = {
   version: 2,
 };
 
-async function getImage() {
-  const img = new Image();
-  img.crossOrigin = true;
-  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg';
-  await new Promise((resolve) => {
-    img.onload = resolve;
-  });
-  return img;
-}
-
 async function getCanvas() {
-  const img = await getImage();
+  const img = await getRobin();
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -45,7 +36,7 @@ describe('imageClassifier', () => {
    */
   // Teachable machine model
   describe('with Teachable Machine model', () => {
-    
+
     beforeAll(async () => {
       jest.setTimeout(30000);
       classifier = await imageClassifier(TM_URL, undefined, {});
@@ -72,7 +63,7 @@ describe('imageClassifier', () => {
     });
 
     describe('instantiate', () => {
-      
+
       it('Should create a classifier with all the defaults', async () => {
         expect(classifier.version).toBe(DEFAULTS.version);
         expect(classifier.alpha).toBe(DEFAULTS.alpha);
@@ -84,13 +75,13 @@ describe('imageClassifier', () => {
     describe('classify', () => {
 
       it('Should classify an image of a Robin', async () => {
-        const img = await getImage();
+        const img = await getRobin();
         await classifier.classify(img)
           .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
       });
 
       it('Should support p5 elements with an image on .elt', async () => {
-        const img = await getImage();
+        const img = await getRobin();
         await classifier.classify({
           elt: img
         })

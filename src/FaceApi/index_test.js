@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import "cross-fetch/polyfill";
+import { asyncLoadImage } from "../utils/testingUtils";
 import faceApi from "./index";
 
 const FACEAPI_DEFAULTS = {
@@ -25,33 +26,16 @@ const FACEAPI_DEFAULTS = {
   },
 };
 
+const FRIDA = 'https://raw.githubusercontent.com/ml5js/ml5-library/main/examples/javascript/FaceApi/FaceApi_Image_Landmarks/assets/frida.jpg';
+
 describe('faceApi', () => {
   let faceapi;
-
-  async function getImage() {
-    const img = new Image();
-    img.crossOrigin = true;
-    img.src = 'https://raw.githubusercontent.com/ml5js/ml5-library/main/examples/javascript/FaceApi/FaceApi_Image_Landmarks/assets/frida.jpg';
-    await new Promise((resolve) => {
-      img.onload = resolve;
-    });
-    return img;
-  }
-
-  // async function getCanvas() {
-  //     const img = await getImage();
-  //     const canvas = document.createElement('canvas');
-  //     canvas.width = img.width;
-  //     canvas.height = img.height;
-  //     canvas.getContext('2d').drawImage(img, 0, 0);
-  //     return canvas;
-  // }
 
   beforeAll(async () => {
     jest.setTimeout(15000);
     faceapi = await faceApi();
   });
- 
+
   describe('landmarks', () => {
 
     it('Should create faceApi with all the defaults', async () => {
@@ -60,7 +44,7 @@ describe('faceApi', () => {
     });
 
     it('Should get landmarks for Frida', async () => {
-      const img = await getImage();
+      const img = await asyncLoadImage(FRIDA);
       await faceapi.detectSingle(img)
         .then(results => {
           expect(results.landmarks).toEqual(jasmine.any(Object));
