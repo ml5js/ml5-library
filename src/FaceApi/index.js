@@ -14,6 +14,7 @@
 import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
+import modelLoader from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -47,31 +48,26 @@ class FaceApiBase {
     this.modelReady = false;
     this.detectorOptions = null;
     this.config = {
-      minConfidence: this.checkUndefined(options.minConfidence, DEFAULTS.minConfidence),
-      withLandmarks: this.checkUndefined(options.withLandmarks, DEFAULTS.withLandmarks),
-      withDescriptors: this.checkUndefined(options.withDescriptors, DEFAULTS.withDescriptors),
-      withTinyNet: this.checkUndefined(options.withTinyNet, DEFAULTS.withTinyNet),
+      minConfidence: options.minConfidence || DEFAULTS.minConfidence,
+      withLandmarks: options.withLandmarks || DEFAULTS.withLandmarks,
+      withDescriptors: options.withDescriptors || DEFAULTS.withDescriptors,
+      withTinyNet: options.withTinyNet || DEFAULTS.withTinyNet,
       MODEL_URLS: {
-        Mobilenetv1Model: this.checkUndefined(
-          options.Mobilenetv1Model,
+        Mobilenetv1Model:
+          options.Mobilenetv1Model ||
           DEFAULTS.MODEL_URLS.Mobilenetv1Model,
-        ),
-        TinyFaceDetectorModel: this.checkUndefined(
-          options.TinyFaceDetectorModel,
+        TinyFaceDetectorModel:
+          options.TinyFaceDetectorModel ||
           DEFAULTS.MODEL_URLS.TinyFaceDetectorModel,
-        ),
-        FaceLandmarkModel: this.checkUndefined(
-          options.FaceLandmarkModel,
+        FaceLandmarkModel:
+          options.FaceLandmarkModel ||
           DEFAULTS.MODEL_URLS.FaceLandmarkModel,
-        ),
-        FaceLandmark68TinyNet: this.checkUndefined(
-          options.FaceLandmark68TinyNet,
+        FaceLandmark68TinyNet:
+          options.FaceLandmark68TinyNet ||
           DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
-        ),
-        FaceRecognitionModel: this.checkUndefined(
-          options.FaceRecognitionModel,
+        FaceRecognitionModel:
+          options.FaceRecognitionModel ||
           DEFAULTS.MODEL_URLS.FaceRecognitionModel,
-        ),
       },
     };
 
@@ -93,7 +89,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = this.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 
@@ -207,7 +203,7 @@ class FaceApiBase {
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
 
-    const { withLandmarks, withDescriptors } = this.config;
+    const {withLandmarks, withDescriptors} = this.config;
 
     let result;
 
@@ -313,7 +309,7 @@ class FaceApiBase {
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
 
-    const { withLandmarks, withDescriptors } = this.config;
+    const {withLandmarks, withDescriptors} = this.config;
 
     let result;
     if (withLandmarks) {
@@ -343,27 +339,6 @@ class FaceApiBase {
     result = this.landmarkParts(result);
 
     return result;
-  }
-
-  /**
-   * Check if the given _param is undefined, otherwise return the _default
-   * @param {*} _param
-   * @param {*} _default
-   */
-  checkUndefined(_param, _default) {
-    return _param !== undefined ? _param : _default;
-  }
-
-  /**
-   * Checks if the given string is an absolute or relative path and returns
-   *      the path to the modelJson
-   * @param {String} absoluteOrRelativeUrl
-   */
-  getModelPath(absoluteOrRelativeUrl) {
-    const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl)
-      ? absoluteOrRelativeUrl
-      : window.location.pathname + absoluteOrRelativeUrl;
-    return modelJsonPath;
   }
 
   /**
@@ -399,16 +374,11 @@ class FaceApiBase {
     });
   }
 
-  /* eslint class-methods-use-this: "off" */
-  isAbsoluteURL(str) {
-    const pattern = new RegExp("^(?:[a-z]+:)?//", "i");
-    return !!pattern.test(str);
-  }
-
   /**
    * get parts from landmarks
    * @param {*} result
    */
+  // eslint-disable-next-line class-methods-use-this
   landmarkParts(result) {
     let output;
     // multiple detections is an array
@@ -417,7 +387,7 @@ class FaceApiBase {
         // if landmarks exist return parts
         const newItem = Object.assign({}, item);
         if (newItem.landmarks) {
-          const { landmarks } = newItem;
+          const {landmarks} = newItem;
           newItem.parts = {
             mouth: landmarks.getMouth(),
             nose: landmarks.getNose(),
@@ -444,7 +414,7 @@ class FaceApiBase {
     } else {
       output = Object.assign({}, result);
       if (output.landmarks) {
-        const { landmarks } = result;
+        const {landmarks} = result;
         output.parts = {
           mouth: landmarks.getMouth(),
           nose: landmarks.getNose(),
