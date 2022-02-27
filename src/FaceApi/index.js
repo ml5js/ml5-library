@@ -203,7 +203,7 @@ class FaceApiBase {
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
 
-    const {withLandmarks, withDescriptors} = this.config;
+    const { withLandmarks, withDescriptors } = this.config;
 
     let result;
 
@@ -309,7 +309,7 @@ class FaceApiBase {
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
 
-    const {withLandmarks, withDescriptors} = this.config;
+    const { withLandmarks, withDescriptors } = this.config;
 
     let result;
     if (withLandmarks) {
@@ -387,7 +387,7 @@ class FaceApiBase {
         // if landmarks exist return parts
         const newItem = Object.assign({}, item);
         if (newItem.landmarks) {
-          const {landmarks} = newItem;
+          const { landmarks } = newItem;
           newItem.parts = {
             mouth: landmarks.getMouth(),
             nose: landmarks.getNose(),
@@ -414,7 +414,7 @@ class FaceApiBase {
     } else {
       output = Object.assign({}, result);
       if (output.landmarks) {
-        const {landmarks} = result;
+        const { landmarks } = result;
         output.parts = {
           mouth: landmarks.getMouth(),
           nose: landmarks.getNose(),
