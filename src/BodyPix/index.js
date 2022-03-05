@@ -90,14 +90,13 @@ class BodyPix {
   bodyPartsSpec(colorOptions) {
     const result = colorOptions !== undefined || Object.keys(colorOptions).length >= 24 ? colorOptions : this.config.palette;
 
-    // Check if we're getting p5 colors, make sure they are rgb 
-    if (p5Utils.checkP5() && result !== undefined && Object.keys(result).length >= 24) {
+    // Check if we're getting p5 colors, make sure they are rgb
+    const p5 = p5Utils.p5Instance;
+    if (p5 && result !== undefined && Object.keys(result).length >= 24) {
       // Ensure the p5Color object is an RGB array
       Object.keys(result).forEach(part => {
-        if (result[part].color instanceof window.p5.Color) {
+        if (result[part].color instanceof p5.Color) {
           result[part].color = this.p5Color2RGB(result[part].color);
-        } else {
-          result[part].color = result[part].color;
         }
       });
     }

@@ -5,7 +5,9 @@
 
 class P5Util {
   constructor() {
+    if (typeof window !== "undefined") {
       this.m_p5Instance = window;
+    }
   }
 
   /**
@@ -19,7 +21,7 @@ class P5Util {
   /**
    * This getter will return p5, checking first if it is in
    * the window and next if it is in the p5 property of this.m_p5Instance
-   * @returns {boolean} if it is in p5 
+   * @returns {boolean} if it is in p5
    */
   get p5Instance() {
     if (typeof this.m_p5Instance !== "undefined" &&
