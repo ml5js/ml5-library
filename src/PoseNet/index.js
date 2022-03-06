@@ -162,6 +162,7 @@ class PoseNet extends EventEmitter {
   async singlePose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
+    await this.ready;
     const pose = await this.net.estimateSinglePose(input, {flipHorizontal: this.flipHorizontal});
     const poseWithParts = this.mapParts(pose);
     const result = [{ pose:poseWithParts, skeleton: this.skeleton(pose.keypoints) }];
@@ -187,6 +188,7 @@ class PoseNet extends EventEmitter {
   async multiPose(inputOr, cb) {
     const input = this.getInput(inputOr);
 
+    await this.ready;
     const poses = await this.net.estimateMultiplePoses(input, {
       flipHorizontal: this.flipHorizontal,
       maxDetections: this.maxPoseDetections,

@@ -39,8 +39,19 @@ describe('PoseNet', () => {
   });
 
   it('detects poses in image', async () => {
-     const image = await asyncLoadImage(POSENET_IMG);
-     const pose = net.singlePose(image);
-     // TODO expect(pose).not.toHaveLength(0);
+    const image = await asyncLoadImage(POSENET_IMG);
+
+    // Result should be an array with a single object containing pose and skeleton.
+    const result = await net.singlePose(image);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toHaveProperty('pose');
+    expect(result[0]).toHaveProperty('skeleton');
+
+    // Verify a known outcome.
+    const nose = result[0].pose.keypoints.find(keypoint => keypoint.part === "nose");
+    expect(nose).toBeTruthy();
+    expect(nose.position.x).toBeCloseTo(448.6, 0);
+    expect(nose.position.y).toBeCloseTo(255.9, 0);
+    expect(nose.score).toBeCloseTo(0.999);
   });
 });
