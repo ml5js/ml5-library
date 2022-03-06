@@ -18,7 +18,7 @@ describe('bodyPix', () => {
   let bp;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 5000;
+    jest.setTimeout(5000);
     bp = await bodyPix();
   });
 
