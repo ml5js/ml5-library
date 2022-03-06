@@ -10,7 +10,7 @@ Image Classifier using pre-trained networks
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import {
-  array3DToImage
+  array3DToImage, isInstanceOfSupportedElement
 } from '../utils/imageUtilities';
 import p5Utils from '../utils/p5Utils';
 
@@ -51,15 +51,9 @@ class UNET {
     let imgToPredict;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData) {
+    if (isInstanceOfSupportedElement(inputOrCallback)) {
       imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)) {
+    } else if (typeof inputOrCallback === 'object' && isInstanceOfSupportedElement(inputOrCallback.elt)) {
       imgToPredict = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       imgToPredict = this.video;

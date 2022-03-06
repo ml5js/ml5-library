@@ -6,6 +6,7 @@
 import * as tf from '@tensorflow/tfjs';
 import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
 import DOODLENET_CLASSES from '../utils/DOODLENET_CLASSES';
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   DOODLENET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/doodlenet/model.json',
@@ -15,15 +16,9 @@ const DEFAULTS = {
 function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement 
-      || img instanceof HTMLVideoElement 
-      || img instanceof HTMLCanvasElement
-      || img instanceof ImageData) {
+    if (isInstanceOfSupportedElement(img)) {
       image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement 
-      || img.elt instanceof HTMLVideoElement 
-      || img.elt instanceof HTMLCanvasElement
-      || img.elt instanceof ImageData)) {
+    } else if (typeof img === 'object' && isInstanceOfSupportedElement(img.elt)) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image, video and canvas.
     }
   } else {

@@ -10,7 +10,7 @@ A class that extract features from Mobilenet
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
 import Video from "./../utils/Video";
-import { imgToTensor } from "../utils/imageUtilities";
+import { imgToTensor, isInstanceOfSupportedElement } from "../utils/imageUtilities";
 import { saveBlob } from "../utils/io";
 import callCallback from "../utils/callcallback";
 
@@ -193,18 +193,12 @@ class Mobilenet {
     let callback = cb;
 
     if (
-      inputOrLabel instanceof HTMLImageElement ||
-      inputOrLabel instanceof HTMLVideoElement ||
-      inputOrLabel instanceof HTMLCanvasElement ||
-      inputOrLabel.elt instanceof ImageData
+      isInstanceOfSupportedElement(inputOrLabel)
     ) {
       imgToAdd = inputOrLabel;
     } else if (
       typeof inputOrLabel === "object" &&
-      (inputOrLabel.elt instanceof HTMLImageElement ||
-        inputOrLabel.elt instanceof HTMLVideoElement ||
-        inputOrLabel.elt instanceof HTMLCanvasElement ||
-        inputOrLabel.elt instanceof ImageData)
+      isInstanceOfSupportedElement(inputOrLabel.elt)
     ) {
       imgToAdd = inputOrLabel.elt;
     } else if (typeof inputOrLabel === "string" || typeof inputOrLabel === "number") {
@@ -346,18 +340,12 @@ class Mobilenet {
     let callback;
 
     if (
-      inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData
+      isInstanceOfSupportedElement(inputOrCallback)
     ) {
       imgToPredict = inputOrCallback;
     } else if (
       typeof inputOrCallback === "object" &&
-      (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)
+      isInstanceOfSupportedElement(inputOrCallback.elt)
     ) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === "function") {
@@ -409,18 +397,12 @@ class Mobilenet {
     let imgToPredict;
     let callback;
     if (
-      inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData
+      isInstanceOfSupportedElement(inputOrCallback)
     ) {
       imgToPredict = inputOrCallback;
     } else if (
       typeof inputOrCallback === "object" &&
-      (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)
+      isInstanceOfSupportedElement(inputOrCallback.elt)
     ) {
       imgToPredict = inputOrCallback.elt; // p5.js image element
     } else if (typeof inputOrCallback === "function") {
@@ -517,10 +499,7 @@ class Mobilenet {
     let img = input;
     if (
       img instanceof tf.Tensor ||
-      img instanceof ImageData ||
-      img instanceof HTMLImageElement ||
-      img instanceof HTMLCanvasElement ||
-      img instanceof HTMLVideoElement
+      isInstanceOfSupportedElement(img)
     ) {
       return tf.tidy(() => {
         if (!(img instanceof tf.Tensor)) {
@@ -559,18 +538,12 @@ class Mobilenet {
     let imgToPredict;
     let endpointToPredict;
     if (
-      input instanceof HTMLImageElement ||
-      input instanceof HTMLVideoElement ||
-      input instanceof HTMLCanvasElement ||
-      input instanceof ImageData
+      isInstanceOfSupportedElement(input)
     ) {
       imgToPredict = input;
     } else if (
       typeof input === "object" &&
-      (input.elt instanceof HTMLImageElement ||
-        input.elt instanceof HTMLVideoElement ||
-        input.elt instanceof HTMLCanvasElement ||
-        input.elt instanceof ImageData)
+      isInstanceOfSupportedElement(input.elt)
     ) {
       imgToPredict = input.elt; // p5.js image/canvas/video element
     } else {

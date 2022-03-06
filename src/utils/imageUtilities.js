@@ -63,23 +63,42 @@ const cropImage = (img) => {
   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
 };
 
+/**
+ * Check if a variable is an instance of ImageData,
+ * or a plain object with the same properties as ImageData.
+ * This allows it to work in Node environments where ImageData is not defined.
+ * @param {any} img
+ * @returns {boolean}
+ * @returns {img is ImageData}
+ */
+const isImageData = (img) => {
+  if (typeof (ImageData) === 'undefined') {
+    return (
+      typeof img === 'object' &&
+      img.data instanceof Uint8Array &&
+      typeof img.width === 'number' &&
+      typeof img.height === 'number'
+    )
+  }
+  return img instanceof ImageData;
+}
+
+function isInstanceOfSupportedElement(subject) {
+  return (subject instanceof HTMLVideoElement
+    || subject instanceof HTMLImageElement
+    || subject instanceof HTMLCanvasElement
+    || isImageData(subject))
+}
+
 const flipImage = (img) => {
   // image image, bitmap, or canvas
   let imgWidth;
   let imgHeight;
   let inputImg;
 
-  if (img instanceof HTMLImageElement ||
-    img instanceof HTMLCanvasElement ||
-    img instanceof HTMLVideoElement ||
-    img instanceof ImageData) {
+  if (isInstanceOfSupportedElement(img)) {
     inputImg = img;
-  } else if (typeof img === 'object' &&
-    (img.elt instanceof HTMLImageElement ||
-      img.elt instanceof HTMLCanvasElement ||
-      img.elt instanceof HTMLVideoElement ||
-      img.elt instanceof ImageData)) {
-
+  } else if (typeof img === 'object' && isInstanceOfSupportedElement(img.elt)) {
     inputImg = img.elt; // Handle p5.js image
   } else if (typeof img === 'object' &&
     img.canvas instanceof HTMLCanvasElement) {
@@ -134,30 +153,15 @@ function imgToTensor(input, size = null) {
   });
 }
 
-function isInstanceOfSupportedElement(subject) {
-  return (subject instanceof HTMLVideoElement
-    || subject instanceof HTMLImageElement
-    || subject instanceof HTMLCanvasElement
-    || subject instanceof ImageData)
-}
-
 function imgToPixelArray(img){
   // image image, bitmap, or canvas
   let imgWidth;
   let imgHeight;
   let inputImg;
  
-  if (img instanceof HTMLImageElement ||
-     img instanceof HTMLCanvasElement ||
-     img instanceof HTMLVideoElement ||
-     img instanceof ImageData) {
+  if (isInstanceOfSupportedElement(img)) {
     inputImg = img;
-  } else if (typeof img === 'object' &&
-     (img.elt instanceof HTMLImageElement ||
-       img.elt instanceof HTMLCanvasElement ||
-       img.elt instanceof HTMLVideoElement ||
-       img.elt instanceof ImageData)) {
- 
+  } else if (typeof img === 'object' && isInstanceOfSupportedElement(img)) {
     inputImg = img.elt; // Handle p5.js image
   } else if (typeof img === 'object' &&
      img.canvas instanceof HTMLCanvasElement) {
@@ -192,6 +196,7 @@ export {
   cropImage,
   imgToTensor,
   isInstanceOfSupportedElement,
+  isImageData,
   flipImage,
   imgToPixelArray
 };

@@ -14,7 +14,7 @@ import * as mobilenet from "@tensorflow-models/mobilenet";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
 import callCallback from "../utils/callcallback";
-import { imgToTensor } from "../utils/imageUtilities";
+import { imgToTensor, isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   mobilenet: {
@@ -207,18 +207,12 @@ class ImageClassifier {
       imgToPredict = this.video;
       numberOfClasses = inputNumOrCallback;
     } else if (
-      inputNumOrCallback instanceof HTMLVideoElement ||
-      inputNumOrCallback instanceof HTMLImageElement ||
-      inputNumOrCallback instanceof HTMLCanvasElement ||
-      inputNumOrCallback instanceof ImageData
+      isInstanceOfSupportedElement(inputNumOrCallback)
     ) {
       imgToPredict = inputNumOrCallback;
     } else if (
       typeof inputNumOrCallback === "object" &&
-      (inputNumOrCallback.elt instanceof HTMLVideoElement ||
-        inputNumOrCallback.elt instanceof HTMLImageElement ||
-        inputNumOrCallback.elt instanceof HTMLCanvasElement ||
-        inputNumOrCallback.elt instanceof ImageData)
+      isInstanceOfSupportedElement(inputNumOrCallback.elt)
     ) {
       imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
     } else if (

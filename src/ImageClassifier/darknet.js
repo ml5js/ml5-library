@@ -6,6 +6,7 @@
 import * as tf from "@tensorflow/tfjs";
 import { getTopKClassesFromTensor } from "../utils/gettopkclasses";
 import IMAGENET_CLASSES_DARKNET from "../utils/IMAGENET_CLASSES_DARKNET";
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   DARKNET_URL:
@@ -20,18 +21,12 @@ function preProcess(img, size) {
   let image;
   if (!(img instanceof tf.Tensor)) {
     if (
-      img instanceof HTMLImageElement ||
-      img instanceof HTMLVideoElement ||
-      img instanceof HTMLCanvasElement ||
-      img instanceof ImageData
+      isInstanceOfSupportedElement(img)
     ) {
       image = tf.browser.fromPixels(img);
     } else if (
       typeof img === "object" &&
-      (img.elt instanceof HTMLImageElement ||
-        img.elt instanceof HTMLVideoElement ||
-        img.elt instanceof HTMLCanvasElement ||
-        img.elt instanceof ImageData)
+      isInstanceOfSupportedElement(img.elt)
     ) {
       image = tf.browser.fromPixels(img.elt); // Handle p5.js image and video.
     }

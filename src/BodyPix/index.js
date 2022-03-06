@@ -14,6 +14,7 @@
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
 
@@ -232,14 +233,9 @@ class BodyPix {
       imgToSegment = this.video;
       callback = optionsOrCallback;
       // clean the following conditional statement up!
-    } else if (optionsOrCallback instanceof HTMLImageElement ||
-            optionsOrCallback instanceof HTMLCanvasElement ||
-            optionsOrCallback instanceof HTMLVideoElement ||
-            optionsOrCallback instanceof ImageData) {
+    } else if (isInstanceOfSupportedElement(optionsOrCallback)) {
       imgToSegment = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
-                optionsOrCallback.elt instanceof HTMLCanvasElement ||
-                optionsOrCallback.elt instanceof ImageData)) {
+    } else if (typeof optionsOrCallback === 'object' && isInstanceOfSupportedElement(optionsOrCallback.elt)) {
       imgToSegment = optionsOrCallback.elt; // Handle p5.js image
     } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
       imgToSegment = optionsOrCallback.canvas; // Handle p5.js image
@@ -389,14 +385,9 @@ class BodyPix {
       imgToSegment = this.video;
       callback = optionsOrCallback;
       // clean the following conditional statement up!
-    } else if (optionsOrCallback instanceof HTMLImageElement ||
-            optionsOrCallback instanceof HTMLCanvasElement ||
-            optionsOrCallback instanceof HTMLVideoElement ||
-            optionsOrCallback instanceof ImageData) {
+    } else if (isInstanceOfSupportedElement(optionsOrCallback)) {
       imgToSegment = optionsOrCallback;
-    } else if (typeof optionsOrCallback === 'object' && (optionsOrCallback.elt instanceof HTMLImageElement ||
-                optionsOrCallback.elt instanceof HTMLCanvasElement ||
-                optionsOrCallback.elt instanceof ImageData)) {
+    } else if (typeof optionsOrCallback === 'object' && isInstanceOfSupportedElement(optionsOrCallback.elt)) {
       imgToSegment = optionsOrCallback.elt; // Handle p5.js image
     } else if (typeof optionsOrCallback === 'object' && optionsOrCallback.canvas instanceof HTMLCanvasElement) {
       imgToSegment = optionsOrCallback.canvas; // Handle p5.js image

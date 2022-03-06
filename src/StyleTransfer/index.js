@@ -14,7 +14,7 @@ The original TensorFlow implementation was developed by Logan Engstrom: github.c
 import * as tf from '@tensorflow/tfjs';
 import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
-import { array3DToImage } from '../utils/imageUtilities';
+import { array3DToImage, isInstanceOfSupportedElement } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
@@ -114,17 +114,13 @@ class StyleTransfer extends Video {
     let input;
     let callback = cb;
 
-    if (inputOrCallback instanceof HTMLVideoElement ||
-        inputOrCallback instanceof HTMLImageElement ||
-        inputOrCallback instanceof ImageData) {
-      input = inputOrCallback;
-    } else if (inputOrCallback instanceof HTMLCanvasElement) {
+    if (inputOrCallback instanceof HTMLCanvasElement) {
       input = await convertCanvasToImage(inputOrCallback);
+    } else if (isInstanceOfSupportedElement(inputOrCallback)) {
+      input = inputOrCallback;
     } else if (typeof inputOrCallback === 'object' && inputOrCallback.elt instanceof HTMLCanvasElement) {
       input = await convertCanvasToImage(inputOrCallback.elt);
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement 
-      || inputOrCallback.elt instanceof HTMLImageElement
-      || inputOrCallback.elt instanceof ImageData)) {
+    } else if (typeof inputOrCallback === 'object' && isInstanceOfSupportedElement(inputOrCallback.elt)) {
       input = inputOrCallback.elt;
     } else if (typeof inputOrCallback === 'function') {
       input = this.video;
