@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
 import callCallback from '../utils/callcallback';
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 
 const DEFAULTS = {
@@ -134,14 +135,9 @@ class PoseNet extends EventEmitter {
 
   getInput(inputOr){
     let input;
-    if (inputOr instanceof HTMLImageElement 
-      || inputOr instanceof HTMLVideoElement
-      || inputOr instanceof HTMLCanvasElement
-      || inputOr instanceof ImageData) {
+    if (isInstanceOfSupportedElement(inputOr)) {
       input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement 
-      || inputOr.elt instanceof HTMLVideoElement
-      || inputOr.elt instanceof ImageData)) {
+    } else if (typeof inputOr === 'object' && isInstanceOfSupportedElement(inputOr.elt)) {
       input = inputOr.elt; // Handle p5.js image and video
     } else if (typeof inputOr === 'object' && inputOr.canvas instanceof HTMLCanvasElement) {
       input = inputOr.canvas; // Handle p5.js image

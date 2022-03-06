@@ -15,6 +15,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as handposeCore from "@tensorflow-models/handpose";
 import { EventEmitter } from "events";
 import callCallback from "../utils/callcallback";
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 class Handpose extends EventEmitter {
   /**
@@ -86,17 +87,12 @@ class Handpose extends EventEmitter {
   getInput(inputOr) {
     let input;
     if (
-      inputOr instanceof HTMLImageElement ||
-      inputOr instanceof HTMLVideoElement ||
-      inputOr instanceof HTMLCanvasElement ||
-      inputOr instanceof ImageData
+      isInstanceOfSupportedElement(inputOr)
     ) {
       input = inputOr;
     } else if (
       typeof inputOr === "object" &&
-      (inputOr.elt instanceof HTMLImageElement ||
-        inputOr.elt instanceof HTMLVideoElement ||
-        inputOr.elt instanceof ImageData)
+      isInstanceOfSupportedElement(inputOr.elt)
     ) {
       input = inputOr.elt; // Handle p5.js image and video
     } else if (typeof inputOr === "object" && inputOr.canvas instanceof HTMLCanvasElement) {

@@ -14,6 +14,7 @@
 import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
+import { isInstanceOfSupportedElement } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -150,18 +151,12 @@ class FaceApiBase {
       callback = optionsOrCallback;
       // clean the following conditional statement up!
     } else if (
-      optionsOrCallback instanceof HTMLImageElement ||
-      optionsOrCallback instanceof HTMLCanvasElement ||
-      optionsOrCallback instanceof HTMLVideoElement ||
-      optionsOrCallback instanceof ImageData
+      isInstanceOfSupportedElement(optionsOrCallback)
     ) {
       imgToClassify = optionsOrCallback;
     } else if (
       typeof optionsOrCallback === "object" &&
-      (optionsOrCallback.elt instanceof HTMLImageElement ||
-        optionsOrCallback.elt instanceof HTMLCanvasElement ||
-        optionsOrCallback.elt instanceof HTMLVideoElement ||
-        optionsOrCallback.elt instanceof ImageData)
+      isInstanceOfSupportedElement(optionsOrCallback.elt)
     ) {
       imgToClassify = optionsOrCallback.elt; // Handle p5.js image
     } else if (
@@ -256,18 +251,12 @@ class FaceApiBase {
       callback = optionsOrCallback;
       // clean the following conditional statement up!
     } else if (
-      optionsOrCallback instanceof HTMLImageElement ||
-      optionsOrCallback instanceof HTMLCanvasElement ||
-      optionsOrCallback instanceof HTMLVideoElement ||
-      optionsOrCallback instanceof ImageData
+      isInstanceOfSupportedElement(optionsOrCallback)
     ) {
       imgToClassify = optionsOrCallback;
     } else if (
       typeof optionsOrCallback === "object" &&
-      (optionsOrCallback.elt instanceof HTMLImageElement ||
-        optionsOrCallback.elt instanceof HTMLCanvasElement ||
-        optionsOrCallback.elt instanceof HTMLVideoElement ||
-        optionsOrCallback.elt instanceof ImageData)
+      isInstanceOfSupportedElement(optionsOrCallback.elt)
     ) {
       imgToClassify = optionsOrCallback.elt; // Handle p5.js image
     } else if (
@@ -489,7 +478,6 @@ const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
 
   if (typeof optionsOrCallback === "object") {
     options = optionsOrCallback;
-    console.log(options);
   } else if (typeof optionsOrCallback === "function") {
     callback = optionsOrCallback;
   }
