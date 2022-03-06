@@ -75,7 +75,7 @@ const isImageData = (img) => {
   if (typeof (ImageData) === 'undefined') {
     return (
       typeof img === 'object' &&
-      img.data instanceof Uint8Array &&
+      img.data instanceof Uint8ClampedArray &&
       typeof img.width === 'number' &&
       typeof img.height === 'number'
     )
