@@ -1297,6 +1297,17 @@
         "code",
         "example"
       ]
+    },
+    {
+      "login": "lindapaiste",
+      "name": "lindapaiste",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28965286?v=4",
+      "profile": "http://lindapaiste.com",
+      "contributions": [
+        "code",
+        "ideas",
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
