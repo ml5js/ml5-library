@@ -163,16 +163,7 @@ class ArgHelper {
    *  @param {any[]} [args]
    */
   constructor(...args) {
-    args.forEach(this.addArg);
-  }
-
-  /**
-   * Static constructor for easier chaining.
-   *
-   * @param {any[]} args
-   */
-  static from(...args) {
-    return new ArgHelper(...args);
+    args.forEach((arg) => this.addArg(arg));
   }
 
   /**
@@ -253,8 +244,11 @@ class ArgHelper {
 }
 
 /**
- * Export the chainable `from` method instead of the class itself.
+ * Export a chainable method instead of the class itself.
+ *
+ * @param {any[]} args
+ * @return {ArgHelper}
  */
-const handleArguments = ArgHelper.from;
-
-export default handleArguments;
+export default function handleArguments(...args) {
+  return new ArgHelper(...args);
+};
