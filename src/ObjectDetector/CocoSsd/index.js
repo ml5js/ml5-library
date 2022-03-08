@@ -10,7 +10,7 @@
 import * as tf from "@tensorflow/tfjs";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import callCallback from "../../utils/callcallback";
-import { isInstanceOfSupportedElement } from "../../utils/imageUtilities";
+import handleArguments from "../../utils/handleArguments";
 
 const DEFAULTS = {
   base: "lite_mobilenet_v2",
@@ -103,53 +103,15 @@ export class CocoSsdBase {
     await this.ready;
     await tf.nextFrame();
 
-    let imgToPredict;
-    let callback = cb;
+    const args = handleArguments(this.video, inputOrCallback, cb);
+    args.require("image", "Detection subject not supported");
 
-    if (isInstanceOfSupportedElement(inputOrCallback)) {
-      imgToPredict = inputOrCallback;
-    } else if (
-      typeof inputOrCallback === "object" &&
-      isInstanceOfSupportedElement(inputOrCallback.elt)
-    ) {
-      imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (
-      typeof inputOrCallback === "object" &&
-      isInstanceOfSupportedElement(inputOrCallback.canvas)
-    ) {
-      imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    } else {
-      throw new Error("Detection subject not supported");
-    }
-
-    return callCallback(this.detectInternal(imgToPredict), callback);
+    return callCallback(this.detectInternal(args.image), args.callback);
   }
 }
 
-export const CocoSsd = (videoOr, optionsOr, cb) => {
-  let video = null;
-  let options = {};
-  let callback = cb;
-
-  if (videoOr instanceof HTMLVideoElement) {
-    video = videoOr;
-  } else if (typeof videoOr === "object" && videoOr.elt instanceof HTMLVideoElement) {
-    video = videoOr.elt; // Handle p5.js image
-  } else if (typeof videoOr === "function") {
-    callback = videoOr;
-  } else if (typeof videoOr === "object") {
-    options = videoOr;
-  }
-
-  if (typeof optionsOr === "object") {
-    options = optionsOr;
-  } else if (typeof optionsOr === "function") {
-    callback = optionsOr;
-  }
-
+export const CocoSsd = (...inputs) => {
+  const { video, options = {}, callback } = handleArguments(...inputs);
   return new CocoSsdBase(video, options, callback);
 };
 

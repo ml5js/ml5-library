@@ -9,6 +9,7 @@ Image Classifier using pre-trained networks
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import handleArguments from "../utils/handleArguments";
 import {
   array3DToImage
 } from '../utils/imageUtilities';
@@ -47,25 +48,9 @@ class UNET {
   }
 
   async segment(inputOrCallback, cb) {
+    const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
     await this.ready;
-    let imgToPredict;
-    let callback = cb;
-
-    if (inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData) {
-      imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)) {
-      imgToPredict = inputOrCallback.elt;
-    } else if (typeof inputOrCallback === 'function') {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    }
-    return callCallback(this.segmentInternal(imgToPredict), callback);
+    return callCallback(this.segmentInternal(image), callback);
   }
 
   static dataURLtoBlob(dataurl) {
@@ -192,26 +177,8 @@ class UNET {
   }
 }
 
-const uNet = (videoOr, optionsOr, cb) => {
-  let video = null;
-  let options = {};
-  let callback = cb;
-
-  if (videoOr instanceof HTMLVideoElement) {
-    video = videoOr;
-  } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
-    video = videoOr.elt; // Handle p5.js image
-  } else if (typeof videoOr === 'function') {
-    callback = videoOr;
-  } else if (typeof videoOr === 'object') {
-    options = videoOr;
-  }
-
-  if (typeof optionsOr === 'object') {
-    options = optionsOr;
-  } else if (typeof optionsOr === 'function') {
-    callback = optionsOr;
-  }
+const uNet = (...inputs) => {
+  const { video, options = {}, callback } = handleArguments(...inputs);
   return new UNET(video, options, callback);
 };
 
