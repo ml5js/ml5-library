@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs';
+import handleArguments from "../utils/handleArguments";
 import NeuralNetwork from './NeuralNetwork';
 import NeuralNetworkData from './NeuralNetworkData';
 import NeuralNetworkVis from './NeuralNetworkVis';
@@ -1136,21 +1137,8 @@ class DiyNeuralNetwork {
    * @param {*} cb
    */
   save(nameOrCb, cb) {
-    let modelName;
-    let callback;
-
-    if (typeof nameOrCb === 'function') {
-      modelName = 'model';
-      callback = nameOrCb;
-    } else if (typeof nameOrCb === 'string') {
-      modelName = nameOrCb;
-
-      if (typeof cb === 'function') {
-        callback = cb;
-      }
-    } else {
-      modelName = 'model';
-    }
+    const { string, callback } = handleArguments(nameOrCb, cb);
+    const modelName = string || 'model';
 
     // save the model
     this.neuralNetwork.save(modelName, () => {

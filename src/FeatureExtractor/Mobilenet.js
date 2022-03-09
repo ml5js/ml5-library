@@ -128,18 +128,12 @@ class Mobilenet {
    *    promise that will be resolved once the video element has loaded.
    */
   classification(video, objOrCallback = null, callback) {
-    let cb;
+    const { options, callback: cb } = handleArguments(objOrCallback, callback);
 
     this.usageType = "classifier";
 
-    if (typeof objOrCallback === "object") {
-      Object.assign(this.config, objOrCallback);
-    } else if (typeof objOrCallback === "function") {
-      cb = objOrCallback;
-    }
-
-    if (typeof callback === "function") {
-      cb = callback;
+    if (options) {
+      Object.assign(this.config, options);
     }
 
     if (video) {
