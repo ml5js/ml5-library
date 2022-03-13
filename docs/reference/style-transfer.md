@@ -84,19 +84,6 @@ styletransfer.transfer(input, ?callback);
 
 ## Examples
 
-
-**p5.js**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/StyleTransfer/StyleTransfer_Video)
-
-**p5 web editor**
-* [StyleTransfer_Image](https://editor.p5js.org/ml5/sketches/StyleTransfer_Image)
-* [StyleTransfer_Video](https://editor.p5js.org/ml5/sketches/StyleTransfer_Video)
-
-**plain javascript**
-* [StyleTransfer_Image](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/StyleTransfer/StyleTransfer_Image)
-* [StyleTransfer_Video](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/StyleTransfer/StyleTransfer_Video)
-
 ## Demo
 
 No demos yet - contribute one today!

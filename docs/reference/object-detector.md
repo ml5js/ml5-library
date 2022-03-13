@@ -69,7 +69,9 @@ objectDetector.detect(input, ?callback);
 
 
 ## Examples
-
+```ml5-examples
+ObjectDetector
+```
 
 **p5.js**
 * [COCOSSD_Video](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/ObjectDetector/ObjectDetector_COCOSSD_Video)

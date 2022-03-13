@@ -1,11 +1,6 @@
 # CVAE: Conditional Variational Autoencoder
 
 
-<center>
-    <img style="display:block; max-height:20rem" alt="generated images from google quickdraw" src="https://via.placeholder.com/150">
-</center>
-
-
 ## Description
 
 An autoencoder is an neural network that learns how to encode data (like the pixels of an image) into a smaller representation. This is akin to image compression (although classic image compression algorithms are better!) A Variational Autoencoder (VAE) takes this idea one step further and is trained to generate new images in the style of training data by sprinkling in a little bit of randomness. Conditional Variational Autoencoder (CVAE) is an extension of this idea, with the ability to be more specific about what is generated. From [Two Minute Papers](https://www.youtube.com/watch?v=Rdpbnd0pCiI), the author explains that: <br/>
@@ -77,22 +72,10 @@ cvae.generate(label, callback);
 
 ***
 
-
-
-
-
-
 ## Examples
-
-**p5.js**
-* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/CVAE/CVAE_QuickDraw)
-
-**p5 web editor**
-* [CVAE_QuickDraw](https://editor.p5js.org/ml5/sketches/CVAE_QuickDraw)
-
-**plain javascript**
-* [CVAE_QuickDraw](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/CVAE/CVAE_QuickDraw)
-
+```ml5-examples
+CVAE
+```
 
 ## Demo
 

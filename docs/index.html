@@ -71,6 +71,71 @@
           padding: 0 0.5em;
         }
       }
+
+        .examples-grid {
+            width: 100%;
+            display: grid;
+            justify-items: center;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-column-gap: 40px;
+            grid-row-gap: 40px;
+            margin: 30px 0;
+        }
+
+        .markdown-section ul.section-list {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 3px 10px;
+        }
+
+        .section-list__example {
+            border: 2px solid #A15FFB;
+            padding: 8px;
+            margin: 0;
+            width: 100%;
+            box-shadow: 3px 3px 4px 0 #00000021;
+        }
+
+        .section-list__item {
+            padding: 0;
+            margin: 0;
+        }
+
+        .section-list__item > a {
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            line-height: 16px;
+        }
+
+        .section-list__item > a:hover {
+            font-size: 1.1rem;
+        }
+
+        .markdown-section .section-list__title {
+            margin: 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 600px) {
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 600px) and (max-width: 768px) {
+            .examples-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1399px) {
+            .examples-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
     </style>
   </head>
   <body>
@@ -125,6 +190,103 @@
         auto2top: true,
         plugins: [
           EditOnGithubPlugin.create(config.editOnGithub.docBase, null, config.editOnGithub.title),
+          /**
+           * Custom docsify plugin to generate and insert HTML content based on the ml5 examples.
+           *
+           * Looks for section heading ## Examples and inserts below it.
+           *
+           * Uses the title of the page (# Title) to find the correct examples.
+           *
+           * If the title does not exactly match the examples folder name, the folder can
+           * be set by using a fake code block with the language as 'ml5-examples'. Like this:
+           *    ```ml5-examples
+           *    CVAE
+           *    ```
+           * Can use multiple code blocks on one page.
+           */
+          function (hook) {
+
+            // TODO: can this be accessed from ../examples/assets/sketch.js?
+            // Is identical expect for the link urls.
+            function createGroupedExamples(json, _sectionDiv) {
+              Object.keys(json).forEach(exampleName => {
+                const group = document.createElement("div");
+                group.classList.add("section-list__example");
+
+                const weHeader = document.createElement('h3');
+                weHeader.classList.add('section-list__title');
+                weHeader.textContent = exampleName.replaceAll('_', ' ');
+
+                group.appendChild(weHeader);
+
+                const weList = document.createElement("ul");
+                weList.classList.add(`section-list`);
+
+                group.appendChild(weList);
+
+                json[exampleName].forEach(linkData => {
+                  const li = document.createElement('li');
+                  li.classList.add('section-list__item');
+                  let href = linkData.url;
+                  // handle relative links.
+                  if (href.charAt(0) === '.') {
+                    href = 'https://examples.ml5js.org' + linkData.url.substr(2);
+                  }
+                  li.innerHTML = `<a href="${href}">${linkData.type}</a>`;
+                  weList.appendChild(li);
+                })
+
+                _sectionDiv.appendChild(group);
+              })
+            }
+
+            const jsonPromise = fetch('./examples.json').then(res => res.json());
+
+            // Shared handling for code tags and blank sections.
+            function handleInsertion(model, targetNode, deleteNode) {
+              if (!targetNode) return;
+              jsonPromise.then(data => {
+                const dataForPage = data[model];
+                let toInsert;
+                if (dataForPage) {
+                  const section = document.createElement('section');
+                  section.classList.add('examples-grid');
+                  createGroupedExamples(dataForPage, section);
+                  toInsert = section;
+                }
+                else {
+                  toInsert = document.createElement('p');
+                  toInsert.innerText = 'No examples yet - contribute one today!'
+                  console.log(`No examples found for ${model}. Valid keys:`, Object.keys(data));
+                }
+                targetNode.insertAdjacentElement('afterend', toInsert);
+                if (deleteNode) {
+                  targetNode.parentElement.removeChild(targetNode);
+                }
+              })
+            }
+
+            // Called on each page load.
+            hook.doneEach(() => {
+
+              // Handle code blocks
+              const codeTags = document.querySelectorAll('code.lang-ml5-examples');
+              for (const tag of codeTags) {
+                handleInsertion(tag.innerText, tag.parentElement, true); // code is inside a <p>
+              }
+
+              // Don't look at titles if any code blocks were found.
+              if (codeTags.length > 0 ) return;
+
+              // Handle title elements.
+              const examplesElement = document.querySelector('h2#examples');
+              if (!examplesElement) return;
+              const title = document.getElementById('main') && document.getElementById('main').querySelector('h1')
+                && document.getElementById('main').querySelector('h1').innerText;
+              if (!title) return;
+              handleInsertion(title, examplesElement, false);
+            })
+          }
         ],
       };
     </script>

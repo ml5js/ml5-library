@@ -251,24 +251,7 @@ featureExtractor.load(filesOrPath = null, callback);
 
 ***
 
-
-
 ## Examples
-
-**p5.js**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/FeatureExtractor/FeatureExtractor_Image_Classification)
-
-**p5 web editor**
-* [FeatureExtractor_Image_Regression](https://editor.p5js.org/ml5/sketches/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://editor.p5js.org/ml5/sketches/FeatureExtractor_Image_Classification)
-
-
-**plain javascript**
-* [FeatureExtractor_Image_Regression](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/FeatureExtractor/FeatureExtractor_Image_Regression)
-* [FeatureExtractor_Image_Classification](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/FeatureExtractor/FeatureExtractor_Image_Classification)
-
-
 
 ## Demo
 

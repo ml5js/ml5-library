@@ -83,5 +83,8 @@ handleExampleType('d3');
 
 // write out to file
 fs.writeFileSync(`${baseURL}/examples.json`, JSON.stringify(output), "utf8");
+// also save to doc directory
+const docsUrl = path.resolve(__dirname, "../docs");
+fs.writeFileSync(`${docsUrl}/examples.json`, JSON.stringify(output), "utf8");
 
 console.log(`Created/update examples index json!!`);
