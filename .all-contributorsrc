@@ -1308,6 +1308,15 @@
         "ideas",
         "bug"
       ]
+    },
+    {
+      "login": "emwdx",
+      "name": "Evan Weinberg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1531831?v=4",
+      "profile": "http://evanweinberg.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
