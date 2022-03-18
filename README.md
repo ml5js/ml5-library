@@ -144,11 +144,11 @@ For example:
 
 ## Resources
 
-- [Getting Started](https://ml5js.org/getting-started/)
-- [API Reference](https://ml5js.org/reference/)
+- [Getting Started](https://learn.ml5js.org/)
+- [API Reference](https://learn.ml5js.org/#/reference/index)
 - [Examples](https://github.com/ml5js/ml5-library/tree/main/examples)
 - [Community](https://ml5js.org/community)
-- [FAQ](https://ml5js.org/getting-started/faq/)
+- [FAQ](https://learn.ml5js.org/#/faq)
 
 ## Standalone Examples
 
