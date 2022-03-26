@@ -54,7 +54,7 @@
     "@babel/register": "^7.16.5",
     "@babel/runtime": "^7.16.5",
     "@babel/runtime-corejs3": "^7.16.5",
-    "@tensorflow/tfjs-node": "^3.13.0",
+    "@tensorflow/tfjs-node": "^1.2.9",
     "all-contributors-cli": "^6.10.0",
     "babel-jest": "^27.4.5",
     "babel-loader": "8.2.3",
