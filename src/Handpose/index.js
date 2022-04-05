@@ -3,9 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-/* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
-/* eslint no-await-in-loop: "off" */
-
 /*
  * Handpose: Palm detector and hand-skeleton finger tracking in the browser
  * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/handpose
@@ -19,14 +16,17 @@ import callCallback from "../utils/callcallback";
 class Handpose extends EventEmitter {
   /**
    * Create Handpose.
-   * @param {HTMLVideoElement} video - An HTMLVideoElement.
-   * @param {object} options - An object with options.
-   * @param {function} callback - A callback to be called when the model is ready.
+   * @param {HTMLVideoElement} [video] - An HTMLVideoElement.
+   * @param {object} [options] - An object with options.
+   * @param {function} [callback] - A callback to be called when the model is ready.
    */
   constructor(video, options, callback) {
     super();
 
     this.video = video;
+    /**
+     * @type {null|handposeCore.HandPose}
+     */
     this.model = null;
     this.modelReady = false;
     this.config = options;
@@ -50,19 +50,20 @@ class Handpose extends EventEmitter {
       });
     }
 
-    this.predict();
+    if (this.video) {
+      this.predict();
+    }
 
     return this;
   }
 
   /**
-   * Load the model and set it to this.model
-   * @return {this} the Handpose model.
+   * @return {Promise<handposeCore.AnnotatedPrediction[]>} an array of predictions.
    */
   async predict(inputOr, callback) {
     const input = this.getInput(inputOr);
     if (!input) {
-      return [];
+      throw new Error("No input image found.");
     }
     const { flipHorizontal } = this.config;
     const predictions = await this.model.estimateHands(input, flipHorizontal);
