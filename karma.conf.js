@@ -11,11 +11,13 @@ module.exports = config => {
     frameworks: ["jasmine"],
     files: [
       "src/index.js",
+      "src/utils/*_test.js",
       `src/${config.model ? config.model : "**"}/*_test.js`,
       `src/${config.model ? config.model : "**"}/**/*_test.js`,
     ],
     preprocessors: {
       "src/index.js": ["webpack"],
+      "src/utils/*.js": ["webpack"],
     },
     webpack: {
       // TODO: This is duplication of the webpack.common.babel.js file, but they

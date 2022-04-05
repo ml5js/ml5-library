@@ -65,7 +65,10 @@ class ImageClassifier {
             this.modelToUse = null;
         }
       } else {
+        // its a url, we expect to find model.json
         this.modelUrl = modelNameOrUrl;
+        // The teachablemachine urls end with a slash, so add model.json to complete the full path
+        if (this.modelUrl.endsWith('/')) this.modelUrl += "model.json";
       }
     }
     // Load the model
