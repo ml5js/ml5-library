@@ -1287,6 +1287,36 @@
         "code",
         "ideas"
       ]
+    },
+    {
+      "login": "asvsfs",
+      "name": "Amir",
+      "avatar_url": "https://avatars.githubusercontent.com/u/119840?v=4",
+      "profile": "https://github.com/asvsfs",
+      "contributions": [
+        "code",
+        "example"
+      ]
+    },
+    {
+      "login": "lindapaiste",
+      "name": "lindapaiste",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28965286?v=4",
+      "profile": "http://lindapaiste.com",
+      "contributions": [
+        "code",
+        "ideas",
+        "bug"
+      ]
+    },
+    {
+      "login": "emwdx",
+      "name": "Evan Weinberg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1531831?v=4",
+      "profile": "http://evanweinberg.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

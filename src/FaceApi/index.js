@@ -5,6 +5,7 @@
 
 /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
 /* eslint no-await-in-loop: "off" */
+/* eslint class-methods-use-this: "off" */
 
 /*
  * FaceApi: real-time face recognition, and landmark detection
@@ -14,6 +15,7 @@
 import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
+import modelLoader from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -93,7 +95,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = this.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 
@@ -355,18 +357,6 @@ class FaceApiBase {
   }
 
   /**
-   * Checks if the given string is an absolute or relative path and returns
-   *      the path to the modelJson
-   * @param {String} absoluteOrRelativeUrl
-   */
-  getModelPath(absoluteOrRelativeUrl) {
-    const modelJsonPath = this.isAbsoluteURL(absoluteOrRelativeUrl)
-      ? absoluteOrRelativeUrl
-      : window.location.pathname + absoluteOrRelativeUrl;
-    return modelJsonPath;
-  }
-
-  /**
    * Sets the return options for .detect() or .detectSingle() in case any are given
    * @param {Object} faceApiOptions
    */
@@ -397,12 +387,6 @@ class FaceApiBase {
       width,
       height
     });
-  }
-
-  /* eslint class-methods-use-this: "off" */
-  isAbsoluteURL(str) {
-    const pattern = new RegExp("^(?:[a-z]+:)?//", "i");
-    return !!pattern.test(str);
   }
 
   /**
