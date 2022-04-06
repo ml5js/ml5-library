@@ -13,7 +13,9 @@ module.exports = {
   env: {
     browser: true,
     jasmine: true,
+    "jest/globals": true,
   },
+  plugins: ["jest"],
   overrides: [
     {
       files: ["examples/**"],
