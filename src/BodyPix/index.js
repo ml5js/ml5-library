@@ -11,7 +11,6 @@
  * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/body-pix
  */
 
-// @ts-check
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';
@@ -30,14 +29,8 @@ class BodyPix {
   /**
      * Create BodyPix.
      * @param {HTMLVideoElement} video - An HTMLVideoElement.
-     * @param {{
-     *  multiplier: Number;
-     *  outputStride: Number;
-     *  segmentationThreshold: Number;
-     *  palette: Object;
-     *  returnTensors: Boolean;
-     * }} options - An object with options.
-     * @param {Function} callback - A callback to be called when the model is ready.
+     * @param {object} options - An object with options.
+     * @param {function} callback - A callback to be called when the model is ready.
      */
   constructor(video, options, callback) {
     this.video = video;
@@ -57,7 +50,7 @@ class BodyPix {
 
   /**
      * Load the model and set it to this.model
-     * @return {Promise<Object>} the BodyPix model.
+     * @return {this} the BodyPix model.
      */
   async loadModel() {
     this.model = await bp.load(this.config.multiplier);
@@ -67,7 +60,7 @@ class BodyPix {
 
   /**
      * Returns an rgb array
-     * @param {Object} p5ColorObj - a p5.Color obj
+     * @param {Object} a p5.Color obj
      * @return {Array} an [r,g,b] array
      */
   /* eslint class-methods-use-this: "off" */
@@ -90,7 +83,7 @@ class BodyPix {
 
   /**
      * Returns a bodyPartsSpec object 
-     * @param {Array} colorOptions - an array of [r,g,b] colors
+     * @param {Array} an array of [r,g,b] colors
      * @return {object} an object with the bodyParts by color and id
      */
   /* eslint class-methods-use-this: "off" */
@@ -113,11 +106,11 @@ class BodyPix {
 
   /**
      * Segments the image with partSegmentation, return result object
-     * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} imgToSegment - 
+     * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} imageToSegment - 
      *    takes any of the following params
      * @param {object} segmentationOptions - config params for the segmentation
      *    includes outputStride, segmentationThreshold
-     * @return {Promise<Object>} a result object with image, raw, bodyParts
+     * @return {Object} a result object with image, raw, bodyParts
      */
   async segmentWithPartsInternal(imgToSegment, segmentationOptions) {
     // estimatePartSegmentation
@@ -226,7 +219,7 @@ class BodyPix {
      * @param {object} configOrCallback - config params for the segmentation
      *    includes palette, outputStride, segmentationThreshold
      * @param {function} cb - a callback function that handles the results of the function.
-     * @return {Promise<Object>} a promise or the results of a given callback, cb.
+     * @return {function} a promise or the results of a given callback, cb.
      */
   async segmentWithParts(optionsOrCallback, configOrCallback, cb) {
     let imgToSegment = this.video;
@@ -274,11 +267,11 @@ class BodyPix {
 
   /**
      * Segments the image with personSegmentation, return result object
-     * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} imgToSegment - 
+     * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} imageToSegment - 
      *    takes any of the following params
      * @param {object} segmentationOptions - config params for the segmentation
      *    includes outputStride, segmentationThreshold
-     * @return {Promise<Object>} a result object with maskBackground, maskPerson, raw
+     * @return {Object} a result object with maskBackground, maskPerson, raw
      */
   async segmentInternal(imgToSegment, segmentationOptions) {
 
@@ -378,12 +371,12 @@ class BodyPix {
 
   /**
      * Segments the image with personSegmentation
-     * @param {HTMLVideoElement | HTMLImageElement | HTMLCanvasElement | object | function | number} optionsOrCallback - 
+     * @param {HTMLImageElement | HTMLCanvasElement | object | function | number} optionsOrCallback - 
      *    takes any of the following params
      * @param {object} configOrCallback - config params for the segmentation
      *    includes outputStride, segmentationThreshold
      * @param {function} cb - a callback function that handles the results of the function.
-     * @return {Promise<Object>} a promise or the results of a given callback, cb.
+     * @return {function} a promise or the results of a given callback, cb.
      */
   async segment(optionsOrCallback, configOrCallback, cb) {
     let imgToSegment = this.video;
@@ -430,13 +423,6 @@ class BodyPix {
 
 }
 
-/**
- * 
- * @param {Object | Function} videoOrOptionsOrCallback 
- * @param {Object | Function} optionsOrCallback 
- * @param {Function} cb 
- * @returns {Promise<Object> | Function}
- */
 const bodyPix = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
   let video;
   let options = {};
