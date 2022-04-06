@@ -7,13 +7,12 @@ import { join, resolve } from "path";
 
 const include = join(__dirname, "src");
 
-export const indexEntryWithBabel = ["@babel/polyfill", "./src/index.js"];
-
+export const indexEntryWithBabel = ["babel-polyfill", "./src/index.js"];
 export const developmentPort = 8080;
 
 export default {
   name: "ml5",
-  entry: resolve(__dirname, "./src/index.js"),
+  entry: indexEntryWithBabel,
   output: {
     path: resolve(__dirname, "dist"),
     publicPath: "/",
