@@ -54,6 +54,7 @@ class StyleTransfer extends Video {
   async load(model) {
     if (this.videoElt) {
       await this.loadVideo();
+      this.videoReady = true;
     }
     await this.loadCheckpoints(model);
     return this;

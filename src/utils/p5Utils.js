@@ -5,31 +5,21 @@
 
 class P5Util {
   constructor() {
-    if (typeof window !== "undefined") {
-      /**
-       * Store the window as a private property regardless of whether p5 is present.
-       * Can also set this property by calling method setP5Instance().
-       * @property {Window | p5 | {p5: p5} | undefined} m_p5Instance
-       * @private
-       */
       this.m_p5Instance = window;
-    }
   }
 
   /**
-   * Set p5 instance globally in order to enable p5 features throughout ml5.
-   * Call this function with the p5 instance when using p5 in instance mode.
-   * @param {p5 | {p5: p5}} p5Instance
+   * Set p5 instance globally.
+   * @param {Object} p5Instance 
    */
   setP5Instance(p5Instance) {
-    this.m_p5Instance = p5Instance;
+      this.m_p5Instance = p5Instance;
   }
 
   /**
-   * Dynamic getter checks if p5 is loaded and will return undefined if p5 cannot be found,
-   * or will return an object containing all of the global p5 properties.
-   * It first checks if p5 is in the window, and then if it is in the p5 property of this.m_p5Instance.
-   * @returns {p5 | undefined}
+   * This getter will return p5, checking first if it is in
+   * the window and next if it is in the p5 property of this.m_p5Instance
+   * @returns {boolean} if it is in p5 
    */
   get p5Instance() {
     if (typeof this.m_p5Instance !== "undefined" &&
@@ -43,81 +33,75 @@ class P5Util {
 
   /**
    * This function will check if the p5 is in the environment
-   * Either it is in the p5Instance mode OR it is in the window
-   * @returns {boolean} if it is in p5
+   * Either it is in the p5Instance mode OR it is in the window 
+   * @returns {boolean} if it is in p5 
    */
   checkP5() {
     return !!this.p5Instance;
   }
 
   /**
-   * Convert a canvas to a Blob object.
-   * @param {HTMLCanvasElement} inputCanvas
-   * @returns {Promise<Blob>}
-   */
+     * Convert a canvas to Blob
+     * @param {HTMLCanvasElement} inputCanvas 
+     * @returns {Blob} blob object
+     */
   /* eslint class-methods-use-this: ["error", { "exceptMethods": ["getBlob"] }] */
   getBlob(inputCanvas) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       inputCanvas.toBlob((blob) => {
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject(new Error('Canvas could not be converted to Blob.'));
-        }
+        resolve(blob);
       });
     });
   };
 
   /**
-   * Load a p5.Image from a URL in an async way.
-   * @param {string} url
-   * @return {Promise<p5.Image>}
-   */
+     * Load image in async way.
+     * @param {String} url 
+     */
   loadAsync(url) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.p5Instance.loadImage(url, (img) => {
         resolve(img);
-      }, () => {
-        reject(new Error(`Could not load image from url ${url}`));
       });
     });
   };
 
   /**
-   * convert raw bytes to blob object
-   * @param {number[] | Uint8ClampedArray | ArrayLike<number>} raws
-   * @param {number} width
-   * @param {number} height
-   * @returns {Promise<Blob>}
-   */
-  async rawToBlob(raws, width, height) {
+     * convert raw bytes to blob object
+     * @param {Array} raws 
+     * @param {number} x 
+     * @param {number} y 
+     * @returns {Blob}
+     */
+  async rawToBlob(raws, x, y) {
     const arr = Array.from(raws)
     const canvas = document.createElement('canvas'); // Consider using offScreenCanvas when it is ready?
     const ctx = canvas.getContext('2d');
 
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = x;
+    canvas.height = y;
 
-    const imgData = ctx.createImageData(width, height);
-    const {data} = imgData;
+    const imgData = ctx.createImageData(x, y);
+    const { data } = imgData;
 
-    for (let i = 0; i < width * height * 4; i += 1) data[i] = arr[i];
+    for (let i = 0; i < x * y * 4; i += 1 ) data[i] = arr[i];
     ctx.putImageData(imgData, 0, 0);
 
-    return this.getBlob(canvas);
+    const blob = await this.getBlob(canvas);
+    return blob;
   };
 
   /**
-   * Convert Blob to P5.Image
-   * @param {Blob} blob
-   * Note: may want to reject instead of returning null.
-   * @returns {Promise<p5.Image | null>}
-   */
+     *  Conver Blob to P5.Image
+     * @param {Blob} blob 
+     * @param {Object} p5Img
+     */
   async blobToP5Image(blob) {
-    if (this.checkP5() && typeof URL !== "undefined") {
-      return this.loadAsync(URL.createObjectURL(blob));
+    if (this.checkP5()) {
+      const p5Img = await this.loadAsync(URL.createObjectURL(blob));
+      return p5Img;
     }
-    return null;
+    return null;  
   };
 
 }

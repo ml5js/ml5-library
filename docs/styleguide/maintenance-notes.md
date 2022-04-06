@@ -6,28 +6,30 @@
 
 1. make sure to tag it with one of the following in the PR:
    - SEMVER/patch
-     - e.g. `SEMVER/patch`: `0.8.11` would become -> `0.8.12`
    - SEMVER/minor
-     - e.g. `SEMVER/minor`: `0.8.11` would become -> `0.9.0`
    - SEMVER/major
-     - e.g. `SEMVER/major`: `0.8.11` would become -> `1.0.0`
 
-NOTE: if you are unsure quite likely it will be a `SEMVER/patch` for "...when you make backwards compatible bug fixes.". You can learn more about [Semantic Versioning](https://semver.org/).
+## Before tagging a release releasing: bump the package version 
+1. open a PR to bump the package version: e.g. `git checkout -b v0.8.12`
+2. bump the package version number that matches the `SEMVER/patch | SEMVER/minor | SEMVER/major`
+   - e.g. `SEMVER/patch`: `0.8.11` would become -> `0.8.12`
+   - e.g. `SEMVER/minor`: `0.8.11` would become -> `0.9.00`
+   - e.g. `SEMVER/major`: `0.8.11` would become -> `1.0.0`
+3. run `npm i` <--- this makes sure your bumped package version makes it into the `package-lock.json`
+4. run `npm run update:readme` <----- captures the version bump in the readme
+5. run `git add .`
+6. run `git commit -m "chore: bumps package"`
+7. push this to your feature branch.
+8. make a PR and merge to `main`
 
 ## Once we merge the PR to `main`:
-
 1. simply go to the `releases` sidebar >
 <img width="1332" alt="Screen Shot 2022-01-21 at 12 58 26 PM" src="https://user-images.githubusercontent.com/3622055/150599297-44e00536-9399-4cc0-be5b-d0b09761d651.png">
 2. go to the latest draft and click the edit button
 <img width="1332" alt="Screen Shot 2022-01-21 at 12 58 31 PM" src="https://user-images.githubusercontent.com/3622055/150599360-cba6d7ec-44eb-49da-977a-a7de5f071795.png">
-3. click: publish the release -- this will trigger a github workflow that will:
-   * get the latest tag version
-   * update the package.json
-   * update the readme with the latest version (pulled from the package.json)
-   * run npm install
-   * add, commit, and push those changes to `main`
-   * build the library
-   * and publish to npm
+3. click: publish the release
+
+
 
 
 ***
