@@ -24,5 +24,3 @@ website/i18n/*
 
 yarn-error.log
 local.log
-
-coverage/*
