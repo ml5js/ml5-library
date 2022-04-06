@@ -5,6 +5,7 @@
 
 /* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
 /* eslint no-await-in-loop: "off" */
+/* eslint class-methods-use-this: "off" */
 
 /*
  * FaceApi: real-time face recognition, and landmark detection

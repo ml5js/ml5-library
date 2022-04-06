@@ -66,15 +66,25 @@ Before getting started with ml5.js, review our [Code of Conduct](https://github.
 
 
 
+
+
+
+
+
 <p id="latest-version">
 
-* You can use the latest version (0.10.3) by adding it to the head section of your HTML document:
+* You can use the latest version (0.11.1) by adding it to the head section of your HTML document:
 
-**v0.10.3**
+**v0.11.1**
 
-    <script src="https://unpkg.com/ml5@0.10.3/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.11.1/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
+    
+    
+    
+    
     
     
     
@@ -140,11 +150,11 @@ For example:
 
 ## Resources
 
-- [Getting Started](https://ml5js.org/getting-started/)
-- [API Reference](https://ml5js.org/reference/)
+- [Getting Started](https://learn.ml5js.org/)
+- [API Reference](https://learn.ml5js.org/#/reference/index)
 - [Examples](https://github.com/ml5js/ml5-library/tree/main/examples)
 - [Community](https://ml5js.org/community)
-- [FAQ](https://ml5js.org/getting-started/faq/)
+- [FAQ](https://learn.ml5js.org/#/faq)
 
 ## Standalone Examples
 
@@ -338,6 +348,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/asvsfs"><img src="https://avatars.githubusercontent.com/u/119840?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Amir</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=asvsfs" title="Code">💻</a> <a href="#example-asvsfs" title="Examples">💡</a></td>
+    <td align="center"><a href="http://lindapaiste.com"><img src="https://avatars.githubusercontent.com/u/28965286?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lindapaiste</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lindapaiste" title="Code">💻</a> <a href="#ideas-lindapaiste" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Alindapaiste" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="http://evanweinberg.com"><img src="https://avatars.githubusercontent.com/u/1531831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Evan Weinberg</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=emwdx" title="Documentation">📖</a></td>
   </tr>
 </table>
 
