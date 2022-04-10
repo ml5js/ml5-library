@@ -85,11 +85,9 @@ const soundClassifier = (modelName, optionsOrCallback, cb) => {
   let options = {};
   let callback = cb;
 
-  let model = modelName;
+  const model = modelName;
   if (typeof model !== 'string') {
     throw new Error('Please specify a model to use. E.g: "SpeechCommands18w"');
-  } else if (model.indexOf('http') === -1) {
-    model = modelName.toLowerCase();
   }
 
   if (typeof optionsOrCallback === 'object') {

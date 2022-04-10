@@ -57,11 +57,9 @@ const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, 
   let options = {};
   let callback = cb;
 
-  let model = modelName;
+  const model = modelName;
   if (typeof model !== "string") {
     throw new Error('Please specify a model to use. E.g: "YOLO"');
-  } else if (model.indexOf("http") === -1) {
-    model = modelName.toLowerCase();
   }
 
   if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
