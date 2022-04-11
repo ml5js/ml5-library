@@ -3,7 +3,10 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { getImageData, getRobin } = ml5.testingUtils;
+import { getRobin, randomImageData } from "../utils/testingUtils";
+import objectDetector from "./index";
+
+const ml5 = { objectDetector };
 
 const COCOSSD_DEFAULTS = {
   base: "lite_mobilenet_v2",
@@ -45,7 +48,7 @@ function mockObjectDetector(modelName) {
 }
 
 describe("objectDetector", () => {
-  jasmine.DEFAULT_TIMEOUT_INTERVAL = 500000;
+  jest.setTimeout(500000);
 
   /**
    * Test cocossd object detector
@@ -55,7 +58,7 @@ describe("objectDetector", () => {
     let cocoDetector;
 
     beforeAll(async () => {
-      spyOn(ml5, "objectDetector").and.callFake(mockObjectDetector);
+      jest.spyOn(ml5, "objectDetector").mockImplementation(mockObjectDetector);
       cocoDetector = await ml5.objectDetector("cocossd");
     });
 
@@ -65,7 +68,7 @@ describe("objectDetector", () => {
     });
 
     it("detects a robin", async () => {
-      spyOn(cocoDetector, "detect").and.returnValue([{ label: "bird", confidence: 0.9 }]);
+      jest.spyOn(cocoDetector, "detect").mockReturnValue([{ label: "bird", confidence: 0.9 }]);
 
       const robin = await getRobin();
       const detection = await cocoDetector.detect(robin);
@@ -73,14 +76,14 @@ describe("objectDetector", () => {
     });
 
     it("detects takes ImageData", async () => {
-      spyOn(cocoDetector, "detect").and.returnValue([]);
-      const img = await getImageData();
+      jest.spyOn(cocoDetector, "detect").mockReturnValue([]);
+      const img = randomImageData();
       const detection = await cocoDetector.detect(img);
       expect(detection).toEqual([]);
     });
 
     it("throws error when a non image is trying to be detected", async () => {
-      spyOn(cocoDetector, "detect").and.throwError("Detection subject not supported");
+      jest.spyOn(cocoDetector, "detect").mockRejectedValue(new Error("Detection subject not supported"));
       const notAnImage = "not_an_image";
       try {
         await cocoDetector.detect(notAnImage);
@@ -97,7 +100,7 @@ describe("objectDetector", () => {
   describe("objectDetector: yolo", () => {
     let yolo;
     beforeAll(async () => {
-      spyOn(ml5, "objectDetector").and.callFake(mockObjectDetector);
+      jest.spyOn(ml5, "objectDetector").mockImplementation(mockObjectDetector);
       yolo = await ml5.objectDetector("yolo", { disableDeprecationNotice: true, ...YOLO_DEFAULTS });
     });
 
@@ -110,15 +113,15 @@ describe("objectDetector", () => {
     });
 
     it("detects a robin", async () => {
-      spyOn(yolo, "detect").and.returnValue([{ label: "bird", confidence: 0.9 }]);
+      jest.spyOn(yolo, "detect").mockReturnValue([{ label: "bird", confidence: 0.9 }]);
       const robin = await getRobin();
       const detection = await yolo.detect(robin);
       expect(detection[0].label).toBe("bird");
     });
 
     it("detects takes ImageData", async () => {
-      spyOn(yolo, "detect").and.returnValue([]);
-      const img = await getImageData();
+      jest.spyOn(yolo, "detect").mockReturnValue([]);
+      const img = randomImageData();
       const detection = await yolo.detect(img);
       expect(detection).toEqual([]);
     });
