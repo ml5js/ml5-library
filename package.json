@@ -16,7 +16,9 @@
     "lint:nibble": "npx eslint-nibble --ext .js .",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js --config-name ml5",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js",
+    "test": "npm-run-all test:jest test:karma",
+    "test:jest": "jest",
+    "test:karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
     "serve:docs": "docsify serve docs",
@@ -55,10 +57,14 @@
     "@babel/register": "^7.17.7",
     "@babel/runtime": "^7.17.9",
     "@babel/runtime-corejs3": "^7.17.9",
+    "@tensorflow/tfjs-node": "^1.2.9",
     "all-contributors-cli": "^6.10.0",
+    "babel-jest": "^27.4.5",
     "babel-loader": "^8.2.4",
+    "canvas": "^2.9.0",
     "commitizen": "4.0.3",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-fetch": "^3.1.5",
     "cz-conventional-changelog": "2.1.0",
     "docsify-cli": "^4.3.0",
     "dotenv": "^8.2.0",
@@ -72,6 +78,7 @@
     "ghooks": "2.0.2",
     "html-webpack-plugin": "^3.0.7",
     "jasmine-core": "3.1.0",
+    "jest": "^27.4.5",
     "karma": "2.0.0",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "2.2.0",
@@ -114,8 +121,8 @@
     ]
   },
   "peerDependencies": {
-    "@tensorflow/tfjs-core": "^1.2.9",
-    "@tensorflow/tfjs-converter": "^1.2.9"
+    "@tensorflow/tfjs-converter": "^1.2.9",
+    "@tensorflow/tfjs-core": "^1.2.9"
   },
   "dependencies": {
     "@magenta/sketch": "0.2.0",
