@@ -46,15 +46,17 @@
   },
   "homepage": "https://github.com/ml5js/ml5-library#readme",
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.17.7",
+    "@babel/runtime": "^7.17.9",
+    "@babel/runtime-corejs3": "^7.17.9",
     "all-contributors-cli": "^6.10.0",
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "6.26.0",
-    "babel-preset-env": "1.6.1",
-    "babel-register": "6.26.0",
+    "babel-loader": "^8.2.4",
     "commitizen": "4.0.3",
     "copy-webpack-plugin": "^5.1.1",
     "cz-conventional-changelog": "2.1.0",
@@ -103,12 +105,12 @@
   "babel": {
     "presets": [
       [
-        "env"
+        "@babel/preset-env"
       ]
     ],
     "plugins": [
-      "transform-runtime",
-      "transform-object-rest-spread"
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-proposal-object-rest-spread"
     ]
   },
   "peerDependencies": {
