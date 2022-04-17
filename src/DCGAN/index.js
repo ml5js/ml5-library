@@ -11,7 +11,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import callCallback from '../utils/callcallback';
-import  p5Utils from '../utils/p5Utils';
+import generatedImageResult from '../utils/generatedImageResult';
 
 // Default pre-trained face model
 
@@ -102,43 +102,9 @@ class DCGANBase {
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
   async generateInternal(latentVector) {
-        
-    const {
-      modelLatentDim
-    } = this.modelInfo;
+    const { modelLatentDim } = this.modelInfo;
     const imageTensor = await this.compute(modelLatentDim, latentVector);
-
-    // get the raw data from tensor
-    const raw = await tf.browser.toPixels(imageTensor);
-    // get the blob from raw
-    const [imgHeight, imgWidth] = imageTensor.shape;
-    const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
-
-    // get the p5.Image object
-    let p5Image;
-    if (p5Utils.checkP5()) {
-      p5Image = await p5Utils.blobToP5Image(blob);
-    }
-
-    // wrap up the final js result object
-    const result = {};
-    result.blob = blob;
-    result.raw = raw;
-        
-
-    if (p5Utils.checkP5()) {
-      result.image = p5Image;
-    }
-
-    if(!this.config.returnTensors){
-      result.tensor = null;
-      imageTensor.dispose();
-    } else {
-      result.tensor = imageTensor;
-    }
-
-    return result;
-
+    return generatedImageResult(imageTensor, this.config);
   }
 
     
