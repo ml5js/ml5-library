@@ -116,8 +116,6 @@ dcgan.generate(callback, ?latentVector);
 
 
 **plain javascript**
-* [DCGAN_LatentVector_RandomWalk](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/DCGAN/DCGAN_LatentVector_RandomWalk)
-* [DCGAN_LatentVector_Slider](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/DCGAN/DCGAN_LatentVector_Slider)
 * [DCGAN_Random](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/DCGAN/DCGAN_Random)
 
 
