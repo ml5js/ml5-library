@@ -10,13 +10,32 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
-import sampleFromDistribution from "./../utils/sample";
-import CheckpointLoader from "../utils/checkpointLoader";
 import callCallback from "../utils/callcallback";
+import CheckpointLoader from "../utils/checkpointLoader";
+import sampleFromDistribution from "./../utils/sample";
 
 const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
 const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
+
+/**
+ * @typedef {Object} LSTMModel
+ * @property {Array<tf.Tensor>} biases - array of bias tensors
+ * @property {Array<tf.Tensor>} weights - array of kernel/weight tensors
+ * @property {tf.Tensor} fullyConnectedBiases - softmax_b
+ * @property {tf.Tensor} fullyConnectedWeights - softmax_w
+ * @property {tf.Tensor} [embedding] - optional embedding
+ */
+
+/**
+ * @type {CharRNNOptions}
+ */
+const CHAR_RNN_DEFAULTS = {
+  seed: ' ',
+  length: 20,
+  temperature: 0.5,
+  stateful: false
+};
 
 class CharRNN {
   /**
@@ -29,15 +48,10 @@ class CharRNN {
   constructor(modelPath, callback) {
     /**
      * The pre-trained charRNN model.
-     * @type {Record<string, tf.Tensor>}
+     * @type {LSTMModel}
      * @public
      */
     this.model = {};
-    /**
-     * The count of kernels in the model.
-     * @type {number}
-     */
-    this.cellsAmount = 0;
     /**
      * Array of functions which create LSTM cells.
      * @type {Array<tf.LSTMCellFunc>}
@@ -53,7 +67,6 @@ class CharRNN {
      */
     this.zeroState = { c: [], h: [] };
     /**
-     * The vocabulary size (or total number of possible characters).
      * @type {CharRNNState}
      * @public
      */
@@ -64,25 +77,10 @@ class CharRNN {
      */
     this.vocab = {};
     /**
-     * Count of total unique characters.
+     * The vocabulary size (or total number of unique characters).
      * @type {number}
      */
     this.vocabSize = 0;
-    /**
-     * TODO: consider removing as an instance property.
-     * @type {Float32Array | Array<number>}
-     */
-    this.probabilities = [];
-    /**
-     * TODO: this should not be an instance property.
-     * @type {CharRNNOptions}
-     */
-    this.defaults = {
-      seed: "a", // TODO: use no seed by default
-      length: 20,
-      temperature: 0.5,
-      stateful: false,
-    };
     /**
      * Promise which resolves when the model has loaded.
      * @type {Promise<CharRNN>}
@@ -93,16 +91,8 @@ class CharRNN {
   }
 
   /**
-   * @deprecated
-   *
-   * TODO: remove
-   */
-  resetState() {
-    this.reset();
-  }
-
-  /**
    * @private
+   *
    * @param {CharRNNState} state
    * @void
    */
@@ -116,6 +106,8 @@ class CharRNN {
   }
 
   /**
+   * @public
+   *
    * @return {CharRNNState}
    */
   getState() {
@@ -131,22 +123,24 @@ class CharRNN {
   async loadCheckpoints(path) {
     const reader = new CheckpointLoader(path);
     const vars = await reader.getAllVariables();
+    this.model = { biases: [], weights: [] };
     Object.keys(vars).forEach(key => {
+      const tensor = vars[key];
       if (key.match(regexCell)) {
+        const i = key.match(/[0-9]/)[0];
         if (key.match(regexWeights)) {
-          this.model[`Kernel_${key.match(/[0-9]/)[0]}`] = vars[key];
-          this.cellsAmount += 1;
+          this.model.weights[i] = tensor;
         } else {
-          this.model[`Bias_${key.match(/[0-9]/)[0]}`] = vars[key];
+          this.model.biases[i] = tensor;
         }
       } else if (key.match(regexFullyConnected)) {
         if (key.match(regexWeights)) {
-          this.model.fullyConnectedWeights = vars[key];
+          this.model.fullyConnectedWeights = tensor;
         } else {
-          this.model.fullyConnectedBiases = vars[key];
+          this.model.fullyConnectedBiases = tensor;
         }
       } else {
-        this.model[key] = vars[key];
+        this.model[key] = tensor;
       }
     });
     await this.loadVocab(path);
@@ -180,31 +174,15 @@ class CharRNN {
     this.cells = [];
     this.zeroState = { c: [], h: [] };
 
-    /**
-     * @param {number} i
-     * @return {tf.LSTMCellFunc}
-     */
-    const lstm = i => {
-      /**
-       * @type {tf.LSTMCellFunc}
-       */
-      const cell = (DATA, C, H) =>
-        tf.basicLSTMCell(
-          1.0,
-          this.model[`Kernel_${i}`],
-          this.model[`Bias_${i}`],
-          DATA,
-          C,
-          H,
-        );
-      return cell;
-    };
-
-    for (let i = 0; i < this.cellsAmount; i += 1) {
-      this.zeroState.c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-      this.zeroState.h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-      this.cells.push(lstm(i));
-    }
+    this.model.biases.forEach((bias, i) => {
+      this.zeroState.c.push(tf.zeros([1, bias.shape[0] / 4]));
+      this.zeroState.h.push(tf.zeros([1, bias.shape[0] / 4]));
+      const kernel = this.model.weights[i];
+      this.cells.push(
+        (data, c, h) =>
+          tf.basicLSTMCell(1.0, kernel, bias, data, c, h)
+      );
+    })
 
     // copy new zeroState to state.
     this.reset();
@@ -212,16 +190,16 @@ class CharRNN {
 
   /**
    * @private
-   * Common logic from feed() and generateInternal().
-   * Updates this.state based on the current character.
+   * Feed in one single character and update this.state.
    *
-   * @param {number} input - character id
+   * @param {string} character
    * @return {Promise<void>}
    */
-  async nextState(input) {
+  async nextState(character) {
+    const encoded = this.vocab[character];
     const onehotBuffer = await tf.buffer([1, this.vocabSize]);
     const [c, h] = tf.tidy(() => {
-      onehotBuffer.set(1.0, 0, input);
+      onehotBuffer.set(1.0, 0, encoded);
       const onehot = onehotBuffer.toTensor();
       const data = this.model.embedding ? tf.matMul(onehot, this.model.embedding) : onehot;
       return tf.multiRNNCell(this.cells, data, this.state.c, this.state.h);
@@ -232,17 +210,23 @@ class CharRNN {
   /**
    * @private
    * Common logic from feed() and generateInternal().
-   * Get an array with the probabilities of each character appearing next.
+   * Get an array with the probabilities of each character appearing next
+   * and one predicted character.
    *
    * @param {number} temperature
    * @return {Promise<Float32Array>}
    */
   async nextChar(temperature) {
+    let temp = temperature;
+    if (temperature < 0) {
+      temp = CHAR_RNN_DEFAULTS.temperature;
+      console.warn(`Temperature should not be less than 0. Replacing provided temperature ${temperature} with default value ${temp}.`);
+    }
     const normalized = tf.tidy(() => {
       const outputH = this.state.h[1];
       const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
       const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
-      const divided = tf.div(logits, tf.tensor(temperature));
+      const divided = tf.div(logits, tf.tensor(temp));
       const probabilities = tf.exp(divided);
       return tf.div(probabilities, tf.sum(probabilities));
     });
@@ -269,47 +253,16 @@ class CharRNN {
 
   /**
    * @private
+   * Pick a single character from the model vocab based on the provided probabilities.
    *
-   * @param {CharRNNOptions} options
-   * @return {Promise<{state: CharRNNState, sample: string}>}
+   * @param {Float32Array} probabilities
+   * @return {string}
    */
-  async generateInternal(options) {
-    await this.ready;
-    // TODO: implement documented behavior "default seed is a random character from the model"
-    const seed = options.seed || this.defaults.seed;
-    const length = +options.length || this.defaults.length;
-    const temperature = +options.temperature || this.defaults.temperature;
-    const stateful = options.stateful || this.defaults.stateful;
-    if (!stateful) {
-      this.reset();
-    }
-
-    const results = [];
-    const userInput = Array.from(seed);
-    const encodedInput = userInput.map(char => this.vocab[char]);
-
-    let input = encodedInput[0];
-    let probabilitiesNormalized = []; // will contain final probabilities (normalized)
-
-    for (let i = 0; i < userInput.length + length + -1; i += 1) {
-
-      await this.nextState(input);
-
-      if (i < userInput.length - 1) {
-        input = encodedInput[i + 1];
-      } else {
-        probabilitiesNormalized = await this.nextChar(temperature);
-        input = sampleFromDistribution(probabilitiesNormalized);
-        results.push(input);
-      }
-    }
-
-    const generated = results.map(id => this.findChar(id)).join('');
-    this.probabilities = probabilitiesNormalized;
-    return {
-      sample: generated,
-      state: this.state,
-    };
+  sample(probabilities) {
+    // The index of the predicted character.
+    const index = sampleFromDistribution(probabilities);
+    // The character itself.
+    return this.findChar(index);
   }
 
   /**
@@ -345,40 +298,55 @@ class CharRNN {
    * @return {Promise<{state: CharRNNState, sample: string}>}
    */
   async generate(options, callback) {
-    return callCallback(this.generateInternal(options), callback);
+    return callCallback((async () => {
+      if (!options) {
+        throw new Error('Argument "options" is required.');
+      }
+      await this.ready;
+      const seed = options.seed || CHAR_RNN_DEFAULTS.seed;
+      const length = +options.length || CHAR_RNN_DEFAULTS.length;
+      const temperature = +options.temperature || CHAR_RNN_DEFAULTS.temperature;
+      if (!options.stateful) {
+        this.reset();
+      }
+      await this.feed(seed);
+      let generated = '';
+      for (let i = 0; i < length; i += 1) {
+        const probabilities = await this.nextChar(temperature);
+        const char = this.sample(probabilities);
+        generated += char;
+        await this.nextState(char);
+      }
+      return {
+        sample: generated,
+        state: this.state,
+      };
+    })(), callback);
   }
 
   // stateful
   /**
    * Predict the next character based on the model's current state.
-   * @param {number} temp
+   * @param {number} temperature
    * @param {function} [callback] - Optional. A function to be called when the
    *    model finished adding the seed. If no callback is provided, it will
    *    return a promise that will be resolved once the prediction has been generated.
    * @return {Promise<{sample: string, probabilities: Array<{probability: number, char: string}>}>}
    */
-  async predict(temp, callback) {
-    const temperature = temp > 0 ? temp : 0.1;
-    const probabilitiesNormalized = await this.nextChar(temperature);
-
-    // The index of the predicted char.
-    const sample = sampleFromDistribution(probabilitiesNormalized);
-    // The character itself.
-    const result = this.findChar(sample);
-    this.probabilities = probabilitiesNormalized;
-    if (callback) {
-      // TODO: why call callback here and not at the end of the function?
-      // why call with result first and not error first?
-      callback(result);
-    }
-    const pm = Object.keys(this.vocab).map(c => ({
-      char: c,
-      probability: this.probabilities[this.vocab[c]],
-    }));
-    return {
-      sample: result,
-      probabilities: pm,
-    };
+  async predict(temperature, callback) {
+    return callCallback((async () => {
+      await this.ready;
+      const probabilities = await this.nextChar(temperature);
+      const sample = this.sample(probabilities);
+      const charProbabilities = Object.keys(this.vocab).map(char => ({
+        char,
+        probability: probabilities[this.vocab[char]],
+      }));
+      return {
+        sample,
+        probabilities: charProbabilities
+      };
+    })(), callback);
   }
 
   /**
@@ -393,8 +361,7 @@ class CharRNN {
     return callCallback((async () => {
       await this.ready;
       Array.from(inputSeed).forEach(char => {
-        const encoded = this.vocab[char];
-        this.nextState(encoded);
+        this.nextState(char);
       });
     })(), callback);
   }
@@ -406,13 +373,14 @@ class CharRNN {
    * Cleans up memory by disposing of tensors used in instance properties.
    */
   dispose() {
-    [
+    const tensors = [
       Object.values(this.model),
       this.zeroState.c,
       this.zeroState.h,
       this.state.c,
       this.state.h
-    ].forEach(array => array.forEach(tensor => tensor.dispose()));
+    ].flat();
+    tensors.forEach(tensor => tensor.dispose());
   }
 }
 
