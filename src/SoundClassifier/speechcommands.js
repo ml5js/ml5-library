@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tfjsSpeechCommands from '@tensorflow-models/speech-commands';
-import { getTopKClassesFromArray } from '../utils/gettopkclasses';
+import getTopKClasses  from '../utils/gettopkclasses';
 
 export class SpeechCommands {
   constructor(options) {
@@ -23,10 +23,9 @@ export class SpeechCommands {
   }
 
   classify(topk = this.allLabels.length, cb) {
-    return this.model.listen(result => {
+    return this.model.listen(async (result) => {
       if (result.scores) {
-        const classes = getTopKClassesFromArray(result.scores, topk, this.allLabels)
-          .map(c => ({ label: c.className, confidence: c.probability }));
+        const classes = await getTopKClasses(result.scores, topk, this.allLabels);
         return cb(null, classes);
       }
       return cb(`ERROR: Cannot find scores in result: ${result}`);

@@ -176,11 +176,18 @@ class ImageClassifier {
     }
 
     const processedImg = imgToTensor(imgToPredict, imageResize);
-    const results = this.model
-      .classify(processedImg, numberOfClasses)
-      .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
+    const results = await this.model.classify(processedImg, numberOfClasses);
 
     processedImg.dispose();
+
+    // TODO: handle this better
+    // MobileNet uses className/probability instead of label/confidence.
+    if (this.modelName === "mobilenet") {
+      return results.map(result => ({
+        label: result.className,
+        confidence: result.probability
+      }));
+    }
 
     return results;
   }
