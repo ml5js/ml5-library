@@ -16,12 +16,9 @@ const SIZE = 256;
 
 // Declare variables
 let modelReady = false;
-let isTransfering = false;
-
-let pX = null;
-let pY = null;
-let mouseX = null;
-let mouseY = null;
+let isTransferring = false;
+let startX = null;
+let startY = null;
 let mouseDown = false;
 
 // Create a canvas
@@ -30,13 +27,17 @@ canvas.width = SIZE;
 canvas.height = SIZE;
 document.body.appendChild(canvas);
 const ctx = canvas.getContext("2d");
-ctx.fillStyle = '#ebedef'
-ctx.fillRect(0, 0, SIZE, SIZE);
+// Set stroke weight to 10
+ctx.lineWidth = 10;
+// Set stroke color to black
+ctx.strokeStyle = "#000000";
+
+const rect = canvas.getBoundingClientRect();
 
 // Display initial input image
 const inputImg = document.getElementById('inputImage');
 const outputImg = document.getElementById('outputImage');
-drawImage();
+ctx.drawImage(inputImg, 0, 0, SIZE, SIZE);
 
 // Select output div container
 const outputContainer = document.getElementById('output');
@@ -53,46 +54,13 @@ clearBtn.addEventListener('click', () => {
   clearCanvas();
 });
 
-// Attach event listeners to the canvas
-canvas.addEventListener('mousemove', onMouseUpdate);
+// Attach event listeners to the canvas to draw when mouse is pressed
+canvas.addEventListener('mousemove', onMouseMove);
 canvas.addEventListener('mousedown', onMouseDown);
 canvas.addEventListener('mouseup', onMouseUp);
 
 // Create a pix2pix method with a pre-trained model
 const pix2pix = ml5.pix2pix('models/edges2pikachu.pict', modelLoaded);
-
-requestAnimationFrame(draw);
-// drawImage();
-
-// Draw on the canvas when mouse is pressed
-function draw() {
-  requestAnimationFrame(draw)
-
-  if (pX == null || pY == null) {
-    pX = mouseX
-    pY = mouseY
-    drawImage();
-  }
-
-  // drawImage();
-
-  if (mouseDown) {
-    // Set stroke weight to 10
-    ctx.lineWidth = 10;
-    // Set stroke color to black
-    ctx.strokeStyle = "#000000";
-    // If mouse is pressed, draw line between previous and current mouse positions
-    ctx.beginPath();
-    ctx.lineCap = "round";
-    ctx.moveTo(mouseX, mouseY);
-    ctx.lineTo(pX, pY);
-    ctx.stroke();
-  }
-
-
-  pX = mouseX
-  pY = mouseY
-}
 
 // A function to be called when the models have loaded
 function modelLoaded() {
@@ -111,11 +79,6 @@ function modelLoaded() {
   });
 }
 
-// Draw the input image to the canvas
-function drawImage() {
-  ctx.drawImage(inputImg, 0, 0, SIZE, SIZE);
-}
-
 // Clear the canvas
 function clearCanvas() {
   ctx.fillStyle = '#ebedef'
@@ -123,8 +86,8 @@ function clearCanvas() {
 }
 
 function transfer() {
-  // Set isTransfering to true
-  isTransfering = true;
+  // Set isTransferring to true
+  isTransferring = true;
 
   // Update status message
   statusMsg.textContent = 'Applying Style Transfer...!';
@@ -135,8 +98,8 @@ function transfer() {
       console.log(err);
     }
     if (result && result.src) {
-      // Set isTransfering back to false
-      isTransfering = false;
+      // Set isTransferring back to false
+      isTransferring = false;
       // Clear output container
       outputContainer.innerHTML = '';
       // Create an image based result
@@ -150,21 +113,37 @@ function transfer() {
   });
 }
 
-
-function onMouseDown() {
+// When mouse is pressed, save the start position for drawing a line.
+function onMouseDown(e) {
+  startX = e.clientX - rect.left;
+  startY = e.clientY - rect.top;
   mouseDown = true;
 }
 
 // Whenever mouse is released, transfer the current image if the model is loaded and it's not in the process of another transformation
 function onMouseUp() {
   mouseDown = false;
-  if (modelReady && !isTransfering) {
-    transfer()
+  startX = null;
+  startY = null;
+  if (modelReady && !isTransferring) {
+    transfer();
   }
 }
 
-function onMouseUpdate(e) {
-  const rect = canvas.getBoundingClientRect();
-  mouseX = e.clientX - rect.left;
-  mouseY = e.clientY - rect.top
+// When moving while the mouse is down, draw line between previous and current mouse positions
+function onMouseMove(e) {
+  if (mouseDown && startX !== null && startY !== null) {
+    // Get current position
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+    // Draw line
+    ctx.beginPath();
+    ctx.lineCap = "round";
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+    // Update coordinates for next line.
+    startX = currentX;
+    startY = currentY;
+  }
 }
