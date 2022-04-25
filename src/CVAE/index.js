@@ -10,6 +10,7 @@
 */
 
 import * as tf from '@tensorflow/tfjs';
+import axios from "axios";
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
 
@@ -28,13 +29,11 @@ class Cvae {
     this.ready = false;
     this.model = {};
     this.latentDim = tf.randomUniform([1, 16]);
-    this.modelPath = modelPath;
-    this.modelPathPrefix = '';
 
-    this.jsonLoader().then(val => {
-      this.modelPathPrefix = this.modelPath.split('manifest.json')[0]
-      this.ready = callCallback(this.loadCVAEModel(this.modelPathPrefix+val.model), callback);
-      this.labels = val.labels;
+    const [modelPathPrefix] = modelPath.split('manifest.json');
+    axios.get(modelPath).then(({ data }) => {
+      this.ready = callCallback(this.loadCVAEModel(modelPathPrefix + data.model), callback);
+      this.labels = data.labels;
       // get an array full of zero with the length of labels [0, 0, 0 ...]
       this.labelVector = Array(this.labels.length+1).fill(0);
     });
@@ -114,21 +113,6 @@ class Cvae {
     return { src, raws, image };
   }
 
-  async jsonLoader() {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', this.modelPath);
-      
-      xhr.onload = () => {
-        const json = JSON.parse(xhr.responseText);
-        resolve(json);
-      };
-      xhr.onerror = (error) => {
-        reject(error);
-      };
-      xhr.send();
-    });
-  }
 }
 
 const CVAE = (model, callback) => new Cvae(model, callback);
