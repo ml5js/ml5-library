@@ -235,7 +235,8 @@ const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
     callback = optionsOrCallback;
   } 
 
-  return new PoseNet(video, options, detectionType, callback);
+  const instance = new PoseNet(video, options, detectionType, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default poseNet;

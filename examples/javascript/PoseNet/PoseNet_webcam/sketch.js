@@ -10,9 +10,9 @@ PoseNet using p5.js
 /* eslint-disable */
 
 // Grab elements, create settings, etc.
-var video = document.getElementById("video");
-var canvas = document.getElementById("canvas");
-var ctx = canvas.getContext("2d");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 // The detected positions will be inside an array
 let poses = [];
@@ -57,32 +57,32 @@ function modelReady() {
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i += 1) {
+  poses.forEach(pose => {
     // For each pose detected, loop through all the keypoints
-    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
-      let keypoint = poses[i].pose.keypoints[j];
+    // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+    pose.pose.keypoints.forEach(keypoint => {
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         ctx.beginPath();
         ctx.arc(keypoint.position.x, keypoint.position.y, 10, 0, 2 * Math.PI);
         ctx.stroke();
       }
-    }
-  }
+    });
+  });
 }
 
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i += 1) {
+  poses.forEach(pose => {
     // For every skeleton, loop through all body connections
-    for (let j = 0; j < poses[i].skeleton.length; j += 1) {
-      let partA = poses[i].skeleton[j][0];
-      let partB = poses[i].skeleton[j][1];
+    pose.skeleton.forEach(connection => {
+      // Each connection is an array of two parts
+      const [partA, partB] = connection;
       ctx.beginPath();
       ctx.moveTo(partA.position.x, partA.position.y);
       ctx.lineTo(partB.position.x, partB.position.y);
       ctx.stroke();
-    }
-  }
+    });
+  });
 }
