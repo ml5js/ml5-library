@@ -30,7 +30,7 @@ module.exports = {
           },
         ],
         "new-cap": 0,
-        "no-underscore-dangle": 0,
+        "no-underscore-dangle": 0
       },
     },
     {
@@ -44,7 +44,9 @@ module.exports = {
       rules: {
         "no-plusplus": "off",
         "no-unused-vars": ["error", { varsIgnorePattern: "^(setup|draw|preload|mouse[A-Z].*|windowResized)$" }],
-        "prefer-template": "off"
+        "prefer-template": "off",
+        "no-restricted-syntax": "off",
+        "prefer-destructuring": "off"
       }
     },
     {
