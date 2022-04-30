@@ -11,11 +11,7 @@ For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/
 === */
 
 let charRNN;
-let textInput;
 let tempSlider;
-let startBtn;
-let resetBtn;
-let singleBtn;
 let generating = false;
 
 const canvasHeight = 100;
@@ -25,16 +21,12 @@ function setup() {
   // Create the LSTM Generator passing it the model directory
   charRNN = ml5.charRNN('https://raw.githubusercontent.com/ml5js/ml5-data-and-models/main/models/charRNN/woolf/', modelReady);
   // Grab the DOM elements
-  textInput = select('#textInput');
   tempSlider = select('#tempSlider');
-  startBtn = select('#start');
-  resetBtn = select('#reset');
-  singleBtn = select('#single');
 
   // DOM element events
-  startBtn.mousePressed(generate);
-  resetBtn.mousePressed(resetModel);
-  singleBtn.mousePressed(predict);
+  select('#start').mousePressed(generate);
+  select('#reset').mousePressed(resetModel);
+  select('#single').mousePressed(predict);
   tempSlider.input(updateSliders);
 }
 
@@ -62,10 +54,10 @@ function resetModel() {
 function generate() {
   if (generating) {
     generating = false;
-    startBtn.html('Start');
+    select('#start').html('Start');
   } else {
     generating = true;
-    startBtn.html('Pause');
+    select('#start').html('Pause');
     loopRNN();
   }
 }

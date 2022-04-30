@@ -39,12 +39,12 @@ function gotResults(err, result) {
   image(img, 0, 0, width, height);
   if (detections) {
     // console.log(detections)
-    drawBox(detections);
-    drawLandmarks(detections);
+    drawBox();
+    drawLandmarks();
   }
 }
 
-function drawBox(detections) {
+function drawBox() {
   const alignedRect = detections.alignedRect;
   const { _x, _y, _width, _height } = alignedRect._box;
   noFill();
@@ -53,7 +53,7 @@ function drawBox(detections) {
   rect(_x, _y, _width, _height);
 }
 
-function drawLandmarks(detections) {
+function drawLandmarks() {
   noFill();
   stroke(161, 95, 251);
   strokeWeight(2);

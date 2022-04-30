@@ -64,7 +64,9 @@ function trainModel() {
   // Add training data
   // const trainingInput = [-0.6, 1, 0.25];
   // const trainingTarget = [0.3, 0.9];
-  let a, b, c;
+  let a;
+  let b;
+  let c;
   let trainingTarget;
   for (let i = 0; i < 500; i += 1) {
     if (i % 2) {

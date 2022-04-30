@@ -11,7 +11,7 @@ A piano using pitch Detection with CREPE
 // Pitch variables
 let pitch;
 let audioContext;
-let audioStream;
+let mic;
 
 // Keyboard variables
 const cornerCoords = [10, 40];

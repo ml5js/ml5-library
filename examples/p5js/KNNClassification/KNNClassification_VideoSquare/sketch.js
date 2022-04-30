@@ -77,35 +77,35 @@ function classify() {
 // A util function to create UI buttons
 function createButtons() {
   // When the addClass1 button is pressed, add the current frame to class "Up"
-  buttonA = select("#addClass1");
+  const buttonA = select("#addClass1");
   buttonA.mousePressed(function() {
     addExample("Up");
   });
 
   // When the addClass2 button is pressed, add the current frame to class "Right"
-  buttonB = select("#addClass2");
+  const buttonB = select("#addClass2");
   buttonB.mousePressed(function() {
     addExample("Right");
   });
 
   // When the addClass3 button is pressed, add the current frame to class "Down"
-  buttonC = select("#addClass3");
+  const buttonC = select("#addClass3");
   buttonC.mousePressed(function() {
     addExample("Down");
   });
 
   // When the addClass4 button is pressed, add the current frame to class "Left"
-  buttonC = select("#addClass4");
-  buttonC.mousePressed(function() {
+  const buttonD = select("#addClass4");
+  buttonD.mousePressed(function() {
     addExample("Left");
   });
 
   // Predict button
-  buttonPredict = select("#buttonPredict");
+  const buttonPredict = select("#buttonPredict");
   buttonPredict.mousePressed(classify);
 
   // Clear all classes button
-  buttonClearAll = select("#clearAll");
+  const buttonClearAll = select("#clearAll");
   buttonClearAll.mousePressed(clearAllLabels);
 }
 

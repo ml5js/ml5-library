@@ -2,7 +2,6 @@
 let brain;
 
 // Variables to track p5 oscillator
-const playing = false;
 let frequency;
 let osc;
 

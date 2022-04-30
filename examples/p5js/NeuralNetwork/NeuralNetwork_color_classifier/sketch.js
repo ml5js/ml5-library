@@ -1,7 +1,8 @@
 let neuralNetwork;
-let submitButton;
 
-let rSlider, gSlider, bSlider;
+let rSlider;
+let gSlider;
+let bSlider;
 let labelP;
 let lossP;
 
@@ -43,7 +44,7 @@ function whileTraining(epoch, logs) {
   lossP.html(`Epoch: ${epoch} - loss: ${logs.loss.toFixed(2)}`);
 }
 
-function finishedTraining(anything) {
+function finishedTraining() {
   console.log('done!');
 }
 

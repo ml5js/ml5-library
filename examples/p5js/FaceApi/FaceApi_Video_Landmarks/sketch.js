@@ -39,14 +39,14 @@ function gotResults(err, result) {
   if (detections) {
     if (detections.length > 0) {
       // console.log(detections)
-      drawBox(detections);
-      drawLandmarks(detections);
+      drawBox();
+      drawLandmarks();
     }
   }
   faceapi.detect(gotResults);
 }
 
-function drawBox(detections) {
+function drawBox() {
   for (let i = 0; i < detections.length; i += 1) {
     const alignedRect = detections[i].alignedRect;
     const x = alignedRect._box._x;
@@ -61,7 +61,7 @@ function drawBox(detections) {
   }
 }
 
-function drawLandmarks(detections) {
+function drawLandmarks() {
   noFill();
   stroke(161, 95, 251);
   strokeWeight(2);

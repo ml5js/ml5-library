@@ -7,7 +7,6 @@ let ready = false;
 const videoSize = 10;
 
 // For sound synthesis
-const playing = false;
 let frequency;
 let osc;
 

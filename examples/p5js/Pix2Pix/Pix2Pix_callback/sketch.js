@@ -13,7 +13,15 @@ For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/
 // The pre-trained Edges2Pikachu model is trained on 256x256 images
 // So the input images can only be 256x256 or 512x512, or multiple of 256
 const SIZE = 256;
-let inputImg, inputCanvas, outputContainer, statusMsg, pix2pix, clearBtn, transferBtn, modelReady = false, isTransfering = false;
+let inputImg;
+let inputCanvas;
+let outputContainer;
+let statusMsg;
+let pix2pix;
+let clearBtn;
+let transferBtn;
+let modelReady = false;
+let isTransfering = false;
 
 function setup() {
   // Create a canvas

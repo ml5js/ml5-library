@@ -11,10 +11,8 @@ let faceBrain;
 
 //  Sound
 let osc;
-const freqMax = 800;
 
 // Keeping track of state
-const trained = false;
 let collecting = false;
 
 function setup() {
@@ -143,7 +141,7 @@ function gotFrequency(error, outputs) {
     console.error(error);
     return;
   }
-  frequency = outputs[0].value;
+  const frequency = outputs[0].value;
   osc.freq(frequency);
   select('#prediction').html(frequency.toFixed(2));
   predict();
