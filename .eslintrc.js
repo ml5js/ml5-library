@@ -18,10 +18,7 @@ module.exports = {
     {
       files: ["examples/**"],
       globals: {
-        ml5: false,
-        p5: false,
-        ...p5Globals,
-        ...p5SoundGlobals,
+        ml5: false
       },
       rules: {
         "no-use-before-define": [
@@ -32,10 +29,23 @@ module.exports = {
             variables: true,
           },
         ],
-        "no-unused-vars": ["error", { varsIgnorePattern: "^setup$|^draw$|^preload$" }],
         "new-cap": 0,
         "no-underscore-dangle": 0,
       },
+    },
+    {
+      files: ["examples/p5js/**"],
+      globals: {
+        ml5: false,
+        p5: false,
+        ...p5Globals,
+        ...p5SoundGlobals,
+      },
+      rules: {
+        "no-plusplus": "off",
+        "no-unused-vars": ["error", { varsIgnorePattern: "^(setup|draw|preload|mouse[A-Z].*|windowResized)$" }],
+        "prefer-template": "off"
+      }
     },
     {
       files: ["**/**_test.js"],
