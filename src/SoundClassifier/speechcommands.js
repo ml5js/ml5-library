@@ -15,7 +15,7 @@ export class SpeechCommands {
   async load(url) {
     if (url) {
       const loader = modelLoader(url);
-      this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, url, loader.metadataUrl);
+      this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, loader.modelUrl, loader.metadataUrl);
     } else this.model = tfjsSpeechCommands.create('BROWSER_FFT');
     await this.model.ensureModelLoaded();
     this.allLabels = this.model.wordLabels();
