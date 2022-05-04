@@ -11,6 +11,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
+import modelLoader from '../utils/modelLoader';
 
 class PitchDetection {
   /**
@@ -44,7 +45,8 @@ class PitchDetection {
   }
 
   async loadModel(model) {
-    this.model = await tf.loadLayersModel(`${model}/model.json`);
+    const loader = modelLoader(model, 'model');
+    this.model = await loader.loadLayersModel();
     if (this.audioContext) {
       await this.processStream();
     } else {

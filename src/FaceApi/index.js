@@ -15,7 +15,7 @@
 import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
-import modelLoader from "../utils/modelLoader";
+import { getModelPath } from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -95,7 +95,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 

@@ -11,8 +11,8 @@ SketchRNN
 
 import * as ms from '@magenta/sketch';
 import callCallback from '../utils/callcallback';
+import { getModelPath, isAbsoluteURL } from '../utils/modelLoader';
 import modelPaths from './models';
-import modelLoader from '../utils/modelLoader';
 
 // const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/';
 // const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/';
@@ -30,10 +30,10 @@ const DEFAULTS = {
 
 class SketchRNN {
   /**
-   * Create SketchRNN. 
+   * Create SketchRNN.
    * @param {String} model - The name of the sketch model to be loaded.
    *    The names can be found in the models.js file
-   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
    *    that will be resolved once the model has loaded.
    */
   constructor(model, callback, large = true) {
@@ -47,13 +47,11 @@ class SketchRNN {
       modelPath_large: DEFAULTS.modelPath_large,
       PATH_END: DEFAULTS.PATH_END,
     };
-    
-    
-    if(modelLoader.isAbsoluteURL(checkpointUrl) === true){
-      const modelPath = modelLoader.getModelPath(checkpointUrl);
-      this.config.modelPath = modelPath;
 
-    } else if(modelPaths.has(checkpointUrl)) {
+    // TODO: support relative URL
+    if (isAbsoluteURL(checkpointUrl) === true) {
+      this.config.modelPath = getModelPath(checkpointUrl);
+    } else if (modelPaths.has(checkpointUrl)) {
       checkpointUrl = (large ? this.config.modelPath : this.config.modelPath_small) + checkpointUrl + this.config.PATH_END;
       this.config.modelPath = checkpointUrl;
     } else {

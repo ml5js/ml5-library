@@ -10,8 +10,8 @@
 */
 
 import * as tf from '@tensorflow/tfjs';
-import axios from "axios";
 import callCallback from '../utils/callcallback';
+import modelLoader from '../utils/modelLoader';
 import p5Utils from '../utils/p5Utils';
 
 class Cvae {
@@ -29,19 +29,17 @@ class Cvae {
     this.ready = false;
     this.model = {};
     this.latentDim = tf.randomUniform([1, 16]);
-
-    const [modelPathPrefix] = modelPath.split('manifest.json');
-    axios.get(modelPath).then(({ data }) => {
-      this.ready = callCallback(this.loadCVAEModel(modelPathPrefix + data.model), callback);
-      this.labels = data.labels;
-      // get an array full of zero with the length of labels [0, 0, 0 ...]
-      this.labelVector = Array(this.labels.length+1).fill(0);
-    });
+    this.ready = callCallback(this.loadCVAEModel(modelPath), callback);
   }
   
   // load tfjs model that is converted by tensorflowjs with graph and weights
   async loadCVAEModel(modelPath) {
-    this.model = await tf.loadLayersModel(modelPath);
+    const loader = modelLoader(modelPath, 'manifest');
+    const manifest = await loader.loadManifestJson();
+    this.labels = manifest.labels;
+    // get an array full of zero with the length of labels [0, 0, 0 ...]
+    this.labelVector = Array(this.labels.length + 1).fill(0);
+    this.model = await loader.loadLayersModel(manifest.model);
     return this;
   }
 
