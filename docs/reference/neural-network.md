@@ -122,7 +122,7 @@ const options = {
   dataUrl: "data/colorData.json",
   task: 'classification',
   inputs:['r', 'g', 'b'],
-  outputs:['color']
+  outputs:['color'],
   debug: true
 }
 

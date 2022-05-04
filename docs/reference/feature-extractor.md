@@ -243,7 +243,7 @@ featureExtractor.load(filesOrPath = null, callback);
 ```
 
 📥 **Inputs**
-* **filesOrPath** - A path to your `model.json` if you are using a string path. If you are using the HTML file input, then select BOTH the `model.json` and the model.weights.bin` files.
+* **filesOrPath** - A path to your `model.json` if you are using a string path. If you are using the HTML file input, then select BOTH the `model.json` and the `model.weights.bin` files.
 * **callback** - Optional. A function to do after your model has been loaded
 
 📤 **Outputs**
