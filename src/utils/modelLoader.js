@@ -5,8 +5,7 @@
  * @returns {boolean}
  */
 function isAbsoluteURL(str) {
-  const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
-  return pattern.test(str);
+  return /^(?:[a-z]+:)?\/\//i.test(str);
 }
 
 /**

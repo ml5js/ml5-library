@@ -31,9 +31,7 @@ describe("callCallback", () => {
             resolve(greeting);
           });
 
-        const mockCallback = (err, result) => {
-          return `hello ${result}`;
-        };
+        const mockCallback = (err, result) => `hello ${result}`;
 
         const mockUtils = { mockCallback };
         spyOn(mockUtils, "mockCallback").and.callThrough();

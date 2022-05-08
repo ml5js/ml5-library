@@ -113,17 +113,13 @@ class Pix2pix {
   }
 
   static preprocess(inputPreproc) {
-    const result = tf.tidy(() => {
-      return tf.sub(tf.mul(inputPreproc, tf.scalar(2)), tf.scalar(1));
-    });
+    const result = tf.tidy(() => tf.sub(tf.mul(inputPreproc, tf.scalar(2)), tf.scalar(1)));
     inputPreproc.dispose();
     return result;
   }
 
   static deprocess(inputDeproc) {
-    const result = tf.tidy(() => {
-      return tf.div(tf.add(inputDeproc, tf.scalar(1)), tf.scalar(2));
-    });
+    const result = tf.tidy(() => tf.div(tf.add(inputDeproc, tf.scalar(1)), tf.scalar(2)));
     inputDeproc.dispose();
     return result;
   }
@@ -140,9 +136,7 @@ class Pix2pix {
 
   static conv2d(inputCon, filterCon) {
     const tempFilter = filterCon.clone()
-    const result = tf.tidy(() => {
-      return tf.conv2d(inputCon, tempFilter, [2, 2], 'same');
-    });
+    const result = tf.tidy(() => tf.conv2d(inputCon, tempFilter, [2, 2], 'same'));
     inputCon.dispose();
     tempFilter.dispose();
     return result;

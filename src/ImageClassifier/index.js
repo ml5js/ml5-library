@@ -194,7 +194,7 @@ class ImageClassifier {
    * @param {function} cb - a callback function that handles the results of the function.
    * @return {function} a promise or the results of a given callback, cb.
    */
-  async classify(inputNumOrCallback, numOrCallback = null, cb) {
+  async classify(inputNumOrCallback, numOrCallback, cb) {
     let imgToPredict = this.video;
     let numberOfClasses = this.topk;
     let callback;

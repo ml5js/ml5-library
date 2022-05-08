@@ -32,9 +32,7 @@ class NeuralNetworkUtils {
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMin(_array) {
     // return Math.min(..._array)
-    return _array.reduce((a, b) => {
-      return Math.min(a, b);
-    });
+    return _array.reduce((a, b) => Math.min(a, b));
   }
 
   /**
@@ -43,9 +41,7 @@ class NeuralNetworkUtils {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getMax(_array) {
-    return _array.reduce((a, b) => {
-      return Math.max(a, b);
-    });
+    return _array.reduce((a, b) => Math.max(a, b));
     // return Math.max(..._array)
   }
 
@@ -75,12 +71,10 @@ class NeuralNetworkUtils {
       return [];
     }
 
-    const output = [...new Array(arr1.length).fill(null)].map((item, idx) => {
-      return {
+    const output = [...new Array(arr1.length).fill(null)].map((item, idx) => ({
         ...arr1[idx],
         ...arr2[idx]
-      }
-    })
+      }))
 
     return output;
   }
@@ -116,7 +110,7 @@ class NeuralNetworkUtils {
         result[label] = item;
       });
       return result;
-    } else if (typeof incoming === 'object') {
+    } if (typeof incoming === 'object') {
       result = incoming;
       return result;
     }

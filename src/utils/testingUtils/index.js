@@ -13,9 +13,7 @@ export const asyncLoadImage = async (src) => {
   return img;
 }
 
-export const getRobin = async () => {
-  return asyncLoadImage("https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg");
-}
+export const getRobin = async () => asyncLoadImage("https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg")
 
 export const randomImageData = (width = 200, height = 100) => {
   const length = width * height * 4; // 4 channels - RGBA

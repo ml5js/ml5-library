@@ -77,8 +77,7 @@ export async function filterBoxes(
   })
 }
 
-export const boxesToCorners = (boxXY, boxWH) => {
-  return tf.tidy(() => {
+export const boxesToCorners = (boxXY, boxWH) => tf.tidy(() => {
     const two = tf.tensor1d([2.0]);
     const boxMins = tf.sub(boxXY, tf.div(boxWH, two));
     const boxMaxes = tf.add(boxXY, tf.div(boxWH, two));
@@ -94,11 +93,9 @@ export const boxesToCorners = (boxXY, boxWH) => {
       boxMaxes.slice([0, 0, 0, 1], size),
       boxMaxes.slice([0, 0, 0, 0], size),
     ], 3);
-  })
-};
+  });
 
-export const nonMaxSuppression = (boxes, scores, iouThreshold) => {
-  return tf.tidy(() => {
+export const nonMaxSuppression = (boxes, scores, iouThreshold) => tf.tidy(() => {
     // Zip together scores, box corners, and index
     const zipped = [];
     for (let i = 0; i < scores.length; i += 1) {
@@ -129,8 +126,7 @@ export const nonMaxSuppression = (boxes, scores, iouThreshold) => {
       selectedBoxes.map(e => e[1]),
       selectedBoxes.map(e => e[0]),
     ];
-  })
-};
+  });
 
 // Convert yolo output to bounding box + prob tensors
 /* eslint no-param-reassign: 0 */

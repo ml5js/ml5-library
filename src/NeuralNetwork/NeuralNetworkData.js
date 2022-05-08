@@ -99,7 +99,7 @@ class NeuralNetworkData {
    * @param {*} dataRaw
    */
   getDataStats(dataRaw) {
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
 
     const inputMeta = this.getInputMetaStats(dataRaw, meta.inputs, 'xs');
     const outputMeta = this.getInputMetaStats(dataRaw, meta.outputs, 'ys');
@@ -124,7 +124,7 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line no-unused-vars, class-methods-use-this
   getInputMetaStats(dataRaw, inputOrOutputMeta, xsOrYs) {
-    const inputMeta = Object.assign({}, inputOrOutputMeta);
+    const inputMeta = { ...inputOrOutputMeta};
 
     Object.keys(inputMeta).forEach(k => {
       if (inputMeta[k].dtype === 'string') {
@@ -150,7 +150,7 @@ class NeuralNetworkData {
    */
   getDataUnits(dataRaw, _arrayShape = null) {
     const arrayShape = _arrayShape !== null ? _arrayShape : undefined;
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
 
     // if the data has a shape pass it in
     let inputShape;
@@ -181,7 +181,7 @@ class NeuralNetworkData {
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
   getInputMetaUnits(_dataRaw, _inputsMeta) {
     let units = 0;
-    const inputsMeta = Object.assign({}, _inputsMeta);
+    const inputsMeta = { ..._inputsMeta};
 
     Object.entries(inputsMeta).forEach(arr => {
       const { dtype } = arr[1];
@@ -270,7 +270,7 @@ class NeuralNetworkData {
    */
   // eslint-disable-next-line class-methods-use-this, no-unused-vars
   convertRawToTensors(dataRaw) {
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
     const dataLength = dataRaw.length;
 
     return tf.tidy(() => {
@@ -280,18 +280,14 @@ class NeuralNetworkData {
       dataRaw.forEach(row => {
         // get xs
         const xs = Object.keys(meta.inputs)
-          .map(k => {
-            return row.xs[k];
-          })
+          .map(k => row.xs[k])
           .flat();
 
         inputArr.push(xs);
 
         // get ys
         const ys = Object.keys(meta.outputs)
-          .map(k => {
-            return row.ys[k];
-          })
+          .map(k => row.ys[k])
           .flat();
 
         outputArr.push(ys);
@@ -318,7 +314,7 @@ class NeuralNetworkData {
    * @param {*} dataRaw
    */
   normalizeDataRaw(dataRaw) {
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
 
     const normXs = this.normalizeInputData(dataRaw, meta.inputs, 'xs');
     const normYs = this.normalizeInputData(dataRaw, meta.outputs, 'ys');
@@ -339,7 +335,7 @@ class NeuralNetworkData {
     // the data length
     const dataLength = dataRaw.length;
     // the copy of the inputs.meta[inputOrOutput]
-    const inputMeta = Object.assign({}, inputOrOutputMeta);
+    const inputMeta = { ...inputOrOutputMeta};
 
     // normalized output object
     const normalized = {};
@@ -391,9 +387,7 @@ class NeuralNetworkData {
     // value with the onehot array
     // if none exists, return the given value
     if (options.legend) {
-      const normalized = inputArray.map(v => {
-        return options.legend[v] ? options.legend[v] : v;
-      });
+      const normalized = inputArray.map(v => options.legend[v] ? options.legend[v] : v);
       return normalized;
     }
 
@@ -459,7 +453,7 @@ class NeuralNetworkData {
    * @param {*} _meta
    */
   applyOneHotEncodingsToDataRaw(dataRaw) {
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
 
     const output = dataRaw.map(row => {
       const xs = {
@@ -497,7 +491,7 @@ class NeuralNetworkData {
    * @param {*} dataRaw
    */
   getDataOneHot(dataRaw) {
-    const meta = Object.assign({}, this.meta);
+    const meta = { ...this.meta};
 
     const inputMeta = this.getInputMetaOneHot(dataRaw, meta.inputs, 'xs');
     const outputMeta = this.getInputMetaOneHot(dataRaw, meta.outputs, 'ys');
@@ -520,7 +514,7 @@ class NeuralNetworkData {
    * @param {*} xsOrYs
    */
   getInputMetaOneHot(_dataRaw, _inputsMeta, xsOrYs) {
-    const inputsMeta = Object.assign({}, _inputsMeta);
+    const inputsMeta = { ..._inputsMeta};
 
     Object.entries(inputsMeta).forEach(arr => {
       // the key
@@ -614,7 +608,7 @@ class NeuralNetworkData {
       let json;
       // handle loading parsedJson
       if (dataUrlOrJson instanceof Object) {
-        json = Object.assign({}, dataUrlOrJson);
+        json = { ...dataUrlOrJson};
       } else {
         const {data} = await axios.get(dataUrlOrJson);
         json = data;
@@ -683,7 +677,7 @@ class NeuralNetworkData {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  async loadData(filesOrPath = null, callback) {
+  async loadData(filesOrPath, callback) {
     try {
       let loadedData;
 
@@ -781,7 +775,7 @@ class NeuralNetworkData {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  async loadMeta(filesOrPath = null, callback) {
+  async loadMeta(filesOrPath, callback) {
     if (filesOrPath instanceof FileList) {
       const files = await Promise.all(
         Array.from(filesOrPath).map(async file => {
@@ -790,13 +784,13 @@ class NeuralNetworkData {
               name: 'model',
               file,
             };
-          } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
+          } if (file.name.includes('.json') && file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
             return {
               name: 'metadata',
               file: modelMetadata,
             };
-          } else if (file.name.includes('.bin')) {
+          } if (file.name.includes('.bin')) {
             return {
               name: 'weights',
               file,
@@ -937,11 +931,11 @@ class NeuralNetworkData {
    * @param {*} _data
    */
   findEntries(_data) {
-    const parentCopy = Object.assign({}, _data);
+    const parentCopy = { ..._data};
 
     if (parentCopy.entries && parentCopy.entries instanceof Array) {
       return parentCopy.entries;
-    } else if (parentCopy.data && parentCopy.data instanceof Array) {
+    } if (parentCopy.data && parentCopy.data instanceof Array) {
       return parentCopy.data;
     }
 

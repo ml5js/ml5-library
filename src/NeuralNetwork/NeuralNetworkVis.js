@@ -23,12 +23,10 @@ class NeuralNetworkVis {
    * @param {*} data
    */
   scatterplot(inputLabel, outputLabel, data) {
-    const values = data.map(item => {
-      return {
+    const values = data.map(item => ({
         x: item.xs[inputLabel],
         y: item.ys[outputLabel],
-      };
-    });
+      }));
 
     const visOptions = {
       name: "debug mode",
@@ -53,12 +51,10 @@ class NeuralNetworkVis {
 
     inputLabels.forEach(inputLabel => {
       outputLabels.forEach(outputLabel => {
-        const val = data.map(item => {
-          return {
+        const val = data.map(item => ({
             x: item.xs[inputLabel],
             y: item.ys[outputLabel],
-          };
-        });
+          }));
 
         values = [...values, ...val];
       });
@@ -84,12 +80,10 @@ class NeuralNetworkVis {
    * @param {*} data
    */
   barchart(inputLabel, outputLabel, data) {
-    const values = data.map(item => {
-      return {
+    const values = data.map(item => ({
         value: item.xs[inputLabel],
         index: item.ys[outputLabel],
-      };
-    });
+      }));
 
     const chartOptions = {
       xLabel: "label",

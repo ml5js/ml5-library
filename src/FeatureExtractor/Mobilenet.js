@@ -9,7 +9,7 @@ A class that extract features from Mobilenet
 
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
-import Video from "./../utils/Video";
+import Video from "../utils/Video";
 import { imgToTensor } from "../utils/imageUtilities";
 import { saveBlob } from "../utils/io";
 import callCallback from "../utils/callcallback";
@@ -126,7 +126,7 @@ class Mobilenet {
    *    the video is ready. If no callback is provided, it will return a
    *    promise that will be resolved once the video element has loaded.
    */
-  classification(video, objOrCallback = null, callback) {
+  classification(video, objOrCallback, callback) {
     let cb;
 
     this.usageType = "classifier";
@@ -450,7 +450,7 @@ class Mobilenet {
     return { value: prediction[0] };
   }
 
-  async load(filesOrPath = null, callback) {
+  async load(filesOrPath, callback) {
     if (typeof filesOrPath !== "string") {
       let model = null;
       let weights = null;

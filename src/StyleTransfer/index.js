@@ -12,20 +12,18 @@ The original TensorFlow implementation was developed by Logan Engstrom: github.c
 */
 
 import * as tf from '@tensorflow/tfjs';
-import Video from './../utils/Video';
+import Video from "../utils/Video";
 import CheckpointLoader from '../utils/checkpointLoader';
 import { array3DToImage } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
 
-const convertCanvasToImage = canvas => {
-  return new Promise(resolve => {
+const convertCanvasToImage = canvas => new Promise(resolve => {
     const image = new Image(IMAGE_SIZE, IMAGE_SIZE);
     image.onload = () => resolve(image);
     image.src = canvas.toDataURL();
-  });
-}
+  })
 
 class StyleTransfer extends Video {
   /**
