@@ -179,36 +179,38 @@ class ArgHelper {
     }
     switch (typeof arg) {
       case "string":
-        this.string = arg;
+        this.set({ string: arg });
         break;
       case "number":
-        this.number = arg;
+        this.set({ number: arg });
         break;
       case "function":
-        this.callback = arg
+        this.set({ callback: arg });
         break;
       case "object": {
         if (isTensor3D(arg) || isImageData(arg)) {
-          this.image = arg;
+          this.set({ image: arg });
         }
         // Handle p5 object and HTML elements.
         const element = getImageElement(arg);
         if (element) {
-          this.image = element;
+          this.set({ image: element });
           // Videos are also both images and audio.
           if (isVideo(element)) {
-            this.audio = element
-            this.video = element;
+            this.set({
+              audio: element,
+              video: element
+            });
           }
         }
           // TODO: handle audio elements and p5.sound
         // Check for arrays
         else if (Array.isArray(arg)) {
-          this.array = arg;
+          this.set({ array: arg });
         }
         // All other objects are assumed to be options.
         else {
-          this.options = arg;
+          this.set({ options: arg });
         }
         break;
       }
@@ -216,6 +218,25 @@ class ArgHelper {
         // Notify user about invalid arguments (would be ok to just skip)
         throw new Error("invalid argument"); // TODO: better message.
     }
+  }
+
+  /**
+   * Set one or more properties and log a warning if it is already set.
+   * Use the second argument to suppress the warning when overriding behavior is expected.
+   *
+   * @param {Partial<StandardArguments>} values
+   * @param {boolean} warn
+   */
+  set(values, warn = true) {
+    Object.keys(values).forEach(property => {
+      if (warn && this.has(property)) {
+        console.warn(
+          `Received multiple ${property} arguments, but only a single ${property} is supported.
+          The last ${property} will be used.`
+        );
+      }
+      this[property] = values[property];
+    });
   }
 
   /**
