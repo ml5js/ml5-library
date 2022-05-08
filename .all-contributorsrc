@@ -1308,6 +1308,42 @@
         "ideas",
         "bug"
       ]
+    },
+    {
+      "login": "emwdx",
+      "name": "Evan Weinberg",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1531831?v=4",
+      "profile": "http://evanweinberg.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "codergautam",
+      "name": "Coder Gautam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/66850133?v=4",
+      "profile": "https://youtube.com/codergautam",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "yoychen",
+      "name": "Yong-Yuan Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3905275?v=4",
+      "profile": "https://github.com/yoychen",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "adrianfiedler",
+      "name": "adrianfiedler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7136570?v=4",
+      "profile": "https://github.com/adrianfiedler",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,

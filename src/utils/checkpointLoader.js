@@ -4,86 +4,119 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import axios from 'axios';
 
 const MANIFEST_FILE = 'manifest.json';
 
+/**
+ * @typedef {Record<string, { filename: string, shape: Array<number> }>} Manifest
+ */
+/**
+ * Loads all of the variables of a model from a directory
+ * which contains a `manifest.json` file and individual variable data files.
+ * The `manifest.json` contains the `filename` and `shape` for each data file.
+ *
+ * @class
+ * @property {string} urlPath
+ * @property {Manifest} [checkpointManifest]
+ * @property {Record<string, tf.Tensor>} variables
+ */
 export default class CheckpointLoader {
+  /**
+   * @param {string} urlPath - the directory URL
+   */
   constructor(urlPath) {
-    this.urlPath = urlPath;
-    if (this.urlPath.charAt(this.urlPath.length - 1) !== '/') {
-      this.urlPath += '/';
+    this.urlPath = urlPath.endsWith('/') ? urlPath : `${urlPath}/`;
+    this.variables = {};
+  }
+
+  /**
+   * @private
+   * Executes the request to load the manifest.json file.
+   *
+   * @return {Promise<Manifest>}
+   */
+  async loadManifest() {
+    try {
+      const response = await axios.get(this.urlPath + MANIFEST_FILE);
+      return response.data;
+    } catch (error) {
+      throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${error}`);
     }
   }
 
-  async loadManifest() {
-    return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', this.urlPath + MANIFEST_FILE);
-
-      xhr.onload = () => {
-        this.checkpointManifest = JSON.parse(xhr.responseText);
-        resolve();
-      };
-      xhr.onerror = (error) => {
-        reject();
-        throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${error}`);
-      };
-      xhr.send();
-    });
+  /**
+   * @private
+   * Executes the request to load the file for a variable.
+   *
+   * @param {string} varName
+   * @return {Promise<tf.Tensor>}
+   */
+  async loadVariable(varName) {
+    const manifest = await this.getCheckpointManifest();
+    if (!(varName in manifest)) {
+      throw new Error(`Cannot load non-existent variable ${varName}`);
+    }
+    const { filename, shape } = manifest[varName];
+    const url = this.urlPath + filename;
+    try {
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
+      const values = new Float32Array(response.data);
+      return tf.tensor(values, shape);
+    } catch (error) {
+      throw new Error(`Error loading variable ${varName} from URL ${url}: ${error}`);
+    }
   }
 
-
+  /**
+   * @public
+   * Lazy-load the contents of the manifest.json file.
+   *
+   * @return {Promise<Manifest>}
+   */
   async getCheckpointManifest() {
-    if (this.checkpointManifest == null) {
-      await this.loadManifest();
+    if (!this.checkpointManifest) {
+      this.checkpointManifest = await this.loadManifest();
     }
     return this.checkpointManifest;
   }
 
-  async getAllVariables() {
-    if (this.variables != null) {
-      return Promise.resolve(this.variables);
-    }
-    await this.getCheckpointManifest();
-    const variableNames = Object.keys(this.checkpointManifest);
-    const variablePromises = variableNames.map(v => this.getVariable(v));
-    return Promise.all(variablePromises).then((variables) => {
-      this.variables = {};
-      for (let i = 0; i < variables.length; i += 1) {
-        this.variables[variableNames[i]] = variables[i];
-      }
-      return this.variables;
-    });
+  /**
+   * @public
+   * Get the property names for each variable in the manifest.
+   *
+   * @return {Promise<string[]>}
+   */
+  async getKeys() {
+    const manifest = await this.getCheckpointManifest();
+    return Object.keys(manifest);
   }
-  getVariable(varName) {
-    if (!(varName in this.checkpointManifest)) {
-      throw new Error(`Cannot load non-existent variable ${varName}`);
+
+  /**
+   * @public
+   * Get a dictionary with the tensors for all variables in the manifest.
+   *
+   * @return {Promise<Record<string, tf.Tensor>>}
+   */
+  async getAllVariables() {
+    // Ensure that all keys are loaded and then return the dictionary.
+    const variableNames = await this.getKeys();
+    const variablePromises = variableNames.map(v => this.getVariable(v));
+    await Promise.all(variablePromises);
+    return this.variables;
+  }
+
+  /**
+   * @public
+   * Access a single variable from its key. Will load only if not previously loaded.
+   *
+   * @param {string} varName
+   * @return {Promise<tf.Tensor>}
+   */
+  async getVariable(varName) {
+    if (!this.variables[varName]) {
+      this.variables[varName] = await this.loadVariable(varName);
     }
-    const variableRequestPromiseMethod = (resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.responseType = 'arraybuffer';
-      const fname = this.checkpointManifest[varName].filename;
-      xhr.open('GET', this.urlPath + fname);
-      xhr.onload = () => {
-        if (xhr.status === 404) {
-          throw new Error(`Not found variable ${varName}`);
-        }
-        const values = new Float32Array(xhr.response);
-        const tensor = tf.tensor(values, this.checkpointManifest[varName].shape);
-        resolve(tensor);
-      };
-      xhr.onerror = (error) => {
-        throw new Error(`Could not fetch variable ${varName}: ${error}`);
-      };
-      xhr.send();
-    };
-    if (this.checkpointManifest == null) {
-      return new Promise((resolve) => {
-        this.loadManifest().then(() => {
-          new Promise(variableRequestPromiseMethod).then(resolve);
-        });
-      });
-    }
-    return new Promise(variableRequestPromiseMethod);
+    return this.variables[varName];
   }
 }

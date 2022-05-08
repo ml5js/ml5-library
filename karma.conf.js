@@ -11,18 +11,20 @@ module.exports = config => {
     frameworks: ["jasmine"],
     files: [
       "src/index.js",
+      "src/utils/*_test.js",
       `src/${config.model ? config.model : "**"}/*_test.js`,
       `src/${config.model ? config.model : "**"}/**/*_test.js`,
     ],
     preprocessors: {
       "src/index.js": ["webpack"],
+      "src/utils/*.js": ["webpack"],
     },
     webpack: {
       // TODO: This is duplication of the webpack.common.babel.js file, but they
       // use different import syntaxes so it's not easy to just require it here.
       // Maybe this could be put into a JSON file, but the include in the module
       // rules is dynamic.
-      entry: ["babel-polyfill", "./src/index.js"],
+      entry: ["@babel/polyfill", "./src/index.js"],
       output: {
         libraryTarget: "umd",
         filename: "ml5.js",

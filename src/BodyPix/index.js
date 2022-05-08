@@ -11,6 +11,7 @@
  * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/body-pix
  */
 
+// @ts-check
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import handleArguments from "../utils/handleArguments";
@@ -44,11 +45,11 @@ const DEFAULTS = {
 
 class BodyPix {
   /**
-     * Create BodyPix.
+   * Create BodyPix.
      * @param {HTMLVideoElement} [video] - An HTMLVideoElement.
      * @param {BodyPixOptions} [options] - An object with options.
      * @param {ML5Callback<BodyPix>} [callback] - A callback to be called when the model is ready.
-     */
+   */
   constructor(video, options, callback) {
     this.video = video;
     this.model = null;
@@ -66,9 +67,9 @@ class BodyPix {
   }
 
   /**
-     * Load the model and set it to this.model
-     * @return {Promise<BodyPix>} the BodyPix model.
-     */
+   * Load the model and set it to this.model
+   * @return {Promise<BodyPix>} the BodyPix model.
+   */
   async loadModel() {
     this.model = await bp.load(this.config.multiplier);
     this.modelReady = true;
@@ -76,10 +77,10 @@ class BodyPix {
   }
 
   /**
-     * Returns an rgb array
-     * @param {Object} a p5.Color obj
-     * @return {Array} an [r,g,b] array
-     */
+   * Returns an rgb array
+   * @param {Object} p5ColorObj - a p5.Color obj
+   * @return {Array} an [r,g,b] array
+   */
   /* eslint class-methods-use-this: "off" */
   p5Color2RGB(p5ColorObj) {
     const regExp = /\(([^)]+)\)/;
@@ -102,22 +103,21 @@ class BodyPix {
   }
 
   /**
-     * Returns a bodyPartsSpec object 
-     * @param {Array} an array of [r,g,b] colors
-     * @return {object} an object with the bodyParts by color and id
-     */
+   * Returns a bodyPartsSpec object
+   * @param {Array} colorOptions - an array of [r,g,b] colors
+   * @return {object} an object with the bodyParts by color and id
+   */
   /* eslint class-methods-use-this: "off" */
   bodyPartsSpec(colorOptions) {
     const result = colorOptions !== undefined || Object.keys(colorOptions).length >= 24 ? colorOptions : this.config.palette;
 
-    // Check if we're getting p5 colors, make sure they are rgb 
-    if (p5Utils.checkP5() && result !== undefined && Object.keys(result).length >= 24) {
+    // Check if we're getting p5 colors, make sure they are rgb
+    const p5 = p5Utils.p5Instance;
+    if (p5 && result !== undefined && Object.keys(result).length >= 24) {
       // Ensure the p5Color object is an RGB array
       Object.keys(result).forEach(part => {
-        if (result[part].color instanceof window.p5.Color) {
+        if (result[part].color instanceof p5.Color) {
           result[part].color = this.p5Color2RGB(result[part].color);
-        } else {
-          result[part].color = result[part].color;
         }
       });
     }
@@ -138,12 +138,11 @@ class BodyPix {
    */
 
   /**
-     * Segments the image with partSegmentation, return result object
-     * @param {InputImage} [imgToSegment]
-     * @param {BodyPixOptions} [segmentationOptions] - config params for the segmentation
-     *    includes outputStride, segmentationThreshold
-     * @return {Promise<SegmentationResult>} a result object with image, raw, bodyParts
-     */
+   * Segments the image with partSegmentation, return result object* @param {InputImage} [imgToSegment]
+   * @param {BodyPixOptions} [segmentationOptions] - config params for the segmentation
+   *    includes outputStride, segmentationThreshold
+   * @return {Promise<SegmentationResult>} a result object with image, raw, bodyParts
+   */
   async segmentWithPartsInternal(imgToSegment, segmentationOptions) {
     // estimatePartSegmentation
     await this.ready;
@@ -267,12 +266,12 @@ class BodyPix {
   }
 
   /**
-     * Segments the image with personSegmentation, return result object
-     * @param {InputImage} imgToSegment
-     * @param {BodyPixOptions} segmentationOptions - config params for the segmentation
-     *    includes outputStride, segmentationThreshold
-     * @return {Promise<SegmentationResult>} a result object with maskBackground, maskPerson, raw
-     */
+   * Segments the image with personSegmentation, return result object
+   * @param {InputImage} imgToSegment
+   * @param {BodyPixOptions} segmentationOptions - config params for the segmentation
+   *    includes outputStride, segmentationThreshold
+   * @return {Promise<SegmentationResult>} a result object with maskBackground, maskPerson, raw
+   */
   async segmentInternal(imgToSegment, segmentationOptions) {
 
     await this.ready;

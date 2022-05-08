@@ -1,5 +1,3 @@
-// Copyright (c) 2018 ml5
-//
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
@@ -56,5 +54,4 @@ describe('charRnn', () => {
       const result = await rnn.generate(RNN_OPTIONS);
       expect(result.sample.length).toBe(RNN_OPTIONS.length);
     });
-  });
-});
+	
