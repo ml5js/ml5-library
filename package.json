@@ -58,27 +58,29 @@
     "all-contributors-cli": "^6.10.0",
     "babel-loader": "^8.2.4",
     "commitizen": "4.0.3",
-    "copy-webpack-plugin": "^5.1.1",
+    "copy-webpack-plugin": "^10.2.4",
+    "core-js": "^3.22.4",
     "cz-conventional-changelog": "2.1.0",
     "docsify-cli": "^4.3.0",
     "dotenv": "^8.2.0",
-    "eslint": "4.18.2",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-loader": "2.0.0",
-    "eslint-nibble": "^5.1.0",
-    "eslint-plugin-import": "2.9.0",
-    "extract-text-webpack-plugin": "4.0.0-beta.0",
+    "eslint": "^8.15.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-import-resolver-typescript": "^2.7.1",
+    "eslint-nibble": "^8.0.2",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-webpack-plugin": "^3.1.1",
     "ghooks": "2.0.2",
-    "html-webpack-plugin": "^3.0.7",
-    "jasmine-core": "3.1.0",
-    "karma": "2.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "jasmine-core": "^4.1.0",
+    "karma": "^6.3.19",
     "karma-browserstack-launcher": "^1.5.1",
-    "karma-chrome-launcher": "2.2.0",
-    "karma-jasmine": "1.1.1",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-jasmine": "^5.0.0",
     "karma-mocha-reporter": "^2.2.5",
-    "karma-safari-launcher": "1.0.0",
-    "karma-webpack": "3.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-webpack": "^5.0.0",
     "live-server": "^1.2.1",
     "npm-run-all": "^4.1.5",
     "q": "^1.5.1",
@@ -87,11 +89,11 @@
     "request-promise": "^4.2.5",
     "rimraf": "2.6.2",
     "semantic-release": "^17.2.3",
-    "uglifyjs-webpack-plugin": "^1.2.5",
-    "webpack": "4.1.1",
-    "webpack-cli": "2.0.10",
-    "webpack-dev-server": "3.10.3",
-    "webpack-merge": "^4.1.2"
+    "terser-webpack-plugin": "^5.3.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0",
+    "webpack-merge": "^5.8.0"
   },
   "config": {
     "commitizen": {
@@ -105,7 +107,11 @@
   "babel": {
     "presets": [
       [
-        "@babel/preset-env"
+        "@babel/preset-env",
+        {
+          "useBuiltIns": "usage",
+          "corejs": "3.22"
+        }
       ]
     ],
     "plugins": [
@@ -114,8 +120,8 @@
     ]
   },
   "peerDependencies": {
-    "@tensorflow/tfjs-core": "^1.2.9",
-    "@tensorflow/tfjs-converter": "^1.2.9"
+    "@tensorflow/tfjs-converter": "^1.2.9",
+    "@tensorflow/tfjs-core": "^1.2.9"
   },
   "dependencies": {
     "@magenta/sketch": "0.2.0",
