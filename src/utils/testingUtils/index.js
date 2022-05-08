@@ -1,26 +1,35 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { createImageData, ImageData } from "canvas";
 
-export const getRobin = async () => {
+export const asyncLoadImage = async (src) => {
   const img = new Image();
-  img.crossOrigin = "";
-  img.src = "https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg";
+  if (src.startsWith('http')) {
+    img.crossOrigin = "true";
+  }
+  img.src = src;
   await new Promise(resolve => {
     img.onload = resolve;
   });
   return img;
 }
 
-export const getImageData = async () => {
-  const arr = new Uint8ClampedArray(20000);
+export const getRobin = async () => {
+  return asyncLoadImage("https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg");
+}
 
-  // Iterate through every pixel
-  for (let i = 0; i < arr.length; i += 4) {
-    arr[i + 0] = 0; // R value
-    arr[i + 1] = 190; // G value
-    arr[i + 2] = 0; // B value
-    arr[i + 3] = 255; // A value
-  }
-
+export const randomImageData = (width = 200, height = 100) => {
+  const length = width * height * 4; // 4 channels - RGBA
+  // Create an array of random pixel values
+  const array = Uint8ClampedArray.from(
+    { length },
+    () => Math.floor(Math.random() * 256)
+  );
   // Initialize a new ImageData object
-  const img = new ImageData(arr, 200);
-  return img;
+  return createImageData(array, width, height);
+}
+
+export const polyfillImageData = () => {
+  if (!global.ImageData) {
+    global.ImageData = ImageData;
+  }
 }

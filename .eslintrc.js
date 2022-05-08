@@ -43,6 +43,12 @@ module.exports = {
         "no-unused-vars": ["error", { varsIgnorePattern: "^setup$|^draw$|^preload$" }],
         "new-cap": 0,
         "no-underscore-dangle": 0,
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": ["**/**_test.js", "**/**.test.js", "setupTests.js"]
+          }
+        ]
       },
     },
     {
@@ -50,6 +56,15 @@ module.exports = {
       globals: {
         ml5: false,
       },
+    },
+    {
+      files: ["**/**.test.js"],
+      globals: {
+        ml5: false,
+      },
+      env: {
+        jest: true,
+      }
     },
   ],
 };
