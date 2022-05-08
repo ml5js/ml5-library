@@ -3,7 +3,7 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { featureExtractor } = ml5;
+import featureExtractor from './index';
 
 const FEATURE_EXTRACTOR_DEFAULTS = {
   learningRate: 0.0001,
@@ -17,7 +17,7 @@ describe('featureExtractor with Mobilenet', () => {
   let classifier;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     classifier = await featureExtractor('MobileNet', {});
   });
 
@@ -29,14 +29,5 @@ describe('featureExtractor with Mobilenet', () => {
     expect(classifier.config.batchSize).toBe(FEATURE_EXTRACTOR_DEFAULTS.batchSize);
   });
 
-  // describe('predict', () => {
-  //   it('Should classify an image of a Robin', async () => {
-  //     const img = new Image();
-  //     img.crossOrigin = '';
-  //     img.src = 'https://ml5js.org/docs/assets/img/bird.jpg';
-  //     await new Promise((resolve) => { img.onload = resolve; });
-  //     classifier.predict(img)
-  //       .then(results => expect(results[0].className).toBe('robin, American robin, Turdus migratorius'));
-  //   });
-  // });
+  // TODO: test featureExtractor methods -- needs an image with known/expected outputs.
 });
