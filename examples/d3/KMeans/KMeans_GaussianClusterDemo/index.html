@@ -1,17 +1,18 @@
 <html>
 	<head>
-	  <title>ml5.js kmeans example</title>
+	  <title>ml5.js K-Means Example</title>
 	  <script src="https://d3js.org/d3.v4.min.js"></script>
 	  <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<center>
-			<h1>K Means Example</h1>
-			<p style="width: 60%;"> K-Means is a clustering algorithm that groups <i>n</i> observations into <i>k</i> groups. It works well for well-clustered data, and is a great choice if you know the number of groups beforehand.
-			Be aware that k-means solves for local optima (instead of global), so different iterations may yield different clusters. Also, because the algorithm clusters based on mean points with euclidian distance, it <i>roughly</i>expects clusters to be roughly spherical and of even sizes (see <i>Cirlces</i> and <i>Moons</i> below for examples where these expecations aren't met).
-			</p>
-			<div>
-			
+		<div style="width: 60%; max-width: 600px;">
+			<h1>K-Means Example</h1>
+			  <p> K-Means is a clustering algorithm that groups <strong><em>n</em></strong> observations into <strong><em>k</em></strong> groups. It works well for well-clustered data, and is a great choice if you know the number of groups beforehand.</p>
+			  <p>Be aware that K-Means solves for local optima (instead of global), so different iterations may yield different clusters. You can click the same button again to re-run the algorithm and see how the results change.</p>
+			<p>The algorithm clusters based on mean points with euclidean distance, so it works best with clusters which are <em>roughly</em> spherical and of <em>roughly</em> even sizes. See <em>Circles</em> and <em>Moons</em> below for examples where these expectations aren't met.</p>
+		</div>
+		<div>
 		  <div id="buttons"></div>
 	      <div id="chart"></div>
 	    </div>

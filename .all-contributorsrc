@@ -1326,6 +1326,24 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "yoychen",
+      "name": "Yong-Yuan Chen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3905275?v=4",
+      "profile": "https://github.com/yoychen",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "adrianfiedler",
+      "name": "adrianfiedler",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7136570?v=4",
+      "profile": "https://github.com/adrianfiedler",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7,
