@@ -358,7 +358,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://evanweinberg.com"><img src="https://avatars.githubusercontent.com/u/1531831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Evan Weinberg</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=emwdx" title="Documentation">📖</a></td>
     <td align="center"><a href="https://youtube.com/codergautam"><img src="https://avatars.githubusercontent.com/u/66850133?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Coder Gautam</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=codergautam" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/yoychen"><img src="https://avatars.githubusercontent.com/u/3905275?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yong-Yuan Chen</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=yoychen" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/adrianfiedler"><img src="https://avatars.githubusercontent.com/u/7136570?v=4?s=100" width="100px;" alt=""/><br /><sub><b>adrianfiedler</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=adrianfiedler" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/adrianfiedler"><img src="https://avatars.githubusercontent.com/u/7136570?v=4?s=100" width="100px;" alt=""/><br /><sub><b>adrianfiedler</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=adrianfiedler" title="Documentation">📖</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Aadrianfiedler" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
