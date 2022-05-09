@@ -5,11 +5,11 @@
 
 /*
  * Facemesh: Facial landmark detection in the browser
- * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/facemesh
+ * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/face-landmarks-detection
  */
 
+import * as facemeshCore from "@tensorflow-models/face-landmarks-detection";
 import * as tf from "@tensorflow/tfjs";
-import * as facemeshCore from "@tensorflow-models/facemesh";
 import { EventEmitter } from "events";
 import callCallback from "../utils/callcallback";
 
@@ -25,7 +25,7 @@ class Facemesh extends EventEmitter {
 
     this.video = video;
     /**
-     * @type {null | facemeshCore.FaceMesh}
+     * @type {null | facemeshCore.FaceLandmarksDetector}
      */
     this.model = null;
     this.modelReady = false;
@@ -39,7 +39,15 @@ class Facemesh extends EventEmitter {
    * @return {this} the Facemesh model.
    */
   async loadModel() {
-    this.model = await facemeshCore.load(this.config);
+    this.model = await facemeshCore.createDetector(
+      facemeshCore.SupportedModels.MediaPipeFaceMesh, {
+        // TODO: update options in docs
+        runtime: 'tfjs',
+        solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh',
+        maxFaces: 10,
+        ...this.config
+      }
+    );
     this.modelReady = true;
 
     if (this.video && this.video.readyState === 0) {
@@ -57,7 +65,7 @@ class Facemesh extends EventEmitter {
   }
 
   /**
-   * @return {Promise<facemeshCore.AnnotatedPrediction[]>} an array of predictions.
+   * @return {Promise<facemeshCore.Face[]>} an array of predictions.
    */
   async predict(inputOr, callback) {
     const input = this.getInput(inputOr);
@@ -65,8 +73,11 @@ class Facemesh extends EventEmitter {
       throw new Error("No input image found.");
     }
     const { flipHorizontal } = this.config;
-    const predictions = await this.model.estimateFaces(input, flipHorizontal);
-    const result = predictions;
+    const result = await this.model.estimateFaces(input, {
+      flipHorizontal,
+      // TODO: replace with `isVideo(input)` after merging the correct PR -Linda
+      staticImageMode: !this.video
+    });
     // Soon, we will remove the 'predict' event and prefer the 'face' event. During
     // the interim period, we will both events.
     this.emit("predict", result);
