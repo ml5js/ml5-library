@@ -7,7 +7,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import pitchDetection from "./PitchDetection/";
 import imageClassifier from "./ImageClassifier/";
-import soundClassifier from "./SoundClassifier/";
+// import soundClassifier from "./SoundClassifier/";
 import KNNClassifier from "./KNNClassifier/";
 import featureExtractor from "./FeatureExtractor/";
 import word2vec from "./Word2vec/";
@@ -24,7 +24,7 @@ import uNet from "./UNET";
 import CVAE from "./CVAE";
 import DCGAN from "./DCGAN";
 import preloadRegister from "./utils/p5PreloadHelper";
-import { version } from "../package.json";
+import pkg from "../package.json";
 import sentiment from "./Sentiment";
 import bodyPix from "./BodyPix";
 import neuralNetwork from "./NeuralNetwork";
@@ -38,6 +38,11 @@ import handpose from './Handpose';
 import p5Utils from "./utils/p5Utils";
 import communityStatement from "./utils/community";
 import * as testingUtils from "./utils/testingUtils";
+
+// Temporary, to prevent soundClassifier from breaking other models.
+const soundClassifier = () => {
+  throw new Error("SoundClassifier model has been removed.");
+}
 
 const withPreload = {
   charRNN,
@@ -78,7 +83,7 @@ export default Object.assign({ p5Utils }, preloadRegister(withPreload), {
   ...imageUtils,
   tf,
   tfvis,
-  version,
+  version: pkg.version,
   neuralNetwork,
   testingUtils
 });

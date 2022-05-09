@@ -6,30 +6,29 @@
 
 import merge from "webpack-merge";
 import { resolve } from "path";
-import UglifyJSPlugin from "uglifyjs-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
-import common, { indexEntryWithBabel, developmentPort } from "./webpack.common.babel";
+import TerserPlugin from "terser-webpack-plugin";
+import common from "./webpack.common.babel";
+import { developmentPort } from "./webpack.dev.babel";
 
-const regexMatchHTMLFiles = /^[^.]+.html$/;
 const replaceML5Reference = (content, path) => {
-  if (!regexMatchHTMLFiles.test(path)) {
-    return content;
+  if (path.endsWith('.html')) {
+    return content
+      .toString()
+      .replace(
+        `http://localhost:${developmentPort}/ml5.js`,
+        "https://unpkg.com/ml5@latest/dist/ml5.min.js",
+      );
   }
-
-  return content
-    .toString()
-    .replace(
-      `http://localhost:${developmentPort}/ml5.js`,
-      "https://unpkg.com/ml5@latest/dist/ml5.min.js",
-    );
+  return content;
 };
 
 const libraryBuildConfig = merge(common, {
   mode: "production",
   devtool: "source-map",
   entry: {
-    ml5: indexEntryWithBabel,
-    "ml5.min": indexEntryWithBabel,
+    ml5: "./src/index.js",
+    "ml5.min": "./src/index.js",
   },
   output: {
     filename: "[name].js",
@@ -37,9 +36,11 @@ const libraryBuildConfig = merge(common, {
   optimization: {
     minimize: true,
     minimizer: [
-      new UglifyJSPlugin({
+      new TerserPlugin({
         include: /\.min\.js$/,
-        sourceMap: true,
+        terserOptions: {
+          sourceMap: true,
+        },
       }),
     ],
   },
@@ -53,12 +54,14 @@ const exampleBuildConfig = merge(common, {
     publicPath: "/",
   },
   plugins: [
-    new CopyPlugin([
-      {
-        from: "examples/",
-        transform: (content, path) => replaceML5Reference(content, path),
-      },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "examples/",
+          transform: (content, path) => replaceML5Reference(content, path),
+        },
+      ],
+    }),
   ],
 });
 

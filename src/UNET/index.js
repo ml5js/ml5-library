@@ -8,6 +8,7 @@ Image Classifier using pre-trained networks
 */
 
 import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import callCallback from '../utils/callcallback';
 import {
   array3DToImage

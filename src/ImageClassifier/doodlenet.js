@@ -4,6 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
 import DOODLENET_CLASSES from '../utils/DOODLENET_CLASSES';
 
