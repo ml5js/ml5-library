@@ -93,7 +93,7 @@ class StyleTransfer extends Video {
       const shift = this.variables[StyleTransfer.getVariableName(id)];
       const scale = this.variables[StyleTransfer.getVariableName(id + 1)];
       const epsilon = this.epsilonScalar;
-      const normalized = tf.div(tf.sub(input.asType('float32'), mu), tf.sqrt(tf.add(sigmaSq, epsilon)));
+      const normalized = tf.div(tf.sub(input, mu), tf.sqrt(tf.add(sigmaSq, epsilon)));
       const shifted = tf.add(tf.mul(scale, normalized), shift);
       return shifted.as3D(height, width, inDepth);
     });
@@ -186,7 +186,7 @@ class StyleTransfer extends Video {
   async transferInternal(input) {
     const image = tf.browser.fromPixels(input);
     const result = array3DToImage(tf.tidy(() => {
-      const conv1 = this.convLayer(image, 1, true, 0);
+      const conv1 = this.convLayer(tf.cast(image, 'float32'), 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
       const conv3 = this.convLayer(conv2, 2, true, 6);
       const res1 = this.residualBlock(conv3, 9);
