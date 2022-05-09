@@ -7,7 +7,7 @@ import * as tf from "@tensorflow/tfjs";
 import * as tfvis from "@tensorflow/tfjs-vis";
 import pitchDetection from "./PitchDetection/";
 import imageClassifier from "./ImageClassifier/";
-import soundClassifier from "./SoundClassifier/";
+// import soundClassifier from "./SoundClassifier/";
 import KNNClassifier from "./KNNClassifier/";
 import featureExtractor from "./FeatureExtractor/";
 import word2vec from "./Word2vec/";
@@ -38,6 +38,11 @@ import handpose from './Handpose';
 import p5Utils from "./utils/p5Utils";
 import communityStatement from "./utils/community";
 import * as testingUtils from "./utils/testingUtils";
+
+// Temporary, to prevent soundClassifier from breaking other models.
+const soundClassifier = () => {
+  throw new Error("SoundClassifier model has been removed.");
+}
 
 const withPreload = {
   charRNN,
