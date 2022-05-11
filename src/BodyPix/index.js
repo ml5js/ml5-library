@@ -14,7 +14,6 @@
 // @ts-check
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
-import '@tensorflow/tfjs-core/dist/public/chained_ops/register_all_chained_ops';
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
