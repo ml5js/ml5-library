@@ -129,7 +129,7 @@
   },
   "dependencies": {
     "@magenta/sketch": "^0.2.0",
-    "@tensorflow-models/body-pix": "1.1.2",
+    "@tensorflow-models/body-pix": "^2.2.0",
     "@tensorflow-models/coco-ssd": "^2.2.2",
     "@tensorflow-models/face-landmarks-detection": "^1.0.1",
     "@tensorflow-models/handpose": "^0.0.7",

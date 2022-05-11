@@ -18,6 +18,7 @@ import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
 
+// TODO: update options
 const DEFAULTS = {
   "multiplier": 0.75,
   "outputStride": 16,
@@ -60,7 +61,10 @@ class BodyPix {
      * @return {Promise<Object>} the BodyPix model.
      */
   async loadModel() {
-    this.model = await bp.load(this.config.multiplier);
+    this.model = await bp.load({
+      architecture: 'MobileNetV1',
+      ...this.config
+    });
     this.modelReady = true;
     return this;
   }
@@ -134,7 +138,10 @@ class BodyPix {
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
     this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-    const segmentation = await this.model.estimatePartSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold);
+    /**
+     * @type bp.SemanticPartSegmentation
+     * */
+    const segmentation = await this.model.segmentPersonParts(imgToSegment, this.config);
 
     const bodyPartsMeta = this.bodyPartsSpec(this.config.palette);
     const colorsArray = Object.keys(bodyPartsMeta).map(part => bodyPartsMeta[part].color)
@@ -156,9 +163,9 @@ class BodyPix {
       partMask: null,
       bodyParts: bodyPartsMeta
     };
-    result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
-    result.raw.personMask = bp.toMaskImageData(segmentation, false);
-    result.raw.partMask = bp.toColoredPartImageData(segmentation, colorsArray);
+    result.raw.backgroundMask = bp.toMask(segmentation, true);
+    result.raw.personMask = bp.toMask(segmentation, false);
+    result.raw.partMask = bp.toColoredPartMask(segmentation, colorsArray);
 
     const {
       personMask,
@@ -294,7 +301,7 @@ class BodyPix {
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
     this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
 
-    const segmentation = await this.model.estimatePersonSegmentation(imgToSegment, this.config.outputStride, this.config.segmentationThreshold)
+    const segmentation = await this.model.segmentPerson(imgToSegment, this.config)
 
     const result = {
       segmentation,
@@ -309,8 +316,8 @@ class BodyPix {
       personMask: null,
       backgroundMask: null,
     };
-    result.raw.backgroundMask = bp.toMaskImageData(segmentation, true);
-    result.raw.personMask = bp.toMaskImageData(segmentation, false);
+    result.raw.backgroundMask = bp.toMask(segmentation, true);
+    result.raw.personMask = bp.toMask(segmentation, false);
 
     // TODO: consider returning the canvas with the bp.drawMask()
     // const bgMaskCanvas = document.createElement('canvas');
