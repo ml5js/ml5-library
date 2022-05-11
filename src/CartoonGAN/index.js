@@ -12,11 +12,7 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import p5Utils from '../utils/p5Utils';
-import {
-  isInstanceOfSupportedElement,
-  // eslint-disable-next-line no-unused-vars
-  imgToTensor
-} from '../utils/imageUtilities';
+import { isInstanceOfSupportedElement } from '../utils/imageUtilities';
 
 const IMAGE_SIZE = 256;
 
@@ -102,7 +98,6 @@ class Cartoon {
     return result;
   }
 
-  /* eslint class-methods-use-this: "off" */
   async resultFinalize(res){
     const tensor = res;
     const raw = await res.data();

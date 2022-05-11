@@ -49,31 +49,26 @@ class FaceApiBase {
     this.modelReady = false;
     this.detectorOptions = null;
     this.config = {
-      minConfidence: this.checkUndefined(options.minConfidence, DEFAULTS.minConfidence),
-      withLandmarks: this.checkUndefined(options.withLandmarks, DEFAULTS.withLandmarks),
-      withDescriptors: this.checkUndefined(options.withDescriptors, DEFAULTS.withDescriptors),
-      withTinyNet: this.checkUndefined(options.withTinyNet, DEFAULTS.withTinyNet),
+      minConfidence: options.minConfidence || DEFAULTS.minConfidence,
+      withLandmarks: options.withLandmarks || DEFAULTS.withLandmarks,
+      withDescriptors: options.withDescriptors || DEFAULTS.withDescriptors,
+      withTinyNet: options.withTinyNet || DEFAULTS.withTinyNet,
       MODEL_URLS: {
-        Mobilenetv1Model: this.checkUndefined(
-          options.Mobilenetv1Model,
+        Mobilenetv1Model:
+          options.Mobilenetv1Model ||
           DEFAULTS.MODEL_URLS.Mobilenetv1Model,
-        ),
-        TinyFaceDetectorModel: this.checkUndefined(
-          options.TinyFaceDetectorModel,
+        TinyFaceDetectorModel:
+          options.TinyFaceDetectorModel ||
           DEFAULTS.MODEL_URLS.TinyFaceDetectorModel,
-        ),
-        FaceLandmarkModel: this.checkUndefined(
-          options.FaceLandmarkModel,
+        FaceLandmarkModel:
+          options.FaceLandmarkModel ||
           DEFAULTS.MODEL_URLS.FaceLandmarkModel,
-        ),
-        FaceLandmark68TinyNet: this.checkUndefined(
-          options.FaceLandmark68TinyNet,
+        FaceLandmark68TinyNet:
+          options.FaceLandmark68TinyNet ||
           DEFAULTS.MODEL_URLS.FaceLandmark68TinyNet,
-        ),
-        FaceRecognitionModel: this.checkUndefined(
-          options.FaceRecognitionModel,
+        FaceRecognitionModel:
+          options.FaceRecognitionModel ||
           DEFAULTS.MODEL_URLS.FaceRecognitionModel,
-        ),
       },
     };
 
@@ -348,15 +343,6 @@ class FaceApiBase {
   }
 
   /**
-   * Check if the given _param is undefined, otherwise return the _default
-   * @param {*} _param
-   * @param {*} _default
-   */
-  checkUndefined(_param, _default) {
-    return _param !== undefined ? _param : _default;
-  }
-
-  /**
    * Sets the return options for .detect() or .detectSingle() in case any are given
    * @param {Object} faceApiOptions
    */
@@ -393,6 +379,7 @@ class FaceApiBase {
    * get parts from landmarks
    * @param {*} result
    */
+  // eslint-disable-next-line class-methods-use-this
   landmarkParts(result) {
     let output;
     // multiple detections is an array

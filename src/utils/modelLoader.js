@@ -1,6 +1,5 @@
 /**
- * Check if the provided URL string starts with a hostname,
- * such as http://, https://, etc.
+ * Check if the provided URL string starts with http://, https://, etc.
  * @param {string} str
  * @returns {boolean}
  */

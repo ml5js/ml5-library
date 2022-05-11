@@ -11,6 +11,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import callCallback from '../utils/callcallback';
+import modelLoader from "../utils/modelLoader";
 import  p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
@@ -32,6 +33,7 @@ class DCGANBase {
     this.model = {};
     this.modelPath = modelPath;
     this.modelInfo = {};
+    // TODO: this variable is never set anywhere.
     this.modelPathPrefix = '';
     this.modelReady = false;
     this.config = {
@@ -51,7 +53,7 @@ class DCGANBase {
     this.modelInfo = modelInfoJson
         
     const [modelUrl] = this.modelPath.split('manifest.json')
-    const modelJsonPath = this.isAbsoluteURL(modelUrl) ? this.modelInfo.model : this.modelPathPrefix + this.modelInfo.model
+    const modelJsonPath = modelLoader.isAbsoluteURL(modelUrl) ? this.modelInfo.model : this.modelPathPrefix + this.modelInfo.model
 
     this.model = await tf.loadLayersModel(modelJsonPath);
     this.modelReady = true;
@@ -139,13 +141,6 @@ class DCGANBase {
 
     return result;
 
-  }
-
-    
-  /* eslint class-methods-use-this: "off" */
-  isAbsoluteURL(str) {
-    const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
-    return !!pattern.test(str);
   }
 
 }
