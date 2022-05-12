@@ -11,6 +11,7 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import callCallback from '../utils/callcallback';
+import handleArguments from "../utils/handleArguments";
 import  p5Utils from '../utils/p5Utils';
 
 // Default pre-trained face model
@@ -151,9 +152,8 @@ class DCGANBase {
 }
 
 const DCGAN = (modelPath, optionsOrCb, cb) => {
-  let callback;
-  let options = {};
-  if (typeof modelPath !== 'string') {
+  const { string, options, callback } = handleArguments(modelPath, optionsOrCb, cb);
+  if (!string) {
     throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
          This "manifest.json" file should include:\n
@@ -166,15 +166,7 @@ const DCGAN = (modelPath, optionsOrCb, cb) => {
          `);
   }
 
-  if(typeof optionsOrCb === 'function'){
-    callback = optionsOrCb;
-  } else if (typeof optionsOrCb === 'object'){
-    options = optionsOrCb;
-    callback = cb;
-  }
-    
-
-  const instance = new DCGANBase(modelPath, options, callback);
+  const instance = new DCGANBase(string, options, callback);
   return callback ? instance : instance.ready;
     
 }
