@@ -75,7 +75,7 @@ class ImageClassifier {
         this.model = await darknet.load({ version: "reference" }); // this a 28mb model
         break;
       case "darknet-tiny":
-        this.model = await darknet.load({ version: "reference" }); // this a 4mb model
+        this.model = await darknet.load({ version: "tiny" }); // this a 4mb model
         break;
       case "doodlenet":
         this.model = await doodlenet.load();
@@ -150,7 +150,7 @@ class ImageClassifier {
    * @return {function} a promise or the results of a given callback, cb.
    */
   async predict(inputNumOrCallback, numOrCallback, cb) {
-    console.warn('predict() is deprecated and will be removed in a future version of ml5.js. Use classify() instead.');
+    console.warn('ImageClassifier method `predict()` is deprecated and will be removed in a future version of ml5.js. Use `classify()` instead.');
     return this.classify(inputNumOrCallback, numOrCallback || null, cb);
   }
 }
