@@ -1,4 +1,4 @@
-# Kmeans Clustering
+# K-Means Clustering
 
 <center>
     <img style="display:block; max-height:20rem" alt="groups of points colored depending on which cluster it has been categorized into by the kmeans algorithm" src="_media/reference__header-kmeans.png">
@@ -86,22 +86,10 @@ const kmeans = ml5.kmeans(data, ?options, ?callback);
 
 * The `ml5.kmeans()` calculates the kmeans clusters of the input data. See usage above.
 
-
 ## Examples
-
-**p5.js**
-* [KMeans_imageSegmentation](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/KMeans/KMeans_imageSegmentation/)
-* [KMeans_mouseClustering](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/KMeans/KMeans_mouseClustering)
-
-**p5 web editor**
-* [KMeans_imageSegmentation](https://editor.p5js.org/ml5/sketches/KMeans_imageSegmentation/)
-* [KMeans_mouseClustering](https://editor.p5js.org/ml5/sketches/KMeans_mouseClustering)
-
-**plain javascript**
-* coming soon
-
-**d3.js**
-* [KMeans_GaussianClusterDemo](https://github.com/ml5js/ml5-library/tree/main/examples/d3/KMeans/KMeans_GaussianClusterDemo)
+```ml5-examples
+KMeans
+```
 
 ## Demo
 

@@ -103,21 +103,6 @@ detector.getPitch(?callback);
 
 ## Examples
 
-**p5.js**
-* [PitchDetection](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PitchDetection/PitchDetection)
-* [PitchDetection_Game](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PitchDetection/PitchDetection_Game)
-* [PitchDetection_Piano](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/PitchDetection/PitchDetection_Piano)
-
-**p5 web editor**
-* [PitchDetection](https://editor.p5js.org/ml5/sketches/PitchDetection)
-* [PitchDetection_Game](https://editor.p5js.org/ml5/sketches/PitchDetection_Game)
-* [PitchDetection_Piano](https://editor.p5js.org/ml5/sketches/PitchDetection_Piano)
-
-**plain javascript**
-* [PitchDetection](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PitchDetection/PitchDetection)
-* [PitchDetection_Game](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PitchDetection/PitchDetection_Game)
-* [PitchDetection_Piano](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/PitchDetection/PitchDetection_Piano)
-
 ## Demo
 
 No demos yet - contribute one today!

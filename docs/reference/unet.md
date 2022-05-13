@@ -107,16 +107,6 @@ unet.segment(?video, ?callback);
 
 ## Examples
 
-**p5.js**
-* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/UNET/UNET_webcam)
-
-**p5 web editor**
-* [UNET_webcam](https://editor.p5js.org/ml5/sketches/UNET_webcam)
-
-**plain javascript**
-* [UNET_webcam](https://github.com/ml5js/ml5-library/tree/main/examples/javascript/UNET/UNET_webcam)
-
-
 ## Demo
 
 No demos yet - contribute one today!

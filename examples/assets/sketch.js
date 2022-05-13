@@ -1,12 +1,7 @@
-
 const s = ( sketch ) => {
 
-  const x = 100;
-  const y = 100;
-  let canvas;
-
   sketch.setup = () => {
-    canvas = sketch.createCanvas(sketch.displayWidth, sketch.displayHeight);
+    sketch.createCanvas(sketch.displayWidth, sketch.displayHeight);
     sketch.textAlign(sketch.CENTER)
     sketch.colorMode(sketch.HSB, 360, 100, 100, 100);
   };
@@ -42,28 +37,35 @@ async function init(){
 
 init();
 
-function createExampleList(_example, _sectionDiv, _sectionTitle, _exampleKey){
-  const weList = document.createElement("ul");
-  weList.classList.add(`section-list`);
-
-  if(_example[_exampleKey]){
-    _example[_exampleKey].forEach( item => {
-      const li = document.createElement('li');
-      li.classList.add('section-list__item');
-      li.innerHTML = `<a href="${item.url}">${item.name}</a>`;
-      weList.appendChild(li);
-    })
+function createGroupedExamples(json, _sectionDiv) {
+  Object.keys(json).forEach(exampleName => {
+    const group = document.createElement("div");
+    group.classList.add("section-list__example");
 
     const weHeader = document.createElement('h3');
     weHeader.classList.add('section-list__title');
-    weHeader.textContent = _sectionTitle ;
-    _sectionDiv.appendChild( weHeader )
-    _sectionDiv.appendChild(weList);
-  }
+    weHeader.textContent = exampleName.replaceAll('_', ' ');
+
+    group.appendChild(weHeader);
+
+    const weList = document.createElement("ul");
+    weList.classList.add(`section-list`);
+
+    group.appendChild(weList);
+
+    json[exampleName].forEach(linkData => {
+      const li = document.createElement('li');
+      li.classList.add('section-list__item');
+      li.innerHTML = `<a href="${linkData.url}">${linkData.type}</a>`;
+      weList.appendChild(li);
+    })
+
+    _sectionDiv.appendChild(group);
+  })
 
 }
 
-function createSections(data){
+function createSections(data) {
   $main.innerHTML = '';
   Object.keys(data).forEach(k => {
     const example = data[k];
@@ -78,28 +80,34 @@ function createSections(data){
     header.textContent = k;
     sectionDiv.appendChild(header);
 
-    createExampleList(example, sectionDiv, 'p5.js web editor', 'p5webeditor');
-    createExampleList(example, sectionDiv, 'p5.js demo', 'p5js');
-    createExampleList(example, sectionDiv, 'plain javascript demo', 'javascript');
-    createExampleList(example, sectionDiv, 'd3', 'd3');
+    createGroupedExamples(example, sectionDiv);
 
     $main.appendChild(sectionDiv)
   })
 }
 
-$search.addEventListener('keyup', (e) =>{
-  const val = e.target.value;
+$search.addEventListener('keyup', (e) => {
+  const query = e.target.value.trim().toLowerCase();
 
-  const dataCopy = Object.assign({}, data);
-  if(val.trim() === ""){
-    createSections(dataCopy);
+  if (query === "") {
+    createSections(data);
   } else {
-
-    Object.keys(dataCopy).forEach(k => {
-      if(!k.toLowerCase().includes(val.toLowerCase())){
-        delete dataCopy[k];
+    const matches = {};
+    Object.keys(data).forEach(model => {
+      // if the model name matches, return all examples.
+      if (model.toLowerCase().includes(query)) {
+        matches[model] = data[model];
+      } else {
+        // if not, look for matches in the example name.
+        const exampleMatches = Object.keys(data[model]).filter(name => name.toLowerCase().includes(query));
+        if (exampleMatches.length) {
+          matches[model] = {};
+          exampleMatches.forEach(name => {
+            matches[model][name] = data[model][name];
+          })
+        }
       }
     });
-    createSections(dataCopy);
+    createSections(matches);
   }
 })

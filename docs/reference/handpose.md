@@ -155,14 +155,6 @@ const options = {
 
 ## Examples
 
-**p5.js**
-* [Handpose_Image](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Handpose/Handpose_Image)
-* [Handpose_Webcam](https://github.com/ml5js/ml5-library/tree/main/examples/p5js/Handpose/Handpose_Webcam)
-
-**p5 web editor**
-* [Handpose_Image](https://editor.p5js.org/ml5/sketches/Handpose_Image)
-* [Handpose_Webcam](https://editor.p5js.org/ml5/sketches/Handpose_Webcam)
-
 ## Demo
 
 No demos yet - contribute one today!
