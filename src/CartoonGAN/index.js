@@ -3,8 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-/* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
-/* eslint no-await-in-loop: "off" */
 /*
 * CartoonGAN: see details about the [paper](http://openaccess.thecvf.com/content_cvpr_2018/papers/Chen_CartoonGAN_Generative_Adversarial_CVPR_2018_paper.pdf)
 */
@@ -12,7 +10,7 @@
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
-import { isInstanceOfSupportedElement } from '../utils/imageUtilities';
+import handleArguments from '../utils/handleArguments';
 
 const IMAGE_SIZE = 256;
 
@@ -21,11 +19,18 @@ const modelPath = {
   'miyazaki': 'https://raw.githubusercontent.com/Derek-Wds/training_CartoonGAN/master/tfModels/Miyazaki/model.json'
 };
 
+/**
+ * @typedef {Object} CartoonOptions
+ * @property {string} [modelUrl] - default 'miyazaki'
+ * @property {boolean} [returnTensors] - default false
+ */
+
 class Cartoon {
   /**
+   * TODO: accept video.
      * Create a CartoonGan model.
-     * @param {String} modelIdentifier - Required. The name of pre-inluded model or the url path to your model.
-     * @param {function} callback - Required. A function to run once the model has been loaded.
+     * @param {CartoonOptions} options
+     * @param {ML5Callback<Cartoon>} [callback]
      */
   constructor(options, callback) {
     this.config = {
@@ -36,44 +41,50 @@ class Cartoon {
      * @type {tf.GraphModel | {}}
      */
     this.model = {};
-    this.ready = false;
     this.ready = callCallback(this.loadModel(this.config.modelUrl), callback);
   }
 
-  /* load tfjs model that is converted by tensorflowjs with graph and weights */
+  /**
+   * @private
+   * load tfjs model that is converted by tensorflowjs with graph and weights
+   * @param {string} modelUrl
+   * @return {Promise<Cartoon>}
+   */
   async loadModel(modelUrl) {
     this.model = await tf.loadGraphModel(modelUrl);
     return this;
   }
 
-
-  // todo: add p5 image support as input
   /**
-     * generate an img based on input Image.
-     * @param {HTMLImageElement | HTMLCanvasElement} src the source img you want to transfer.
-     * @param {function} callback
-     */
-  async generate(inputOrCallback, cb) {
+   * @public
+   * generate an image based on input image.
+   * @param {(ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | p5.Image | p5.Element | ML5Callback<CartoonResult>)[]} [args] -
+   * the source img you want to transfer and/or a callback function to call with the result.
+   *
+   * @typedef {Object} CartoonResult
+   * @property {Uint8Array | Int32Array | Float32Array} raw - pixel values
+   * @property {Blob} blob
+   * @property {p5.Image | null} image - p5 Image if p5 is available
+   * @property {tf.Tensor3D} [tensor] - if option `returnTensors` is true.
+   *
+   * @return {Promise<CartoonResult>}
+   */
+  async generate(...args) {
+    const { image, callback } = handleArguments(...args);
 
-    let imgToPredict;
-    let callback = cb;
-
-    if (isInstanceOfSupportedElement(inputOrCallback)) {
-      imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
-      imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.canvas)) {
-      imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    } else {
+    if (!image) {
       throw new Error('Detection subject not supported');
     }
 
-    return callCallback(this.generateInternal(imgToPredict), callback);
+    return callCallback(this.generateInternal(image), callback);
   }
 
+  /**
+   * @private
+   * TODO: accept tensor3D
+   * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} src
+   * @return {Promise<CartoonResult>}
+   */
   async generateInternal(src) {
     await this.ready;
     await tf.nextFrame();
@@ -97,12 +108,22 @@ class Cartoon {
 
 }
 
-const cartoon = (optionsOr, cb) => {
-  const options = (typeof optionsOr === 'object') ? optionsOr : {};
-  const callback = (typeof optionsOr === 'function') ? optionsOr : cb;
+/**
+ * Accepts arguments:
+ *  - The url path to your model. // TODO: accept the name of a pre-included model ('hosoda' or 'miyazaki')
+ *  - An object of options with properties modelUrl and returnTensors.
+ *  - A callback function to call when the model is loaded.
+ *
+ * Will use model `miyazaki` as the default model.
+ *
+ * @param {(string | CartoonOptions | ML5Callback<Cartoon>)[]} args
+ * @return {Cartoon}
+ */
+const cartoon = (...args) => {
+  const { options = {}, string, callback } = handleArguments(...args)
 
-  if(typeof optionsOr === 'string'){
-    options.modelUrl = optionsOr;
+  if (string) {
+    options.modelUrl = string;
   }
 
   return new Cartoon(options, callback);

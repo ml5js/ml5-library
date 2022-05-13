@@ -7,6 +7,7 @@
   ObjectDetection
 */
 
+import handleArguments from "../utils/handleArguments";
 import { YOLO } from "./YOLO/index";
 import {CocoSsd} from "./CocoSsd/index";
 
@@ -52,35 +53,14 @@ class ObjectDetector {
   }
 }
 
-const objectDetector = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
-  let video;
-  let options = {};
-  let callback = cb;
+const objectDetector = (...inputs) => {
+  const { video, options = {}, callback, string } = handleArguments(...inputs)
+    .require('string', 'Please specify a model to use. E.g: "YOLO"');
 
-  let model = modelName;
-  if (typeof model !== "string") {
-    throw new Error('Please specify a model to use. E.g: "YOLO"');
-  } else if (model.indexOf("http") === -1) {
-    model = modelName.toLowerCase();
-  }
-
-  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-    video = videoOrOptionsOrCallback;
-  } else if (
-    typeof videoOrOptionsOrCallback === "object" &&
-    videoOrOptionsOrCallback.elt instanceof HTMLVideoElement
-  ) {
-    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (typeof videoOrOptionsOrCallback === "object") {
-    options = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === "function") {
-    callback = videoOrOptionsOrCallback;
-  }
-
-  if (typeof optionsOrCallback === "object") {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === "function") {
-    callback = optionsOrCallback;
+  let model = string;
+  // TODO: I think we should delete this.
+  if (model.indexOf("http") === -1) {
+    model = model.toLowerCase();
   }
 
   const instance = new ObjectDetector(model, video, options, callback);
