@@ -72,15 +72,19 @@ Before getting started with ml5.js, review our [Code of Conduct](https://github.
 
 
 
+
+
 <p id="latest-version">
 
-* You can use the latest version (0.12.0) by adding it to the head section of your HTML document:
+* You can use the latest version (0.12.2) by adding it to the head section of your HTML document:
 
-**v0.12.0**
+**v0.12.2**
 
-    <script src="https://unpkg.com/ml5@0.12.0/dist/ml5.min.js" type="text/javascript"></script>
+    <script src="https://unpkg.com/ml5@0.12.2/dist/ml5.min.js" type="text/javascript"></script>
 
 </p data-id="latest-version">
+    
+    
     
     
     
@@ -353,6 +357,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://lindapaiste.com"><img src="https://avatars.githubusercontent.com/u/28965286?v=4?s=100" width="100px;" alt=""/><br /><sub><b>lindapaiste</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=lindapaiste" title="Code">💻</a> <a href="#ideas-lindapaiste" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Alindapaiste" title="Bug reports">🐛</a></td>
     <td align="center"><a href="http://evanweinberg.com"><img src="https://avatars.githubusercontent.com/u/1531831?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Evan Weinberg</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=emwdx" title="Documentation">📖</a></td>
     <td align="center"><a href="https://youtube.com/codergautam"><img src="https://avatars.githubusercontent.com/u/66850133?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Coder Gautam</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=codergautam" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/yoychen"><img src="https://avatars.githubusercontent.com/u/3905275?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Yong-Yuan Chen</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=yoychen" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/adrianfiedler"><img src="https://avatars.githubusercontent.com/u/7136570?v=4?s=100" width="100px;" alt=""/><br /><sub><b>adrianfiedler</b></sub></a><br /><a href="https://github.com/ml5js/ml5-library/commits?author=adrianfiedler" title="Documentation">📖</a> <a href="https://github.com/ml5js/ml5-library/issues?q=author%3Aadrianfiedler" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 

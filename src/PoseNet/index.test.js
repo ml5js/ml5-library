@@ -3,7 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { poseNet } = ml5;
+import { asyncLoadImage } from "../utils/testingUtils";
+import poseNet from './index';
 
 const POSENET_IMG = 'https://github.com/ml5js/ml5-adjacent/raw/master/02_ImageClassification_Video/starter.png';
 
@@ -24,16 +25,8 @@ const POSENET_DEFAULTS = {
 describe('PoseNet', () => {
   let net;
 
-  async function getImage() {
-    const img = new Image();
-    img.crossOrigin = '';
-    img.src = POSENET_IMG;
-    await new Promise((resolve) => { img.onload = resolve; });
-    return img;
-  }
-
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
     net = await poseNet();
   });
 
@@ -45,9 +38,20 @@ describe('PoseNet', () => {
     expect(net.quantBytes).toBe(POSENET_DEFAULTS.quantBytes);
   });
 
-  // it('detects poses in image', async () => {
-  //   const image = await getImage();
-  //   const pose = net.singlePose(image);
-  //   // expect(pose).toBe('');
-  // });
+  it('detects poses in image', async () => {
+    const image = await asyncLoadImage(POSENET_IMG);
+
+    // Result should be an array with a single object containing pose and skeleton.
+    const result = await net.singlePose(image);
+    expect(result).toHaveLength(1);
+    expect(result[0]).toHaveProperty('pose');
+    expect(result[0]).toHaveProperty('skeleton');
+
+    // Verify a known outcome.
+    const nose = result[0].pose.keypoints.find(keypoint => keypoint.part === "nose");
+    expect(nose).toBeTruthy();
+    expect(nose.position.x).toBeCloseTo(448.6, 0);
+    expect(nose.position.y).toBeCloseTo(255.9, 0);
+    expect(nose.score).toBeCloseTo(0.999);
+  });
 });

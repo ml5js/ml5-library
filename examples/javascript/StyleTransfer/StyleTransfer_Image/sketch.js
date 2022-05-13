@@ -11,8 +11,8 @@ This uses a pre-trained model of The Great Wave off Kanagawa and Udnie (Young Am
 
 const inputImg = document.getElementById('inputImg'); // The image we want to transfer
 const statusMsg = document.getElementById('statusMsg'); // The status message
-const styleA = document.getElementById('styleA'); // The div contrianer that holds new style image A
-const styleB = document.getElementById('styleB'); // The div contrianer that holds new style image B
+const styleA = document.getElementById('styleA'); // The div container that holds new style image A
+const styleB = document.getElementById('styleB'); // The div container that holds new style image B
 
 ml5.styleTransfer('models/wave')
   .then(style1 => style1.transfer(inputImg))
