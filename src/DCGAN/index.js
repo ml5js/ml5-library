@@ -118,7 +118,7 @@ class DCGANBase {
 }
 
 const DCGAN = (modelPath, optionsOrCb, cb) => {
-  const { string, options, callback } = handleArguments(modelPath, optionsOrCb, cb);
+  const { string, options = {}, callback } = handleArguments(modelPath, optionsOrCb, cb);
   if (!string) {
     throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
