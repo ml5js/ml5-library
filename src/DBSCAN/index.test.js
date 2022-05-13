@@ -3,7 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { dbscan } = ml5;
+import { env } from "@tensorflow/tfjs-core";
+import dbscan from "./index";
 
 const DBSCAN_DEFAULTS = {
   eps: 50,
@@ -16,7 +17,8 @@ describe("DBSCAN", () => {
     "https://raw.githubusercontent.com/asvsfs/ml5-library/dbscan/examples/d3/DBSCAN/DBSCAN_Cluster/data/gaussian2d_1.55clusters.csv";
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
+    jest.setTimeout(10000);
+    env().set('IS_BROWSER', false); // Fixes TensorFlow error `ReferenceError: TextEncoder is not defined`
     dbscanModel = await dbscan(dataurl, DBSCAN_DEFAULTS, () => {});
     await dbscanModel.load(dataurl);
   });

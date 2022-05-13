@@ -3,7 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { uNet } = ml5;
+import { asyncLoadImage } from '../utils/testingUtils';
+import uNet from './index';
 
 // test image
 function returnTestImageData (){
@@ -13,16 +14,16 @@ function returnTestImageData (){
 
 // test image is stored in a base64 string so that this script can be self-contained.
 // test image is a portrait of a woman, and is royalty free.
-const testImage = new Image();
-testImage.src = returnTestImageData();
 
 describe('UNET', ()=>{
   let model;
   let segmentationImage;
 
   beforeAll(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
+    jest.setTimeout(15000);
     model = await uNet('face');
+    const src = returnTestImageData();
+    const testImage = await asyncLoadImage(src);
     segmentationImage = await model.segment(testImage);
   });
 

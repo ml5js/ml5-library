@@ -10,11 +10,9 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 */
 
 import * as tf from '@tensorflow/tfjs';
+import handleArguments from "../../utils/handleArguments";
 import Video from './../../utils/Video';
-import {
-  imgToTensor,
-  isInstanceOfSupportedElement
-} from "./../../utils/imageUtilities";
+import { imgToTensor } from "./../../utils/imageUtilities";
 import callCallback from './../../utils/callcallback';
 import CLASS_NAMES from './../../utils/COCO_CLASSES';
 import modelLoader from './../../utils/modelLoader';
@@ -90,23 +88,12 @@ export class YOLOBase extends Video {
    */
   async detect(inputOrCallback, cb) {
     await this.ready;
-    let imgToPredict;
-    let callback = cb;
+    // TODO: should it have await tf.nextFrame(); here like in cocossd?
 
-    if (isInstanceOfSupportedElement(inputOrCallback)) {
-      imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.elt)) {
-      imgToPredict = inputOrCallback.elt; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "object" && isInstanceOfSupportedElement(inputOrCallback.canvas)) {
-      imgToPredict = inputOrCallback.canvas; // Handle p5.js image and video.
-    } else if (typeof inputOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    } else {
-      throw new Error('Detection subject not supported')
-    }
+    const args = handleArguments(this.video, inputOrCallback, cb);
+    args.require("image", "Detection subject not supported");
 
-    return callCallback(this.detectInternal(imgToPredict), callback);
+    return callCallback(this.detectInternal(args.image), args.callback);
   }
 
   /**
@@ -231,27 +218,8 @@ export class YOLOBase extends Video {
   }
 }
 
-export const YOLO = (videoOr, optionsOr, cb) => {
-  let video = null;
-  let options = {};
-  let callback = cb;
-
-  if (videoOr instanceof HTMLVideoElement) {
-    video = videoOr;
-  } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
-    video = videoOr.elt; // Handle p5.js image
-  } else if (typeof videoOr === 'function') {
-    callback = videoOr;
-  } else if (typeof videoOr === 'object') {
-    options = videoOr;
-  }
-
-  if (typeof optionsOr === 'object') {
-    options = optionsOr;
-  } else if (typeof optionsOr === 'function') {
-    callback = optionsOr;
-  }
-
+export const YOLO = (...inputs) => {
+  const { video, options = {}, callback } = handleArguments(...inputs);
   return new YOLOBase(video, options, callback);
 };
 

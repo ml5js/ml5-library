@@ -3,7 +3,8 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const { neuralNetwork } = ml5;
+import * as tf from '@tensorflow/tfjs';
+import neuralNetwork from './index';
 
 describe('NeuralNetwork', () => {
   // The entire neural network as a whole
@@ -253,7 +254,7 @@ describe('NeuralNetwork', () => {
    * Describes the neural network class
    */
   describe('NeuralNetwork Class', () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    jest.setTimeout(100000);
     const nn = neuralNetwork();
     const brain = nn.neuralNetwork;
 
@@ -278,14 +279,14 @@ describe('NeuralNetwork', () => {
     describe('.addLayer()', () => {
       it('adds 2 layers', () => {
         brain.addLayer(
-          ml5.tf.layers.dense({
+          tf.layers.dense({
             units: 2,
             inputShape: [2],
             activation: 'relu',
           }),
         );
         brain.addLayer(
-          ml5.tf.layers.dense({
+          tf.layers.dense({
             units: 2,
             activation: 'relu',
           }),
@@ -301,7 +302,7 @@ describe('NeuralNetwork', () => {
       it('should compile', () => {
         const modelCompileOptions = {
           loss: 'categoricalCrossentropy',
-          optimizer: ml5.tf.train.sgd(0.2),
+          optimizer: tf.train.sgd(0.2),
           metrics: ['accuracy'],
         };
         brain.compile(modelCompileOptions);
@@ -316,14 +317,14 @@ describe('NeuralNetwork', () => {
     describe('.train()', () => {
       it('should train', async () => {
         const trainingOptions = {
-          inputs: ml5.tf.tensor(
+          inputs: tf.tensor(
             [
               [0, 0],
               [1, 1],
             ],
             [2, 2],
           ),
-          outputs: ml5.tf.tensor(
+          outputs: tf.tensor(
             [
               [0, 1],
               [1, 0],
@@ -352,10 +353,10 @@ describe('NeuralNetwork', () => {
       it('should return an array', async () => {
         let input;
 
-        input = ml5.tf.tensor([[0, 0]], [1, 2]);
+        input = tf.tensor([[0, 0]], [1, 2]);
         const prediction1 = await brain.classify(input);
 
-        input = ml5.tf.tensor([[0, 0]], [1, 2]);
+        input = tf.tensor([[0, 0]], [1, 2]);
         const prediction2 = await brain.predict(input);
 
         input.dispose();
@@ -370,7 +371,7 @@ describe('NeuralNetwork', () => {
    */
   // the NeuralNetworkData class
   describe('NeuralNetworkData Class', () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+    jest.setTimeout(100000);
     const nn = neuralNetwork();
     const brainData = nn.neuralNetworkData;
 

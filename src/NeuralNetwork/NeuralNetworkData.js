@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
+import handleArguments from "../utils/handleArguments";
 import { saveBlob } from '../utils/io';
 import nnUtils from './NeuralNetworkUtils';
 
@@ -754,21 +755,8 @@ class NeuralNetworkData {
    * @param {*} cb
    */
   async saveMeta(nameOrCb, cb) {
-    let modelName;
-    let callback;
-
-    if (typeof nameOrCb === 'function') {
-      modelName = 'model';
-      callback = nameOrCb;
-    } else if (typeof nameOrCb === 'string') {
-      modelName = nameOrCb;
-
-      if (typeof cb === 'function') {
-        callback = cb;
-      }
-    } else {
-      modelName = 'model';
-    }
+    const { string, callback } = handleArguments(nameOrCb, cb);
+    const modelName = string || 'model';
 
     await saveBlob(JSON.stringify(this.meta), `${modelName}_meta.json`, 'text/plain');
     if (callback) {
