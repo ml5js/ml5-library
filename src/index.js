@@ -72,7 +72,7 @@ const withPreload = {
   communityStatement();
 })();
 
-module.exports = Object.assign({ p5Utils }, preloadRegister(withPreload), {
+export default Object.assign({ p5Utils }, preloadRegister(withPreload), {
   KNNClassifier,
   communityStatement,
   ...imageUtils,

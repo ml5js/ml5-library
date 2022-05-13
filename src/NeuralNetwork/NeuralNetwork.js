@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
 import callCallback from '../utils/callcallback';
+import handleArguments from "../utils/handleArguments";
 import { saveBlob } from '../utils/io';
 import { randomGaussian } from '../utils/random';
 
@@ -181,21 +182,8 @@ class NeuralNetwork {
    * @param {*} cb
    */
   async save(nameOrCb, cb) {
-    let modelName;
-    let callback;
-
-    if (typeof nameOrCb === 'function') {
-      modelName = 'model';
-      callback = nameOrCb;
-    } else if (typeof nameOrCb === 'string') {
-      modelName = nameOrCb;
-
-      if (typeof cb === 'function') {
-        callback = cb;
-      }
-    } else {
-      modelName = 'model';
-    }
+    const { string, callback } = handleArguments(nameOrCb, cb);
+    const modelName = string || 'model';
 
     this.model.save(
       tf.io.withSaveHandler(async data => {

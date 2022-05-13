@@ -7,7 +7,7 @@ import { join, resolve } from "path";
 
 const include = join(__dirname, "src");
 
-export const indexEntryWithBabel = ["babel-polyfill", "./src/index.js"];
+export const indexEntryWithBabel = ["@babel/polyfill", "./src/index.js"];
 export const developmentPort = 8080;
 
 export default {
@@ -16,6 +16,7 @@ export default {
   output: {
     path: resolve(__dirname, "dist"),
     publicPath: "/",
+    libraryExport: "default",
     libraryTarget: "umd",
     filename: "ml5.js",
     library: "ml5",
