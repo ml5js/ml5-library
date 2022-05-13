@@ -8,9 +8,9 @@
 */
 
 import * as tf from '@tensorflow/tfjs';
-import handleArguments from "../utils/handleArguments";
 import callCallback from '../utils/callcallback';
-import p5Utils from '../utils/p5Utils';
+import generatedImageResult from '../utils/generatedImageResult';
+import handleArguments from '../utils/handleArguments';
 
 const IMAGE_SIZE = 256;
 
@@ -88,45 +88,24 @@ class Cartoon {
   async generateInternal(src) {
     await this.ready;
     await tf.nextFrame();
-    // adds resizeBilinear to resize image to 256x256 as required by the model
-    let img = tf.browser.fromPixels(src).resizeBilinear([IMAGE_SIZE,IMAGE_SIZE]);
-    if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
-      throw new Error(`Input size should be ${IMAGE_SIZE}*${IMAGE_SIZE} but ${img.shape} is found`);
-    } else if (img.shape[2] !== 3) {
-      throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
-    }
-    img = img.sub(127.5).div(127.5).reshape([1, IMAGE_SIZE, IMAGE_SIZE, 3]);
+    const result = tf.tidy(() => {
+      // adds resizeBilinear to resize image to 256x256 as required by the model
+      let img = tf.browser.fromPixels(src).resizeBilinear([IMAGE_SIZE, IMAGE_SIZE]);
+      if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
+        throw new Error(`Input size should be ${IMAGE_SIZE}*${IMAGE_SIZE} but ${img.shape} is found`);
+      } else if (img.shape[2] !== 3) {
+        throw new Error(`Input color channel number should be 3 but ${img.shape[2]} is found`);
+      }
+      img = img.sub(127.5).div(127.5).reshape([1, IMAGE_SIZE, IMAGE_SIZE, 3]);
 
-    const alpha = tf.ones([IMAGE_SIZE, IMAGE_SIZE, 1]).tile([1, 1, 1]).mul(255)
-    let res = this.model.predict(img);
-    res = res.add(1).mul(127.5).reshape([IMAGE_SIZE, IMAGE_SIZE, 3]).floor();
-    res = res.concat(alpha, 2)
-    const result = this.resultFinalize(res);
-
-    if(this.config.returnTensors){
-      return result;
-    }
-
-    img.dispose();
-    res.dispose();
-    return result;
+      const alpha = tf.ones([IMAGE_SIZE, IMAGE_SIZE, 1]).tile([1, 1, 1]).mul(255)
+      let res = this.model.predict(img);
+      res = res.add(1).mul(127.5).reshape([IMAGE_SIZE, IMAGE_SIZE, 3]).floor();
+      return res.concat(alpha, 2).cast('int32');
+    })
+    return generatedImageResult(result, this.config);
   }
 
-  /**
-   * @private
-   * @param {tf.Tensor3D} res
-   * @return {Promise<CartoonResult>}
-   */
-  async resultFinalize(res){
-    const tensor = res;
-    const raw = await res.data();
-    const blob = await p5Utils.rawToBlob(raw, res.shape[0], res.shape[1]);
-    const image = await p5Utils.blobToP5Image(blob);
-    if(this.config.returnTensors){
-      return {tensor, raw, blob, image};
-    }
-    return {raw, blob, image};
-  }
 }
 
 /**

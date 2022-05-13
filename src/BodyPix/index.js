@@ -14,8 +14,9 @@
 // @ts-check
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
-import handleArguments from "../utils/handleArguments";
 import callCallback from '../utils/callcallback';
+import generatedImageResult from '../utils/generatedImageResult';
+import handleArguments from '../utils/handleArguments';
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
 
@@ -68,7 +69,7 @@ class BodyPix {
 
   /**
    * Load the model and set it to this.model
-   * @return {Promise<BodyPix>} the BodyPix model.
+   * @return {Promise<BodyPix>}
    */
   async loadModel() {
     this.model = await bp.load(this.config.multiplier);
@@ -87,19 +88,6 @@ class BodyPix {
     const match = regExp.exec(p5ColorObj.toString('rgb'));
     const [r, g, b] = match[1].split(',')
     return [r, g, b]
-  }
-
-  /**
-   * Returns a p5Image
-   * @param {Uint8ClampedArray} tfBrowserPixelImage
-   * @param {number} segmentationWidth
-   * @param {number} segmentationHeight
-   * @return {Promise<p5.Image>}
-   */
-  async convertToP5Image(tfBrowserPixelImage, segmentationWidth, segmentationHeight) {
-    const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, segmentationWidth, segmentationHeight);
-    const p5Image1 = await p5Utils.blobToP5Image(blob1);
-    return p5Image1
   }
 
   /**
@@ -138,7 +126,8 @@ class BodyPix {
    */
 
   /**
-   * Segments the image with partSegmentation, return result object* @param {InputImage} [imgToSegment]
+   * Segments the image with partSegmentation, return result object
+   * @param {InputImage} [imgToSegment]
    * @param {BodyPixOptions} [segmentationOptions] - config params for the segmentation
    *    includes outputStride, segmentationThreshold
    * @return {Promise<SegmentationResult>} a result object with image, raw, bodyParts
@@ -212,27 +201,16 @@ class BodyPix {
       }
     })
 
-    const personMaskPixels = await tf.browser.toPixels(personMask);
-    const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
-    const partMaskPixels = await tf.browser.toPixels(partMask);
+    const personMaskRes = await generatedImageResult(personMask, this.config);
+    const bgMaskRes = await generatedImageResult(backgroundMask, this.config);
+    const partMaskRes = await generatedImageResult(partMask, this.config);
 
-    // otherwise, return the pixels 
-    result.personMask = personMaskPixels;
-    result.backgroundMask = bgMaskPixels;
-    result.partMask = partMaskPixels;
+    // if p5 exists, return p5 image. otherwise, return the pixels.
+    result.personMask = personMaskRes.image || personMaskRes.raw;
+    result.backgroundMask = bgMaskRes.image || bgMaskRes.raw;
+    result.partMask = partMaskRes.image || partMaskRes.raw;
 
-    // if p5 exists, convert to p5 image
-    if (p5Utils.checkP5()) {
-      result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
-      result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
-      result.partMask = await this.convertToP5Image(partMaskPixels, segmentation.width, segmentation.height)
-    }
-
-    if (!this.config.returnTensors) {
-      personMask.dispose();
-      backgroundMask.dispose();
-      partMask.dispose();
-    } else {
+    if (this.config.returnTensors) {
       // return tensors
       result.tensor.personMask = personMask;
       result.tensor.backgroundMask = backgroundMask;
@@ -342,27 +320,18 @@ class BodyPix {
       }
     })
 
-    const personMaskPixels = await tf.browser.toPixels(personMask);
-    const bgMaskPixels = await tf.browser.toPixels(backgroundMask);
+    const personMaskRes = await generatedImageResult(personMask, this.config);
+    const bgMaskRes = await generatedImageResult(backgroundMask, this.config);
 
-    // if p5 exists, convert to p5 image
-    if (p5Utils.checkP5()) {
-      result.personMask = await this.convertToP5Image(personMaskPixels, segmentation.width, segmentation.height)
-      result.backgroundMask = await this.convertToP5Image(bgMaskPixels, segmentation.width, segmentation.height)
-    } else {
-      // otherwise, return the pixels 
-      result.personMask = personMaskPixels;
-      result.backgroundMask = bgMaskPixels;
-    }
+    // if p5 exists, return p5 image. otherwise, return the pixels.
+    result.personMask = personMaskRes.image || personMaskRes.raw;
+    result.backgroundMask = bgMaskRes.image || bgMaskRes.raw;
 
-    if (!this.config.returnTensors) {
-      personMask.dispose();
-      backgroundMask.dispose();
-    } else {
+    if (this.config.returnTensors) {
+      // return tensors
       result.tensor.personMask = personMask;
       result.tensor.backgroundMask = backgroundMask;
     }
-
 
     return result;
 
