@@ -9,11 +9,11 @@ Image Classifier using pre-trained networks
 
 import * as tf from "@tensorflow/tfjs";
 import * as mobilenet from "@tensorflow-models/mobilenet";
-import handleArguments from "../utils/handleArguments";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
 import * as modelFromUrl from "./custom";
 import callCallback from "../utils/callcallback";
+import handleArguments from "../utils/handleArguments";
 import { imgToTensor } from "../utils/imageUtilities";
 
 const DEFAULTS = {
@@ -150,6 +150,7 @@ class ImageClassifier {
    * @return {function} a promise or the results of a given callback, cb.
    */
   async predict(inputNumOrCallback, numOrCallback, cb) {
+    console.warn('predict() is deprecated and will be removed in a future version of ml5.js. Use classify() instead.');
     return this.classify(inputNumOrCallback, numOrCallback || null, cb);
   }
 }
