@@ -9,6 +9,14 @@ module.exports = {
   },
   rules: {
     "no-console": 0,
+    "arrow-body-style": 0,
+    "import/no-useless-path-segments": 0,
+    "no-constructor-return": 0,
+    "no-else-return": 0,
+    "default-param-last": 0,
+    "prefer-regex-literals": 0,
+    "prefer-object-spread": 0,
+    "lines-between-class-members": 0
   },
   env: {
     browser: true,
