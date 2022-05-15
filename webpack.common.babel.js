@@ -21,6 +21,10 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.ts$/,
+        loader: "ts-loader",
+      },
+      {
         test: /\.js$/,
         loader: "babel-loader",
         include,
@@ -31,6 +35,7 @@ module.exports = {
     new ESLintPlugin()
   ],
   resolve: {
+    extensions: [".ts", ".js"],
     fallback: {
       fs: false,
     },

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "downlevelIteration": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "outDir": "./dist/"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
