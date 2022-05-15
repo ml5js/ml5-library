@@ -13,26 +13,17 @@ import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from '../utils/handleArguments';
 import modelLoader from '../utils/modelLoader';
-
-// Default pre-trained face model
-
-// const DEFAULT = {
-//     "description": "DCGAN, human faces, 64x64",
-//     "model": "https://raw.githubusercontent.com/ml5js/ml5-data-and-models/master/models/dcgan/face/model.json",
-//     "modelSize": 64,
-//     "modelLatentDim": 128
-// }
+import { validateLatentInput } from '../utils/tensorInput';
 
 class DCGANBase {
   /**
-     * Create an DCGAN.
-     * @param {modelName} modelName - The name of the model to use.
-     * @param {function} readyCb - A callback to be called when the model is ready.
-     */
+   * @param {string} modelPath
+   * @param {{ returnTensors?: boolean }} [options]
+   * @param {ML5Callback<DCGANBase>} [callback]
+   */
   constructor(modelPath, options, callback) {
     this.model = {};
     this.modelPath = modelPath;
-    this.modelInfo = {};
     this.modelReady = false;
     this.config = {
       returnTensors: options.returnTensors || false,
@@ -41,77 +32,69 @@ class DCGANBase {
   }
 
   /**
-     * Load the model and set it to this.model
-     * @return {this} the dcgan.
-     */
+   * @private
+   * Load the model and set it to this.model
+   * @return {Promise<DCGANBase>}
+   */
   async loadModel() {
-    const loader = modelLoader(this.modelPath, 'manifest');
-    this.modelInfo = await loader.loadManifestJson();
-    this.model = await loader.loadLayersModel(this.modelInfo.model);
+    if (this.modelPath.endsWith('manifest.json')) {
+      const loader = modelLoader(this.modelPath, 'manifest');
+      const manifest = await loader.loadManifestJson();
+      this.model = await loader.loadLayersModel(manifest.model);
+    } else {
+      const loader = modelLoader(this.modelPath, 'model');
+      this.model = await loader.loadLayersModel();
+    }
     this.modelReady = true;
     return this;
   }
 
   /**
-     * Generates a new image
-     * @param {function} callback - a callback function handle the results of generate
-     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
-     * @return {object} a promise or the result of the callback function.
-     */
-  async generate(callback, latentVector) {
-    await this.ready;
-    return callCallback(this.generateInternal(latentVector), callback);
+   * @public
+   * Generates a new image
+   * @param {tf.Tensor2D|number[]|Float32Array} [latentVector] - Optional. Can provide a latent vector to use as the
+   * input for the model. This should be an array with a length matching the `modelLatentDim` specified in the
+   * manifest.json or a 2D tensor with shape [1, modelLatentDim].
+   * If not provided, will use a random vector.
+   * @param {function} [callback] - Optional. A function to handle the results of ".generate()".
+   *  Likely a function to do something with the generated image data.
+   * @return {Promise<GeneratedImageResult>} - includes blob, raw, and tensor. if P5 exists, then a p5Image
+   */
+  async generate(latentVector, callback) {
+    const args = handleArguments(latentVector, callback);
+    return callCallback((async () => {
+      await this.ready;
+      const input = validateLatentInput(this.model, args.array || args.object);
+      const prediction = this.model.predict(input)
+        // reshape the tensor
+        .squeeze().transpose([1, 2, 0])
+        // rescale the values from range [-1 - 1] to range [0 - 1]
+        .div(tf.scalar(2)).add(tf.scalar(0.5));
+      return generatedImageResult(prediction, this.config);
+    })(), args.callback);
   }
-
-  /**
-     * Computes what will become the image tensor
-     * @param {number} latentDim - the number of latent dimensions to pass through
-     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
-     * @return {object} a tensor
-     */
-  async compute(latentDim, latentVector) {
-    const y = tf.tidy(() => {
-      let z;
-      if(Array.isArray(latentVector) === false) {
-        z = tf.randomNormal([1, latentDim]);
-      }
-      else {
-        const buffer = tf.buffer([1, latentDim]);
-        for(let count = 0; count < latentDim; count+=1) {
-          buffer.set(latentVector[count], 0, count);
-        }
-        z = buffer.toTensor();
-      }
-      // TBD: should model be a parameter to compute or is it ok to reference this.model here?
-      const yDim = this.model.predict(z).squeeze().transpose([1, 2, 0]).div(tf.scalar(2)).add(tf.scalar(0.5));
-      return yDim;
-    });
-
-    return y;
-  }
-
-  /**
-     * Takes the tensor from compute() and returns an object of the generate image data
-     * @param {object} latentVector - an array containing the latent vector; otherwise use random vector
-     * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
-     */
-  async generateInternal(latentVector) {
-    const { modelLatentDim } = this.modelInfo;
-    const imageTensor = await this.compute(modelLatentDim, latentVector);
-    return generatedImageResult(imageTensor, this.config);
-  }
-
 }
 
+/**
+ * Create an DCGAN.
+ * @param {string} modelPath - The URL of the manifest.json or model.json file for the model.
+ * @param {{returnTensors?: boolean} | ML5Callback<DCGANBase>} [optionsOrCb] - Optional.
+ *  Can provide an options object with property `returnTensors` true/false,
+ *  or a callback function to call when the model is ready.
+ * @param {ML5Callback<DCGANBase>} [cb] - Optional callback function.
+ * @returns {DCGANBase|Promise<DCGANBase>} - If a callback is provided, will return the DCGAN instance.
+ *  If no callback, it returns a Promise that resolves to the DCGAN instance after it is ready.
+ * @constructor
+ */
 const DCGAN = (modelPath, optionsOrCb, cb) => {
-  const { string, options, callback } = handleArguments(modelPath, optionsOrCb, cb);
+  const { string, options = {}, callback } = handleArguments(modelPath, optionsOrCb, cb);
   if (!string) {
     throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
          This "manifest.json" file should include:\n
          {
             "description": "DCGAN, human faces, 64x64",
-            "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json", // "https://github.com/viztopia/ml5dcgan/blob/master/model/model.json",
+            "model": "https://raw.githubusercontent.com/viztopia/ml5dcgan/master/model/model.json",
             "modelSize": 64,
             "modelLatentDim": 128 
          }
@@ -120,7 +103,6 @@ const DCGAN = (modelPath, optionsOrCb, cb) => {
 
   const instance = new DCGANBase(string, options, callback);
   return callback ? instance : instance.ready;
-    
 }
 
 export default DCGAN;
