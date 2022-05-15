@@ -12,20 +12,13 @@ The original TensorFlow implementation was developed by Logan Engstrom: github.c
 */
 
 import * as tf from '@tensorflow/tfjs';
+import handleArguments from "../utils/handleArguments";
 import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
 import { array3DToImage } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
-
-const convertCanvasToImage = canvas => {
-  return new Promise(resolve => {
-    const image = new Image(IMAGE_SIZE, IMAGE_SIZE);
-    image.onload = () => resolve(image);
-    image.src = canvas.toDataURL();
-  });
-}
 
 class StyleTransfer extends Video {
   /**
@@ -155,27 +148,8 @@ class StyleTransfer extends Video {
    * @param {function} [cb] - Optional. A function to run once the model has made the transfer. If no callback is provided, it will return a promise that will be resolved once the model has made the transfer.
    */
   async transfer(inputOrCallback, cb) {
-    let input;
-    let callback = cb;
-
-    if (inputOrCallback instanceof HTMLVideoElement ||
-        inputOrCallback instanceof HTMLImageElement ||
-        inputOrCallback instanceof ImageData) {
-      input = inputOrCallback;
-    } else if (inputOrCallback instanceof HTMLCanvasElement) {
-      input = await convertCanvasToImage(inputOrCallback);
-    } else if (typeof inputOrCallback === 'object' && inputOrCallback.elt instanceof HTMLCanvasElement) {
-      input = await convertCanvasToImage(inputOrCallback.elt);
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLVideoElement 
-      || inputOrCallback.elt instanceof HTMLImageElement
-      || inputOrCallback.elt instanceof ImageData)) {
-      input = inputOrCallback.elt;
-    } else if (typeof inputOrCallback === 'function') {
-      input = this.video;
-      callback = inputOrCallback;
-    }
-
-    return callCallback(this.transferInternal(input), callback);
+    const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
+    return callCallback(this.transferInternal(image), callback);
   }
 
   /**
@@ -231,14 +205,9 @@ class StyleTransfer extends Video {
 }
 
 const styleTransfer = (model, videoOrCallback, cb) => {
-  const video = videoOrCallback;
-  let callback = cb;
+  const { video, callback, string } = handleArguments(model, videoOrCallback, cb);
 
-  if (typeof videoOrCallback === 'function') {
-    callback = videoOrCallback;
-  }
-
-  const instance = new StyleTransfer(model, video, callback);
+  const instance = new StyleTransfer(string, video, callback);
   return callback ? instance : instance.ready;
 };
 
