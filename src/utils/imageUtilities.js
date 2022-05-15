@@ -4,7 +4,7 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
-import { getImageElement, isCanvas, isImageData, isImageElement, isP5Image } from "./handleArguments";
+import { getImageElement, isCanvas, isImageData, isImageElement, isP5Image, isVideo } from "./handleArguments";
 import p5Utils from './p5Utils';
 
 // Resize video elements
@@ -162,6 +162,29 @@ function imgToPixelArray(img) {
   return Array.from(imgData.data);
 }
 
+/**
+ * Extract common logic from models accepting video input.
+ * Makes sure that the video data has loaded.
+ * Optionally can wait for the next frame every time the function is called.
+ * Will resolve immediately if the input is an image or undefined.
+ * @param {InputImage | undefined} input
+ * @param {boolean} nextFrame
+ * @returns {Promise<void>}
+ */
+async function mediaReady(input, nextFrame) {
+  if (input && isVideo(input)) {
+    if (nextFrame) {
+      await tf.nextFrame();
+    }
+    if (input.readyState === 0) {
+      await new Promise((resolve, reject) => {
+        input.addEventListener('error', () => reject(input.error));
+        input.addEventListener('loadeddata', () => resolve());
+      });
+    }
+  }
+}
+
 export {
   array3DToImage,
   processVideo,
@@ -169,5 +192,6 @@ export {
   imgToTensor,
   isInstanceOfSupportedElement,
   flipImage,
-  imgToPixelArray
+  imgToPixelArray,
+  mediaReady
 };
