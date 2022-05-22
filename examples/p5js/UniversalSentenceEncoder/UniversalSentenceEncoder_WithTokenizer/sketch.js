@@ -29,11 +29,10 @@ function gotResults(err, result){
     console.log(err);
     return;
   }
-  console.log(result);
+  console.log('got result:', result);
   clear();
   const padding = 20;
   const rectWidth = (width - 2 * padding)/result.length
-  console.log({rectWidth, width, height})
   result.forEach( (item, idx) => {
     // Map from 8000 tokens in the vocab to a height from 0 to 100
     const rectHeight = map(item, 0, 7999, 0, 100);
