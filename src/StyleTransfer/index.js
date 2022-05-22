@@ -15,7 +15,7 @@ import * as tf from '@tensorflow/tfjs';
 import handleArguments from "../utils/handleArguments";
 import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
-import { array3DToImage } from '../utils/imageUtilities';
+import { array3DToImage, mediaReady, toTensor } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
 const IMAGE_SIZE = 200;
@@ -30,7 +30,7 @@ class StyleTransfer extends Video {
   constructor(model, video, callback) {
     super(video, IMAGE_SIZE);
     /**
-     * Boolean value that specifies if the model has loaded.
+     * Promise that resolves when the model has loaded.
      * @type {boolean}
      * @public
      */
@@ -158,7 +158,11 @@ class StyleTransfer extends Video {
    * @return {Promise<HTMLImageElement>}
    */
   async transferInternal(input) {
-    const image = tf.browser.fromPixels(input);
+    await Promise.all([
+      this.ready,
+      mediaReady(input, true)
+    ]);
+    const image = toTensor(input);
     const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
       const conv2 = this.convLayer(conv1, 2, true, 3);
@@ -179,7 +183,6 @@ class StyleTransfer extends Video {
       return normalized;
     }));
     image.dispose();
-    await tf.nextFrame();
     return result;
   }
 

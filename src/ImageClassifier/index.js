@@ -162,6 +162,7 @@ class ImageClassifier {
       return results;
     }
 
+    // TODO: it does not make sense to resize here and then again in darknet/doodlenet!
     const processedImg = imgToTensor(imgToPredict, imageResize);
     const results = this.model
       .classify(processedImg, numberOfClasses)

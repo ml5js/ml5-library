@@ -19,7 +19,7 @@ import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from '../utils/handleArguments';
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
-import { mediaReady } from '../utils/imageUtilities';
+import { mediaReady, toTensor } from '../utils/imageUtilities';
 
 /**
  * @typedef {Record<string, {color: [number, number, number], id: number}>} BodyPixPalette
@@ -135,8 +135,10 @@ class BodyPix {
    */
   async segmentWithPartsInternal(imgToSegment, segmentationOptions) {
     // estimatePartSegmentation
-    await this.ready;
-    await mediaReady(imgToSegment, true);
+    await Promise.all([
+      this.ready,
+      mediaReady(imgToSegment, true)
+    ]);
 
     this.config.palette = segmentationOptions.palette || this.config.palette;
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
@@ -173,7 +175,7 @@ class BodyPix {
       backgroundMask,
       partMask,
     } = tf.tidy(() => {
-      let normTensor = tf.browser.fromPixels(imgToSegment);
+      let normTensor = toTensor(imgToSegment);
       // create a tensor from the input image
       const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
       normTensor = normTensor.concat(alpha, 2)
@@ -247,8 +249,10 @@ class BodyPix {
    */
   async segmentInternal(imgToSegment, segmentationOptions) {
 
-    await this.ready;
-    await mediaReady(imgToSegment, true);
+    await Promise.all([
+      this.ready,
+      mediaReady(imgToSegment, true)
+    ]);
 
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
     this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;
@@ -289,7 +293,7 @@ class BodyPix {
       personMask,
       backgroundMask
     } = tf.tidy(() => {
-      let normTensor = tf.browser.fromPixels(imgToSegment);
+      let normTensor = toTensor(imgToSegment);
       // create a tensor from the input image
       const alpha = tf.ones([segmentation.height, segmentation.width, 1]).tile([1, 1, 1]).mul(255)
       normTensor = normTensor.concat(alpha, 2)
