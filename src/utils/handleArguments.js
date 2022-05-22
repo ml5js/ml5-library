@@ -28,6 +28,16 @@ export const isVideo = (img) => {
 }
 
 /**
+ * Check if a variable is an HTMLAudioElement.
+ * @param {any} img
+ * @returns {img is HTMLAudioElement}
+ */
+export const isAudio = (img) => {
+  return typeof (HTMLAudioElement) !== 'undefined' &&
+    img instanceof HTMLAudioElement;
+}
+
+/**
  * Check if a variable is an HTMLCanvasElement.
  * @param {any} img
  * @returns {img is HTMLCanvasElement}
@@ -203,7 +213,10 @@ class ArgHelper {
             });
           }
         }
-          // TODO: handle audio elements and p5.sound
+        // TODO: handle p5.sound
+        if (isAudio(arg)) {
+            this.set({ audio: arg });
+        }
         // Check for arrays
         else if (Array.isArray(arg)) {
           this.set({ array: arg });

@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from "../utils/handleArguments";
+import { mediaReady } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
@@ -33,8 +34,8 @@ class UNET {
       modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
       imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize,
       returnTensors: typeof options.returnTensors !== 'undefined' ? options.returnTensors : DEFAULTS.returnTensors,
-
     };
+    this.video = video;
     this.ready = callCallback(this.loadModel(), callback);
   }
 
@@ -46,17 +47,13 @@ class UNET {
 
   async segment(inputOrCallback, cb) {
     const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
-    await this.ready;
     return callCallback(this.segmentInternal(image), callback);
   }
 
   async segmentInternal(imgToPredict) {
-    // Wait for the model to be ready
+    // Wait for the model to be ready and video input to be loaded
     await this.ready;
-    // skip asking for next frame if it's not video
-    if (imgToPredict instanceof HTMLVideoElement) {
-      await tf.nextFrame();
-    }
+    await mediaReady(imgToPredict, true);
     this.isPredicting = true;
 
     const {
