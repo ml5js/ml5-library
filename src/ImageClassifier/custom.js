@@ -1,5 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
+import modelLoader from '../utils/modelLoader';
 
 /**
  * Wrapper around a tf.LayersModel used for image classification.
@@ -11,12 +12,10 @@ class CustomImageClassifier {
    * @param {string} url
    */
   constructor(url) {
-    // its a url, we expect to find model.json
-    // The teachablemachine urls end with a slash, so add model.json to complete the full path
     /**
-     * @type {string}
+     * @type {ModelLoader}
      */
-    this.url = url.endsWith('/') ? `${url}model.json` : url;
+    this.loader = modelLoader(url, 'model');
     /**
      * @type {string[]}
      */
@@ -37,9 +36,7 @@ class CustomImageClassifier {
   async loadLabels() {
     // first try from the model.json
     try {
-      const result = await axios.get(this.url);
-      // eslint-disable-next-line prefer-destructuring
-      const data = result.data;
+      const { data } = await axios.get(this.loader.modelUrl);
 
       if (data.ml5Specs) {
         this.labels = data.ml5Specs.mapStringToIndex;
@@ -50,12 +47,7 @@ class CustomImageClassifier {
     }
     // then try from the metadata.json
     try {
-      const prefix = this.url.slice(0, this.url.lastIndexOf("/"));
-      const metadataUrl = `${prefix}/metadata.json`;
-
-      const result = await axios.get(metadataUrl);
-      // eslint-disable-next-line prefer-destructuring
-      const data = result.data;
+      const data = await this.loader.loadMetadataJson();
       if (!data.labels) {
         console.warn(`metadata.json file does not contain property 'labels'.`);
       }
@@ -71,11 +63,7 @@ class CustomImageClassifier {
    * @return {Promise<void>}
    */
   async loadModel() {
-    try {
-      this.model = await tf.loadLayersModel(this.url);
-    } catch (error) {
-      throw new Error(`Error loading model: ${error}`);
-    }
+    this.model = await this.loader.loadLayersModel();
   }
 
   /**
