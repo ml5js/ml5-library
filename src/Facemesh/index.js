@@ -13,6 +13,7 @@ import * as facemeshCore from "@tensorflow-models/facemesh";
 import { EventEmitter } from "events";
 import callCallback from "../utils/callcallback";
 import handleArguments from "../utils/handleArguments";
+import { mediaReady } from '../utils/imageUtilities';
 
 class Facemesh extends EventEmitter {
   /**
@@ -43,13 +44,6 @@ class Facemesh extends EventEmitter {
     this.model = await facemeshCore.load(this.config);
     this.modelReady = true;
 
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => {
-          resolve();
-        };
-      });
-    }
     if (this.video) {
       this.predict();
     }
@@ -65,6 +59,7 @@ class Facemesh extends EventEmitter {
     if (!image) {
       throw new Error("No input image found.");
     }
+    await mediaReady(image, false);
     const { flipHorizontal } = this.config;
     const predictions = await this.model.estimateFaces(image, flipHorizontal);
     const result = predictions;

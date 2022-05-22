@@ -15,7 +15,7 @@ import handleArguments from "../utils/handleArguments";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
 import callCallback from "../utils/callcallback";
-import { imgToTensor } from "../utils/imageUtilities";
+import { imgToTensor, mediaReady } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   mobilenet: {
@@ -134,21 +134,7 @@ class ImageClassifier {
   async classifyInternal(imgToPredict, numberOfClasses) {
     // Wait for the model to be ready
     await this.ready;
-    await tf.nextFrame();
-
-    if (imgToPredict instanceof HTMLVideoElement && imgToPredict.readyState === 0) {
-      const video = imgToPredict;
-      // Wait for the video to be ready
-      await new Promise(resolve => {
-        video.onloadeddata = () => resolve();
-      });
-    }
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToPredict, true);
 
     // Process the images
     const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
