@@ -15,8 +15,8 @@
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
 import handleArguments from "../utils/handleArguments";
-import modelLoader from "../utils/modelLoader";
-import { mediaReady } from '../utils/imageUtilities';
+import { mediaReady } from "../utils/imageUtilities";
+import { getModelPath } from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -96,7 +96,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 

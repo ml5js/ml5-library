@@ -9,10 +9,10 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 */
 
 import * as tf from '@tensorflow/tfjs';
-import axios from 'axios';
 import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from '../utils/handleArguments';
+import modelLoader from '../utils/modelLoader';
 
 // Default pre-trained face model
 
@@ -33,7 +33,6 @@ class DCGANBase {
     this.model = {};
     this.modelPath = modelPath;
     this.modelInfo = {};
-    this.modelPathPrefix = '';
     this.modelReady = false;
     this.config = {
       returnTensors: options.returnTensors || false,
@@ -46,15 +45,9 @@ class DCGANBase {
      * @return {this} the dcgan.
      */
   async loadModel() {
-    const modelInfo = await axios.get(this.modelPath);
-    const modelInfoJson = modelInfo.data;
-
-    this.modelInfo = modelInfoJson
-        
-    const [modelUrl] = this.modelPath.split('manifest.json')
-    const modelJsonPath = this.isAbsoluteURL(modelUrl) ? this.modelInfo.model : this.modelPathPrefix + this.modelInfo.model
-
-    this.model = await tf.loadLayersModel(modelJsonPath);
+    const loader = modelLoader(this.modelPath, 'manifest');
+    this.modelInfo = await loader.loadManifestJson();
+    this.model = await loader.loadLayersModel(this.modelInfo.model);
     this.modelReady = true;
     return this;
   }
@@ -108,17 +101,10 @@ class DCGANBase {
     return generatedImageResult(imageTensor, this.config);
   }
 
-    
-  /* eslint class-methods-use-this: "off" */
-  isAbsoluteURL(str) {
-    const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
-    return !!pattern.test(str);
-  }
-
 }
 
 const DCGAN = (modelPath, optionsOrCb, cb) => {
-  const { string, options, callback } = handleArguments(modelPath, optionsOrCb, cb);
+  const { string, options = {}, callback } = handleArguments(modelPath, optionsOrCb, cb);
   if (!string) {
     throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
