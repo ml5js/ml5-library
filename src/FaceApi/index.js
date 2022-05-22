@@ -12,11 +12,11 @@
  * Ported and integrated from all the hard work by: https://github.com/justadudewhohacks/face-api.js?files=1
  */
 
-import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
 import handleArguments from "../utils/handleArguments";
-import modelLoader from "../utils/modelLoader";
+import { mediaReady } from "../utils/imageUtilities";
+import { getModelPath } from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -96,7 +96,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 
@@ -158,13 +158,7 @@ class FaceApiBase {
    */
   async detectInternal(imgToClassify, faceApiOptions) {
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToClassify, true);
 
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
@@ -223,13 +217,7 @@ class FaceApiBase {
    */
   async detectSingleInternal(imgToClassify, faceApiOptions) {
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToClassify, true);
 
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
