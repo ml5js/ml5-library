@@ -7,25 +7,33 @@
 Image Classifier using pre-trained networks
 */
 
-import * as tf from "@tensorflow/tfjs";
-// eslint-disable-next-line no-unused-vars
-import axios from "axios";
 import * as mobilenet from "@tensorflow-models/mobilenet";
-import handleArguments from "../utils/handleArguments";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
+import * as modelFromUrl from "./custom";
 import callCallback from "../utils/callcallback";
+import handleArguments from "../utils/handleArguments";
 import { imgToTensor, mediaReady } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   mobilenet: {
     version: 2,
-    alpha: 1.0,
-    topk: 3,
+    alpha: 1.0
   },
+  topk: 3
 };
 const IMAGE_SIZE = 224;
-const MODEL_OPTIONS = ["mobilenet", "darknet", "darknet-tiny", "doodlenet"];
+
+/**
+ * @typedef Classify
+ * @param {tf.Tensor3D} img
+ * @param {number} classes
+ * @return {Promise<Array<{ className: string, probability: number }>>}
+ */
+/**
+ * @typedef {Object} ClassifierModel
+ * @property {Classify} classify
+ */
 
 class ImageClassifier {
   /**
@@ -38,89 +46,43 @@ class ImageClassifier {
    */
   constructor(modelNameOrUrl, video, options, callback) {
     this.video = video;
+    /**
+     * @type {null|ClassifierModel}
+     */
     this.model = null;
-    this.mapStringToIndex = [];
-    if (typeof modelNameOrUrl === "string") {
-      if (MODEL_OPTIONS.includes(modelNameOrUrl)) {
-        this.modelName = modelNameOrUrl;
-        this.modelUrl = null;
-        switch (this.modelName) {
-          case "mobilenet":
-            this.modelToUse = mobilenet;
-            this.version = options.version || DEFAULTS.mobilenet.version;
-            this.alpha = options.alpha || DEFAULTS.mobilenet.alpha;
-            this.topk = options.topk || DEFAULTS.mobilenet.topk;
-            break;
-          case "darknet":
-            this.version = "reference"; // this a 28mb model
-            this.modelToUse = darknet;
-            break;
-          case "darknet-tiny":
-            this.version = "tiny"; // this a 4mb model
-            this.modelToUse = darknet;
-            break;
-          case "doodlenet":
-            this.modelToUse = doodlenet;
-            break;
-          default:
-            this.modelToUse = null;
-        }
-      } else {
-        // its a url, we expect to find model.json
-        this.modelUrl = modelNameOrUrl;
-        // The teachablemachine urls end with a slash, so add model.json to complete the full path
-        if (this.modelUrl.endsWith('/')) this.modelUrl += "model.json";
-      }
-    }
+    const { topk, ...rest } = options;
+    /**
+     * @type number
+     */
+    this.topk = topk;
     // Load the model
-    this.ready = callCallback(this.loadModel(this.modelUrl), callback);
+    this.ready = callCallback(this.loadModel(modelNameOrUrl, rest), callback);
   }
 
   /**
    * Load the model and set it to this.model
+   * @param {string} modelNameOrUrl
+   * @param {object} [options]
    * @return {this} The ImageClassifier.
    */
-  async loadModel(modelUrl) {
-    if (modelUrl) this.model = await this.loadModelFrom(modelUrl);
-    else this.model = await this.modelToUse.load({ version: this.version, alpha: this.alpha });
-
-    return this;
-  }
-
-  async loadModelFrom(path = null) {
-    try {
-      let data;
-      if (path !== null) {
-        const result = await axios.get(path);
-        // eslint-disable-next-line prefer-destructuring
-        data = result.data;
-      }
-
-      if (data.ml5Specs) {
-        this.mapStringToIndex = data.ml5Specs.mapStringToIndex;
-      }
-      if (this.mapStringToIndex.length === 0) {
-        const split = path.split("/");
-        const prefix = split.slice(0, split.length - 1).join("/");
-        const metadataUrl = `${prefix}/metadata.json`;
-
-        const metadataResponse = await axios.get(metadataUrl).catch((metadataError) => {
-          console.log("Tried to fetch metadata.json, but it seems to be missing.", metadataError);
-        });
-        if (metadataResponse) {
-          const metadata = metadataResponse.data;
-          
-          if (metadata.labels) {
-            this.mapStringToIndex = metadata.labels;
-          }
-        }
-      }
-      this.model = await tf.loadLayersModel(path);
-      return this.model;
-    } catch (err) {
-      console.error(err);
-      return err;
+  async loadModel(modelNameOrUrl, options = {}) {
+    switch (modelNameOrUrl.toLowerCase()) {
+      case "mobilenet":
+        this.model = await mobilenet.load({ ...DEFAULTS.mobilenet, ...options });
+        break;
+      case "darknet":
+        this.model = await darknet.load({ version: "reference" }); // this a 28mb model
+        break;
+      case "darknet-tiny":
+        this.model = await darknet.load({ version: "tiny" }); // this a 4mb model
+        break;
+      case "doodlenet":
+        this.model = await doodlenet.load();
+        break;
+      default:
+        this.model = await modelFromUrl.load(modelNameOrUrl);
     }
+    return this;
   }
 
   /**
@@ -129,7 +91,7 @@ class ImageClassifier {
    *    takes an image to run the classification on.
    * @param {number} numberOfClasses - a number of labels to return for the image
    *    classification.
-   * @return {object} an object with {label, confidence}.
+   * @return {Promise<{confidence: number, label: string}[]>} an object with {label, confidence}.
    */
   async classifyInternal(imgToPredict, numberOfClasses) {
     // Wait for the model to be ready
@@ -138,30 +100,6 @@ class ImageClassifier {
 
     // Process the images
     const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
-
-    if (this.modelUrl) {
-      await tf.nextFrame();
-      const predictedClasses = tf.tidy(() => {
-        const processedImg = imgToTensor(imgToPredict, imageResize);
-        const predictions = this.model.predict(processedImg);
-        return Array.from(predictions.as1D().dataSync());
-      });
-
-      const results = await predictedClasses
-        .map((confidence, index) => {
-          const label =
-            this.mapStringToIndex.length > 0 && this.mapStringToIndex[index]
-              ? this.mapStringToIndex[index]
-              : index;
-          return {
-            label,
-            confidence,
-          };
-        })
-        .sort((a, b) => b.confidence - a.confidence);
-      return results;
-    }
-
     // TODO: it does not make sense to resize here and then again in darknet/doodlenet!
     const processedImg = imgToTensor(imgToPredict, imageResize);
     const results = this.model
@@ -198,6 +136,7 @@ class ImageClassifier {
    * @return {function} a promise or the results of a given callback, cb.
    */
   async predict(inputNumOrCallback, numOrCallback, cb) {
+    console.warn('ImageClassifier method `predict()` is deprecated and will be removed in a future version of ml5.js. Use `classify()` instead.');
     return this.classify(inputNumOrCallback, numOrCallback || null, cb);
   }
 }
@@ -208,13 +147,7 @@ const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback,
 
   const { string, video, options = {}, callback } = args;
 
-  let model = string;
-  // TODO: I think we should delete this.
-  if (model.indexOf("http") === -1) {
-    model = model.toLowerCase();
-  }
-
-  const instance = new ImageClassifier(model, video, options, callback);
+  const instance = new ImageClassifier(string, video, options, callback);
   return callback ? instance : instance.ready;
 };
 
