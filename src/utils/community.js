@@ -1,9 +1,9 @@
-import { version } from '../../package.json';
+import pkg from '../../package.json';
 
 export default () => {
   console.log(`
 🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈🌈
-🌟 Thank you for using ml5.js v${version} 🌟
+🌟 Thank you for using ml5.js v${pkg.version} 🌟
 
 Please read our community statement to ensure 
 that the use of this software reflects the values 

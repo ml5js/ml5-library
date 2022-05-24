@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { createImageData, ImageData } from "canvas";
+import { createImageData } from "canvas";
 
 export const asyncLoadImage = async (src) => {
   const img = new Image();
@@ -30,6 +30,7 @@ export const randomImageData = (width = 200, height = 100) => {
 
 export const polyfillImageData = () => {
   if (!global.ImageData) {
-    global.ImageData = ImageData;
+    // eslint-disable-next-line global-require,import/no-extraneous-dependencies
+    global.ImageData = require("canvas").ImageData;
   }
 }
