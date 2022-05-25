@@ -18,11 +18,11 @@ import p5Utils from './p5Utils';
  * Accepts options as an object with property `returnTensors` so that models can pass this.config.
  *
  * @param {tf.Tensor3D} tensor
- * @param {{ returnTensors: boolean }} options
+ * @param {{ returnTensors?: boolean }} [options]
  * @return {Promise<GeneratedImageResult>}
  */
-export default async function generatedImageResult(tensor, options) {
-  const raw = await tf.browser.toPixels(tensor); // or tensor.data()??
+export default async function generatedImageResult(tensor, options = {}) {
+  const raw = await tf.browser.toPixels(tensor);
   const [height, width] = tensor.shape;
   const blob = await p5Utils.rawToBlob(raw, width, height);
   const image = await p5Utils.blobToP5Image(blob);
