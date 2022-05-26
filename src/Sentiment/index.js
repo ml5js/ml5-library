@@ -1,5 +1,4 @@
 import * as tf from '@tensorflow/tfjs';
-import axios from "axios";
 import callCallback from '../utils/callcallback';
 import modelLoader from '../utils/modelLoader';
 
@@ -59,36 +58,24 @@ class Sentiment {
 
   async loadModel(modelName) {
 
-    const movieReviews = {
-      model: null,
-      metadata: null,
-    }
-    
-    if (modelName.toLowerCase() === 'moviereviews') {
-        
-      movieReviews.model = 'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json';
-      movieReviews.metadata = 'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json';
+    const modelUrl = (modelName.toLowerCase() === 'moviereviews')
+      ? 'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/'
+      : modelName;
 
-    } else if(modelLoader.isAbsoluteURL(modelName) === true ) {
-      const modelPath = modelLoader.getModelPath(modelName);
+    const loader = modelLoader(modelUrl, 'model');
 
-      movieReviews.model = `${modelPath}/model.json`;
-      movieReviews.metadata = `${modelPath}/metadata.json`;
-
-    } else {
-      console.error('problem loading model');
-      return this;
-    }
-
+    // load in parallel
+    const [model, sentimentMetadata] = await Promise.all([
+      loader.loadLayersModel(),
+      loader.loadMetadataJson()
+    ]);
 
     /**
      * The model being used.
-     * @type {model}
+     * @type {tf.LayersModel}
      * @public
      */
-    this.model = await tf.loadLayersModel(movieReviews.model);
-    const metadataJson = await axios.get(movieReviews.metadata);
-    const sentimentMetadata = metadataJson.data;
+    this.model = model;
 
     this.indexFrom = sentimentMetadata.index_from;
     this.maxLen = sentimentMetadata.max_len;

@@ -8,6 +8,7 @@ Sound Classifier using pre-trained networks
 */
 
 import * as tf from '@tensorflow/tfjs';
+import handleArguments from "../utils/handleArguments";
 import * as speechCommands from './speechcommands';
 import callCallback from '../utils/callcallback';
 
@@ -65,37 +66,21 @@ class SoundClassifier {
    * @return {function} a promise or the results of a given callback, cb.
    */
   async classify(numOrCallback = null, cb) {
-    let numberOfClasses = this.topk;
-    let callback;
+    const args = handleArguments(numOrCallback, cb);
+    const numberOfClasses = args.number || this.topk;
 
-    if (typeof numOrCallback === 'number') {
-      numberOfClasses = numOrCallback;
-    } else if (typeof numOrCallback === 'function') {
-      callback = numOrCallback;
-    }
-
-    if (typeof cb === 'function') {
-      callback = cb;
-    }
-    return this.classifyInternal(numberOfClasses, callback);
+    return this.classifyInternal(numberOfClasses, args.callback);
   }
 }
 
 const soundClassifier = (modelName, optionsOrCallback, cb) => {
-  let options = {};
-  let callback = cb;
+  const { string, options = {}, callback } = handleArguments(modelName, optionsOrCallback, cb)
+    .require('string', 'Please specify a model to use. E.g: "SpeechCommands18w"');
 
-  let model = modelName;
-  if (typeof model !== 'string') {
-    throw new Error('Please specify a model to use. E.g: "SpeechCommands18w"');
-  } else if (model.indexOf('http') === -1) {
-    model = modelName.toLowerCase();
-  }
-
-  if (typeof optionsOrCallback === 'object') {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
+  let model = string;
+  // TODO: I think we should delete this. -Linda
+  if (model.indexOf('http') === -1) {
+    model = model.toLowerCase();
   }
 
   const instance = new SoundClassifier(model, options, callback);

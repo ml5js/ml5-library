@@ -11,10 +11,11 @@ import * as tf from "@tensorflow/tfjs";
 // eslint-disable-next-line no-unused-vars
 import axios from "axios";
 import * as mobilenet from "@tensorflow-models/mobilenet";
+import handleArguments from "../utils/handleArguments";
 import * as darknet from "./darknet";
 import * as doodlenet from "./doodlenet";
 import callCallback from "../utils/callcallback";
-import { imgToTensor } from "../utils/imageUtilities";
+import { imgToTensor, mediaReady } from "../utils/imageUtilities";
 
 const DEFAULTS = {
   mobilenet: {
@@ -133,21 +134,7 @@ class ImageClassifier {
   async classifyInternal(imgToPredict, numberOfClasses) {
     // Wait for the model to be ready
     await this.ready;
-    await tf.nextFrame();
-
-    if (imgToPredict instanceof HTMLVideoElement && imgToPredict.readyState === 0) {
-      const video = imgToPredict;
-      // Wait for the video to be ready
-      await new Promise(resolve => {
-        video.onloadeddata = () => resolve();
-      });
-    }
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToPredict, true);
 
     // Process the images
     const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
@@ -201,56 +188,12 @@ class ImageClassifier {
    * @param {function} cb - a callback function that handles the results of the function.
    * @return {function} a promise or the results of a given callback, cb.
    */
-  async classify(inputNumOrCallback, numOrCallback = null, cb) {
-    let imgToPredict = this.video;
-    let numberOfClasses = this.topk;
-    let callback;
-
-    // Handle the image to predict
-    if (typeof inputNumOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputNumOrCallback;
-    } else if (typeof inputNumOrCallback === "number") {
-      imgToPredict = this.video;
-      numberOfClasses = inputNumOrCallback;
-    } else if (
-      inputNumOrCallback instanceof HTMLVideoElement ||
-      inputNumOrCallback instanceof HTMLImageElement ||
-      inputNumOrCallback instanceof HTMLCanvasElement ||
-      inputNumOrCallback instanceof ImageData
-    ) {
-      imgToPredict = inputNumOrCallback;
-    } else if (
-      typeof inputNumOrCallback === "object" &&
-      (inputNumOrCallback.elt instanceof HTMLVideoElement ||
-        inputNumOrCallback.elt instanceof HTMLImageElement ||
-        inputNumOrCallback.elt instanceof HTMLCanvasElement ||
-        inputNumOrCallback.elt instanceof ImageData)
-    ) {
-      imgToPredict = inputNumOrCallback.elt; // Handle p5.js image
-    } else if (
-      typeof inputNumOrCallback === "object" &&
-      inputNumOrCallback.canvas instanceof HTMLCanvasElement
-    ) {
-      imgToPredict = inputNumOrCallback.canvas; // Handle p5.js image
-    } else if (!(this.video instanceof HTMLVideoElement)) {
-      // Handle unsupported input
-      throw new Error(
-        "No input image provided. If you want to classify a video, pass the video element in the constructor. ",
+  async classify(inputNumOrCallback, numOrCallback, cb) {
+    const { image, number, callback } = handleArguments(this.video, inputNumOrCallback, numOrCallback, cb)
+      .require('image',
+        "No input image provided. If you want to classify a video, pass the video element in the constructor."
       );
-    }
-
-    if (typeof numOrCallback === "number") {
-      numberOfClasses = numOrCallback;
-    } else if (typeof numOrCallback === "function") {
-      callback = numOrCallback;
-    }
-
-    if (typeof cb === "function") {
-      callback = cb;
-    }
-
-    return callCallback(this.classifyInternal(imgToPredict, numberOfClasses), callback);
+    return callCallback(this.classifyInternal(image, number), callback);
   }
 
   /**
@@ -266,34 +209,15 @@ class ImageClassifier {
 }
 
 const imageClassifier = (modelName, videoOrOptionsOrCallback, optionsOrCallback, cb) => {
-  let video;
-  let options = {};
-  let callback = cb;
+  const args = handleArguments(modelName, videoOrOptionsOrCallback, optionsOrCallback, cb)
+    .require('string', 'Please specify a model to use. E.g: "MobileNet"');
 
-  let model = modelName;
-  if (typeof model !== "string") {
-    throw new Error('Please specify a model to use. E.g: "MobileNet"');
-  } else if (model.indexOf("http") === -1) {
-    model = modelName.toLowerCase();
-  }
+  const { string, video, options = {}, callback } = args;
 
-  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-    video = videoOrOptionsOrCallback;
-  } else if (
-    typeof videoOrOptionsOrCallback === "object" &&
-    videoOrOptionsOrCallback.elt instanceof HTMLVideoElement
-  ) {
-    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (typeof videoOrOptionsOrCallback === "object") {
-    options = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === "function") {
-    callback = videoOrOptionsOrCallback;
-  }
-
-  if (typeof optionsOrCallback === "object") {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === "function") {
-    callback = optionsOrCallback;
+  let model = string;
+  // TODO: I think we should delete this.
+  if (model.indexOf("http") === -1) {
+    model = model.toLowerCase();
   }
 
   const instance = new ImageClassifier(model, video, options, callback);

@@ -1,6 +1,6 @@
 {
   "name": "ml5",
-  "version": "0.12.0",
+  "version": "0.12.2",
   "description": "A friendly machine learning library for the web.",
   "main": "dist/ml5.min.js",
   "directories": {
@@ -16,7 +16,9 @@
     "lint:nibble": "npx eslint-nibble --ext .js .",
     "manual-test": "webpack-dev-server --open --config webpack.test.babel.js",
     "build": "webpack --config webpack.prod.babel.js --config-name ml5",
-    "test": "./node_modules/karma/bin/karma start karma.conf.js",
+    "test": "npm-run-all test:jest test:karma",
+    "test:jest": "jest",
+    "test:karma": "./node_modules/karma/bin/karma start karma.conf.js",
     "test:single": "./node_modules/karma/bin/karma start karma.conf.js --single-run",
     "test-travis": "./scripts/test-travis.sh",
     "serve:docs": "docsify serve docs",
@@ -46,17 +48,23 @@
   },
   "homepage": "https://github.com/ml5js/ml5-library#readme",
   "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/register": "^7.17.7",
+    "@babel/runtime": "^7.17.9",
+    "@babel/runtime-corejs3": "^7.17.9",
+    "@tensorflow/tfjs-node": "^1.2.9",
     "all-contributors-cli": "^6.10.0",
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.0",
-    "babel-loader": "7.1.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "6.26.0",
-    "babel-preset-env": "1.6.1",
-    "babel-register": "6.26.0",
+    "babel-jest": "^27.4.5",
+    "babel-loader": "^8.2.4",
+    "canvas": "^2.9.0",
     "commitizen": "4.0.3",
     "copy-webpack-plugin": "^5.1.1",
+    "cross-fetch": "^3.1.5",
     "cz-conventional-changelog": "2.1.0",
     "docsify-cli": "^4.3.0",
     "dotenv": "^8.2.0",
@@ -70,6 +78,7 @@
     "ghooks": "2.0.2",
     "html-webpack-plugin": "^3.0.7",
     "jasmine-core": "3.1.0",
+    "jest": "^27.4.5",
     "karma": "2.0.0",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "2.2.0",
@@ -82,7 +91,6 @@
     "q": "^1.5.1",
     "recursive-readdir": "^2.2.2",
     "regenerator-runtime": "0.11.1",
-    "request-promise": "^4.2.5",
     "rimraf": "2.6.2",
     "semantic-release": "^17.2.3",
     "uglifyjs-webpack-plugin": "^1.2.5",
@@ -103,17 +111,17 @@
   "babel": {
     "presets": [
       [
-        "env"
+        "@babel/preset-env"
       ]
     ],
     "plugins": [
-      "transform-runtime",
-      "transform-object-rest-spread"
+      "@babel/plugin-transform-runtime",
+      "@babel/plugin-proposal-object-rest-spread"
     ]
   },
   "peerDependencies": {
-    "@tensorflow/tfjs-core": "^1.2.9",
-    "@tensorflow/tfjs-converter": "^1.2.9"
+    "@tensorflow/tfjs-converter": "^1.2.9",
+    "@tensorflow/tfjs-core": "^1.2.9"
   },
   "dependencies": {
     "@magenta/sketch": "0.2.0",

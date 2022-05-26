@@ -7,10 +7,8 @@
 General Feature Extractor Manager
 */
 
+import handleArguments from "../utils/handleArguments";
 import Mobilenet from './Mobilenet';
-
-/* eslint max-len: ["error", { "code": 180 }] */
-
 
 /**
  * @typedef {Object} options
@@ -32,26 +30,15 @@ import Mobilenet from './Mobilenet';
  * @param {function} cb - Optional. 
  */
 const featureExtractor = (model, optionsOrCallback, cb) => {
-  let modelName;
-  if (typeof model !== 'string') {
-    throw new Error('Please specify a model to use. E.g: "MobileNet"');
-  } else {
-    modelName = model.toLowerCase();
+  const { string: modelName, options = {}, callback } = handleArguments(model, optionsOrCallback, cb);
+
+  // Default to using MobileNet if no model is provided.
+
+  if ( modelName && modelName.toLowerCase() !== 'mobilenet') {
+    throw new Error(`${modelName} is not a valid model.`);
   }
 
-  let options = {};
-  let callback = cb;
-
-  if (typeof optionsOrCallback === 'object') {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
-  }
-
-  if (modelName === 'mobilenet') {
-    return new Mobilenet(options, callback);
-  }
-  throw new Error(`${modelName} is not a valid model.`);
+  return new Mobilenet(options, callback);
 };
 
 export default featureExtractor;

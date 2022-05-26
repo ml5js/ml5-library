@@ -4,6 +4,16 @@
 // https://opensource.org/licenses/MIT
 
 import * as tf from '@tensorflow/tfjs';
+import {
+  getImageElement,
+  isAudio,
+  isCanvas,
+  isImageData,
+  isImageElement,
+  isImg,
+  isP5Image,
+  isVideo
+} from "./handleArguments";
 import p5Utils from './p5Utils';
 
 // Resize video elements
@@ -53,7 +63,11 @@ const array3DToImage = (tensor) => {
   return outputImg;
 };
 
-// Static Method: crop the image
+/**
+ * Crop an image tensor to a square based on its smaller dimension.
+ * @param {tf.Tensor3D} img
+ * @return {tf.Tensor3D}
+ */
 const cropImage = (img) => {
   const size = Math.min(img.shape[0], img.shape[1]);
   const centerHeight = img.shape[0] / 2;
@@ -63,65 +77,77 @@ const cropImage = (img) => {
   return img.slice([beginHeight, beginWidth, 0], [size, size, 3]);
 };
 
-const flipImage = (img) => {
-  // image image, bitmap, or canvas
-  let imgWidth;
-  let imgHeight;
-  let inputImg;
-
-  if (img instanceof HTMLImageElement ||
-    img instanceof HTMLCanvasElement ||
-    img instanceof HTMLVideoElement ||
-    img instanceof ImageData) {
-    inputImg = img;
-  } else if (typeof img === 'object' &&
-    (img.elt instanceof HTMLImageElement ||
-      img.elt instanceof HTMLCanvasElement ||
-      img.elt instanceof HTMLVideoElement ||
-      img.elt instanceof ImageData)) {
-
-    inputImg = img.elt; // Handle p5.js image
-  } else if (typeof img === 'object' &&
-    img.canvas instanceof HTMLCanvasElement) {
-    inputImg = img.canvas; // Handle p5.js image
-  } else {
-    inputImg = img;
+/**
+ * Places an image element or ImageData onto a canvas.
+ * If the image is already a canvas, return the same image rather than copying.
+ * // Note: could add an additional argument to optionally copy a canvas.
+ * @param {ImageElement | p5.Element | p5.Image | p5.Video | ImageData} img
+ * @returns {HTMLCanvasElement}
+ */
+const drawToCanvas = (img) => {
+  // Get the inner element from p5 objects.
+  const source = isImageData(img) ? img : getImageElement(img);
+  // Return existing canvases.
+  if ( isCanvas(source)) {
+    return source;
   }
-
-  if (inputImg instanceof HTMLVideoElement) {
-    // should be videoWidth, videoHeight?
-    imgWidth = inputImg.width;
-    imgHeight = inputImg.height;
-  } else {
-    imgWidth = inputImg.width;
-    imgHeight = inputImg.height;
+  // Make sure that a valid source was found.
+  if (!source) {
+    throw new Error(
+      'Invalid image. Image must be one of: HTMLCanvasElement, HTMLImageElement, HTMLVideoElement, ImageData, p5.Image, p5.Graphics, or p5.Video.'
+    );
   }
-
-
-  if (p5Utils.checkP5()) {
-    const p5Canvas = p5Utils.p5Instance.createGraphics(imgWidth, imgHeight);
-    p5Canvas.push()
-    p5Canvas.translate(imgWidth, 0);
-    p5Canvas.scale(-1, 1);
-    p5Canvas.image(img, 0, 0, imgWidth, imgHeight);
-    p5Canvas.pop()
-
-    return p5Canvas;
-  }
+  // Videos use properties videoWidth and videoHeight, while all others use width and height.
+  const width = source.videoWidth || source.width;
+  const height = source.videoHeight || source.height;
+  // Create a canvas with the same dimensions.
   const canvas = document.createElement('canvas');
-  canvas.width = imgWidth;
-  canvas.height = imgHeight;
-
+  canvas.width = width;
+  canvas.height = height;
+  // Draw to the canvas.
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(inputImg, 0, 0, imgWidth, imgHeight);
-  ctx.translate(imgWidth, 0);
-  ctx.scale(-1, 1);
-  ctx.drawImage(canvas, imgWidth * -1, 0, imgWidth, imgHeight);
+  if (isImageData(img)) {
+    ctx.putImageData(img, 0, 0);
+  } else {
+    ctx.drawImage(source, 0, 0, width, height);
+  }
   return canvas;
-
 }
 
-// Static Method: image to tf tensor
+/**
+ * Flip an image horizontally, using either p5 or canvas.
+ * @param {CanvasImageSource | p5.Element | p5.Graphics} img
+ * @returns {HTMLCanvasElement | p5.Renderer}
+ */
+const flipImage = (img) => {
+
+  // If p5 is available and the image is a p5 image, flip using p5 and return a p5 graphics renderer.
+  if (p5Utils.checkP5() && isP5Image(img)) {
+    const p5Canvas = p5Utils.p5Instance.createGraphics(img.width, img.height);
+    p5Canvas.push()
+    p5Canvas.translate(img.width, 0);
+    p5Canvas.scale(-1, 1);
+    p5Canvas.image(img, 0, 0, img.width, img.height);
+    p5Canvas.pop()
+    return p5Canvas;
+  }
+
+  // Otherwise, flip using canvas.
+  const canvas = drawToCanvas(img);
+  const ctx = canvas.getContext('2d');
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
+  ctx.drawImage(canvas, canvas.width * -1, 0, canvas.width, canvas.height);
+  return canvas;
+}
+
+/**
+ * For models which expect an input with a specific size.
+ * Converts an image to a tensor, resizes it, and crops it to a square.
+ * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} input
+ * @param {[number, number]} [size]
+ * @return {tf.Tensor3D}
+ */
 function imgToTensor(input, size = null) {
   return tf.tidy(() => {
     let img = tf.browser.fromPixels(input);
@@ -135,55 +161,44 @@ function imgToTensor(input, size = null) {
 }
 
 function isInstanceOfSupportedElement(subject) {
-  return (subject instanceof HTMLVideoElement
-    || subject instanceof HTMLImageElement
-    || subject instanceof HTMLCanvasElement
-    || subject instanceof ImageData)
+  return isImageElement(subject) || isImageData(subject);
 }
 
-function imgToPixelArray(img){
-  // image image, bitmap, or canvas
-  let imgWidth;
-  let imgHeight;
-  let inputImg;
- 
-  if (img instanceof HTMLImageElement ||
-     img instanceof HTMLCanvasElement ||
-     img instanceof HTMLVideoElement ||
-     img instanceof ImageData) {
-    inputImg = img;
-  } else if (typeof img === 'object' &&
-     (img.elt instanceof HTMLImageElement ||
-       img.elt instanceof HTMLCanvasElement ||
-       img.elt instanceof HTMLVideoElement ||
-       img.elt instanceof ImageData)) {
- 
-    inputImg = img.elt; // Handle p5.js image
-  } else if (typeof img === 'object' &&
-     img.canvas instanceof HTMLCanvasElement) {
-    inputImg = img.canvas; // Handle p5.js image
-  } else {
-    inputImg = img;
-  }
- 
-  if (inputImg instanceof HTMLVideoElement) {
-    // should be videoWidth, videoHeight?
-    imgWidth = inputImg.width;
-    imgHeight = inputImg.height;
-  } else {
-    imgWidth = inputImg.width;
-    imgHeight = inputImg.height;
-  }
-
-  const canvas = document.createElement('canvas');
-  canvas.width = imgWidth;
-  canvas.height = imgHeight;
-
+function imgToPixelArray(img) {
+  const canvas = drawToCanvas(img);
   const ctx = canvas.getContext('2d');
-  ctx.drawImage(inputImg, 0, 0, imgWidth, imgHeight);
+  const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  return Array.from(imgData.data);
+}
 
-  const imgData = ctx.getImageData(0,0, imgWidth, imgHeight)
-  return Array.from(imgData.data)
+/**
+ * Extract common logic from models accepting video input.
+ * Makes sure that the video/audio/image data has loaded.
+ * Optionally can wait for the next frame every time the function is called.
+ * Will resolve immediately if the input is undefined or a different element type.
+ * @param {InputImage | undefined} input
+ * @param {boolean} nextFrame
+ * @returns {Promise<void>}
+ */
+async function mediaReady(input, nextFrame) {
+  if (input && (isVideo(input) || isAudio(input))) {
+    if (nextFrame) {
+      await tf.nextFrame();
+    }
+    if (input.readyState === 0) {
+      await new Promise((resolve, reject) => {
+        input.addEventListener('error', () => reject(input.error));
+        input.addEventListener('loadeddata', resolve);
+      });
+    }
+  } else if (input && isImg(input)) {
+    if (!input.complete) {
+      await new Promise((resolve, reject) => {
+        input.addEventListener('error', reject);
+        input.addEventListener('load', resolve);
+      });
+    }
+  }
 }
 
 export {
@@ -193,5 +208,6 @@ export {
   imgToTensor,
   isInstanceOfSupportedElement,
   flipImage,
-  imgToPixelArray
+  imgToPixelArray,
+  mediaReady
 };

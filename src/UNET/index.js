@@ -9,10 +9,9 @@ Image Classifier using pre-trained networks
 
 import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
-import {
-  array3DToImage
-} from '../utils/imageUtilities';
-import p5Utils from '../utils/p5Utils';
+import generatedImageResult from '../utils/generatedImageResult';
+import handleArguments from "../utils/handleArguments";
+import { mediaReady } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
@@ -35,8 +34,8 @@ class UNET {
       modelPath: typeof options.modelPath !== 'undefined' ? options.modelPath : DEFAULTS.modelPath,
       imageSize: typeof options.imageSize !== 'undefined' ? options.imageSize : DEFAULTS.imageSize,
       returnTensors: typeof options.returnTensors !== 'undefined' ? options.returnTensors : DEFAULTS.returnTensors,
-
     };
+    this.video = video;
     this.ready = callCallback(this.loadModel(), callback);
   }
 
@@ -47,56 +46,14 @@ class UNET {
   }
 
   async segment(inputOrCallback, cb) {
-    await this.ready;
-    let imgToPredict;
-    let callback = cb;
-
-    if (inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData) {
-      imgToPredict = inputOrCallback;
-    } else if (typeof inputOrCallback === 'object' && (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)) {
-      imgToPredict = inputOrCallback.elt;
-    } else if (typeof inputOrCallback === 'function') {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    }
-    return callCallback(this.segmentInternal(imgToPredict), callback);
-  }
-
-  static dataURLtoBlob(dataurl) {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-
-    while (n) {
-      u8arr[n] = bstr.charCodeAt(n);
-      n -= 1;
-    }
-    return new Blob([u8arr], {
-      type: mime
-    });
-  }
-
-  async convertToP5Image(tfBrowserPixelImage){
-    const blob1 = await p5Utils.rawToBlob(tfBrowserPixelImage, this.config.imageSize, this.config.imageSize);
-    const p5Image1 = await p5Utils.blobToP5Image(blob1);
-    return p5Image1
+    const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
+    return callCallback(this.segmentInternal(image), callback);
   }
 
   async segmentInternal(imgToPredict) {
-    // Wait for the model to be ready
+    // Wait for the model to be ready and video input to be loaded
     await this.ready;
-    // skip asking for next frame if it's not video
-    if (imgToPredict instanceof HTMLVideoElement) {
-      await tf.nextFrame();
-    }
+    await mediaReady(imgToPredict, true);
     this.isPredicting = true;
 
     const {
@@ -143,75 +100,34 @@ class UNET {
 
     this.isPredicting = false;
 
-    // these come first because array3DToImage() will dispose of the input tensor
-    const maskFeat = await tf.browser.toPixels(featureMask);
-    const maskBg = await tf.browser.toPixels(backgroundMask);
-    const mask = await tf.browser.toPixels(segmentation);
-
-    const maskFeatDom = array3DToImage(featureMask);
-    const maskBgDom = array3DToImage(backgroundMask);
-    const maskFeatBlob = UNET.dataURLtoBlob(maskFeatDom.src);
-    const maskBgBlob = UNET.dataURLtoBlob(maskBgDom.src);
-    
-
-    let pFeatureMask;
-    let pBgMask;
-    let pMask;
-
-    if (p5Utils.checkP5()) {
-      pFeatureMask = await this.convertToP5Image(maskFeat);
-      pBgMask = await this.convertToP5Image(maskBg)
-      pMask = await this.convertToP5Image(mask)
-    }
-
-    if(!this.config.returnTensors){
-      featureMask.dispose();
-      backgroundMask.dispose();
-      segmentation.dispose();
-    } 
+    const maskFeat = await generatedImageResult(featureMask, this.config);
+    const maskBg = await generatedImageResult(backgroundMask, this.config);
+    const mask = await generatedImageResult(segmentation, this.config);
 
     return {
-      segmentation:mask, 
+      segmentation: mask.raw,
       blob: {
-        featureMask: maskFeatBlob,
-        backgroundMask: maskBgBlob
+        featureMask: maskFeat.blob,
+        backgroundMask: maskBg.blob
       },
       tensor: {
-        featureMask,
-        backgroundMask,
+        featureMask: maskFeat.tensor,
+        backgroundMask: maskBg.tensor,
       },
       raw: {
-        featureMask: maskFeat,
-        backgroundMask: maskBg
+        featureMask: maskFeat.raw,
+        backgroundMask: maskBg.raw
       },
       // returns if p5 is available
-      featureMask: pFeatureMask,
-      backgroundMask: pBgMask,
-      mask: pMask
+      featureMask: maskFeat.image,
+      backgroundMask: maskBg.image,
+      mask: mask.image
     };
   }
 }
 
-const uNet = (videoOr, optionsOr, cb) => {
-  let video = null;
-  let options = {};
-  let callback = cb;
-
-  if (videoOr instanceof HTMLVideoElement) {
-    video = videoOr;
-  } else if (typeof videoOr === 'object' && videoOr.elt instanceof HTMLVideoElement) {
-    video = videoOr.elt; // Handle p5.js image
-  } else if (typeof videoOr === 'function') {
-    callback = videoOr;
-  } else if (typeof videoOr === 'object') {
-    options = videoOr;
-  }
-
-  if (typeof optionsOr === 'object') {
-    options = optionsOr;
-  } else if (typeof optionsOr === 'function') {
-    callback = optionsOr;
-  }
+const uNet = (...inputs) => {
+  const { video, options = {}, callback } = handleArguments(...inputs);
   return new UNET(video, options, callback);
 };
 

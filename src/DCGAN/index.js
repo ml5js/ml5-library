@@ -9,9 +9,10 @@ This version is based on alantian's TensorFlow.js implementation: https://github
 */
 
 import * as tf from '@tensorflow/tfjs';
-import axios from 'axios';
 import callCallback from '../utils/callcallback';
-import  p5Utils from '../utils/p5Utils';
+import generatedImageResult from '../utils/generatedImageResult';
+import handleArguments from '../utils/handleArguments';
+import modelLoader from '../utils/modelLoader';
 
 // Default pre-trained face model
 
@@ -32,7 +33,6 @@ class DCGANBase {
     this.model = {};
     this.modelPath = modelPath;
     this.modelInfo = {};
-    this.modelPathPrefix = '';
     this.modelReady = false;
     this.config = {
       returnTensors: options.returnTensors || false,
@@ -45,15 +45,9 @@ class DCGANBase {
      * @return {this} the dcgan.
      */
   async loadModel() {
-    const modelInfo = await axios.get(this.modelPath);
-    const modelInfoJson = modelInfo.data;
-
-    this.modelInfo = modelInfoJson
-        
-    const [modelUrl] = this.modelPath.split('manifest.json')
-    const modelJsonPath = this.isAbsoluteURL(modelUrl) ? this.modelInfo.model : this.modelPathPrefix + this.modelInfo.model
-
-    this.model = await tf.loadLayersModel(modelJsonPath);
+    const loader = modelLoader(this.modelPath, 'manifest');
+    this.modelInfo = await loader.loadManifestJson();
+    this.model = await loader.loadLayersModel(this.modelInfo.model);
     this.modelReady = true;
     return this;
   }
@@ -102,58 +96,16 @@ class DCGANBase {
      * @return {object} includes blob, raw, and tensor. if P5 exists, then a p5Image
      */
   async generateInternal(latentVector) {
-        
-    const {
-      modelLatentDim
-    } = this.modelInfo;
+    const { modelLatentDim } = this.modelInfo;
     const imageTensor = await this.compute(modelLatentDim, latentVector);
-
-    // get the raw data from tensor
-    const raw = await tf.browser.toPixels(imageTensor);
-    // get the blob from raw
-    const [imgHeight, imgWidth] = imageTensor.shape;
-    const blob = await p5Utils.rawToBlob(raw, imgWidth, imgHeight);
-
-    // get the p5.Image object
-    let p5Image;
-    if (p5Utils.checkP5()) {
-      p5Image = await p5Utils.blobToP5Image(blob);
-    }
-
-    // wrap up the final js result object
-    const result = {};
-    result.blob = blob;
-    result.raw = raw;
-        
-
-    if (p5Utils.checkP5()) {
-      result.image = p5Image;
-    }
-
-    if(!this.config.returnTensors){
-      result.tensor = null;
-      imageTensor.dispose();
-    } else {
-      result.tensor = imageTensor;
-    }
-
-    return result;
-
-  }
-
-    
-  /* eslint class-methods-use-this: "off" */
-  isAbsoluteURL(str) {
-    const pattern = new RegExp('^(?:[a-z]+:)?//', 'i');
-    return !!pattern.test(str);
+    return generatedImageResult(imageTensor, this.config);
   }
 
 }
 
 const DCGAN = (modelPath, optionsOrCb, cb) => {
-  let callback;
-  let options = {};
-  if (typeof modelPath !== 'string') {
+  const { string, options = {}, callback } = handleArguments(modelPath, optionsOrCb, cb);
+  if (!string) {
     throw new Error(`Please specify a path to a "manifest.json" file: \n
          "models/face/manifest.json" \n\n
          This "manifest.json" file should include:\n
@@ -166,15 +118,7 @@ const DCGAN = (modelPath, optionsOrCb, cb) => {
          `);
   }
 
-  if(typeof optionsOrCb === 'function'){
-    callback = optionsOrCb;
-  } else if (typeof optionsOrCb === 'object'){
-    options = optionsOrCb;
-    callback = cb;
-  }
-    
-
-  const instance = new DCGANBase(modelPath, options, callback);
+  const instance = new DCGANBase(string, options, callback);
   return callback ? instance : instance.ready;
     
 }

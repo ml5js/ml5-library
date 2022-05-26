@@ -12,10 +12,11 @@
  * Ported and integrated from all the hard work by: https://github.com/justadudewhohacks/face-api.js?files=1
  */
 
-import * as tf from "@tensorflow/tfjs";
 import * as faceapi from "face-api.js";
 import callCallback from "../utils/callcallback";
-import modelLoader from "../utils/modelLoader";
+import handleArguments from "../utils/handleArguments";
+import { mediaReady } from "../utils/imageUtilities";
+import { getModelPath } from "../utils/modelLoader";
 
 const DEFAULTS = {
   withLandmarks: true,
@@ -95,7 +96,7 @@ class FaceApiBase {
 
     Object.keys(this.config.MODEL_URLS).forEach(item => {
       if (modelOptions.includes(item)) {
-        this.config.MODEL_URLS[item] = modelLoader.getModelPath(this.config.MODEL_URLS[item]);
+        this.config.MODEL_URLS[item] = getModelPath(this.config.MODEL_URLS[item]);
       }
     });
 
@@ -142,53 +143,12 @@ class FaceApiBase {
    * @param {*} cb
    */
   async detect(optionsOrCallback, configOrCallback, cb) {
-    let imgToClassify = this.video;
-    let callback;
-    let faceApiOptions = this.config;
-
-    // Handle the image to predict
-    if (typeof optionsOrCallback === "function") {
-      imgToClassify = this.video;
-      callback = optionsOrCallback;
-      // clean the following conditional statement up!
-    } else if (
-      optionsOrCallback instanceof HTMLImageElement ||
-      optionsOrCallback instanceof HTMLCanvasElement ||
-      optionsOrCallback instanceof HTMLVideoElement ||
-      optionsOrCallback instanceof ImageData
-    ) {
-      imgToClassify = optionsOrCallback;
-    } else if (
-      typeof optionsOrCallback === "object" &&
-      (optionsOrCallback.elt instanceof HTMLImageElement ||
-        optionsOrCallback.elt instanceof HTMLCanvasElement ||
-        optionsOrCallback.elt instanceof HTMLVideoElement ||
-        optionsOrCallback.elt instanceof ImageData)
-    ) {
-      imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-    } else if (
-      typeof optionsOrCallback === "object" &&
-      optionsOrCallback.canvas instanceof HTMLCanvasElement
-    ) {
-      imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
-    } else if (!(this.video instanceof HTMLVideoElement)) {
-      // Handle unsupported input
-      throw new Error(
-        "No input image provided. If you want to classify a video, pass the video element in the constructor. ",
+    const { image, callback, options } = handleArguments(this.video, optionsOrCallback, configOrCallback, cb)
+      .require('image',
+        "No input image provided. If you want to classify a video, pass the video element in the constructor."
       );
-    }
 
-    if (typeof configOrCallback === "object") {
-      faceApiOptions = configOrCallback;
-    } else if (typeof configOrCallback === "function") {
-      callback = configOrCallback;
-    }
-
-    if (typeof cb === "function") {
-      callback = cb;
-    }
-
-    return callCallback(this.detectInternal(imgToClassify, faceApiOptions), callback);
+    return callCallback(this.detectInternal(image, options || this.config), callback);
   }
 
   /**
@@ -198,13 +158,7 @@ class FaceApiBase {
    */
   async detectInternal(imgToClassify, faceApiOptions) {
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToClassify, true);
 
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
@@ -242,59 +196,18 @@ class FaceApiBase {
   }
 
   /**
-   * .detecSinglet() - classifies a single feature with higher accuracy
+   * .detectSingle() - classifies a single feature with higher accuracy
    * @param {*} optionsOrCallback
    * @param {*} configOrCallback
    * @param {*} cb
    */
   async detectSingle(optionsOrCallback, configOrCallback, cb) {
-    let imgToClassify = this.video;
-    let callback;
-    let faceApiOptions = this.config;
-
-    // Handle the image to predict
-    if (typeof optionsOrCallback === "function") {
-      imgToClassify = this.video;
-      callback = optionsOrCallback;
-      // clean the following conditional statement up!
-    } else if (
-      optionsOrCallback instanceof HTMLImageElement ||
-      optionsOrCallback instanceof HTMLCanvasElement ||
-      optionsOrCallback instanceof HTMLVideoElement ||
-      optionsOrCallback instanceof ImageData
-    ) {
-      imgToClassify = optionsOrCallback;
-    } else if (
-      typeof optionsOrCallback === "object" &&
-      (optionsOrCallback.elt instanceof HTMLImageElement ||
-        optionsOrCallback.elt instanceof HTMLCanvasElement ||
-        optionsOrCallback.elt instanceof HTMLVideoElement ||
-        optionsOrCallback.elt instanceof ImageData)
-    ) {
-      imgToClassify = optionsOrCallback.elt; // Handle p5.js image
-    } else if (
-      typeof optionsOrCallback === "object" &&
-      optionsOrCallback.canvas instanceof HTMLCanvasElement
-    ) {
-      imgToClassify = optionsOrCallback.canvas; // Handle p5.js image
-    } else if (!(this.video instanceof HTMLVideoElement)) {
-      // Handle unsupported input
-      throw new Error(
-        "No input image provided. If you want to classify a video, pass the video element in the constructor. ",
+    const { image, callback, options } = handleArguments(this.video, optionsOrCallback, configOrCallback, cb)
+      .require('image',
+        "No input image provided. If you want to classify a video, pass the video element in the constructor."
       );
-    }
 
-    if (typeof configOrCallback === "object") {
-      faceApiOptions = configOrCallback;
-    } else if (typeof configOrCallback === "function") {
-      callback = configOrCallback;
-    }
-
-    if (typeof cb === "function") {
-      callback = cb;
-    }
-
-    return callCallback(this.detectSingleInternal(imgToClassify, faceApiOptions), callback);
+    return callCallback(this.detectSingleInternal(image, options || this.config), callback);
   }
 
   /**
@@ -304,13 +217,7 @@ class FaceApiBase {
    */
   async detectSingleInternal(imgToClassify, faceApiOptions) {
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToClassify, true);
 
     // sets the return options if any are passed in during .detect() or .detectSingle()
     this.config = this.setReturnOptions(faceApiOptions);
@@ -453,31 +360,8 @@ class FaceApiBase {
   }
 }
 
-const faceApi = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
-  let video;
-  let options = {};
-  let callback = cb;
-
-  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-    video = videoOrOptionsOrCallback;
-  } else if (
-    typeof videoOrOptionsOrCallback === "object" &&
-    videoOrOptionsOrCallback.elt instanceof HTMLVideoElement
-  ) {
-    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (typeof videoOrOptionsOrCallback === "object") {
-    options = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === "function") {
-    callback = videoOrOptionsOrCallback;
-  }
-
-  if (typeof optionsOrCallback === "object") {
-    options = optionsOrCallback;
-    console.log(options);
-  } else if (typeof optionsOrCallback === "function") {
-    callback = optionsOrCallback;
-  }
-
+const faceApi = (...inputs) => {
+  const { video, options = {}, callback } = handleArguments(...inputs);
   const instance = new FaceApiBase(video, options, callback);
   return callback ? instance : instance.ready;
 };

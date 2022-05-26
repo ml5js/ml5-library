@@ -12,6 +12,7 @@ import EventEmitter from 'events';
 import * as tf from '@tensorflow/tfjs';
 import * as posenet from '@tensorflow-models/posenet';
 import callCallback from '../utils/callcallback';
+import handleArguments from "../utils/handleArguments";
 
 
 const DEFAULTS = {
@@ -132,35 +133,14 @@ class PoseNet extends EventEmitter {
     return newPose;
   }
 
-  getInput(inputOr){
-    let input;
-    if (inputOr instanceof HTMLImageElement 
-      || inputOr instanceof HTMLVideoElement
-      || inputOr instanceof HTMLCanvasElement
-      || inputOr instanceof ImageData) {
-      input = inputOr;
-    } else if (typeof inputOr === 'object' && (inputOr.elt instanceof HTMLImageElement 
-      || inputOr.elt instanceof HTMLVideoElement
-      || inputOr.elt instanceof ImageData)) {
-      input = inputOr.elt; // Handle p5.js image and video
-    } else if (typeof inputOr === 'object' && inputOr.canvas instanceof HTMLCanvasElement) {
-      input = inputOr.canvas; // Handle p5.js image
-    } else {
-      input = this.video;
-    }
-
-    return input;
-  }
-
   /**
    * Given an image or video, returns an array of objects containing pose estimations 
    *    using single or multi-pose detection.
    * @param {HTMLVideoElement || p5.Video || function} inputOr 
    * @param {function} cb 
    */
-  /* eslint max-len: ["error", { "code": 180 }] */
   async singlePose(inputOr, cb) {
-    const input = this.getInput(inputOr);
+    const { image: input, callback } = handleArguments(this.video, inputOr, cb);
 
     const pose = await this.net.estimateSinglePose(input, {flipHorizontal: this.flipHorizontal});
     const poseWithParts = this.mapParts(pose);
@@ -171,8 +151,8 @@ class PoseNet extends EventEmitter {
       return tf.nextFrame().then(() => this.singlePose());
     }
 
-    if (typeof cb === 'function') {
-      cb(result);
+    if (typeof callback === 'function') {
+      callback(result);
     }
 
     return result;
@@ -185,7 +165,7 @@ class PoseNet extends EventEmitter {
    * @param {function} cb 
    */
   async multiPose(inputOr, cb) {
-    const input = this.getInput(inputOr);
+    const { image: input, callback } = handleArguments(this.video, inputOr, cb);
 
     const poses = await this.net.estimateMultiplePoses(input, {
       flipHorizontal: this.flipHorizontal,
@@ -201,40 +181,16 @@ class PoseNet extends EventEmitter {
       return tf.nextFrame().then(() => this.multiPose());
     }
 
-    if (typeof cb === 'function') {
-      cb(result);
+    if (typeof callback === 'function') {
+      callback(result);
     }
 
     return result;
   }
 }
 
-const poseNet = (videoOrOptionsOrCallback, optionsOrCallback, cb) => {
-  let video;
-  let options = {};
-  let callback = cb;
-  let detectionType = null;
-
-  if (videoOrOptionsOrCallback instanceof HTMLVideoElement) {
-    video = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === 'object' && videoOrOptionsOrCallback.elt instanceof HTMLVideoElement) {
-    video = videoOrOptionsOrCallback.elt; // Handle a p5.js video element
-  } else if (typeof videoOrOptionsOrCallback === 'object') {
-    options = videoOrOptionsOrCallback;
-  } else if (typeof videoOrOptionsOrCallback === 'function') {
-    callback = videoOrOptionsOrCallback;
-  }
-
-  if (typeof optionsOrCallback === 'object') {
-    options = optionsOrCallback;
-  } else if (typeof optionsOrCallback === 'string') {
-    detectionType = optionsOrCallback;
-  }
-  
-  if (typeof optionsOrCallback === 'function') {
-    callback = optionsOrCallback;
-  } 
-
+const poseNet = (...inputs) => {
+  const { video, options = {}, callback, string: detectionType } = handleArguments(...inputs);
   return new PoseNet(video, options, detectionType, callback);
 };
 

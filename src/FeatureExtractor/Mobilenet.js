@@ -9,6 +9,7 @@ A class that extract features from Mobilenet
 
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
+import handleArguments from "../utils/handleArguments";
 import Video from "./../utils/Video";
 import { imgToTensor } from "../utils/imageUtilities";
 import { saveBlob } from "../utils/io";
@@ -127,18 +128,12 @@ class Mobilenet {
    *    promise that will be resolved once the video element has loaded.
    */
   classification(video, objOrCallback = null, callback) {
-    let cb;
+    const { options, callback: cb } = handleArguments(objOrCallback, callback);
 
     this.usageType = "classifier";
 
-    if (typeof objOrCallback === "object") {
-      Object.assign(this.config, objOrCallback);
-    } else if (typeof objOrCallback === "function") {
-      cb = objOrCallback;
-    }
-
-    if (typeof callback === "function") {
-      cb = callback;
+    if (options) {
+      Object.assign(this.config, options);
     }
 
     if (video) {
@@ -188,35 +183,9 @@ class Mobilenet {
    * @param {function} cb
    */
   async addImage(inputOrLabel, labelOrCallback, cb) {
-    let imgToAdd;
-    let label;
-    let callback = cb;
+    const args = handleArguments(this.video, inputOrLabel, labelOrCallback, cb);
 
-    if (
-      inputOrLabel instanceof HTMLImageElement ||
-      inputOrLabel instanceof HTMLVideoElement ||
-      inputOrLabel instanceof HTMLCanvasElement ||
-      inputOrLabel.elt instanceof ImageData
-    ) {
-      imgToAdd = inputOrLabel;
-    } else if (
-      typeof inputOrLabel === "object" &&
-      (inputOrLabel.elt instanceof HTMLImageElement ||
-        inputOrLabel.elt instanceof HTMLVideoElement ||
-        inputOrLabel.elt instanceof HTMLCanvasElement ||
-        inputOrLabel.elt instanceof ImageData)
-    ) {
-      imgToAdd = inputOrLabel.elt;
-    } else if (typeof inputOrLabel === "string" || typeof inputOrLabel === "number") {
-      imgToAdd = this.video;
-      label = inputOrLabel;
-    }
-
-    if (typeof labelOrCallback === "string" || typeof labelOrCallback === "number") {
-      label = labelOrCallback;
-    } else if (typeof labelOrCallback === "function") {
-      callback = labelOrCallback;
-    }
+    let label = args.number || args.string;
 
     if (typeof label === "string") {
       if (!this.mapStringToIndex.includes(label)) {
@@ -226,7 +195,7 @@ class Mobilenet {
       }
     }
 
-    return callCallback(this.addImageInternal(imgToAdd, label), callback);
+    return callCallback(this.addImageInternal(args.image, label), args.callback);
   }
 
   async addImageInternal(imgToAdd, label) {
@@ -340,36 +309,9 @@ class Mobilenet {
    * @param {HTMLVideoElement || p5.Video || function} inputOrCallback
    * @param {function} cb
    */
-  /* eslint max-len: ["error", { "code": 180 }] */
   async classify(inputOrCallback, cb) {
-    let imgToPredict;
-    let callback;
-
-    if (
-      inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData
-    ) {
-      imgToPredict = inputOrCallback;
-    } else if (
-      typeof inputOrCallback === "object" &&
-      (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)
-    ) {
-      imgToPredict = inputOrCallback.elt; // p5.js image element
-    } else if (typeof inputOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    }
-
-    if (typeof cb === "function") {
-      callback = cb;
-    }
-
-    return callCallback(this.classifyInternal(imgToPredict), callback);
+    const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
+    return callCallback(this.classifyInternal(image), callback);
   }
 
   async classifyInternal(imgToPredict) {
@@ -404,34 +346,9 @@ class Mobilenet {
    * @param {HTMLVideoElement || p5.Video || function} inputOrCallback
    * @param {function} cb
    */
-  /* eslint max-len: ["error", { "code": 180 }] */
   async predict(inputOrCallback, cb) {
-    let imgToPredict;
-    let callback;
-    if (
-      inputOrCallback instanceof HTMLImageElement ||
-      inputOrCallback instanceof HTMLVideoElement ||
-      inputOrCallback instanceof HTMLCanvasElement ||
-      inputOrCallback instanceof ImageData
-    ) {
-      imgToPredict = inputOrCallback;
-    } else if (
-      typeof inputOrCallback === "object" &&
-      (inputOrCallback.elt instanceof HTMLImageElement ||
-        inputOrCallback.elt instanceof HTMLVideoElement ||
-        inputOrCallback.elt instanceof HTMLCanvasElement ||
-        inputOrCallback.elt instanceof ImageData)
-    ) {
-      imgToPredict = inputOrCallback.elt; // p5.js image element
-    } else if (typeof inputOrCallback === "function") {
-      imgToPredict = this.video;
-      callback = inputOrCallback;
-    }
-
-    if (typeof cb === "function") {
-      callback = cb;
-    }
-    return callCallback(this.predictInternal(imgToPredict), callback);
+    const { image, callback } = handleArguments(this.video, inputOrCallback, cb);
+    return callCallback(this.predictInternal(image), callback);
   }
 
   async predictInternal(imgToPredict) {
@@ -556,32 +473,9 @@ class Mobilenet {
   }
 
   infer(input, endpoint) {
-    let imgToPredict;
-    let endpointToPredict;
-    if (
-      input instanceof HTMLImageElement ||
-      input instanceof HTMLVideoElement ||
-      input instanceof HTMLCanvasElement ||
-      input instanceof ImageData
-    ) {
-      imgToPredict = input;
-    } else if (
-      typeof input === "object" &&
-      (input.elt instanceof HTMLImageElement ||
-        input.elt instanceof HTMLVideoElement ||
-        input.elt instanceof HTMLCanvasElement ||
-        input.elt instanceof ImageData)
-    ) {
-      imgToPredict = input.elt; // p5.js image/canvas/video element
-    } else {
-      throw new Error("No input image found.");
-    }
-    if (endpoint && typeof endpoint === "string") {
-      endpointToPredict = endpoint;
-    } else {
-      endpointToPredict = "conv_preds";
-    }
-    return this.mobilenetInfer(imgToPredict, endpointToPredict);
+    const { image, string } = handleArguments(input, endpoint)
+      .require("image", "No input image found.");
+    return this.mobilenetInfer(image, string || "conv_preds");
   }
 }
 

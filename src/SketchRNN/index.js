@@ -3,16 +3,15 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-/* eslint prefer-destructuring: ['error', {AssignmentExpression: {array: false}}] */
-/* eslint no-await-in-loop: 'off' */
 /*
 SketchRNN
 */
 
 import * as ms from '@magenta/sketch';
 import callCallback from '../utils/callcallback';
+import handleArguments from '../utils/handleArguments';
+import { getModelPath } from '../utils/modelLoader';
 import modelPaths from './models';
-import modelLoader from '../utils/modelLoader';
 
 // const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/';
 // const PATH_START_SMALL = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/';
@@ -20,6 +19,7 @@ import modelLoader from '../utils/modelLoader';
 
 
 const DEFAULTS = {
+  // TODO: this doesn't look right... -Linda
   modelPath: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/',
   modelPath_large: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/',
   modelPath_small: 'https://storage.googleapis.com/quickdraw-models/sketchRNN/models/',
@@ -30,35 +30,32 @@ const DEFAULTS = {
 
 class SketchRNN {
   /**
-   * Create SketchRNN. 
+   * Create SketchRNN.
    * @param {String} model - The name of the sketch model to be loaded.
    *    The names can be found in the models.js file
-   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
    *    that will be resolved once the model has loaded.
+   * @param {boolean} large
    */
   constructor(model, callback, large = true) {
-    let checkpointUrl = model;
 
     this.config = {
       temperature: 0.65,
       pixelFactor: 3.0,
+      // TODO: it doesn't make sense for these to be instance properties -Linda
       modelPath: DEFAULTS.modelPath,
       modelPath_small: DEFAULTS.modelPath_small,
       modelPath_large: DEFAULTS.modelPath_large,
       PATH_END: DEFAULTS.PATH_END,
     };
-    
-    
-    if(modelLoader.isAbsoluteURL(checkpointUrl) === true){
-      const modelPath = modelLoader.getModelPath(checkpointUrl);
-      this.config.modelPath = modelPath;
 
-    } else if(modelPaths.has(checkpointUrl)) {
-      checkpointUrl = (large ? this.config.modelPath : this.config.modelPath_small) + checkpointUrl + this.config.PATH_END;
-      this.config.modelPath = checkpointUrl;
+    if (model.toLowerCase().endsWith('.json')) {
+      this.config.modelPath = getModelPath(model);
+    } else if(modelPaths.has(model)) {
+      const base = large ? this.config.modelPath : this.config.modelPath_small;
+      this.config.modelPath = base + model + this.config.PATH_END;
     } else {
-      console.log('no model found!');
-      return this;
+      throw new Error(`Provided model ${model} is not a valid SketchRNN model name or a URL of a .json file.`);
     }
 
     this.model = new ms.SketchRNN(this.config.modelPath);
@@ -97,35 +94,16 @@ class SketchRNN {
   }
 
   async generate(optionsOrSeedOrCallback, seedOrCallback, cb) {
-    let callback;
-    let options;
-    let seedStrokes;
+    const args = handleArguments(optionsOrSeedOrCallback, seedOrCallback, cb);
 
-    if (typeof optionsOrSeedOrCallback === 'function') {
-      options = {};
-      seedStrokes = [];
-      callback = optionsOrSeedOrCallback;
-    } else if (Array.isArray(optionsOrSeedOrCallback)) {
-      options = {};
-      seedStrokes = optionsOrSeedOrCallback;
-      callback = seedOrCallback;
-    } else if (typeof seedOrCallback === 'function') {
-      options = optionsOrSeedOrCallback || {};
-      seedStrokes = [];
-      callback = seedOrCallback;
-    } else {
-      options = optionsOrSeedOrCallback || {};
-      seedStrokes = seedOrCallback || [];
-      callback = cb;
-    }
-
+    const seedStrokes = args.array || [];
     const strokes = seedStrokes.map(s => {
       const up = s.pen === 'up' ? 1 : 0;
       const down = s.pen === 'down' ? 1 : 0;
       const end = s.pen === 'end' ? 1 : 0;
       return [s.dx, s.dy, down, up, end];
     });
-    return callCallback(this.generateInternal(options, strokes), callback);
+    return callCallback(this.generateInternal(args.options || {}, strokes), args.callback);
   }
 
   reset() {
