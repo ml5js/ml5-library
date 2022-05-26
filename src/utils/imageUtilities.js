@@ -158,7 +158,7 @@ function toTensor(input) {
  * Converts an image to a tensor, resizes it, and crops it to a square.
  * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} input
  * @param {[number, number]} [size]
- * @return {tf.Tensor3D}
+ * @return {tf.Tensor4D}
  */
 function imgToTensor(input, size = null) {
   return tf.tidy(() => {

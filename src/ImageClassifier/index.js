@@ -7,13 +7,13 @@
 Image Classifier using pre-trained networks
 */
 
-import * as mobilenet from "@tensorflow-models/mobilenet";
-import * as darknet from "./darknet";
-import * as doodlenet from "./doodlenet";
-import * as modelFromUrl from "./custom";
 import callCallback from "../utils/callcallback";
 import handleArguments from "../utils/handleArguments";
-import { imgToTensor, mediaReady } from "../utils/imageUtilities";
+import { mediaReady } from "../utils/imageUtilities";
+import * as modelFromUrl from "./custom";
+import * as darknet from "./darknet";
+import * as doodlenet from "./doodlenet";
+import * as mobilenet from "./mobilenet";
 
 const DEFAULTS = {
   mobilenet: {
@@ -22,11 +22,10 @@ const DEFAULTS = {
   },
   topk: 3
 };
-const IMAGE_SIZE = 224;
 
 /**
  * @typedef Classify
- * @param {tf.Tensor3D} img
+ * @param {tf.Tensor3D | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} img
  * @param {number} classes
  * @return {Promise<Array<{ className: string, probability: number }>>}
  */
@@ -98,17 +97,9 @@ class ImageClassifier {
     await this.ready;
     await mediaReady(imgToPredict, true);
 
-    // Process the images
-    const imageResize = [IMAGE_SIZE, IMAGE_SIZE];
-    // TODO: it does not make sense to resize here and then again in darknet/doodlenet!
-    const processedImg = imgToTensor(imgToPredict, imageResize);
-    const results = this.model
-      .classify(processedImg, numberOfClasses)
+    return this.model
+      .classify(imgToPredict, numberOfClasses)
       .then(classes => classes.map(c => ({ label: c.className, confidence: c.probability })));
-
-    processedImg.dispose();
-
-    return results;
   }
 
   /**

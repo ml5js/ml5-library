@@ -6,73 +6,55 @@
 import * as tf from "@tensorflow/tfjs";
 import { getTopKClassesFromTensor } from "../utils/gettopkclasses";
 import IMAGENET_CLASSES_DARKNET from "../utils/IMAGENET_CLASSES_DARKNET";
+import ImageProcessor from '../utils/preProcess';
+import { modelInputShape } from '../utils/tensorInput';
 
-const DEFAULTS = {
-  DARKNET_URL:
+// TODO: combine more with doodlenet?
+
+// Note: object keys must match version names.
+const MODEL_URLS = {
+  reference:
     "https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknetreference/model.json",
-  DARKNET_TINY_URL:
+  tiny:
     "https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/darknetclassifier/darknettiny/model.json",
-  IMAGE_SIZE_DARKNET: 256,
-  IMAGE_SIZE_DARKNET_TINY: 224,
 };
 
-/**
- * @param {tf.Tensor3D} image
- * @param {number} size
- * @return {tf.Tensor4D}
- */
-function preProcess(image, size) {
-  const normalized = image.toFloat().div(tf.scalar(255));
-  let resized = normalized;
-  if (normalized.shape[0] !== size || normalized.shape[1] !== size) {
-    const alignCorners = true;
-    resized = tf.image.resizeBilinear(normalized, [size, size], alignCorners);
-  }
-  const batched = resized.reshape([1, size, size, 3]);
-  return batched;
-}
-
 export class Darknet {
-  constructor(version) {
+  constructor(version = 'tiny') {
     this.version = version;
-    switch (this.version) {
-      case "reference":
-        this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET;
-        break;
-      case "tiny":
-        this.imgSize = DEFAULTS.IMAGE_SIZE_DARKNET_TINY;
-        break;
-      default:
-        break;
+    this.modelUrl = MODEL_URLS[version];
+    if (!this.modelUrl) {
+      throw new Error(`Invalid Darknet version ${version}. Version must be one of: ${Object.keys(MODEL_URLS).join(', ')}.`);
     }
   }
 
   async load() {
-    switch (this.version) {
-      case "reference":
-        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_URL);
-        break;
-      case "tiny":
-        this.model = await tf.loadLayersModel(DEFAULTS.DARKNET_TINY_URL);
-        break;
-      default:
-        break;
-    }
+    // Load the model.
+    this.model = await tf.loadLayersModel(this.modelUrl);
+
+    // Can get the image size from the model.
+    const inputShape = modelInputShape(this.model);
+
+    // Create an ImageProcessor instance to prepare inputs.
+    this.processor = new ImageProcessor({
+      inputShape,
+      inputRange: [0, 1]
+    });
 
     // Warmup the model.
-    const result = tf.tidy(() => this.model.predict(tf.zeros([1, this.imgSize, this.imgSize, 3])));
+    const result = tf.tidy(() => this.model.predict(tf.zeros(inputShape)));
     await result.data();
     result.dispose();
   }
 
   /**
-   * @param {tf.Tensor3D} img
+   * @param {tf.Tensor3D | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} img
    * @param {number} topk
    * @return {Promise<{ className: string, probability: number }[]>}
    */
   async classify(img, topk = 3) {
     const logits = tf.tidy(() => {
-      const imgData = preProcess(img, this.imgSize);
+      const imgData = this.processor.preProcess(img);
       const predictions = this.model.predict(imgData);
       return tf.softmax(predictions);
     });
@@ -83,12 +65,7 @@ export class Darknet {
 }
 
 export async function load(modelConfig) {
-  const { version } = modelConfig
-  if (version !== "reference" && version !== "tiny") {
-    throw new Error("Please select a version: darknet-reference or darknet-tiny");
-  }
-
-  const darknet = new Darknet(version);
+  const darknet = new Darknet(modelConfig.version);
   await darknet.load();
   return darknet;
 }

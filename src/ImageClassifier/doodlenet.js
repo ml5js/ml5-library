@@ -6,6 +6,8 @@
 import * as tf from '@tensorflow/tfjs';
 import { getTopKClassesFromTensor } from '../utils/gettopkclasses';
 import DOODLENET_CLASSES from '../utils/DOODLENET_CLASSES';
+import { toTensor } from '../utils/imageUtilities';
+import { modelInputShape } from '../utils/tensorInput';
 
 const DEFAULTS = {
   DOODLENET_URL: 'https://cdn.jsdelivr.net/gh/ml5js/ml5-data-and-models@master/models/doodlenet/model.json',
@@ -13,7 +15,7 @@ const DEFAULTS = {
 };
 
 /**
- * @param {tf.Tensor3D} image
+ * @param {tf.Tensor4D} image
  * @param {number} size
  * @return {tf.Tensor4D}
  */
@@ -31,29 +33,26 @@ function preProcess(image, size) {
 }
 
 export class Doodlenet {
-  constructor() {
-    this.imgSize = DEFAULTS.IMAGE_SIZE_DOODLENET;
-  }
-
   async load() {
     this.model = await tf.loadLayersModel(DEFAULTS.DOODLENET_URL);
 
+    const inputShape = modelInputShape(this.model);
+
     // Warmup the model.
-    const result = tf.tidy(() => this.model.predict(tf.zeros([1, this.imgSize, this.imgSize, 1])));
+    const result = tf.tidy(() => this.model.predict(tf.zeros(inputShape)));
     await result.data();
     result.dispose();
   }
 
   /**
-   * @param {tf.Tensor3D} img
+   * @param {tf.Tensor3D | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} img
    * @param {number} topk
    * @return {Promise<{ className: string, probability: number }[]>}
    */
   async classify(img, topk = 10) {
     const logits = tf.tidy(() => {
-      const imgData = preProcess(img, this.imgSize);
-      const predictions = this.model.predict(imgData);
-      return predictions;
+      const imgData = preProcess(toTensor(img).expandDims(0), DEFAULTS.IMAGE_SIZE_DOODLENET);
+      return this.model.predict(imgData);
     });
     const classes = await getTopKClassesFromTensor(logits, topk, DOODLENET_CLASSES);
     logits.dispose();
