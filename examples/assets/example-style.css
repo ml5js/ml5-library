@@ -7,7 +7,7 @@ body {
     margin: 8px 30px;
 }
 
-canvas {
+canvas, img {
     border: 2px solid black;
     padding: 1rem;
     box-shadow: 1rem 1rem #a15ffb;
