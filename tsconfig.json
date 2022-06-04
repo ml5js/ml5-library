@@ -5,7 +5,8 @@
     "downlevelIteration": true,
     "allowJs": true,
     "skipLibCheck": true,
-    "outDir": "./dist/"
+    "outDir": "./dist/",
+    "target": "ES5"
   },
   "exclude": [
     "node_modules"
