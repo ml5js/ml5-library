@@ -14,12 +14,20 @@
 <body>
   <script src="sketch.js"></script>
   <h1>Titanic - Neural Network</h1>
-  <p>
-    age: <input id="age" value="32"          /><br />
-    fare: <input id="fare" value="100"          /><br />
-    fare_class: <input id="fare_class" value="first"          /><br />
-    sex: <input id="sex" value="female"          /><br />
-  </p>
+  <form id="inputs">
+    age: <input id="age" value="32" type="number" min="0" step="1"/>
+    <br />
+    fare: <input id="fare" value="100" type="number" min="0" step="1"/>
+    <br />
+    fare class:
+    <input type="radio" name="fare_class" value="first" checked> First
+    <input type="radio" name="fare_class" value="second"> Second
+    <input type="radio" name="fare_class" value="third"> Third
+    <br />
+    sex:
+    <input type="radio" name="sex" value="female" checked> Female
+    <input type="radio" name="sex" value="male"> Male
+  </form>
   <p>
     <button id="submit">submit</button>
   </p>

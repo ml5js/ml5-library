@@ -35,10 +35,11 @@ function finishedTraining() {
 
 // TODO: normalize and encode values going into predict?
 function classify() {
+  const form = document.forms[0];
   const age = parseInt(select("#age").value(), 10);
   const fare = parseInt(select("#fare").value(), 10);
-  const fareClass = select("#fare_class").value();
-  const sex = select("#sex").value();
+  const fareClass = form.fare_class.value;
+  const sex = form.sex.value;
 
   // let inputs = {
   //   age: age,
@@ -56,6 +57,6 @@ function gotResults(err, results) {
     console.error(err);
   } else {
     console.log(results);
-    select("#result").html(`prediction: ${results[0].label}`);
+    select("#result").html(`prediction: ${results[0].label} - ${round(100 * results[0].confidence)}%`);
   }
 }
