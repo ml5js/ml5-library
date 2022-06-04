@@ -25,14 +25,6 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // loadDataFromUrl
-    xdescribe('loadDataFromUrl', () => {
-      it('should loadDataFromUrl', () => {
-        // TODO:
-        // ...
-      });
-    });
-
     // loadDataInternal
     xdescribe('loadDataInternal', () => {
       it('should loadDataInternal', () => {
@@ -340,7 +332,7 @@ describe('NeuralNetwork', () => {
           },
         };
 
-        await brain.trainInternal(trainingOptions);
+        await brain.train(trainingOptions);
 
         expect(brain.isTrained).toBe(true);
       });
