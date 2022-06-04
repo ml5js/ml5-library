@@ -5,6 +5,7 @@
 
 import * as tfjsSpeechCommands from '@tensorflow-models/speech-commands';
 import { getTopKClassesFromArray } from '../utils/gettopkclasses';
+import modelLoader from '../utils/modelLoader';
 
 export class SpeechCommands {
   constructor(options) {
@@ -13,10 +14,8 @@ export class SpeechCommands {
 
   async load(url) {
     if (url) {
-      const split = url.split("/");
-      const prefix = split.slice(0, split.length - 1).join("/");
-      const metadataJson = `${prefix}/metadata.json`;
-      this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, url, metadataJson);
+      const loader = modelLoader(url);
+      this.model = tfjsSpeechCommands.create('BROWSER_FFT', undefined, loader.modelUrl, loader.metadataUrl);
     } else this.model = tfjsSpeechCommands.create('BROWSER_FFT');
     await this.model.ensureModelLoaded();
     this.allLabels = this.model.wordLabels();

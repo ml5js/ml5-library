@@ -21,8 +21,7 @@ const DEFAULTS = {
   noTraining: false,
 };
 class DiyNeuralNetwork {
-  constructor(options, cb) {
-    this.callback = cb;
+  constructor(options, callback) {
 
     // Is there a better way to handle a different
     // default learning rate for image classification tasks?
@@ -44,13 +43,10 @@ class DiyNeuralNetwork {
       training: [],
     };
 
-    this.ready = false;
-
     // Methods
     this.init = this.init.bind(this);
     // adding data
     this.addData = this.addData.bind(this);
-    this.loadDataFromUrl = this.loadDataFromUrl.bind(this);
     this.loadDataInternal = this.loadDataInternal.bind(this);
     // metadata prep
     this.createMetaData = this.createMetaData.bind(this);
@@ -93,7 +89,7 @@ class DiyNeuralNetwork {
     this.crossover = this.crossover.bind(this);
 
     // Initialize
-    this.init(this.callback);
+    this.ready = callCallback(this.init(), callback);
   }
 
   /**
@@ -103,23 +99,23 @@ class DiyNeuralNetwork {
    */
 
   /**
-   * init
-   * @param {*} callback
+   * init - handles the options provided to the constructor for creating layers, loading a model, and loading data.
+   * @return {Promise<this>}
    */
-  init(callback) {
+  async init() {
     // check if the a static model should be built based on the inputs and output properties
     if (this.options.noTraining === true) {
       this.createLayersNoTraining();
     }
 
-    if (this.options.dataUrl !== null) {
-      this.ready = this.loadDataFromUrl(this.options, callback);
-    } else if (this.options.modelUrl !== null) {
-      // will take a URL to model.json, an object, or files array
-      this.ready = this.load(this.options.modelUrl, callback);
-    } else {
-      this.ready = true;
+    if (this.options.dataUrl) {
+      await this.loadDataInternal();
     }
+    if (this.options.modelUrl) {
+      // will take a URL to model.json, an object, or files array
+      await this.load(this.options.modelUrl);
+    }
+    return this;
   }
 
   /**
@@ -218,27 +214,18 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * loadData
-   * @param {*} options
-   * @param {*} callback
+   * loadDataInternal - called by init() when there is a `dataUrl` in the constructor options.
+   * TODO: why does this have different logic from loadData? (Passes input/output labels, creates metadata, prepares for training) - Linda
    */
-  loadDataFromUrl(options, callback) {
-    return callCallback(this.loadDataInternal(options), callback);
-  }
-
-  /**
-   * loadDataInternal
-   * @param {*} options
-   */
-  async loadDataInternal(options) {
-    const { dataUrl, inputs, outputs } = options;
+  async loadDataInternal() {
+    const { dataUrl, inputs, outputs } = this.options;
 
     const data = await this.neuralNetworkData.loadDataFromUrl(dataUrl, inputs, outputs);
 
     // once the data are loaded, create the metadata
     // and prep the data for training
     // if the inputs are defined as an array of [img_width, img_height, channels]
-    this.createMetadata(data);
+    this.createMetaData(data);
 
     this.prepareForTraining(data);
   }
@@ -468,8 +455,9 @@ class DiyNeuralNetwork {
    * @param {*} optionsOrCallback
    * @param {*} optionsOrWhileTraining
    * @param {*} callback
+   * @return {Promise<void>}
    */
-  train(optionsOrCallback, optionsOrWhileTraining, callback) {
+  async train(optionsOrCallback, optionsOrWhileTraining, callback) {
     let options;
     let whileTrainingCb;
     let finishedTrainingCb;
@@ -501,15 +489,15 @@ class DiyNeuralNetwork {
       finishedTrainingCb = optionsOrCallback;
     }
 
-    this.trainInternal(options, whileTrainingCb, finishedTrainingCb);
+    return callCallback(this.trainInternal(options, whileTrainingCb), finishedTrainingCb);
   }
 
   /**
    * train
    * @param {*} _options
-   * @param {*} _cb
+   * @param {*} whileTrainingCb
    */
-  trainInternal(_options, whileTrainingCb, finishedTrainingCb) {
+  async trainInternal(_options, whileTrainingCb) {
     const options = {
       epochs: 10,
       batchSize: 32,
@@ -584,7 +572,7 @@ class DiyNeuralNetwork {
     }
 
     // train once the model is compiled
-    this.neuralNetwork.train(options, finishedTrainingCb);
+    await this.neuralNetwork.train(options);
   }
 
   /**
@@ -1109,20 +1097,29 @@ class DiyNeuralNetwork {
    */
 
   /**
-   * save data
-   * @param {*} name
+   * @public
+   * saves the training data to a JSON file.
+   * @param {string} [name] Optional - The name for the saved file.
+   *  Should not include the file extension.
+   *  Defaults to the current date and time.
+   * @param {ML5Callback<void>} [callback] Optional - A function to call when the save is complete.
+   * @return {Promise<void>}
    */
-  saveData(name) {
-    this.neuralNetworkData.saveData(name);
+  async saveData(name, callback) {
+    const args = handleArguments(name, callback);
+    return callCallback(this.neuralNetworkData.saveData(args.name), args.callback);
   }
 
   /**
+   * @public
    * load data
-   * @param {*} filesOrPath
-   * @param {*} callback
+   * @param {string | FileList} filesOrPath - The URL of the file to load,
+   *  or a FileList object (.files) from an HTML element <input type="file">.
+   * @param {ML5Callback<void>} [callback] Optional - A function to call when the loading is complete.
+   * @return {Promise<void>}
    */
-  async loadData(filesOrPath = null, callback) {
-    this.neuralNetworkData.loadData(filesOrPath, callback);
+  async loadData(filesOrPath, callback) {
+    return callCallback(this.neuralNetworkData.loadData(filesOrPath), callback);
   }
 
   /**
@@ -1132,36 +1129,38 @@ class DiyNeuralNetwork {
    */
 
   /**
+   * @public
    * saves the model, weights, and metadata
-   * @param {*} nameOrCb
-   * @param {*} cb
+   * @param {string} [name] Optional - The name for the saved file.
+   *  Should not include the file extension.
+   *  Defaults to 'model'.
+   * @param {ML5Callback<void[]>} [callback] Optional - A function to call when the save is complete.
+   * @return {Promise<void[]>}
    */
-  save(nameOrCb, cb) {
-    const { string, callback } = handleArguments(nameOrCb, cb);
-    const modelName = string || 'model';
+  async save(name, callback) {
+    const args = handleArguments(name, callback);
+    const modelName = args.string || 'model';
 
     // save the model
-    this.neuralNetwork.save(modelName, () => {
-      this.neuralNetworkData.saveMeta(modelName, callback);
-    });
+    return callCallback(Promise.all([
+      this.neuralNetwork.save(modelName),
+      this.neuralNetworkData.saveMeta(modelName)
+    ]), args.callback);
   }
 
   /**
+   * @public
    * load a model and metadata
-   * @param {*} filesOrPath
-   * @param {*} callback
+   * @param {string | FileList} filesOrPath - The URL of the file to load,
+   *  or a FileList object (.files) from an HTML element <input type="file">.
+   * @param {ML5Callback<void[]>} [callback] Optional - A function to call when the loading is complete.
+   * @return {Promise<void[]>}
    */
-  async load(filesOrPath = null, cb) {
-    let callback;
-    if (cb) {
-      callback = cb;
-    }
-
-    this.neuralNetwork.load(filesOrPath, () => {
-      this.neuralNetworkData.loadMeta(filesOrPath, callback);
-
-      return this.neuralNetwork.model;
-    });
+  async load(filesOrPath, callback) {
+    return callCallback(Promise.all([
+      this.neuralNetwork.load(filesOrPath),
+      this.neuralNetworkData.loadMeta(filesOrPath)
+    ]), callback);
   }
 
   /**

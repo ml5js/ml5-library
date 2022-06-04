@@ -9,8 +9,8 @@ SketchRNN
 
 import * as ms from '@magenta/sketch';
 import callCallback from '../utils/callcallback';
-import handleArguments from "../utils/handleArguments";
-import modelLoader from '../utils/modelLoader';
+import handleArguments from '../utils/handleArguments';
+import { getModelPath } from '../utils/modelLoader';
 import modelPaths from './models';
 
 // const PATH_START_LARGE = 'https://storage.googleapis.com/quickdraw-models/sketchRNN/large_models/';
@@ -30,10 +30,10 @@ const DEFAULTS = {
 
 class SketchRNN {
   /**
-   * Create SketchRNN. 
+   * Create SketchRNN.
    * @param {String} model - The name of the sketch model to be loaded.
    *    The names can be found in the models.js file
-   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise 
+   * @param {function} callback - Optional. A callback function that is called once the model has loaded. If no callback is provided, it will return a promise
    *    that will be resolved once the model has loaded.
    * @param {boolean} large
    */
@@ -50,7 +50,7 @@ class SketchRNN {
     };
 
     if (model.toLowerCase().endsWith('.json')) {
-      this.config.modelPath = modelLoader.getModelPath(model);
+      this.config.modelPath = getModelPath(model);
     } else if(modelPaths.has(model)) {
       const base = large ? this.config.modelPath : this.config.modelPath_small;
       this.config.modelPath = base + model + this.config.PATH_END;

@@ -72,13 +72,8 @@ export class YOLOBase extends Video {
       this.video = await this.loadVideo();
     }
 
-    if (modelLoader.isAbsoluteURL(this.modelUrl) === true) {
-      this.model = await tf.loadLayersModel(this.modelUrl);
-    } else {
-      const modelPath = modelLoader.getModelPath(this.modelUrl);
-      this.modelUrl = `${modelPath}/model.json`;
-      this.model = await tf.loadLayersModel(this.modelUrl);
-    }
+    const loader = modelLoader(this.modelUrl, 'model');
+    this.model = await loader.loadLayersModel();
 
     this.modelReady = true;
     return this;

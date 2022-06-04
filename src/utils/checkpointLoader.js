@@ -5,8 +5,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
-
-const MANIFEST_FILE = 'manifest.json';
+import modelLoader from './modelLoader';
 
 /**
  * @typedef {Record<string, { filename: string, shape: Array<number> }>} Manifest
@@ -17,32 +16,25 @@ const MANIFEST_FILE = 'manifest.json';
  * The `manifest.json` contains the `filename` and `shape` for each data file.
  *
  * @class
- * @property {string} urlPath
+ *
+ * @private - access using `getCheckpointManifest()` instead.
  * @property {Manifest} [checkpointManifest]
- * @property {Record<string, tf.Tensor>} variables
  */
 export default class CheckpointLoader {
   /**
-   * @param {string} urlPath - the directory URL
+   * @param {string} urlPath - the directory URL. The URL of the 'manifest.json' file will also work.
    */
   constructor(urlPath) {
-    this.urlPath = urlPath.endsWith('/') ? urlPath : `${urlPath}/`;
+    /**
+     * @private
+     * @type {ModelLoader} loader
+     */
+    this.loader = modelLoader(urlPath, 'manifest');
+    /**
+     * @private - access using `getAllVariables()` instead.
+     * @type {Record<string, tf.Tensor>} variables
+     */
     this.variables = {};
-  }
-
-  /**
-   * @private
-   * Executes the request to load the manifest.json file.
-   *
-   * @return {Promise<Manifest>}
-   */
-  async loadManifest() {
-    try {
-      const response = await axios.get(this.urlPath + MANIFEST_FILE);
-      return response.data;
-    } catch (error) {
-      throw new Error(`${MANIFEST_FILE} not found at ${this.urlPath}. ${error}`);
-    }
   }
 
   /**
@@ -55,10 +47,10 @@ export default class CheckpointLoader {
   async loadVariable(varName) {
     const manifest = await this.getCheckpointManifest();
     if (!(varName in manifest)) {
-      throw new Error(`Cannot load non-existent variable ${varName}`);
+      throw new Error(`Property ${varName} is missing in manifest.json`);
     }
     const { filename, shape } = manifest[varName];
-    const url = this.urlPath + filename;
+    const url = this.loader.getPath(filename);
     try {
       const response = await axios.get(url, { responseType: 'arraybuffer' });
       const values = new Float32Array(response.data);
@@ -76,7 +68,7 @@ export default class CheckpointLoader {
    */
   async getCheckpointManifest() {
     if (!this.checkpointManifest) {
-      this.checkpointManifest = await this.loadManifest();
+      this.checkpointManifest = await this.loader.loadManifestJson();
     }
     return this.checkpointManifest;
   }
