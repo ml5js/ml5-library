@@ -81,14 +81,6 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // convertTrainingDataToTensors
-    xdescribe('convertTrainingDataToTensors', () => {
-      it('should convertTrainingDataToTensors', () => {
-        // TODO:
-        // ...
-      });
-    });
-
     // formatInputsForPrediction
     xdescribe('formatInputsForPrediction', () => {
       it('should formatInputsForPrediction', () => {
@@ -385,8 +377,8 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataStats()', () => {
-      it('should getDataStats()', () => {
+    xdescribe('setDataStats()', () => {
+      it('should setDataStats()', () => {
         // TODO
         // ...
       });
@@ -399,22 +391,22 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataUnits()', () => {
-      it('should getDataUnits()', () => {
+    xdescribe('setDataUnits()', () => {
+      it('should setDataUnits()', () => {
         // TODO
         // ...
       });
     });
 
-    xdescribe('getInputMetaUnits()', () => {
-      it('should getInputMetaUnits()', () => {
+    xdescribe('setInputMetaUnits()', () => {
+      it('should setInputMetaUnits()', () => {
         // TODO
         // ...
       });
     });
 
-    xdescribe('getDTypesFromData()', () => {
-      it('should getDTypesFromData()', () => {
+    xdescribe('setDTypesFromData()', () => {
+      it('should setDTypesFromData()', () => {
         // TODO
         // ...
       });
@@ -469,8 +461,8 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataOneHot()', () => {
-      it('should getDataOneHot()', () => {
+    xdescribe('setDataOneHot()', () => {
+      it('should setDataOneHot()', () => {
         // TODO
         // ...
       });

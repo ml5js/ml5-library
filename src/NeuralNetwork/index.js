@@ -56,7 +56,6 @@ class DiyNeuralNetwork {
     this.normalizeInput = this.normalizeInput.bind(this);
     this.searchAndFormat = this.searchAndFormat.bind(this);
     this.formatInputItem = this.formatInputItem.bind(this);
-    this.convertTrainingDataToTensors = this.convertTrainingDataToTensors.bind(this);
     this.formatInputsForPrediction = this.formatInputsForPrediction.bind(this);
     this.formatInputsForPredictionAll = this.formatInputsForPredictionAll.bind(this);
     this.isOneHotEncodedOrNormalized = this.isOneHotEncodedOrNormalized.bind(this);
@@ -135,7 +134,7 @@ class DiyNeuralNetwork {
       this.addData(inputSample, outputSample);
     }
 
-    this.neuralNetworkData.createMetadata(this.neuralNetworkData.data.raw);
+    this.neuralNetworkData.createMetadata();
     this.addDefaultLayers(this.options.task, this.neuralNetworkData.meta);
   }
 
@@ -225,9 +224,9 @@ class DiyNeuralNetwork {
     // once the data are loaded, create the metadata
     // and prep the data for training
     // if the inputs are defined as an array of [img_width, img_height, channels]
-    this.createMetaData(this.neuralNetworkData.data.raw);
+    this.createMetaData();
 
-    this.prepareForTraining(this.neuralNetworkData.data.raw);
+    this.prepareForTraining();
   }
 
   /**
@@ -236,7 +235,7 @@ class DiyNeuralNetwork {
    * ////////////////////////////////////////////////////////////
    */
 
-  createMetaData(dataRaw) {
+  createMetaData() {
     const { inputs } = this.options;
 
     let inputShape;
@@ -245,7 +244,7 @@ class DiyNeuralNetwork {
         inputs.every(item => typeof item === 'number') && inputs.length > 0 ? inputs : null;
     }
 
-    this.neuralNetworkData.createMetadata(dataRaw, inputShape);
+    this.neuralNetworkData.createMetadata(inputShape);
   }
 
   /**
@@ -256,43 +255,32 @@ class DiyNeuralNetwork {
 
   /**
    * Prepare data for training by applying oneHot to raw
-   * @param {*} dataRaw
    */
-  prepareForTraining(_dataRaw = null) {
-    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
-    const unnormalizedTrainingData = this.neuralNetworkData.applyOneHotEncodingsToDataRaw(dataRaw);
-    this.data.training = unnormalizedTrainingData;
+  prepareForTraining() {
+    this.data.training = this.neuralNetworkData.applyOneHotEncodingsToDataRaw();
     this.neuralNetworkData.isWarmedUp = true;
-
-    return unnormalizedTrainingData;
   }
 
   /**
-   * normalizeData
-   * @param {*} _dataRaw
-   * @param {*} _meta
+   * @public
+   * @return {void}
    */
-  normalizeData(_dataRaw = null) {
-    const dataRaw = _dataRaw === null ? this.neuralNetworkData.data.raw : _dataRaw;
-
+  normalizeData() {
     if (!this.neuralNetworkData.isMetadataReady) {
       // if the inputs are defined as an array of [img_width, img_height, channels]
-      this.createMetaData(dataRaw);
+      this.createMetaData();
     }
 
     if (!this.neuralNetworkData.isWarmedUp) {
-      this.prepareForTraining(dataRaw);
+      // TODO: it seems like the onehot encoded data is immediately overwritten
+      this.prepareForTraining();
     }
 
-    const trainingData = this.neuralNetworkData.normalizeDataRaw(dataRaw);
-
-    // set this equal to the training data
-    this.data.training = trainingData;
+    // set the normalized training data
+    this.data.training = this.neuralNetworkData.normalizeDataRaw();
 
     // set isNormalized to true
     this.neuralNetworkData.meta.isNormalized = true;
-
-    return trainingData;
   }
 
   /**
@@ -350,18 +338,6 @@ class DiyNeuralNetwork {
     }
 
     return formattedInputs;
-  }
-
-  /**
-   * convertTrainingDataToTensors
-   * @param {*} _trainingData
-   * @param {*} _meta
-   */
-  convertTrainingDataToTensors(_trainingData = null, _meta = null) {
-    const trainingData = _trainingData === null ? this.data.training : _trainingData;
-    const meta = _meta === null ? this.neuralNetworkData.meta : _meta;
-
-    return this.neuralNetworkData.convertRawToTensors(trainingData, meta);
   }
 
   /**
@@ -534,19 +510,19 @@ class DiyNeuralNetwork {
     // if metadata needs to be generated about the data
     if (!this.neuralNetworkData.isMetadataReady) {
       // if the inputs are defined as an array of [img_width, img_height, channels]
-      this.createMetaData(this.neuralNetworkData.data.raw);
+      this.createMetaData();
     }
 
     // if the data still need to be summarized, onehotencoded, etc
     if (!this.neuralNetworkData.isWarmedUp) {
-      this.prepareForTraining(this.neuralNetworkData.data.raw);
+      this.prepareForTraining();
     }
 
     // if inputs and outputs are not specified
     // in the options, then create the tensors
     // from the this.neuralNetworkData.data.raws
     if (!options.inputs && !options.outputs) {
-      const { inputs, outputs } = this.convertTrainingDataToTensors();
+      const { inputs, outputs } = this.neuralNetworkData.convertRawToTensors(this.data.training);
       options.inputs = inputs;
       options.outputs = outputs;
     }
