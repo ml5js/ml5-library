@@ -24,7 +24,7 @@ import uNet from "./UNET";
 import CVAE from "./CVAE";
 import DCGAN from "./DCGAN";
 import preloadRegister from "./utils/p5PreloadHelper";
-import { version } from "../package.json";
+import pkg from "../package.json";
 import sentiment from "./Sentiment";
 import bodyPix from "./BodyPix";
 import neuralNetwork from "./NeuralNetwork";
@@ -78,7 +78,7 @@ export default Object.assign({ p5Utils }, preloadRegister(withPreload), {
   ...imageUtils,
   tf,
   tfvis,
-  version,
+  version: pkg.version,
   neuralNetwork,
   testingUtils
 });

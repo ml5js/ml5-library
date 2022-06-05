@@ -11,7 +11,6 @@
  * Ported and integrated from all the hard work by: https://github.com/tensorflow/tfjs-models/tree/master/body-pix
  */
 
-// @ts-check
 import * as tf from '@tensorflow/tfjs';
 import * as bp from '@tensorflow-models/body-pix';
 import callCallback from '../utils/callcallback';

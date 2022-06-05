@@ -12,7 +12,7 @@ import axios from "axios";
 import handleArguments from "../utils/handleArguments";
 import Video from "./../utils/Video";
 import { imgToTensor } from "../utils/imageUtilities";
-import { saveBlob } from "../utils/io";
+import * as io from "../utils/io";
 import callCallback from "../utils/callcallback";
 
 const IMAGE_SIZE = 224;
@@ -421,8 +421,8 @@ class Mobilenet {
             mapStringToIndex: this.mapStringToIndex,
           },
         };
-        await saveBlob(data.weightData, `${modelName}.weights.bin`, "application/octet-stream");
-        await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, "text/plain");
+        await io.saveBlob(data.weightData, `${modelName}.weights.bin`, "application/octet-stream");
+        await io.saveJSON(this.weightsManifest, modelName);
         if (callback) {
           callback();
         }
