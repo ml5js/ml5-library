@@ -1,6 +1,7 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
-import { saveBlob } from '../utils/io';
+import * as io from '../utils/io';
+import loadData from './loadData';
 import nnUtils from './NeuralNetworkUtils';
 
 class NeuralNetworkData {
@@ -44,18 +45,12 @@ class NeuralNetworkData {
     this.getInputMetaOneHot = this.getInputMetaOneHot.bind(this);
     this.createOneHotEncodings = this.createOneHotEncodings.bind(this);
     // Saving / loading data
-    this.loadDataFromUrl = this.loadDataFromUrl.bind(this);
-    this.loadJSON = this.loadJSON.bind(this);
-    this.loadCSV = this.loadCSV.bind(this);
-    this.loadBlob = this.loadBlob.bind(this);
     this.loadData = this.loadData.bind(this);
     this.saveData = this.saveData.bind(this);
     this.saveMeta = this.saveMeta.bind(this);
     this.loadMeta = this.loadMeta.bind(this);
     // data loading helpers
-    this.findEntries = this.findEntries.bind(this);
     this.formatRawData = this.formatRawData.bind(this);
-    this.csvToJSON = this.csvToJSON.bind(this);
   }
 
   /**
@@ -73,8 +68,12 @@ class NeuralNetworkData {
    *  4. getting the inputShape and outputUnits from the data
    * @param {*} dataRaw
    * @param {*} inputShape
+   * TODO: don't need to pass around dataRaw as an argument
    */
   createMetadata(dataRaw, inputShape = null) {
+    if (!dataRaw.length) {
+      throw new Error('Cannot create metadata because no data has been added.');
+    }
     // get the data type for each property
     this.getDTypesFromData(dataRaw);
     // get the stats - min, max
@@ -577,147 +576,18 @@ class NeuralNetworkData {
    */
 
   /**
-   * Loads data from a URL using the appropriate function
-   * @param {*} dataUrl
-   * @param {*} inputs
-   * @param {*} outputs
-   */
-  async loadDataFromUrl(dataUrl, inputs, outputs) {
-    try {
-      let result;
-
-      if (dataUrl.endsWith('.csv')) {
-        result = await this.loadCSV(dataUrl, inputs, outputs);
-      } else if (dataUrl.endsWith('.json')) {
-        result = await this.loadJSON(dataUrl, inputs, outputs);
-      } else if (dataUrl.includes('blob')) {
-        result = await this.loadBlob(dataUrl, inputs, outputs);
-      } else {
-        throw new Error('Not a valid data format. Must be csv or json');
-      }
-
-      return result;
-    } catch (error) {
-      console.error(error);
-      throw new Error(error);
-    }
-  }
-
-  /**
-   * loadJSON
-   * @param {*} _dataUrlOrJson
-   * @param {*} _inputLabelsArray
-   * @param {*} _outputLabelsArray
-   */
-  async loadJSON(dataUrlOrJson, inputLabels, outputLabels) {
-    try {
-      let json;
-      // handle loading parsedJson
-      if (dataUrlOrJson instanceof Object) {
-        json = Object.assign({}, dataUrlOrJson);
-      } else {
-        const {data} = await axios.get(dataUrlOrJson);
-        json = data;
-      }
-
-      // format the data.raw array
-      const result = this.formatRawData(json, inputLabels, outputLabels);
-      return result;
-    } catch (err) {
-      console.error('error loading json');
-      throw new Error(err);
-    }
-  }
-
-  /**
-   * loadCSV
-   * @param {*} _dataUrl
-   * @param {*} _inputLabelsArray
-   * @param {*} _outputLabelsArray
-   */
-  async loadCSV(dataUrl, inputLabels, outputLabels) {
-    try {
-      const myCsv = tf.data.csv(dataUrl);
-      const loadedData = await myCsv.toArray();
-      const json = {
-        entries: loadedData,
-      };
-      // format the data.raw array
-      const result = this.formatRawData(json, inputLabels, outputLabels);
-      return result;
-    } catch (err) {
-      console.error('error loading csv', err);
-      throw new Error(err);
-    }
-  }
-
-  /**
-   * loadBlob
-   * @param {*} _dataUrlOrJson
-   * @param {*} _inputLabelsArray
-   * @param {*} _outputLabelsArray
-   */
-  async loadBlob(dataUrlOrJson, inputLabels, outputLabels) {
-    try {
-      const {data} = await axios.get(dataUrlOrJson);
-      const text = data; // await data.text();
-
-      let result;
-      if (nnUtils.isJsonOrString(text)) {
-        const json = JSON.parse(text);
-        result = await this.loadJSON(json, inputLabels, outputLabels);
-      } else {
-        const json = this.csvToJSON(text);
-        result = await this.loadJSON(json, inputLabels, outputLabels);
-      }
-
-      return result;
-    } catch (err) {
-      console.log('mmm might be passing in a string or something!', err);
-      throw new Error(err);
-    }
-  }
-
-  /**
    * loadData from fileinput or path
+   *
+   * TODO: formatting requires the labels, but this is not always provided.
+   *
    * @param {string | FileList} filesOrPath
+   * @param {string[]} inputLabels
+   * @param {string[]} outputLabels
    * @return {Promise<void>}
    */
-  async loadData(filesOrPath) {
-    try {
-      let loadedData;
-
-      if (typeof filesOrPath !== 'string') {
-        const file = filesOrPath[0];
-        const fr = new FileReader();
-        fr.readAsText(file);
-        if (file.name.includes('.json')) {
-          const temp = await file.text();
-          loadedData = JSON.parse(temp);
-        } else {
-          console.log('data must be a json object containing an array called "data" or "entries');
-        }
-      } else {
-        loadedData = await axios.get(filesOrPath, {responseType:"text"});
-        const text = JSON.stringify(loadedData.data);
-        if (nnUtils.isJsonOrString(text)) {
-          loadedData = JSON.parse(text);
-        } else {
-          console.log(
-            'Whoops! something went wrong. Either this kind of data is not supported yet or there is an issue with .loadData',
-          );
-        }
-      }
-
-      this.data.raw = this.findEntries(loadedData);
-
-      // check if a data or entries property exists
-      if (!this.data.raw.length > 0) {
-        console.log('data must be a json object containing an array called "data" ');
-      }
-    } catch (error) {
-      throw new Error(error);
-    }
+  async loadData(filesOrPath, inputLabels, outputLabels) {
+    const dataArray = await loadData(filesOrPath);
+    this.data.raw = this.formatRawData(dataArray, inputLabels, outputLabels);
   }
 
   /**
@@ -742,7 +612,7 @@ class NeuralNetworkData {
       data: this.data.raw,
     };
 
-    await saveBlob(JSON.stringify(output), `${dataName}.json`, 'text/plain');
+    await io.saveJSON(output, dataName);
   }
 
   /**
@@ -751,7 +621,7 @@ class NeuralNetworkData {
    * @return {Promise<void>}
    */
   async saveMeta(name) {
-    await saveBlob(JSON.stringify(this.meta), `${name}_meta.json`, 'text/plain');
+    await io.saveJSON(this.meta, `${name}_meta`);
   }
 
   /**
@@ -823,15 +693,11 @@ class NeuralNetworkData {
     // }
    * formatRawData
    * takes a json and set the this.data.raw
-   * @param {*} json 
-   * @param {Array} inputLabels
-   * @param {Array} outputLabels
+   * @param {RawPropertyData[][]} dataArray
+   * @param {string[]} inputLabels
+   * @param {string[]} outputLabels
    */
-  formatRawData(json, inputLabels, outputLabels) {
-    // Recurse through the json object to find
-    // an array containing `entries` or `data`
-    const dataArray = this.findEntries(json);
-
+  formatRawData(dataArray, inputLabels, outputLabels) {
     if (!dataArray.length > 0) {
       console.log(`your data must be contained in an array in \n
         a property called 'entries' or 'data' of your json object`);
@@ -867,66 +733,6 @@ class NeuralNetworkData {
     this.data.raw = result;
 
     return result;
-  }
-
-  /**
-   * csvToJSON
-   * Creates a csv from a string
-   * @param {*} csv
-   */
-  // via: http://techslides.com/convert-csv-to-json-in-javascript
-  // eslint-disable-next-line class-methods-use-this
-  csvToJSON(csv) {
-    // split the string by linebreak
-    const lines = csv.split('\n');
-    const result = [];
-    // get the header row as an array
-    const headers = lines[0].split(',');
-
-    // iterate through every row
-    for (let i = 1; i < lines.length; i += 1) {
-      // create a json object for each row
-      const row = {};
-      // split the current line into an array
-      const currentline = lines[i].split(',');
-
-      // for each header, create a key/value pair
-      headers.forEach((k, idx) => {
-        row[k] = currentline[idx];
-      });
-      // add this to the result array
-      result.push(row);
-    }
-
-    return {
-      entries: result,
-    };
-  }
-
-  /**
-   * findEntries
-   * recursively attempt to find the entries
-   * or data array for the given json object
-   * @param {*} _data
-   */
-  findEntries(_data) {
-    const parentCopy = Object.assign({}, _data);
-
-    if (parentCopy.entries && parentCopy.entries instanceof Array) {
-      return parentCopy.entries;
-    } else if (parentCopy.data && parentCopy.data instanceof Array) {
-      return parentCopy.data;
-    }
-
-    const keys = Object.keys(parentCopy);
-    // eslint-disable-next-line consistent-return
-    keys.forEach(k => {
-      if (typeof parentCopy[k] === 'object') {
-        return this.findEntries(parentCopy[k]);
-      }
-    });
-
-    return parentCopy;
   }
   
   /**

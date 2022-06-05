@@ -214,20 +214,20 @@ class DiyNeuralNetwork {
   }
 
   /**
-   * loadDataInternal - called by init() when there is a `dataUrl` in the constructor options.
+   * @private - called by init() when there is a `dataUrl` in the constructor options.
    * TODO: why does this have different logic from loadData? (Passes input/output labels, creates metadata, prepares for training) - Linda
    */
   async loadDataInternal() {
     const { dataUrl, inputs, outputs } = this.options;
 
-    const data = await this.neuralNetworkData.loadDataFromUrl(dataUrl, inputs, outputs);
+    await this.neuralNetworkData.loadData(dataUrl, inputs, outputs);
 
     // once the data are loaded, create the metadata
     // and prep the data for training
     // if the inputs are defined as an array of [img_width, img_height, channels]
-    this.createMetaData(data);
+    this.createMetaData(this.neuralNetworkData.data.raw);
 
-    this.prepareForTraining(data);
+    this.prepareForTraining(this.neuralNetworkData.data.raw);
   }
 
   /**

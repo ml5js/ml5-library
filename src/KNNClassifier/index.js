@@ -182,18 +182,11 @@ class KNN {
         }
       });
     }
-    const tensors = Object.keys(dataset).map((key) => {
-      const t = dataset[key];
-      if (t) {
-        return t.dataSync();
-      }
-      return null;
-    });
-    let fileName = 'myKNN.json';
-    if (name) {
-      fileName = name.endsWith('.json') ? name : `${name}.json`;
-    }
-    await io.saveBlob(JSON.stringify({ dataset, tensors }), fileName, 'application/octet-stream');
+    const tensors = await Promise.all(Object.values(dataset).map(
+      // TODO: is the null necessary? isn't there always a tensor? -Linda
+      (tensor) => tensor ? tensor.data() : null
+    ));
+    await io.saveJSON({ dataset, tensors }, name || 'myKNN');
   }
 
   /**
@@ -206,7 +199,7 @@ class KNN {
     if (typeof pathOrData === 'object') {
       data = pathOrData;
     } else {
-      data = await io.loadFile(pathOrData);
+      data = await io.loadJSON(pathOrData);
     }
     if (data) {
       const { dataset, tensors } = data;

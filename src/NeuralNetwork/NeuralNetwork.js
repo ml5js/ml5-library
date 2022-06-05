@@ -1,6 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
-import { saveBlob } from '../utils/io';
+import { saveBlob, saveJSON } from '../utils/io';
 import { randomGaussian } from '../utils/random';
 
 class NeuralNetwork {
@@ -187,7 +187,7 @@ class NeuralNetwork {
         };
 
         await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
-        await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
+        await saveJSON(this.weightsManifest, modelName);
       }),
     );
   }
