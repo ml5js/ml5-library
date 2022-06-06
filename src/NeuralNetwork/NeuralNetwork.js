@@ -20,7 +20,6 @@ class NeuralNetwork {
     this.createModel = this.createModel.bind(this);
     this.addLayer = this.addLayer.bind(this);
     this.compile = this.compile.bind(this);
-    this.setOptimizerFunction = this.setOptimizerFunction.bind(this);
     this.train = this.train.bind(this);
     this.predict = this.predict.bind(this);
     this.classify = this.classify.bind(this);
@@ -57,11 +56,10 @@ class NeuralNetwork {
   /**
    * add layer to the model
    * if the model has 2 or more layers switch the isLayered flag
-   * @param {*} _layerOptions
+   * @param {tf.layers.Layer} layer
    */
-  addLayer(_layerOptions) {
-    const LAYER_OPTIONS = _layerOptions || {};
-    this.model.add(LAYER_OPTIONS);
+  addLayer(layer) {
+    this.model.add(layer);
 
     // check if it has at least an input and output layer
     if (this.model.layers.length >= 2) {
@@ -72,21 +70,11 @@ class NeuralNetwork {
   /**
    * Compile the model
    * if the model is compiled, set the isCompiled flag to true
-   * @param {*} _modelOptions
+   * @param {tf.ModelCompileArgs} _modelOptions
    */
   compile(_modelOptions) {
     this.model.compile(_modelOptions);
     this.isCompiled = true;
-  }
-
-  /**
-   * Set the optimizer function given the learning rate
-   * as a parameter
-   * @param {*} learningRate
-   * @param {*} optimizer
-   */
-  setOptimizerFunction(learningRate, optimizer) {
-    return optimizer.call(this, learningRate);
   }
 
   /**

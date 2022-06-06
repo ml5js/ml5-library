@@ -121,9 +121,9 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // addLayer
-    xdescribe('addLayer', () => {
-      it('should addLayer', () => {
+    // setLayers
+    xdescribe('setLayers', () => {
+      it('should setLayers', () => {
         // TODO:
         // ...
       });
@@ -257,13 +257,16 @@ describe('NeuralNetwork', () => {
       });
 
       it('can load data through the constructor', async () => {
+        tf.env().set('IS_BROWSER', false); // Fixes error `ReferenceError: TextDecoder is not defined`
         const nnOptions = {
           dataUrl: "https://github.com/ml5js/ml5-library/raw/main/examples/p5js/NeuralNetwork/NeuralNetwork_titanic/data/titanic_cleaned.csv",
           inputs: ["fare_class", "sex", "age", "fare"],
           outputs: ["survived"],
           task: "classification",
         };
-        const nnWithData = await neuralNetwork(nnOptions);
+        const nnWithData = neuralNetwork(nnOptions);
+        await nnWithData.ready;
+        nnWithData.normalizeData();
         expect(nnWithData.data.training).toHaveLength(1308);
       })
     });
