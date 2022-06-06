@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": true,
+    "downlevelIteration": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "outDir": "./dist/",
+    "target": "ES5"
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

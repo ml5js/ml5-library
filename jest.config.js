@@ -86,7 +86,7 @@ module.exports = {
   passWithNoTests: true,
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: "ts-jest/presets/js-with-babel",
 
   // Run tests from one or more projects
   // projects: undefined,

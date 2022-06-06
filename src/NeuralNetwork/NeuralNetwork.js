@@ -1,8 +1,6 @@
 import * as tf from '@tensorflow/tfjs';
 import axios from 'axios';
-import callCallback from '../utils/callcallback';
-import handleArguments from "../utils/handleArguments";
-import { saveBlob } from '../utils/io';
+import { saveBlob, saveJSON } from '../utils/io';
 import { randomGaussian } from '../utils/random';
 
 class NeuralNetwork {
@@ -12,6 +10,9 @@ class NeuralNetwork {
     this.isCompiled = false;
     this.isLayered = false;
     // the model
+    /**
+     * @type {tf.Sequential | null}
+     */
     this.model = null;
 
     // methods
@@ -19,9 +20,7 @@ class NeuralNetwork {
     this.createModel = this.createModel.bind(this);
     this.addLayer = this.addLayer.bind(this);
     this.compile = this.compile.bind(this);
-    this.setOptimizerFunction = this.setOptimizerFunction.bind(this);
     this.train = this.train.bind(this);
-    this.trainInternal = this.trainInternal.bind(this);
     this.predict = this.predict.bind(this);
     this.classify = this.classify.bind(this);
     this.save = this.save.bind(this);
@@ -57,11 +56,10 @@ class NeuralNetwork {
   /**
    * add layer to the model
    * if the model has 2 or more layers switch the isLayered flag
-   * @param {*} _layerOptions
+   * @param {tf.layers.Layer} layer
    */
-  addLayer(_layerOptions) {
-    const LAYER_OPTIONS = _layerOptions || {};
-    this.model.add(LAYER_OPTIONS);
+  addLayer(layer) {
+    this.model.add(layer);
 
     // check if it has at least an input and output layer
     if (this.model.layers.length >= 2) {
@@ -72,7 +70,7 @@ class NeuralNetwork {
   /**
    * Compile the model
    * if the model is compiled, set the isCompiled flag to true
-   * @param {*} _modelOptions
+   * @param {tf.ModelCompileArgs} _modelOptions
    */
   compile(_modelOptions) {
     this.model.compile(_modelOptions);
@@ -80,29 +78,10 @@ class NeuralNetwork {
   }
 
   /**
-   * Set the optimizer function given the learning rate
-   * as a parameter
-   * @param {*} learningRate
-   * @param {*} optimizer
-   */
-  setOptimizerFunction(learningRate, optimizer) {
-    return optimizer.call(this, learningRate);
-  }
-
-  /**
-   * Calls the trainInternal() and calls the callback when finished
-   * @param {*} _options
-   * @param {*} _cb
-   */
-  train(_options, _cb) {
-    return callCallback(this.trainInternal(_options), _cb);
-  }
-
-  /**
    * Train the model
    * @param {*} _options
    */
-  async trainInternal(_options) {
+  async train(_options) {
     const TRAINING_OPTIONS = _options;
 
     const xs = TRAINING_OPTIONS.inputs;
@@ -178,14 +157,12 @@ class NeuralNetwork {
 
   /**
    * save the model
-   * @param {*} nameOrCb
-   * @param {*} cb
+   * @param {string} modelName
+   * @return {Promise<void>}
    */
-  async save(nameOrCb, cb) {
-    const { string, callback } = handleArguments(nameOrCb, cb);
-    const modelName = string || 'model';
-
-    this.model.save(
+  async save(modelName = 'model') {
+    await this.model.save(
+      // TODO: I think tf can save both files automatically? - Linda
       tf.io.withSaveHandler(async data => {
         this.weightsManifest = {
           modelTopology: data.modelTopology,
@@ -198,20 +175,16 @@ class NeuralNetwork {
         };
 
         await saveBlob(data.weightData, `${modelName}.weights.bin`, 'application/octet-stream');
-        await saveBlob(JSON.stringify(this.weightsManifest), `${modelName}.json`, 'text/plain');
-        if (callback) {
-          callback();
-        }
+        await saveJSON(this.weightsManifest, modelName);
       }),
     );
   }
 
   /**
    * loads the model and weights
-   * @param {*} filesOrPath
-   * @param {*} callback
+   * @param {string | FileList} filesOrPath
    */
-  async load(filesOrPath = null, callback) {
+  async load(filesOrPath) {
     if (filesOrPath instanceof FileList) {
       const files = await Promise.all(
         Array.from(filesOrPath).map(async file => {
@@ -255,11 +228,6 @@ class NeuralNetwork {
     this.isCompiled = true;
     this.isLayered = true;
     this.isTrained = true;
-
-    if (callback) {
-      callback();
-    }
-    return this.model;
   }
 
   /**

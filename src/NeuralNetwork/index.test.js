@@ -25,14 +25,6 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // loadDataFromUrl
-    xdescribe('loadDataFromUrl', () => {
-      it('should loadDataFromUrl', () => {
-        // TODO:
-        // ...
-      });
-    });
-
     // loadDataInternal
     xdescribe('loadDataInternal', () => {
       it('should loadDataInternal', () => {
@@ -89,14 +81,6 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // convertTrainingDataToTensors
-    xdescribe('convertTrainingDataToTensors', () => {
-      it('should convertTrainingDataToTensors', () => {
-        // TODO:
-        // ...
-      });
-    });
-
     // formatInputsForPrediction
     xdescribe('formatInputsForPrediction', () => {
       it('should formatInputsForPrediction', () => {
@@ -137,9 +121,9 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    // addLayer
-    xdescribe('addLayer', () => {
-      it('should addLayer', () => {
+    // setLayers
+    xdescribe('setLayers', () => {
+      it('should setLayers', () => {
         // TODO:
         // ...
       });
@@ -271,6 +255,20 @@ describe('NeuralNetwork', () => {
       it('instantiates with a sequential model', async () => {
         expect(brain.model.name).toBe('sequential_1');
       });
+
+      it('can load data through the constructor', async () => {
+        tf.env().set('IS_BROWSER', false); // Fixes error `ReferenceError: TextDecoder is not defined`
+        const nnOptions = {
+          dataUrl: "https://github.com/ml5js/ml5-library/raw/main/examples/p5js/NeuralNetwork/NeuralNetwork_titanic/data/titanic_cleaned.csv",
+          inputs: ["fare_class", "sex", "age", "fare"],
+          outputs: ["survived"],
+          task: "classification",
+        };
+        const nnWithData = neuralNetwork(nnOptions);
+        await nnWithData.ready;
+        nnWithData.normalizeData();
+        expect(nnWithData.data.training).toHaveLength(1308);
+      })
     });
 
     /**
@@ -340,7 +338,7 @@ describe('NeuralNetwork', () => {
           },
         };
 
-        await brain.trainInternal(trainingOptions);
+        await brain.train(trainingOptions);
 
         expect(brain.isTrained).toBe(true);
       });
@@ -382,8 +380,8 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataStats()', () => {
-      it('should getDataStats()', () => {
+    xdescribe('setDataStats()', () => {
+      it('should setDataStats()', () => {
         // TODO
         // ...
       });
@@ -396,22 +394,22 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataUnits()', () => {
-      it('should getDataUnits()', () => {
+    xdescribe('setDataUnits()', () => {
+      it('should setDataUnits()', () => {
         // TODO
         // ...
       });
     });
 
-    xdescribe('getInputMetaUnits()', () => {
-      it('should getInputMetaUnits()', () => {
+    xdescribe('setInputMetaUnits()', () => {
+      it('should setInputMetaUnits()', () => {
         // TODO
         // ...
       });
     });
 
-    xdescribe('getDTypesFromData()', () => {
-      it('should getDTypesFromData()', () => {
+    xdescribe('setDTypesFromData()', () => {
+      it('should setDTypesFromData()', () => {
         // TODO
         // ...
       });
@@ -466,8 +464,8 @@ describe('NeuralNetwork', () => {
       });
     });
 
-    xdescribe('getDataOneHot()', () => {
-      it('should getDataOneHot()', () => {
+    xdescribe('setDataOneHot()', () => {
+      it('should setDataOneHot()', () => {
         // TODO
         // ...
       });
@@ -593,13 +591,6 @@ describe('NeuralNetwork', () => {
 //     // getMax()
 //     describe('.getMax()', () => {
 //       it('should get the max value from an array ', () => {
-//         // TODO:
-//       });
-//     });
-
-//     // isJsonOrString()
-//     describe('.isJsonOrString()', () => {
-//       it('should tests if a string is a valid json or string', () => {
 //         // TODO:
 //       });
 //     });
