@@ -11,28 +11,19 @@ The original TensorFlow implementation was developed by Logan Engstrom: github.c
 
 import * as tf from '@tensorflow/tfjs';
 import handleArguments from "../utils/handleArguments";
-import Video from './../utils/Video';
 import CheckpointLoader from '../utils/checkpointLoader';
-import { array3DToImage } from '../utils/imageUtilities';
+import { array3DToImage, mediaReady } from '../utils/imageUtilities';
 import callCallback from '../utils/callcallback';
 
-const IMAGE_SIZE = 200;
-
-class StyleTransfer extends Video {
+class StyleTransfer {
   /**
    * Create a new Style Transfer Instance。
    * @param {string} model - The path to Style Transfer model.
-   * @param {HTMLVideoElement || p5.Video} video  - Optional. A HTML video element or a p5 video element.
+   * @param {HTMLVideoElement} video  - Optional. A HTML video element or a p5 video element.
    * @param {function} callback - Optional. A function to be called once the model is loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
    */
   constructor(model, video, callback) {
-    super(video, IMAGE_SIZE);
-    /**
-     * Boolean value that specifies if the model has loaded.
-     * @type {boolean}
-     * @public
-     */
-    this.ready = false;
+    this.video = video;
     /**
      * @private
      * @type {Record<string, tf.Tensor>}
@@ -42,7 +33,6 @@ class StyleTransfer extends Video {
     this.plusScalar = tf.scalar(255.0 / 2);
     this.epsilonScalar = tf.scalar(1e-3);
     this.ready = callCallback(this.load(model), callback);
-    // this.then = this.ready.then;
   }
 
   /**
@@ -51,10 +41,10 @@ class StyleTransfer extends Video {
    * @return {Promise<StyleTransfer>}
    */
   async load(model) {
-    if (this.videoElt) {
-      await this.loadVideo();
-    }
-    await this.loadCheckpoints(model);
+    await Promise.all([
+      mediaReady(this.video, false),
+      this.loadCheckpoints(model)
+    ]);
     return this;
   }
 
@@ -121,18 +111,19 @@ class StyleTransfer extends Video {
 
   /**
    * @param {tf.Tensor3D} input
-   * @param {number} numFilters
    * @param {number} strides
    * @param {number} id
    * @return {tf.Tensor3D}
    */
-  convTransposeLayer(input, numFilters, strides, id) {
+  convTransposeLayer(input, strides, id) {
     return tf.tidy(() => {
+      const filter = this.getVariable(id);
+      const outDepth = filter.shape[2];
       const [height, width] = input.shape;
       const newRows = height * strides;
       const newCols = width * strides;
-      const newShape = [newRows, newCols, numFilters];
-      const y = tf.conv2dTranspose(input, this.getVariable(id), newShape, [strides, strides], 'same');
+      const newShape = [newRows, newCols, outDepth];
+      const y = tf.conv2dTranspose(input, filter, newShape, [strides, strides], 'same');
       const y2 = this.instanceNorm(y, id + 1);
       const y3 = tf.relu(y2);
       return y3;
@@ -159,6 +150,10 @@ class StyleTransfer extends Video {
    * @return {Promise<HTMLImageElement>}
    */
   async transferInternal(input) {
+    await Promise.all([
+        mediaReady(input, true),
+        this.ready
+    ]);
     const image = tf.browser.fromPixels(input);
     const result = array3DToImage(tf.tidy(() => {
       const conv1 = this.convLayer(image, 1, true, 0);
@@ -169,8 +164,8 @@ class StyleTransfer extends Video {
       const res3 = this.residualBlock(res2, 21);
       const res4 = this.residualBlock(res3, 27);
       const res5 = this.residualBlock(res4, 33);
-      const convT1 = this.convTransposeLayer(res5, 64, 2, 39);
-      const convT2 = this.convTransposeLayer(convT1, 32, 2, 42);
+      const convT1 = this.convTransposeLayer(res5, 2, 39);
+      const convT2 = this.convTransposeLayer(convT1, 2, 42);
       const convT3 = this.convLayer(convT2, 1, false, 45);
       const outTanh = tf.tanh(convT3);
       const scaled = tf.mul(this.timesScalar, outTanh);
@@ -180,7 +175,6 @@ class StyleTransfer extends Video {
       return normalized;
     }));
     image.dispose();
-    await tf.nextFrame();
     return result;
   }
 
