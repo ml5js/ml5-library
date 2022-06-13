@@ -20,13 +20,14 @@ const s = ( sketch ) => {
 
 
 let data;
-const $main = document.querySelector('.main');
+const $main = document.querySelector('main');
 const $search = document.querySelector('.header-search__input');
+const $toggleList = document.getElementById('list-view');
+const $toggleCard = document.getElementById('card-view');
 
 async function init(){
 
-  data = await fetch('./examples.json');
-  data = await data.json();
+  data = await fetch('./examples.json').then(res => res.json());
 
   // initialize with all sections
   createSections(data);
@@ -38,8 +39,12 @@ async function init(){
 init();
 
 function createGroupedExamples(json, _sectionDiv) {
+  const examplesList = document.createElement("ul");
+  examplesList.classList.add("examples");
+  _sectionDiv.appendChild(examplesList);
+
   Object.keys(json).forEach(exampleName => {
-    const group = document.createElement("div");
+    const group = document.createElement("li");
     group.classList.add("section-list__example");
 
     const weHeader = document.createElement('h3');
@@ -60,15 +65,15 @@ function createGroupedExamples(json, _sectionDiv) {
       weList.appendChild(li);
     })
 
-    _sectionDiv.appendChild(group);
+    examplesList.appendChild(group);
   })
 
 }
 
-function createSections(data) {
+function createSections(filteredData) {
   $main.innerHTML = '';
-  Object.keys(data).forEach(k => {
-    const example = data[k];
+  Object.keys(filteredData).forEach(k => {
+    const example = filteredData[k];
 
     const sectionDiv = document.createElement('section');
     sectionDiv.classList.add(`section`);
@@ -111,3 +116,15 @@ $search.addEventListener('keyup', (e) => {
     createSections(matches);
   }
 })
+
+$toggleList.addEventListener('click', () => {
+  $toggleList.classList.add('active');
+  $toggleCard.classList.remove('active');
+  $main.className = 'list-view';
+});
+
+$toggleCard.addEventListener('click', () => {
+  $toggleCard.classList.add('active');
+  $toggleList.classList.remove('active');
+  $main.className = 'card-view';
+});
