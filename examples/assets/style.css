@@ -110,9 +110,10 @@ main {
 }
 
 .card-view .examples {
-  display:grid;
+  display: flex;
+  justify-content: center;
   justify-items: center;
-  grid-template-columns: 1fr 1fr 1fr;
+  flex-wrap: wrap;
   grid-column-gap: 30px;
   grid-row-gap: 30px;
   margin: 30px 0;
@@ -142,6 +143,7 @@ main {
   border: 2px solid #A15FFB;
   box-shadow: 3px 3px 4px 0 #00000021;
   padding: 8px;
+  width: 30%;
 }
 
 .list-view .section-list__example {
