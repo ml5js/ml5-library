@@ -4,9 +4,22 @@ const path = require("path");
 const baseURL = path.resolve(__dirname, "../examples");
 const webEditorURL = "https://editor.p5js.org/ml5/sketches";
 
-// Create empty output JSON and add to it.
+/**
+ * @typedef {{ name: string; type: string; url: string }} LinkData - data for a single link
+ * @typedef {{[exampleName: string]: Array<LinkData>}} ModelExamples - all examples for a model.
+ */
+
+/**
+ * Create empty output JSON and add to it.
+ * @type {{[model: string]: ModelExamples}}
+ */
 const output = {};
 
+/**
+ * Find all example folders inside a given model folder.
+ * @param {string} directoryPath
+ * @return {string[]}
+ */
 const getDirectories = directoryPath => {
   return fs.readdirSync(directoryPath).filter(file => {
     return fs.statSync(`${directoryPath}/${file}`).isDirectory();
@@ -18,7 +31,8 @@ const getDirectories = directoryPath => {
  * Output is keyed by model, then by example name,
  * with an array of examples for each name.
  * @param {string} model
- * @param {{name: string, url: string, type: string}} example
+ * @param {LinkData} example
+ * @void
  */
 function addExample(model, example) {
   if (!(model in output)) {
@@ -48,6 +62,7 @@ function formatName(type) {
 /**
  * Add all examples from a given directory.
  * @param {('javascript' | 'p5js' | 'd3')} type
+ * @void
  */
 function handleExampleType(type) {
   const examplesRoot = `${baseURL}/${type}`;
