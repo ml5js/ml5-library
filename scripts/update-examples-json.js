@@ -97,6 +97,6 @@ handleExampleType('javascript');
 handleExampleType('d3');
 
 // write out to file
-fs.writeFileSync(`${baseURL}/examples.json`, JSON.stringify(output), "utf8");
+fs.writeFileSync(`${baseURL}/examples.json`, JSON.stringify(output, null, 2), "utf8");
 
 console.log(`Created/update examples index json!!`);
