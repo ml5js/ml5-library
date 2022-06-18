@@ -5,14 +5,14 @@
 
 /* ===
 ml5 Example
-Real time Object Detection using objectDetector
+Real time Object Detection using COCOSSD
 === */
 
 let objectDetector;
-let status;
 let objects = [];
 let video;
-let canvas, ctx;
+let canvas;
+let ctx;
 const width = 480;
 const height = 360;
 
