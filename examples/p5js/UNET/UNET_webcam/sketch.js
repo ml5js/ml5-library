@@ -21,13 +21,15 @@ function setup() {
   createCanvas(320, 240);
 
   // load up your video
-  video = createCapture(VIDEO);
+  video = createCapture(VIDEO, videoReady);
   video.size(width, height);
   video.hide(); // Hide the video element, and just show the canvas
 
   // Start with a blank image
   segmentationImage = createImage(width, height);
+}
 
+function videoReady() {
   // initial segmentation
   uNet.segment(video, gotResult);
 }
