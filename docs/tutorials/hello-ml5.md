@@ -19,7 +19,7 @@ ml5.js is growing every day, so be sure to see some of the other applications of
 
 If you've arrived here, we assume you've checked out our [quickstart](/) page to get a simple ml5.js project set up. To get this to run, you'll need:
 
-> + 📝 A text editor (e.g. [Atom](https://atom.io/), [VSCode](https://code.visualstudio.com/), [Sublimetext](https://www.sublimetext.com/))
+> + 📝 A text editor (e.g. [VSCode](https://code.visualstudio.com/), [Sublimetext](https://www.sublimetext.com/))
 > + 💻 Your web browser: Chrome & Firefox preferred
 > + 🖼 An image to run your classification on
 
