@@ -19,6 +19,7 @@ import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from '../utils/handleArguments';
 import p5Utils from '../utils/p5Utils';
 import BODYPIX_PALETTE from './BODYPIX_PALETTE';
+import { mediaReady } from '../utils/imageUtilities';
 
 /**
  * @typedef {Record<string, {color: [number, number, number], id: number}>} BodyPixPalette
@@ -135,13 +136,7 @@ class BodyPix {
   async segmentWithPartsInternal(imgToSegment, segmentationOptions) {
     // estimatePartSegmentation
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToSegment, true);
 
     this.config.palette = segmentationOptions.palette || this.config.palette;
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
@@ -253,13 +248,7 @@ class BodyPix {
   async segmentInternal(imgToSegment, segmentationOptions) {
 
     await this.ready;
-    await tf.nextFrame();
-
-    if (this.video && this.video.readyState === 0) {
-      await new Promise(resolve => {
-        this.video.onloadeddata = () => resolve();
-      });
-    }
+    await mediaReady(imgToSegment, true);
 
     this.config.outputStride = segmentationOptions.outputStride || this.config.outputStride;
     this.config.segmentationThreshold = segmentationOptions.segmentationThreshold || this.config.segmentationThreshold;

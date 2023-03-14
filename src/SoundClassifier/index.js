@@ -74,7 +74,7 @@ class SoundClassifier {
 }
 
 const soundClassifier = (modelName, optionsOrCallback, cb) => {
-  const { string, options, callback } = handleArguments(modelName, optionsOrCallback, cb)
+  const { string, options = {}, callback } = handleArguments(modelName, optionsOrCallback, cb)
     .require('string', 'Please specify a model to use. E.g: "SpeechCommands18w"');
 
   let model = string;

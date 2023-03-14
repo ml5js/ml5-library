@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 require("dotenv").config();
+const axios = require("axios");
 const fs = require("fs");
-const rp = require("request-promise");
 const Q = require("q");
 const { ok } = require("assert");
 
@@ -24,16 +24,14 @@ ok(editorUsername, "ML5_EXAMPLES_USERNAME is required");
 ok(personalAccessToken, "EDITOR_API_ACCESS_TOKEN is required");
 ok(editorApiUrl, "EDITOR_API_URL is required");
 
-//
 const githubRequestOptions = {
   url: baseUrl,
-  qs: {
+  params: {
     client_id: clientId,
     client_secret: clientSecret,
   },
   method: "GET",
-  headers,
-  json: true,
+  headers
 };
 
 const editorRequestOptions = {
@@ -44,8 +42,7 @@ const editorRequestOptions = {
     Authorization: `Basic ${Buffer.from(`${editorUsername}:${personalAccessToken}`).toString(
       "base64",
     )}`,
-  },
-  json: true,
+  }
 };
 
 console.log("------", editorRequestOptions);
@@ -54,6 +51,14 @@ console.log("------", editorRequestOptions);
  * --------------------- helper functions --------------------
  * ---------------------------------------------------------
  */
+
+/**
+ * Execute a GET, POST, or DELETE request to a URL
+ */
+async function rp(options) {
+  const res = await axios.request(options);
+  return res.data;
+}
 
 /**
  * fatten a nested array

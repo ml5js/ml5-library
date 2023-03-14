@@ -165,7 +165,7 @@ class PoseNet extends EventEmitter {
    * @param {function} cb 
    */
   async multiPose(inputOr, cb) {
-    const input = this.getInput(inputOr);
+    const { image: input, callback } = handleArguments(this.video, inputOr, cb);
 
     const poses = await this.net.estimateMultiplePoses(input, {
       flipHorizontal: this.flipHorizontal,
@@ -181,8 +181,8 @@ class PoseNet extends EventEmitter {
       return tf.nextFrame().then(() => this.multiPose());
     }
 
-    if (typeof cb === 'function') {
-      cb(result);
+    if (typeof callback === 'function') {
+      callback(result);
     }
 
     return result;

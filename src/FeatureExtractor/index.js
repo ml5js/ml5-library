@@ -30,7 +30,7 @@ import Mobilenet from './Mobilenet';
  * @param {function} cb - Optional. 
  */
 const featureExtractor = (model, optionsOrCallback, cb) => {
-  const { string: modelName, options, callback } = handleArguments(model, optionsOrCallback, cb);
+  const { string: modelName, options = {}, callback } = handleArguments(model, optionsOrCallback, cb);
 
   // Default to using MobileNet if no model is provided.
 
