@@ -83,35 +83,35 @@ function classify() {
 function createButtons() {
   // When the A button is pressed, add the current frame
   // from the video with a label of "A" to the classifier
-  buttonA = document.querySelector("#addClassA");
+  const buttonA = document.querySelector("#addClassA");
   buttonA.addEventListener("click", function() {
     addExample("A");
   });
 
   // When the B button is pressed, add the current frame
   // from the video with a label of "B" to the classifier
-  buttonB = document.querySelector("#addClassB");
+  const buttonB = document.querySelector("#addClassB");
   buttonB.addEventListener("click", function() {
     addExample("B");
   });
 
   // Reset buttons
-  resetBtnA = document.querySelector("#resetA");
+  const resetBtnA = document.querySelector("#resetA");
   resetBtnA.addEventListener("click", function() {
     clearLabel("A");
   });
 
-  resetBtnB = document.querySelector("#resetB");
+  const resetBtnB = document.querySelector("#resetB");
   resetBtnB.addEventListener("click", function() {
     clearLabel("B");
   });
 
   // Predict button
-  buttonPredict = document.querySelector("#buttonPredict");
+  const buttonPredict = document.querySelector("#buttonPredict");
   buttonPredict.addEventListener("click", classify);
 
   // Clear all classes button
-  buttonClearAll = document.querySelector("#clearAll");
+  const buttonClearAll = document.querySelector("#clearAll");
   buttonClearAll.addEventListener("click", clearAllLabels);
 }
 
@@ -164,12 +164,10 @@ function clearAllLabels() {
 // A function to draw ellipses over the detected keypoints
 function drawKeypoints() {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i += 1) {
+  poses.forEach(pose => {
     // For each pose detected, loop through all the keypoints
-    const pose = poses[i].pose;
-    for (let j = 0; j < pose.keypoints.length; j += 1) {
-      // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-      const keypoint = pose.keypoints[j];
+    // A keypoint is an object describing a body part (like rightArm or leftShoulder)
+    pose.pose.keypoints.forEach(keypoint => {
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
         ctx.fillStyle = "rgb(213, 0, 143)";
@@ -178,26 +176,25 @@ function drawKeypoints() {
         ctx.fill();
         ctx.stroke();
       }
-    }
-  }
+    });
+  });
 }
 
 // A function to draw the skeletons
 function drawSkeleton() {
   // Loop through all the skeletons detected
-  for (let i = 0; i < poses.length; i += 1) {
-    const skeleton = poses[i].skeleton;
+  poses.forEach(pose => {
     // For every skeleton, loop through all body connections
-    for (let j = 0; j < skeleton.length; j += 1) {
-      const partA = skeleton[j][0];
-      const partB = skeleton[j][1];
+    pose.skeleton.forEach(connection => {
+      // Each connection is an array of two parts
+      const [partA, partB] = connection;
       ctx.beginPath();
       ctx.moveTo(partA.position.x, partA.position.y);
       ctx.lineTo(partB.position.x, partB.position.y);
       ctx.strokeStyle = "#FF0000";
       ctx.stroke();
-    }
-  }
+    });
+  });
 }
 
 // Helper Functions

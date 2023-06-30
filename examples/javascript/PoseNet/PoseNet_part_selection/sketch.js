@@ -11,15 +11,12 @@ PoseNet example using p5.js
 let poseNet;
 let poses = [];
 
-let video;
-let canvas;
-let ctx;
+// Grab elements, create settings, etc.
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
 async function setup() {
-  // Grab elements, create settings, etc.
-  video = document.getElementById('video');
-  canvas = document.getElementById('canvas');
-  ctx = canvas.getContext('2d');
   const stream = await navigator.mediaDevices.getUserMedia({ video: true });
 
   video.srcObject = stream;

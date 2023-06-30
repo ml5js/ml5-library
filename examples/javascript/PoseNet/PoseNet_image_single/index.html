@@ -4,17 +4,31 @@
   <meta charset="UTF-8">
   <title>PoseNet example on image with single detection</title>
   <script src="http://localhost:8080/ml5.js" type="text/javascript"></script>
-  
+
 </head>
 
 <body>
-  <h1>PoseNet example on image with single detection</h1>
-  <p id='status'>Loading model...</p>
-  <img id="image" style="display:none" src="data/runner.jpg" alt="runner image"         />
+  <h1>PoseNet example on image with single-person detection</h1>
+  <p id="status">Loading model...</p>
+  <form>
+      <label>
+        <input type="checkbox" id="skeleton" checked/>
+        Skeleton
+      </label>
+      <label>
+        <input type="checkbox" id="keypoints" checked/>
+        Keypoints
+      </label>
+      <label>
+        <input type="checkbox" id="labels"/>
+        Part Labels
+      </label>
+  </form>
+  <img id="image" style="display:none" src="data/runner.jpg" alt="runner image" />
   <canvas id="canvas"></canvas>
-  <p>image via: <a href="https://www.pexels.com/photo/topless-man-wearing-grey-and-black-shorts-sprinting-on-concrete-road-1401796/" target="_blank">Pexels</a></p>
+  <p>image by Funk Dooby via <a href="https://commons.wikimedia.org/wiki/File:Sandwich_10K_2019_FNK_3606_(48120497711).jpg" target="_blank">Wikimedia</a></p>
   <script src="sketch.js"></script>
-  
+
 </body>
 
 </html>

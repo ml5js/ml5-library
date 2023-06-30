@@ -191,7 +191,8 @@ class PoseNet extends EventEmitter {
 
 const poseNet = (...inputs) => {
   const { video, options = {}, callback, string: detectionType } = handleArguments(...inputs);
-  return new PoseNet(video, options, detectionType, callback);
+  const instance = new PoseNet(video, options, detectionType, callback);
+  return callback ? instance : instance.ready;
 };
 
 export default poseNet;
