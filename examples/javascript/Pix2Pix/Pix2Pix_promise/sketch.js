@@ -13,147 +13,128 @@ For more models see: https://github.com/ml5js/ml5-data-and-training/tree/master/
 // The pre-trained Edges2Pikachu model is trained on 256x256 images
 // So the input images can only be 256x256 or 512x512, or multiple of 256
 const SIZE = 256;
-let inputImg, canvas, outputContainer, statusMsg, pix2pix, clearBtn, transferBtn;
-const mouseIsPressed = false;
-let outputImg;
 
-let pX = null;
-let pY = null;
-let mouseX = null;
-let mouseY = null;
+// Declare variables
+let startX = null;
+let startY = null;
 let mouseDown = false;
 
-async function setup() {
-  // Create a canvas
-  canvas = createCanvas(SIZE, SIZE);
+// Create a canvas
+const canvas = document.createElement("canvas");
+canvas.width = SIZE;
+canvas.height = SIZE;
+document.body.appendChild(canvas);
+const ctx = canvas.getContext("2d");
+// Set stroke weight to 10
+ctx.lineWidth = 10;
+// Set stroke color to black
+ctx.strokeStyle = "#000000";
 
-  // Display initial input image
-  inputImg = document.querySelector("#inputImage");
-  outputImg = document.querySelector("#outputImage");
+const rect = canvas.getBoundingClientRect();
 
-  // Selcect output div container
-  outputContainer = document.querySelector("#output");
-  statusMsg = document.querySelector("#status");
+// Display initial input image
+const inputImg = document.getElementById('inputImage');
+const outputImg = document.getElementById('outputImage');
+ctx.drawImage(inputImg, 0, 0, SIZE, SIZE);
 
-  // Select 'transfer' button html element
-  transferBtn = document.querySelector("#transferBtn");
+// Select output div container
+const outputContainer = document.getElementById('output');
+const statusMsg = document.getElementById('status');
 
-  // Select 'clear' button html element
-  clearBtn = document.querySelector("#clearBtn");
+// Select 'transfer' button html element
+const transferBtn = document.getElementById('transferBtn');
 
-  // Attach a mousePressed event to the 'clear' button
-  clearBtn.addEventListener("click", () => {
-    clearCanvas();
-  });
+// Select 'clear' button html element
+const clearBtn = document.getElementById('clearBtn');
 
-  document.querySelector("canvas").addEventListener("mousemove", onMouseUpdate);
-  document.querySelector("canvas").addEventListener("mousedown", onMouseDown);
-  document.querySelector("canvas").addEventListener("mouseup", onMouseUp);
+// Attach a mousePressed event to the 'clear' button
+clearBtn.addEventListener('click', () => {
+  clearCanvas();
+});
 
-  requestAnimationFrame(draw);
-}
+// Attach event listeners to the canvas to draw when mouse is pressed
+canvas.addEventListener('mousemove', onMouseMove);
+canvas.addEventListener('mousedown', onMouseDown);
+canvas.addEventListener('mouseup', onMouseUp);
 
-setup();
+// initialize a pix2pix method with a pre-trained model
+const modelPromise = ml5.pix2pix("models/edges2pikachu.pict");
 
-// Draw on the canvas when mouse is pressed
-function draw() {
-  requestAnimationFrame(draw);
+// When the model is loaded...
+modelPromise.then(model => {
 
-  if (pX == null || pY == null) {
-    pX = mouseX;
-    pY = mouseY;
-    drawImage();
-  }
+  // Show 'Model Loaded!' message
+  statusMsg.textContent = "Model Loaded!";
 
-  if (mouseDown) {
-    // Set stroke weight to 10
-    canvas.lineWidth = 10;
-    // Set stroke color to black
-    canvas.strokeStyle = "#000000";
-    // If mouse is pressed, draw line between previous and current mouse positions
-    canvas.beginPath();
-    canvas.lineCap = "round";
-    canvas.moveTo(mouseX, mouseY);
-    canvas.lineTo(pX, pY);
-    canvas.stroke();
-  }
+  // Call transfer function after the model is loaded
+  transfer(model);
 
-  pX = mouseX;
-  pY = mouseY;
-}
-
-// Draw the input image to the canvas
-function drawImage() {
-  canvas.drawImage(inputImg, 0, 0, SIZE, SIZE);
-
-  // After input image is loaded, initialize a pix2pix method with a pre-trained model
-  ml5.pix2pix("models/edges2pikachu.pict").then(model => {
-    // Show 'Model Loaded!' message
-    statusMsg.textContent = "Model Loaded!";
-
-    // Call transfer function after the model is loaded
+  // Attach a mousePressed event to the button
+  transferBtn.addEventListener("click", () => {
     transfer(model);
-
-    // Attach a mousePressed event to the button
-    transferBtn.addEventListener("click", function() {
-      transfer(model);
-    });
   });
-}
+
+  // Attach another mouseUp event to the canvas
+  canvas.addEventListener("mouseup", () => {
+    transfer(model);
+  });
+}).catch(() => {
+  // Handle errors
+  statusMsg.textContent = "Error loading model.";
+});
 
 // Clear the canvas
 function clearCanvas() {
-  canvas.fillStyle = "#ebedef";
-  canvas.fillRect(0, 0, SIZE, SIZE);
+  ctx.fillStyle = '#ebedef'
+  ctx.fillRect(0, 0, SIZE, SIZE);
 }
 
 function transfer(pix2pix) {
   // Update status message
   statusMsg.textContent = "Applying Style Transfer...!";
 
-  // Select canvas DOM element
-  const canvasElement = document.querySelector("canvas");
-
   // Apply pix2pix transformation
-  pix2pix.transfer(canvasElement).then(result => {
+  pix2pix.transfer(canvas).then(result => {
     // Clear output container
     outputContainer.innerHTML = "";
     // Create an image based result
     outputImg.src = result.src;
     // Show 'Done!' message
     statusMsg.textContent = "Done!";
-  });
+  }).catch(() => {
+    // Show error message
+    statusMsg.textContent = "Error while transferring image.";
+  })
 }
 
-function createCanvas(w, h) {
-  const canvasElement = document.createElement("canvas");
-  canvasElement.width = w;
-  canvasElement.height = h;
-  document.body.appendChild(canvasElement);
-  const canvas = canvasElement.getContext("2d");
-  canvas.fillStyle = "#ebedef";
-  canvas.fillRect(0, 0, w, h);
-  return canvas;
-}
-
+// When mouse is pressed, save the start position for drawing a line.
 function onMouseDown(e) {
+  startX = e.clientX - rect.left;
+  startY = e.clientY - rect.top;
   mouseDown = true;
 }
 
-function onMouseUp(e) {
+// Clear coordinates when the mouse is released.
+function onMouseUp() {
   mouseDown = false;
+  startX = null;
+  startY = null;
 }
 
-function onMouseUpdate(e) {
-  const pos = getMousePos(document.querySelector("canvas"), e);
-  mouseX = pos.x;
-  mouseY = pos.y;
-}
-
-function getMousePos(canvas, e) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: e.clientX - rect.left,
-    y: e.clientY - rect.top,
-  };
+// When moving while the mouse is down, draw line between previous and current mouse positions
+function onMouseMove(e) {
+  if (mouseDown && startX !== null && startY !== null) {
+    // Get current position
+    const currentX = e.clientX - rect.left;
+    const currentY = e.clientY - rect.top;
+    // Draw line
+    ctx.beginPath();
+    ctx.lineCap = "round";
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(currentX, currentY);
+    ctx.stroke();
+    // Update coordinates for next line.
+    startX = currentX;
+    startY = currentY;
+  }
 }
