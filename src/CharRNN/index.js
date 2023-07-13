@@ -281,16 +281,11 @@ class CharRNN {
   async feed(inputSeed, callback) {
     await this.ready;
     const seed = Array.from(inputSeed);
-    const encodedInput = [];
+    const encodedInput = seed.map(char => this.vocab[char]);
 
-    seed.forEach(char => {
-      encodedInput.push(this.vocab[char]);
-    });
-
-    let input = encodedInput[0];
     for (let i = 0; i < seed.length; i += 1) {
       const onehotBuffer = await tf.buffer([1, this.vocabSize]);
-      onehotBuffer.set(1.0, 0, input);
+      onehotBuffer.set(1.0, 0, encodedInput[i]);
       const onehot = onehotBuffer.toTensor();
       let output;
       if (this.model.embedding) {
@@ -301,7 +296,6 @@ class CharRNN {
       }
       this.state.c = output[0];
       this.state.h = output[1];
-      input = encodedInput[i];
     }
     if (callback) {
       callback();
