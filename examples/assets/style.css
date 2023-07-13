@@ -9,7 +9,6 @@ body,
 html {
   width: 100%;
   height: 100%;
-  /* background-color:#F6FFFE; */
 }
 
 #myCanvas {
@@ -20,104 +19,187 @@ html {
 }
 
 #app {
-  padding: 2rem;
+  padding: 4%;
 }
 
-.header{
+.header {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items:center;
-  width:100%;
-  height: 50vh;
+  align-items: center;
+  width: 100%;
+  min-height: 50vh;
+  padding: 2rem;
 }
-.header-title{
+
+.header-title {
   font-size: 2rem;
   text-align: center;
 }
-.header-search{
+
+.header-search {
   display: flex;
   justify-content: center;
-  width:100%;
-  max-width:400px;
+  width: 100%;
+  max-width: 400px;
 }
-.header-search__input{
-  margin-top:2rem;
-  min-width:300px;
+
+.header-search__input {
+  margin-top: 2rem;
+  min-width: 300px;
   width: 50%;
   border: 2px solid black;
-  padding:1rem 1.25rem;
+  padding: 1rem 1.25rem;
   box-shadow: 1rem 1rem #A15FFB;
 }
 
-.header-text__links{
-  color: #5E2CA5;
-text-decoration: none;
-letter-spacing: 0.8px;
-}
-
-.header-text{
-  margin-top:3rem;
-  max-width: 500px;
-  text-align:left;
-}
-
-.main{
-  width:100%;
-  display:grid;
-  justify-items: center;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-column-gap: 20px;
-  grid-row-gap: 40px;
-}
-
-.section{
-  max-width:200px;
-}
-
-.section-header{
-  font-size: 1.6rem;
-  color: #A15FFB;
-}
-
-.section-list,
-.section-list__item{
-  padding:0;
-  margin:0;
-}
-.section-list__item > a{
+.header-text__links {
   color: #5E2CA5;
   text-decoration: none;
   letter-spacing: 0.8px;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-.section-list__item > a:hover{
-  font-size:1.1rem;
-  text-decoration: underline;
 }
 
-.section-list__title{
-  margin:0.5rem 0;
-  font-size:1.2rem;
-  font-weight: 100;
-  color: #333333;
+.header-text {
+  margin-top: 3rem;
+  max-width: 500px;
+  text-align: left;
+}
+
+#toggle-view {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#toggle-view > a {
+  color: #34495e;
+  margin: 0 8px;
+  text-decoration: none;
+  display: block;
+  transition: transform 0.2s;
+  transform-origin: bottom;
+  transform: scale(1);
+}
+
+#toggle-view > a.active,
+#toggle-view > a:hover {
+  font-weight: bold;
+  border-bottom: 2px solid #a15ffb;
+}
+
+#toggle-view > a:hover {
+  transform: scale(1.2);
+}
+
+.section {
+  width: 100%;
+}
+
+.section-header {
+  font-size: 1.6rem;
+  color: #A15FFB;
+  text-align: center;
+  margin: 50px 0 15px 0;
+}
+
+.examples-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.card-view .examples-list {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.example {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-view .example {
+  flex-direction: column;
+  border: 2px solid #A15FFB;
+  box-shadow: 3px 3px 4px 0 #00000021;
+  padding: 8px;
+  width: 31%;
+  margin: 1%;
+}
+
+.list-view .example {
+  border-bottom: 1px solid #cccccc;
+  padding: 2px 16px;
+  align-items: center;
+}
+
+.list-view .example:first-of-type {
+  border-top: 1px solid #cccccc;
+}
+
+.example__links {
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 3px 10px;
+}
+
+.list-view .example__links {
+  width: 300px;
+}
+
+.example__links > li > a {
+  color: #42b983;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  line-height: 16px;
+  display: block;
+}
+
+.example__links > li > a:hover {
+  transform: scale(1.2);
+}
+
+.example__title {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #34495e;
 }
 
 @media (max-width: 600px) {
-  .main {
-    grid-template-columns: 1fr;
+  .card-view .example {
+    width: 100%;
+    margin: 15px;
   }
 }
 
-@media (min-width:600px) and (max-width: 768px) {
-  .main {
-    grid-template-columns: 1fr 1fr;
+@media (min-width: 601px) and (max-width: 992px) {
+  .card-view .example {
+    width: 47%;
+    margin: 1.5%;
   }
 }
 
-@media (min-width:769px) and (max-width:992px){
-.main {
-    grid-template-columns: 1fr 1fr;
+@media (max-width: 700px) {
+  .list-view .example {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .list-view .example__links {
+    align-self: flex-end;
+    justify-content: flex-end;
+    width: auto;
+  }
+
+  .list-view .example__links > li:not(:first-of-type) {
+    margin-left: 6vw;
   }
 }
