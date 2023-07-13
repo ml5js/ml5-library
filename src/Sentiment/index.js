@@ -45,8 +45,8 @@ class Sentiment {
    */
   constructor(modelName, callback) {
     /**
-     * Boolean value that specifies if the model has loaded.
-     * @type {boolean}
+     * Promise that specifies if the model has loaded.
+     * @type {Promise<Sentiment>}
      * @public
      */
     this.ready = callCallback(this.loadModel(modelName), callback);
@@ -119,6 +119,9 @@ class Sentiment {
   }
 }
 
-const sentiment = (modelName, callback) => new Sentiment(modelName, callback);
+const sentiment = (modelName, callback) => {
+  const instance = new Sentiment(modelName, callback);
+  return callback ? instance : instance.ready;
+}
 
 export default sentiment;
