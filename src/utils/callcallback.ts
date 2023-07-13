@@ -15,6 +15,7 @@
  * @param {T} [result] - the expected result, if successful.
  * @return {void} - callbacks can have side effects, but should not return a value.
  */
+export type ML5Callback<T> = (error: unknown, result?: T) => void;
 
 /**
  * Generic type T describes the type of the result, ie. the value that the Promise will resolve to.
@@ -24,7 +25,7 @@
  *     with the result or error from the resolved Promise.
  * @return {Promise<T>} - returns the underlying Promise, which may be rejected.
  */
-export default function callCallback(promise, callback) {
+export default function callCallback<T>(promise: Promise<T>, callback: ML5Callback<T>): Promise<T> {
   if (!callback) return promise;
   return new Promise((resolve, reject) => {
     promise

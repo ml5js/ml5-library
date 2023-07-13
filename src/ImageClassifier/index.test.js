@@ -3,35 +3,14 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-const {
-  imageClassifier
-} = ml5;
+import { asyncLoadImage } from '../utils/testingUtils';
+import imageClassifier from './index';
 
+// TODO: find a current URL
 const TM_URL = 'https://storage.googleapis.com/tm-models/WfgKPytY/model.json';
 
-const DEFAULTS = {
-  learningRate: 0.0001,
-  hiddenUnits: 100,
-  epochs: 20,
-  numClasses: 2,
-  batchSize: 0.4,
-  topk: 3,
-  alpha: 1,
-  version: 2,
-};
-
-async function getImage() {
-  const img = new Image();
-  img.crossOrigin = true;
-  img.src = 'https://cdn.jsdelivr.net/gh/ml5js/ml5-library@main/assets/bird.jpg';
-  await new Promise((resolve) => {
-    img.onload = resolve;
-  });
-  return img;
-}
-
 async function getCanvas() {
-  const img = await getImage();
+  const img = await asyncLoadImage('robin');
   const canvas = document.createElement('canvas');
   canvas.width = img.width;
   canvas.height = img.height;
@@ -49,7 +28,7 @@ describe('imageClassifier', () => {
   describe('with Teachable Machine model', () => {
     
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+      jest.setTimeout(30000);
       classifier = await imageClassifier(TM_URL, undefined, {});
     });
 
@@ -62,37 +41,42 @@ describe('imageClassifier', () => {
   });
 
 
-
   /**
    * Test imageClassifier with Mobilenet
    */
   describe('imageClassifier with Mobilenet', () => {
 
     beforeAll(async () => {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
-      classifier = await imageClassifier('MobileNet', undefined, {});
+      jest.setTimeout(30000);
+      classifier = await imageClassifier('MobileNet');
     });
 
     describe('instantiate', () => {
       
       it('Should create a classifier with all the defaults', async () => {
-        expect(classifier.version).toBe(DEFAULTS.version);
-        expect(classifier.alpha).toBe(DEFAULTS.alpha);
-        expect(classifier.topk).toBe(DEFAULTS.topk);
-        expect(classifier.ready).toBeTruthy();
+        await expect(classifier.ready).resolves.toBeTruthy();
       });
     })
 
     describe('classify', () => {
 
       it('Should classify an image of a Robin', async () => {
-        const img = await getImage();
-        await classifier.classify(img)
-          .then(results => expect(results[0].label).toBe('robin, American robin, Turdus migratorius'));
+        const img = await asyncLoadImage('robin');
+        const results = await classifier.classify(img);
+        expect(results[0].label).toBe('robin, American robin, Turdus migratorius');
+        expect(results[0].confidence).toBeGreaterThan(0.9);
       });
 
+      it('Should classify an image of a koala', async () => {
+        const img = await asyncLoadImage('koala');
+        const results = await classifier.classify(img);
+        expect(results[0].label).toBe('koala, koala bear, kangaroo bear, native bear, Phascolarctos cinereus');
+        expect(results[0].confidence).toBeGreaterThan(0.8); // Note: mobilenet confidence on this image is lower
+      })
+
+      // TODO: move these tests elsewhere -- it's really a test of handleArguments.
       it('Should support p5 elements with an image on .elt', async () => {
-        const img = await getImage();
+        const img = await asyncLoadImage('robin');
         await classifier.classify({
           elt: img
         })
@@ -123,6 +107,63 @@ describe('imageClassifier', () => {
     });
 
   });
+
+
+  describe('imageClassifier with darknet', () => {
+
+    beforeAll(async () => {
+      classifier = await imageClassifier('darknet');
+    });
+
+    it('Should classify an image of a Robin', async () => {
+      const img = await asyncLoadImage('robin');
+      const results = await classifier.classify(img);
+      expect(results[0].label).toBe('robin');
+      expect(results[0].confidence).toBeGreaterThan(0.9);
+    });
+
+    it('Should classify an image of a koala', async () => {
+      const img = await asyncLoadImage('koala');
+      const results = await classifier.classify(img);
+      expect(results[0].label).toBe('koala');
+      expect(results[0].confidence).toBeGreaterThan(0.9);
+    })
+  });
+
+
+  describe('imageClassifier with darknet-tiny', () => {
+
+    beforeAll(async () => {
+      classifier = await imageClassifier('darknet-tiny');
+    });
+
+    it('Should classify an image of a Robin', async () => {
+      const img = await asyncLoadImage('robin');
+      const results = await classifier.classify(img);
+      expect(results[0].label).toBe('robin');
+      expect(results[0].confidence).toBeGreaterThan(0.9);
+    });
+
+    it('Should classify an image of a koala', async () => {
+      const img = await asyncLoadImage('koala');
+      const results = await classifier.classify(img);
+      expect(results[0].label).toBe('koala');
+      expect(results[0].confidence).toBeGreaterThan(0.9);
+    })
+  });
+
+
+  describe('imageClassifier with doodlenet', () => {
+
+    beforeAll(async () => {
+      classifier = await imageClassifier('doodlenet');
+    });
+
+    it('Should classify a sketch', async () => {
+      // TODO: need to save a doodle to a URL
+    });
+  });
+
 });
 
 describe('videoClassifier', () => {
@@ -137,23 +178,21 @@ describe('videoClassifier', () => {
   }
 
   beforeEach(async () => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    jest.setTimeout(30000);
     const video = await getVideo();
     // FIXME: onload promise for video load prevented it from working and seems like something that might be necessary in different scenarios
     classifier = await imageClassifier('MobileNet', video, {});
   });
 
   it('Should create a classifier with all the defaults', async () => {
-    expect(classifier.version).toBe(DEFAULTS.version);
-    expect(classifier.alpha).toBe(DEFAULTS.alpha);
-    expect(classifier.topk).toBe(DEFAULTS.topk);
-    expect(classifier.ready).toBeTruthy();
+    await expect(classifier.ready).resolves.toBeTruthy();
   });
 
   describe('classify', () => {
     it('Should support video', async () => {
       const results = await classifier.classify()
       expect(results[0].label).not.toBe(null);
+      expect(results[0].label).toBe('bird');
     });
   });
 });

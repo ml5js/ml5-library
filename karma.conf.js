@@ -1,4 +1,4 @@
-const path = require("path");
+const webpackConfig = require("./webpack.common.babel");
 
 module.exports = config => {
   config.set({
@@ -20,38 +20,11 @@ module.exports = config => {
       "src/utils/*.js": ["webpack"],
     },
     webpack: {
-      // TODO: This is duplication of the webpack.common.babel.js file, but they
-      // use different import syntaxes so it's not easy to just require it here.
-      // Maybe this could be put into a JSON file, but the include in the module
-      // rules is dynamic.
-      entry: ["@babel/polyfill", "./src/index.js"],
-      output: {
-        libraryTarget: "umd",
-        filename: "ml5.js",
-        library: "ml5",
-      },
-      module: {
-        rules: [
-          {
-            enforce: "pre",
-            test: /\.js$/,
-            exclude: /node_modules/,
-            loader: "eslint-loader",
-          },
-          {
-            test: /\.js$/,
-            loader: "babel-loader",
-            include: path.resolve(__dirname, "src"),
-          },
-        ],
-      },
+      ...webpackConfig,
       // Don't minify the webpack build for better stack traces
       optimization: {
         minimize: false,
-      },
-      node: {
-        fs: "empty",
-      },
+      }
     },
     webpackMiddleware: {
       noInfo: true,

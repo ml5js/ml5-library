@@ -1,20 +1,17 @@
+/* eslint-disable import/no-extraneous-dependencies */
 // Copyright (c) 2018 ml5
 //
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-import { join, resolve } from "path";
+const ESLintPlugin = require("eslint-webpack-plugin");
+const { join } = require("path");
 
 const include = join(__dirname, "src");
 
-export const indexEntryWithBabel = ["@babel/polyfill", "./src/index.js"];
-export const developmentPort = 8080;
-
-export default {
+module.exports = {
   name: "ml5",
-  entry: indexEntryWithBabel,
   output: {
-    path: resolve(__dirname, "dist"),
     publicPath: "/",
     libraryExport: "default",
     libraryTarget: "umd",
@@ -24,10 +21,8 @@ export default {
   module: {
     rules: [
       {
-        enforce: "pre",
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: "eslint-loader",
+        test: /\.ts$/,
+        loader: "ts-loader",
       },
       {
         test: /\.js$/,
@@ -36,7 +31,13 @@ export default {
       },
     ],
   },
-  node: {
-    fs: "empty",
+  plugins: [
+    new ESLintPlugin()
+  ],
+  resolve: {
+    extensions: [".ts", ".js"],
+    fallback: {
+      fs: false,
+    },
   },
 };

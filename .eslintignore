@@ -1,4 +1,5 @@
 dist
 dist_examples
 **/lib
+.eslintrc.js
 

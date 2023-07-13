@@ -11,7 +11,7 @@ import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
 import handleArguments from "../utils/handleArguments";
 import Video from "./../utils/Video";
-import { imgToTensor } from "../utils/imageUtilities";
+import { imgToTensor, toTensor } from "../utils/imageUtilities";
 import { saveBlob } from "../utils/io";
 import callCallback from "../utils/callcallback";
 
@@ -431,18 +431,8 @@ class Mobilenet {
   }
 
   mobilenetInfer(input, embedding = false) {
-    let img = input;
-    if (
-      img instanceof tf.Tensor ||
-      img instanceof ImageData ||
-      img instanceof HTMLImageElement ||
-      img instanceof HTMLCanvasElement ||
-      img instanceof HTMLVideoElement
-    ) {
       return tf.tidy(() => {
-        if (!(img instanceof tf.Tensor)) {
-          img = tf.browser.fromPixels(img);
-        }
+        const img = toTensor(input);
         const normalized = img
           .toFloat()
           .sub(this.normalizationOffset)
@@ -468,8 +458,6 @@ class Mobilenet {
         }
         return result;
       });
-    }
-    return null;
   }
 
   infer(input, endpoint) {

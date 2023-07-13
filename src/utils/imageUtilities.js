@@ -142,21 +142,33 @@ const flipImage = (img) => {
 }
 
 /**
+ * Wraps the tf.browser.fromPixels() function so that a tensor can be provided as an input.
+ * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | tf.Tensor3D} input
+ * @return {tf.Tensor3D}
+ */
+function toTensor(input) {
+  if (input instanceof tf.Tensor) {
+    return input;
+  }
+  return tf.browser.fromPixels(input);
+}
+
+/**
  * For models which expect an input with a specific size.
  * Converts an image to a tensor, resizes it, and crops it to a square.
  * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} input
  * @param {[number, number]} [size]
- * @return {tf.Tensor3D}
+ * @return {tf.Tensor4D}
  */
 function imgToTensor(input, size = null) {
   return tf.tidy(() => {
-    let img = tf.browser.fromPixels(input);
+    let img = toTensor(input);
     if (size) {
       img = tf.image.resizeBilinear(img, size);
     }
     const croppedImage = cropImage(img);
     const batchedImage = croppedImage.expandDims(0);
-    return batchedImage.toFloat().div(tf.scalar(127)).sub(tf.scalar(1));
+    return batchedImage.toFloat().div(tf.scalar(127.5)).sub(tf.scalar(1));
   });
 }
 
@@ -205,6 +217,7 @@ export {
   array3DToImage,
   processVideo,
   cropImage,
+  toTensor,
   imgToTensor,
   isInstanceOfSupportedElement,
   flipImage,
