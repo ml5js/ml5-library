@@ -72,8 +72,7 @@ export class CocoSsdBase {
   async detectInternal(imgToPredict) {
     this.isPredicting = true;
     const predictions = await this.model.detect(imgToPredict);
-    const formattedPredictions = predictions.map(prediction => {
-      return {
+    const formattedPredictions = predictions.map(prediction => ({
         label: prediction.class,
         confidence: prediction.score,
         x: prediction.bbox[0],
@@ -86,8 +85,7 @@ export class CocoSsdBase {
           width: prediction.bbox[2] / imgToPredict.width,
           height: prediction.bbox[3] / imgToPredict.height,
         },
-      };
-    });
+      }));
     this.isPredicting = false;
     return formattedPredictions;
   }

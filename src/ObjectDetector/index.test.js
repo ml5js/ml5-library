@@ -25,15 +25,11 @@ const mockYoloObject = {
   classProbThreshold: YOLO_DEFAULTS.classProbThreshold,
   filterBoxesThreshold: YOLO_DEFAULTS.filterBoxesThreshold,
   size: YOLO_DEFAULTS.size,
-  detect: () => {
-    return [{ label: "bird", confidence: 0.9 }];
-  },
+  detect: () => [{ label: "bird", confidence: 0.9 }],
 };
 const mockCocoObject = {
   config: { ...COCOSSD_DEFAULTS },
-  detect: () => {
-    return [{ label: "bird", confidence: 0.9 }];
-  },
+  detect: () => [{ label: "bird", confidence: 0.9 }],
 };
 
 function mockObjectDetector(modelName) {

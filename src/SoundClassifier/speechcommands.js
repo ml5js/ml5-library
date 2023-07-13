@@ -21,6 +21,7 @@ export class SpeechCommands {
     this.allLabels = this.model.wordLabels();
   }
 
+  // eslint-disable-next-line default-param-last
   classify(topk = this.allLabels.length, cb) {
     return this.model.listen(result => {
       if (result.scores) {
@@ -30,9 +31,7 @@ export class SpeechCommands {
       }
       return cb(`ERROR: Cannot find scores in result: ${result}`);
     }, this.options)
-      .catch(err => {
-        return cb(`ERROR: ${err.message}`);
-      });
+      .catch(err => cb(`ERROR: ${err.message}`));
   }
 }
 

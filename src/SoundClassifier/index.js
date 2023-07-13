@@ -65,7 +65,7 @@ class SoundClassifier {
    * @param {function} cb - a callback function that handles the results of the function.
    * @return {function} a promise or the results of a given callback, cb.
    */
-  async classify(numOrCallback = null, cb) {
+  async classify(numOrCallback, cb) {
     const args = handleArguments(numOrCallback, cb);
     const numberOfClasses = args.number || this.topk;
 

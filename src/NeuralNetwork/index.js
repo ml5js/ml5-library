@@ -330,7 +330,7 @@ class DiyNeuralNetwork {
     if (Array.isArray(input)) {
       formattedInputs = input.map(item => this.formatInputItem(item));
     } else if (typeof input === 'object') {
-      const newXInputs = Object.assign({}, input);
+      const newXInputs = { ...input};
       Object.keys(input).forEach(k => {
         const val = input[k];
         newXInputs[k] = this.formatInputItem(val);
@@ -393,14 +393,10 @@ class DiyNeuralNetwork {
     // to run predict or classify on a batch of data
 
     if (_input instanceof Array) {
-      inputData = inputHeaders.map((prop, idx) => {
-        return this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs);
-      });
+      inputData = inputHeaders.map((prop, idx) => this.isOneHotEncodedOrNormalized(_input[idx], prop, meta.inputs));
     } else if (_input instanceof Object) {
       // TODO: make sure that the input order is preserved!
-      inputData = inputHeaders.map(prop => {
-        return this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs);
-      });
+      inputData = inputHeaders.map(prop => this.isOneHotEncodedOrNormalized(_input[prop], prop, meta.inputs));
     }
 
     // inputData = tf.tensor([inputData.flat()])
@@ -420,9 +416,7 @@ class DiyNeuralNetwork {
 
     if (_input instanceof Array) {
       if (_input.every(item => Array.isArray(item))) {
-        output = _input.map(item => {
-          return this.formatInputsForPrediction(item, meta, inputHeaders);
-        });
+        output = _input.map(item => this.formatInputsForPrediction(item, meta, inputHeaders));
 
         return tf.tensor(output, [_input.length, inputHeaders.length]);
       }
@@ -601,7 +595,7 @@ class DiyNeuralNetwork {
   createNetworkLayers(layerJsonArray, meta) {
     const layers = [...layerJsonArray];
 
-    const { inputUnits, outputUnits } = Object.assign({}, meta);
+    const { inputUnits, outputUnits } = { ...meta};
     const layersLength = layers.length;
 
     if (!(layers.length >= 2)) {
@@ -869,8 +863,7 @@ class DiyNeuralNetwork {
     if (meta !== null) {
       const labels = Object.keys(meta.outputs);
 
-      const formattedResults = unformattedResults.map(unformattedResult => {
-        return labels.map((item, idx) => {
+      const formattedResults = unformattedResults.map(unformattedResult => labels.map((item, idx) => {
           // check to see if the data were normalized
           // if not, then send back the values, otherwise
           // unnormalize then return
@@ -897,8 +890,7 @@ class DiyNeuralNetwork {
           }
 
           return d;
-        });
-      });
+        }));
 
       // return single array if the length is less than 2,
       // otherwise return array of arrays
@@ -929,8 +921,7 @@ class DiyNeuralNetwork {
     if (meta !== null) {
       const labels = Object.keys(meta.outputs);
 
-      const formattedResults = unformattedResults.map(unformattedResult => {
-        return labels.map((item, idx) => {
+      const formattedResults = unformattedResults.map(unformattedResult => labels.map((item, idx) => {
           // check to see if the data were normalized
           // if not, then send back the values, otherwise
           // unnormalize then return
@@ -957,8 +948,7 @@ class DiyNeuralNetwork {
           }
 
           return d;
-        });
-      });
+        }));
 
       // return single array if the length is less than 2,
       // otherwise return array of arrays
@@ -1014,17 +1004,13 @@ class DiyNeuralNetwork {
       const label = Object.keys(meta.outputs)[0];
       const vals = Object.entries(meta.outputs[label].legend);
 
-      const formattedResults = unformattedResults.map(unformattedResult => {
-        return vals
-          .map((item, idx) => {
-            return {
+      const formattedResults = unformattedResults.map(unformattedResult => vals
+          .map((item, idx) => ({
               [item[0]]: unformattedResult[idx],
               label: item[0],
               confidence: unformattedResult[idx],
-            };
-          })
-          .sort((a, b) => b.confidence - a.confidence);
-      });
+            }))
+          .sort((a, b) => b.confidence - a.confidence));
 
       // return single array if the length is less than 2,
       // otherwise return array of arrays
@@ -1079,17 +1065,13 @@ class DiyNeuralNetwork {
       const label = Object.keys(meta.outputs)[0];
       const vals = Object.entries(meta.outputs[label].legend);
 
-      const formattedResults = unformattedResults.map(unformattedResult => {
-        return vals
-          .map((item, idx) => {
-            return {
+      const formattedResults = unformattedResults.map(unformattedResult => vals
+          .map((item, idx) => ({
               [item[0]]: unformattedResult[idx],
               label: item[0],
               confidence: unformattedResult[idx],
-            };
-          })
-          .sort((a, b) => b.confidence - a.confidence);
-      });
+            }))
+          .sort((a, b) => b.confidence - a.confidence));
 
       // return single array if the length is less than 2,
       // otherwise return array of arrays
@@ -1121,7 +1103,7 @@ class DiyNeuralNetwork {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  async loadData(filesOrPath = null, callback) {
+  async loadData(filesOrPath, callback) {
     this.neuralNetworkData.loadData(filesOrPath, callback);
   }
 
@@ -1151,7 +1133,7 @@ class DiyNeuralNetwork {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  async load(filesOrPath = null, cb) {
+  async load(filesOrPath, cb) {
     let callback;
     if (cb) {
       callback = cb;

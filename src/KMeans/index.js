@@ -42,9 +42,7 @@ async function loadDataset(inputData) {
   } else {
     data = inputData;
   }
-  const dataFlat = data.map((d) => {
-    return Object.values(d)
-  });
+  const dataFlat = data.map(d => Object.values(d));
   return dataFlat;
 }
 
@@ -158,7 +156,7 @@ class KMeans {
         const centroidKTensor = centroidK.map(d => d.tensor);
         if (centroidKTensor.length === 0) {
           return centroid;
-        } else if (centroidKTensor.length === 1) {
+        } if (centroidKTensor.length === 1) {
           return centroidKTensor[0];
         }
         // grab mean for for cluster

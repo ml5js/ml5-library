@@ -11,12 +11,11 @@ Heavily derived from https://github.com/ModelDepot/tfjs-yolo-tiny (ModelDepot: m
 
 import * as tf from '@tensorflow/tfjs';
 import handleArguments from "../../utils/handleArguments";
-import Video from './../../utils/Video';
-import { imgToTensor } from "./../../utils/imageUtilities";
-import callCallback from './../../utils/callcallback';
-import CLASS_NAMES from './../../utils/COCO_CLASSES';
-import modelLoader from './../../utils/modelLoader';
-
+import Video from '../../utils/Video';
+import { imgToTensor } from "../../utils/imageUtilities";
+import callCallback from "../../utils/callcallback";
+import CLASS_NAMES from "../../utils/COCO_CLASSES";
+import modelLoader from "../../utils/modelLoader";
 import {
   nonMaxSuppression,
   boxesToCorners,

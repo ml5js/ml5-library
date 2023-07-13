@@ -129,9 +129,7 @@ class NeuralNetwork {
    * @param {*} _inputs
    */
   predictSync(_inputs) {
-    const output = tf.tidy(() => {
-      return this.model.predict(_inputs);
-    });
+    const output = tf.tidy(() => this.model.predict(_inputs));
     const result = output.arraySync();
 
     output.dispose();
@@ -145,9 +143,7 @@ class NeuralNetwork {
    * @param {*} _inputs
    */
   async predict(_inputs) {
-    const output = tf.tidy(() => {
-      return this.model.predict(_inputs);
-    });
+    const output = tf.tidy(() => this.model.predict(_inputs));
     const result = await output.array();
 
     output.dispose();
@@ -211,16 +207,16 @@ class NeuralNetwork {
    * @param {*} filesOrPath
    * @param {*} callback
    */
-  async load(filesOrPath = null, callback) {
+  async load(filesOrPath, callback) {
     if (filesOrPath instanceof FileList) {
       const files = await Promise.all(
         Array.from(filesOrPath).map(async file => {
           if (file.name.includes('.json') && !file.name.includes('_meta')) {
             return { name: 'model', file };
-          } else if (file.name.includes('.json') && file.name.includes('_meta.json')) {
+          } if (file.name.includes('.json') && file.name.includes('_meta.json')) {
             const modelMetadata = await file.text();
             return { name: 'metadata', file: modelMetadata };
-          } else if (file.name.includes('.bin')) {
+          } if (file.name.includes('.bin')) {
             return { name: 'weights', file };
           }
           return { name: null, file: null };

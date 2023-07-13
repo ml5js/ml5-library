@@ -11,7 +11,7 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
-import sampleFromDistribution from "./../utils/sample";
+import sampleFromDistribution from "../utils/sample";
 import CheckpointLoader from "../utils/checkpointLoader";
 import callCallback from "../utils/callcallback";
 
@@ -309,6 +309,6 @@ class CharRNN {
   }
 }
 
-const charRNN = (modelPath = "./", callback) => new CharRNN(modelPath, callback);
+const charRNN = (modelPath, callback) => new CharRNN(modelPath, callback);
 
 export default charRNN;

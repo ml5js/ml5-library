@@ -33,9 +33,7 @@ async function loadDataset(inputData) {
   } else {
     data = inputData;
   }
-  const dataFlat = data.map(d => {
-    return Object.values(d);
-  });
+  const dataFlat = data.map(d => Object.values(d));
   return dataFlat;
 }
 
@@ -138,6 +136,7 @@ class DBSCAN {
   getClusterId() {
     return this.lastClusterId;
   }
+
   /**
    * increment cluster id
    */
@@ -159,9 +158,7 @@ class DBSCAN {
         return tf
           .stack([values.asType("float32"), indices.asType("float32")], 1)
           .arraySync()
-          .filter(v => {
-            return v[0] <= this.config.eps;
-          })
+          .filter(v => v[0] <= this.config.eps)
           .reduce((prev, cur) => {
             prev.push(cur[1]);
             return prev;

@@ -335,9 +335,7 @@ describe('NeuralNetwork', () => {
           epochs: 2,
           shuffle: true,
           validationSplit: 0.2,
-          whileTraining: () => {
-            return null;
-          },
+          whileTraining: () => null,
         };
 
         await brain.trainInternal(trainingOptions);

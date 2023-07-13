@@ -268,7 +268,7 @@ class FaceApiBase {
    * @param {Object} faceApiOptions
    */
   setReturnOptions(faceApiOptions) {
-    const output = Object.assign({}, this.config);
+    const output = { ...this.config};
     const options = ["withLandmarks", "withDescriptors"];
 
     options.forEach(prop => {
@@ -306,7 +306,7 @@ class FaceApiBase {
     if (Array.isArray(result) === true) {
       output = result.map(item => {
         // if landmarks exist return parts
-        const newItem = Object.assign({}, item);
+        const newItem = { ...item};
         if (newItem.landmarks) {
           const { landmarks } = newItem;
           newItem.parts = {
@@ -333,7 +333,7 @@ class FaceApiBase {
       });
       // single detection is an object
     } else {
-      output = Object.assign({}, result);
+      output = { ...result};
       if (output.landmarks) {
         const { landmarks } = result;
         output.parts = {
