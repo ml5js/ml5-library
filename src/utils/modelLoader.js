@@ -41,10 +41,10 @@ class ModelLoader {
    * or to a folder containing the files.
    *
    * @param {string} path
-   * @param {'model'|'manifest'|'metadata'} expected
-   * @param {boolean} prepend
+   * @param {'model'|'manifest'|'metadata'} [expected]
+   * @param {boolean} [prepend]
    */
-  constructor(path, expected = 'model', prepend = true) {
+  constructor(path, expected, prepend = true) {
     const url = prepend ? getModelPath(path) : path;
     const known = {};
     // If a specific URL is provided, make sure that we don't overwrite it with generic '/model.json'
@@ -53,7 +53,7 @@ class ModelLoader {
       const pos = url.lastIndexOf('/') + 1;
       this.directory = url.slice(0, pos);
       const fileName = url.slice(pos, -5);
-      if (fileName !== expected && isKnownName(fileName)) {
+      if (expected && fileName !== expected && isKnownName(fileName)) {
         console.warn(`Expected a ${expected}.json file URL, but received a ${fileName}.json file instead.`);
       } else {
         known[expected] = url;
