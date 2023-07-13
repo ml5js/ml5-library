@@ -11,7 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from "../utils/handleArguments";
-import { mediaReady } from '../utils/imageUtilities';
+import { mediaReady, toTensor } from '../utils/imageUtilities';
 
 const DEFAULTS = {
   modelPath: 'https://raw.githubusercontent.com/zaidalyafeai/HostedModels/master/unet-128/model.json',
@@ -62,7 +62,7 @@ class UNET {
       segmentation
     } = tf.tidy(() => {
       // preprocess the input image
-      const tfImage = tf.browser.fromPixels(imgToPredict).toFloat();
+      const tfImage = toTensor(imgToPredict).toFloat();
       const resizedImg = tf.image.resizeBilinear(tfImage, [this.config.imageSize, this.config.imageSize]);
       let normTensor = resizedImg.div(tf.scalar(255));
       const batchedImage = normTensor.expandDims(0);

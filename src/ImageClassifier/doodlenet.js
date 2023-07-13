@@ -12,23 +12,12 @@ const DEFAULTS = {
   IMAGE_SIZE_DOODLENET: 28,
 };
 
-function preProcess(img, size) {
-  let image;
-  if (!(img instanceof tf.Tensor)) {
-    if (img instanceof HTMLImageElement 
-      || img instanceof HTMLVideoElement 
-      || img instanceof HTMLCanvasElement
-      || img instanceof ImageData) {
-      image = tf.browser.fromPixels(img);
-    } else if (typeof img === 'object' && (img.elt instanceof HTMLImageElement 
-      || img.elt instanceof HTMLVideoElement 
-      || img.elt instanceof HTMLCanvasElement
-      || img.elt instanceof ImageData)) {
-      image = tf.browser.fromPixels(img.elt); // Handle p5.js image, video and canvas.
-    }
-  } else {
-    image = img;
-  }
+/**
+ * @param {tf.Tensor3D} image
+ * @param {number} size
+ * @return {tf.Tensor4D}
+ */
+function preProcess(image, size) {
   const normalized = tf.scalar(1).sub(image.toFloat().div(tf.scalar(255)));
   let resized = normalized;
   if (normalized.shape[0] !== size || normalized.shape[1] !== size) {
@@ -55,6 +44,11 @@ export class Doodlenet {
     result.dispose();
   }
 
+  /**
+   * @param {tf.Tensor3D} img
+   * @param {number} topk
+   * @return {Promise<{ className: string, probability: number }[]>}
+   */
   async classify(img, topk = 10) {
     const logits = tf.tidy(() => {
       const imgData = preProcess(img, this.imgSize);

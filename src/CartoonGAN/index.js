@@ -11,6 +11,7 @@ import * as tf from '@tensorflow/tfjs';
 import callCallback from '../utils/callcallback';
 import generatedImageResult from '../utils/generatedImageResult';
 import handleArguments from '../utils/handleArguments';
+import { mediaReady, toTensor } from '../utils/imageUtilities';
 
 const IMAGE_SIZE = 256;
 
@@ -81,16 +82,17 @@ class Cartoon {
 
   /**
    * @private
-   * TODO: accept tensor3D
    * @param {ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement} src
    * @return {Promise<CartoonResult>}
    */
   async generateInternal(src) {
-    await this.ready;
-    await tf.nextFrame();
+    await Promise.all([
+      this.ready,
+      mediaReady(src, true)
+    ]);
     const result = tf.tidy(() => {
       // adds resizeBilinear to resize image to 256x256 as required by the model
-      let img = tf.browser.fromPixels(src).resizeBilinear([IMAGE_SIZE, IMAGE_SIZE]);
+      let img = toTensor(src).resizeBilinear([IMAGE_SIZE, IMAGE_SIZE]);
       if (img.shape[0] !== IMAGE_SIZE || img.shape[1] !== IMAGE_SIZE) {
         throw new Error(`Input size should be ${IMAGE_SIZE}*${IMAGE_SIZE} but ${img.shape} is found`);
       } else if (img.shape[2] !== 3) {
