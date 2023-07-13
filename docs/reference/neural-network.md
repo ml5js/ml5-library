@@ -201,8 +201,8 @@ function handleResults(error, result) {
     /**
     The weather json looks something like:
     {"data": [
-      {"xs": {"avg_temperature":20, "humidity": 0.2}, "ys": {"rained": "no"}},
-      {"xs": {"avg_temperature":30, "humidity": 0.9}, "ys": {"rained": "yes"}}
+      {"avg_temperature":20, "humidity": 0.2, "rained" : "no"},
+      {"avg_temperature":30, "humidity": 0.9, "rained": "yes"}
     ] }
     * */
     const options = {
