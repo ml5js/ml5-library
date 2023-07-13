@@ -3,7 +3,6 @@
 // This software is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-/* eslint prefer-destructuring: ["error", {AssignmentExpression: {array: false}}] */
 /* eslint no-await-in-loop: "off" */
 /*
 A LSTM Generator: Run inference mode for a pre-trained LSTM.
@@ -11,90 +10,137 @@ A LSTM Generator: Run inference mode for a pre-trained LSTM.
 
 import * as tf from "@tensorflow/tfjs";
 import axios from "axios";
-import sampleFromDistribution from "./../utils/sample";
-import CheckpointLoader from "../utils/checkpointLoader";
 import callCallback from "../utils/callcallback";
+import CheckpointLoader from "../utils/checkpointLoader";
+import sampleFromDistribution from "./../utils/sample";
 
 const regexCell = /cell_[0-9]|lstm_[0-9]/gi;
 const regexWeights = /weights|weight|kernel|kernels|w/gi;
 const regexFullyConnected = /softmax/gi;
 
+/**
+ * @typedef {Object} LSTMModel
+ * @property {Array<tf.Tensor>} biases - array of bias tensors
+ * @property {Array<tf.Tensor>} weights - array of kernel/weight tensors
+ * @property {tf.Tensor} fullyConnectedBiases - softmax_b
+ * @property {tf.Tensor} fullyConnectedWeights - softmax_w
+ * @property {tf.Tensor} [embedding] - optional embedding
+ */
+
+/**
+ * @type {CharRNNOptions}
+ */
+const CHAR_RNN_DEFAULTS = {
+  seed: ' ',
+  length: 20,
+  temperature: 0.5,
+  stateful: false
+};
+
 class CharRNN {
   /**
    * Create a CharRNN.
-   * @param {String} modelPath - The path to the trained charRNN model.
-   * @param {function} callback  - Optional. A callback to be called once
+   * @param {string} modelPath - The path to the trained charRNN model.
+   * @param {function} [callback] - Optional. A callback to be called once
    *    the model has loaded. If no callback is provided, it will return a
    *    promise that will be resolved once the model has loaded.
    */
   constructor(modelPath, callback) {
     /**
-     * Boolean value that specifies if the model has loaded.
-     * @type {boolean}
-     * @public
-     */
-    this.ready = false;
-
-    /**
      * The pre-trained charRNN model.
-     * @type {model}
+     * @type {LSTMModel}
      * @public
      */
     this.model = {};
-    this.cellsAmount = 0;
+    /**
+     * Array of functions which create LSTM cells.
+     * @type {Array<tf.LSTMCellFunc>}
+     */
     this.cells = [];
+    /**
+     * @typedef {Object} CharRNNState
+     * @property {Array<tf.Tensor2D>} c
+     * @property {Array<tf.Tensor2D>} h
+     */
+    /**
+     * @type {CharRNNState}
+     */
     this.zeroState = { c: [], h: [] };
     /**
-     * The vocabulary size (or total number of possible characters).
-     * @type {c: Array, h: Array}
+     * @type {CharRNNState}
      * @public
      */
     this.state = { c: [], h: [] };
+    /**
+     * Mapping of characters to their id numbers.
+     * @type {Record<string, number>}
+     */
     this.vocab = {};
+    /**
+     * The vocabulary size (or total number of unique characters).
+     * @type {number}
+     */
     this.vocabSize = 0;
-    this.probabilities = [];
-    this.defaults = {
-      seed: "a", // TODO: use no seed by default
-      length: 20,
-      temperature: 0.5,
-      stateful: false,
-    };
-
+    /**
+     * Promise which resolves when the model has loaded.
+     * @type {Promise<CharRNN>}
+     * @public
+     */
     this.ready = callCallback(this.loadCheckpoints(modelPath), callback);
     // this.then = this.ready.then.bind(this.ready);
   }
 
-  resetState() {
-    this.state = this.zeroState;
-  }
-
+  /**
+   * @private
+   *
+   * @param {CharRNNState} state
+   * @void
+   */
   setState(state) {
+    // dispose of previous state, if it is not the same tensors as zeroState.
+    if (this.state !== this.zeroState) {
+      this.state.c.forEach(tensor => tensor.dispose());
+      this.state.h.forEach(tensor => tensor.dispose());
+    }
     this.state = state;
   }
 
+  /**
+   * @public
+   *
+   * @return {CharRNNState}
+   */
   getState() {
     return this.state;
   }
 
+  /**
+   * @private
+   *
+   * @param {string} path
+   * @return {Promise<CharRNN>}
+   */
   async loadCheckpoints(path) {
     const reader = new CheckpointLoader(path);
     const vars = await reader.getAllVariables();
+    this.model = { biases: [], weights: [] };
     Object.keys(vars).forEach(key => {
+      const tensor = vars[key];
       if (key.match(regexCell)) {
+        const i = key.match(/[0-9]/)[0];
         if (key.match(regexWeights)) {
-          this.model[`Kernel_${key.match(/[0-9]/)[0]}`] = vars[key];
-          this.cellsAmount += 1;
+          this.model.weights[i] = tensor;
         } else {
-          this.model[`Bias_${key.match(/[0-9]/)[0]}`] = vars[key];
+          this.model.biases[i] = tensor;
         }
       } else if (key.match(regexFullyConnected)) {
         if (key.match(regexWeights)) {
-          this.model.fullyConnectedWeights = vars[key];
+          this.model.fullyConnectedWeights = tensor;
         } else {
-          this.model.fullyConnectedBiases = vars[key];
+          this.model.fullyConnectedBiases = tensor;
         }
       } else {
-        this.model[key] = vars[key];
+        this.model[key] = tensor;
       }
     });
     await this.loadVocab(path);
@@ -102,6 +148,12 @@ class CharRNN {
     return this;
   }
 
+  /**
+   * @private
+   *
+   * @param {string} path
+   * @return {Promise<Record<string, number>>}
+   */
   async loadVocab(path) {
     try {
       const { data } = await axios.get(`${path}/vocab.json`);
@@ -109,203 +161,226 @@ class CharRNN {
       this.vocabSize = Object.keys(data).length;
       return this.vocab;
     } catch (err) {
-      return err;
+      throw new Error(`Unable to load vocab from URL ${path}/vocab.json. Failed with error: ${err.toString()}`);
     }
   }
 
+  /**
+   * @private
+   *
+   * @return {Promise<void>}
+   */
   async initCells() {
     this.cells = [];
     this.zeroState = { c: [], h: [] };
-    const forgetBias = tf.tensor(1.0);
 
-    const lstm = i => {
-      const cell = (DATA, C, H) =>
-        tf.basicLSTMCell(
-          forgetBias,
-          this.model[`Kernel_${i}`],
-          this.model[`Bias_${i}`],
-          DATA,
-          C,
-          H,
-        );
-      return cell;
-    };
+    this.model.biases.forEach((bias, i) => {
+      this.zeroState.c.push(tf.zeros([1, bias.shape[0] / 4]));
+      this.zeroState.h.push(tf.zeros([1, bias.shape[0] / 4]));
+      const kernel = this.model.weights[i];
+      this.cells.push(
+        (data, c, h) =>
+          tf.basicLSTMCell(1.0, kernel, bias, data, c, h)
+      );
+    })
 
-    for (let i = 0; i < this.cellsAmount; i += 1) {
-      this.zeroState.c.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-      this.zeroState.h.push(tf.zeros([1, this.model[`Bias_${i}`].shape[0] / 4]));
-      this.cells.push(lstm(i));
-    }
-
-    this.state = this.zeroState;
+    // copy new zeroState to state.
+    this.reset();
   }
 
-  async generateInternal(options) {
-    await this.ready;
-    const seed = options.seed || this.defaults.seed;
-    const length = +options.length || this.defaults.length;
-    const temperature = +options.temperature || this.defaults.temperature;
-    const stateful = options.stateful || this.defaults.stateful;
-    if (!stateful) {
-      this.state = this.zeroState;
-    }
-
-    const results = [];
-    const userInput = Array.from(seed);
-    const encodedInput = [];
-
-    userInput.forEach(char => {
-      encodedInput.push(this.vocab[char]);
-    });
-
-    let input = encodedInput[0];
-    let probabilitiesNormalized = []; // will contain final probabilities (normalized)
-
-    for (let i = 0; i < userInput.length + length + -1; i += 1) {
-      const onehotBuffer = await tf.buffer([1, this.vocabSize]);
-      onehotBuffer.set(1.0, 0, input);
+  /**
+   * @private
+   * Feed in one single character and update this.state.
+   *
+   * @param {string} character
+   * @return {Promise<void>}
+   */
+  async nextState(character) {
+    const encoded = this.vocab[character];
+    const onehotBuffer = await tf.buffer([1, this.vocabSize]);
+    const [c, h] = tf.tidy(() => {
+      onehotBuffer.set(1.0, 0, encoded);
       const onehot = onehotBuffer.toTensor();
-      let output;
-      if (this.model.embedding) {
-        const embedded = tf.matMul(onehot, this.model.embedding);
-        output = tf.multiRNNCell(this.cells, embedded, this.state.c, this.state.h);
-      } else {
-        output = tf.multiRNNCell(this.cells, onehot, this.state.c, this.state.h);
-      }
+      const data = this.model.embedding ? tf.matMul(onehot, this.model.embedding) : onehot;
+      return tf.multiRNNCell(this.cells, data, this.state.c, this.state.h);
+    });
+    this.setState({ c, h });
+  }
 
-      this.state.c = output[0];
-      this.state.h = output[1];
-
+  /**
+   * @private
+   * Common logic from feed() and generateInternal().
+   * Get an array with the probabilities of each character appearing next
+   * and one predicted character.
+   *
+   * @param {number} temperature
+   * @return {Promise<Float32Array>}
+   */
+  async nextChar(temperature) {
+    let temp = temperature;
+    if (temperature < 0) {
+      temp = CHAR_RNN_DEFAULTS.temperature;
+      console.warn(`Temperature should not be less than 0. Replacing provided temperature ${temperature} with default value ${temp}.`);
+    }
+    const normalized = tf.tidy(() => {
       const outputH = this.state.h[1];
       const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
       const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
-      const divided = tf.div(logits, tf.tensor(temperature));
+      const divided = tf.div(logits, tf.tensor(temp));
       const probabilities = tf.exp(divided);
-      probabilitiesNormalized = await tf.div(probabilities, tf.sum(probabilities)).data();
-
-      if (i < userInput.length - 1) {
-        input = encodedInput[i + 1];
-      } else {
-        input = sampleFromDistribution(probabilitiesNormalized);
-        results.push(input);
-      }
-    }
-
-    let generated = "";
-    results.forEach(char => {
-      const mapped = Object.keys(this.vocab).find(key => this.vocab[key] === char);
-      if (mapped) {
-        generated += mapped;
-      }
+      return tf.div(probabilities, tf.sum(probabilities));
     });
-    this.probabilities = probabilitiesNormalized;
-    return {
-      sample: generated,
-      state: this.state,
-    };
+    const probabilitiesNormalized = await normalized.data();
+    normalized.dispose();
+    return probabilitiesNormalized;
+  }
+
+
+  /**
+   * @private
+   * Convert a numeric id to its text character.
+   *
+   * @param {number} index
+   * @return {string}
+   */
+  findChar(index) {
+    const result = Object.keys(this.vocab).find(key => this.vocab[key] === index);
+    if (!result) {
+      throw new Error(`No character in the model's vocab corresponds to predicted index ${index}.`);
+    }
+    return result;
   }
 
   /**
+   * @private
+   * Pick a single character from the model vocab based on the provided probabilities.
+   *
+   * @param {Float32Array} probabilities
+   * @return {string}
+   */
+  sample(probabilities) {
+    // The index of the predicted character.
+    const index = sampleFromDistribution(probabilities);
+    // The character itself.
+    return this.findChar(index);
+  }
+
+  /**
+   * @public
+   * @void
+   *
    * Reset the model state.
    */
   reset() {
-    this.state = this.zeroState;
+    this.setState(this.zeroState);
   }
 
   /**
-   * @typedef {Object} options
+   * @typedef {Object} CharRNNOptions
    * @property {String} seed
    * @property {number} length
    * @property {number} temperature
+   * @property {boolean} stateful
    */
 
   // stateless
   /**
    * Generates content in a stateless manner, based on some initial text
    *    (known as a "seed"). Returns a string.
-   * @param {options} options - An object specifying the input parameters of
+   * @param {Partial<CharRNNOptions>} options - An object specifying the input parameters of
    *    seed, length and temperature. Default length is 20, temperature is 0.5
    *    and seed is a random character from the model. The object should look like
    *    this:
-   * @param {function} callback - Optional. A function to be called when the model
+   * @param {function} [callback] - Optional. A function to be called when the model
    *    has generated content. If no callback is provided, it will return a promise
    *    that will be resolved once the model has generated new content.
+   *
+   * @return {Promise<{state: CharRNNState, sample: string}>}
    */
   async generate(options, callback) {
-    this.reset();
-    return callCallback(this.generateInternal(options), callback);
+    return callCallback((async () => {
+      if (!options) {
+        throw new Error('Argument "options" is required.');
+      }
+      await this.ready;
+      const seed = options.seed || CHAR_RNN_DEFAULTS.seed;
+      const length = +options.length || CHAR_RNN_DEFAULTS.length;
+      const temperature = +options.temperature || CHAR_RNN_DEFAULTS.temperature;
+      if (!options.stateful) {
+        this.reset();
+      }
+      await this.feed(seed);
+      let generated = '';
+      for (let i = 0; i < length; i += 1) {
+        const probabilities = await this.nextChar(temperature);
+        const char = this.sample(probabilities);
+        generated += char;
+        await this.nextState(char);
+      }
+      return {
+        sample: generated,
+        state: this.state,
+      };
+    })(), callback);
   }
 
   // stateful
   /**
    * Predict the next character based on the model's current state.
-   * @param {number} temp
-   * @param {function} callback - Optional. A function to be called when the
+   * @param {number} temperature
+   * @param {function} [callback] - Optional. A function to be called when the
    *    model finished adding the seed. If no callback is provided, it will
    *    return a promise that will be resolved once the prediction has been generated.
+   * @return {Promise<{sample: string, probabilities: Array<{probability: number, char: string}>}>}
    */
-  async predict(temp, callback) {
-    let probabilitiesNormalized = [];
-    const temperature = temp > 0 ? temp : 0.1;
-    const outputH = this.state.h[1];
-    const weightedResult = tf.matMul(outputH, this.model.fullyConnectedWeights);
-    const logits = tf.add(weightedResult, this.model.fullyConnectedBiases);
-    const divided = tf.div(logits, tf.tensor(temperature));
-    const probabilities = tf.exp(divided);
-    probabilitiesNormalized = await tf.div(probabilities, tf.sum(probabilities)).data();
-
-    const sample = sampleFromDistribution(probabilitiesNormalized);
-    const result = Object.keys(this.vocab).find(key => this.vocab[key] === sample);
-    this.probabilities = probabilitiesNormalized;
-    if (callback) {
-      callback(result);
-    }
-    /* eslint max-len: ["error", { "code": 180 }] */
-    const pm = Object.keys(this.vocab).map(c => ({
-      char: c,
-      probability: this.probabilities[this.vocab[c]],
-    }));
-    return {
-      sample: result,
-      probabilities: pm,
-    };
+  async predict(temperature, callback) {
+    return callCallback((async () => {
+      await this.ready;
+      const probabilities = await this.nextChar(temperature);
+      const sample = this.sample(probabilities);
+      const charProbabilities = Object.keys(this.vocab).map(char => ({
+        char,
+        probability: probabilities[this.vocab[char]],
+      }));
+      return {
+        sample,
+        probabilities: charProbabilities
+      };
+    })(), callback);
   }
 
   /**
    * Feed a string of characters to the model state.
-   * @param {String} inputSeed - A string to feed the charRNN model state.
-   * @param {function} callback  - Optional. A function to be called when
+   * @param {string} inputSeed - A string to feed the charRNN model state.
+   * @param {function} [callback] - Optional. A function to be called when
    *    the model finished adding the seed. If no callback is provided, it
    *    will return a promise that will be resolved once seed has been fed.
+   * @return {Promise<void>}
    */
   async feed(inputSeed, callback) {
-    await this.ready;
-    const seed = Array.from(inputSeed);
-    const encodedInput = [];
+    return callCallback((async () => {
+      await this.ready;
+      Array.from(inputSeed).forEach(char => {
+        this.nextState(char);
+      });
+    })(), callback);
+  }
 
-    seed.forEach(char => {
-      encodedInput.push(this.vocab[char]);
-    });
-
-    let input = encodedInput[0];
-    for (let i = 0; i < seed.length; i += 1) {
-      const onehotBuffer = await tf.buffer([1, this.vocabSize]);
-      onehotBuffer.set(1.0, 0, input);
-      const onehot = onehotBuffer.toTensor();
-      let output;
-      if (this.model.embedding) {
-        const embedded = tf.matMul(onehot, this.model.embedding);
-        output = tf.multiRNNCell(this.cells, embedded, this.state.c, this.state.h);
-      } else {
-        output = tf.multiRNNCell(this.cells, onehot, this.state.c, this.state.h);
-      }
-      this.state.c = output[0];
-      this.state.h = output[1];
-      input = encodedInput[i];
-    }
-    if (callback) {
-      callback();
-    }
+  /**
+   * @public
+   * @void
+   *
+   * Cleans up memory by disposing of tensors used in instance properties.
+   */
+  dispose() {
+    const tensors = [
+      Object.values(this.model),
+      this.zeroState.c,
+      this.zeroState.h,
+      this.state.c,
+      this.state.h
+    ].flat();
+    tensors.forEach(tensor => tensor.dispose());
   }
 }
 

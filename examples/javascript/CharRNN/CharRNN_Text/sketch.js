@@ -72,27 +72,27 @@ function generate() {
     // Make it to lower case
     const txt = original.toLowerCase();
 
-    // Check if there's something to send
-    if (txt.length > 0) {
-      // This is what the LSTM generator needs
-      // Seed text, temperature, length to outputs
-      // TODO: What are the defaults?
-      const data = {
-        seed: txt,
-        temperature: tempSlider.value,
-        length: lengthSlider.value
-      };
+    // This is what the LSTM generator needs
+    // Seed text, temperature, length to outputs
+    const data = {
+      seed: txt,
+      temperature: tempSlider.value,
+      length: lengthSlider.value
+    };
 
-      // Generate text with the charRNN
-      charRNN.generate(data, gotData);
+    // Generate text with the charRNN
+    charRNN.generate(data, gotData);
 
-      // When it's done
-      function gotData(err, result) {
-        // Update the status log
-        status.innerHTML = 'Ready!';
-        resultText.innerHTML = txt + result.sample;
-        runningInference = false;
+    // When it's done
+    function gotData(err, result) {
+      // Update the status log
+      if (err) {
+        status.innerHTML = `Error: ${err.message}`;
+        return;
       }
+      status.innerHTML = 'Ready!';
+      resultText.innerHTML = txt + result.sample;
+      runningInference = false;
     }
   }
 }
