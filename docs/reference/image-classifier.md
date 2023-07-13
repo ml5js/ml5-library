@@ -160,7 +160,7 @@ classifier.classify(?numberOfClasses , ?callback);
 
 ## Demo
 
-No demos yet - contribute one today!
+[Live Demo](https://saigenix.github.io/Image-classifier/)
 
 ## Tutorials
 
@@ -287,6 +287,7 @@ A nice description of the models overview
 **Contributors**:
   * [Cristobal Valenzuela](https://cvalenzuelab.com/)
   * [Yining Shi](https://1023.io)
+  * [saigenix](https://github.com/Saigenix)
 
 **Credits**:
   * Paper Reference | Website URL | Github Repo | Book reference | etc
