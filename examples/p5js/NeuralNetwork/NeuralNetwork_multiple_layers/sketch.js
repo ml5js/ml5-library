@@ -48,7 +48,8 @@ function setup() {
 
 function addData() {
   for (let i = 0; i < 500; i += 1) {
-    let xVal, labelVal;
+    let xVal;
+    let labelVal;
     if (i < 250) {
       xVal = i;
       labelVal = "a";

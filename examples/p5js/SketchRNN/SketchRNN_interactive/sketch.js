@@ -13,7 +13,8 @@ let model;
 // Start by drawing
 let previousPen = "down";
 // Current location of drawing
-let x, y;
+let x
+let y;
 // The current "stroke" of the drawing
 let strokePath;
 let seedStrokes = [];

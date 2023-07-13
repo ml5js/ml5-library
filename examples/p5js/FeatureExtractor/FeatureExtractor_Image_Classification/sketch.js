@@ -52,7 +52,7 @@ function classify() {
 function setupButtons() {
   // When the Cat button is pressed, add the current frame
   // from the video with a label of "cat" to the classifier
-  buttonA = select("#catButton");
+  const buttonA = select("#catButton");
   buttonA.mousePressed(function() {
     classifier.addImage("cat");
     select("#amountOfCatImages").html((catImages += 1));
@@ -60,7 +60,7 @@ function setupButtons() {
 
   // When the Dog button is pressed, add the current frame
   // from the video with a label of "dog" to the classifier
-  buttonB = select("#dogButton");
+  const buttonB = select("#dogButton");
   buttonB.mousePressed(function() {
     classifier.addImage("dog");
     select("#amountOfDogImages").html((dogImages += 1));
@@ -68,14 +68,14 @@ function setupButtons() {
 
   // When the Dog button is pressed, add the current frame
   // from the video with a label of "dog" to the classifier
-  buttonC = select("#badgerButton");
+  const buttonC = select("#badgerButton");
   buttonC.mousePressed(function() {
     classifier.addImage("badger");
     select("#amountOfBadgerImages").html((badgerImages += 1));
   });
 
   // Train Button
-  train = select("#train");
+  const train = select("#train");
   train.mousePressed(function() {
     classifier.train(function(lossValue) {
       if (lossValue) {
@@ -88,17 +88,17 @@ function setupButtons() {
   });
 
   // Predict Button
-  buttonPredict = select("#buttonPredict");
+  const buttonPredict = select("#buttonPredict");
   buttonPredict.mousePressed(classify);
 
   // Save model
-  saveBtn = select("#save");
+  const saveBtn = select("#save");
   saveBtn.mousePressed(function() {
     classifier.save();
   });
 
   // Load model
-  loadBtn = select("#load");
+  const loadBtn = select("#load");
   loadBtn.changed(function() {
     classifier.load(loadBtn.elt.files, function() {
       select("#modelStatus").html("Custom Model Loaded!");

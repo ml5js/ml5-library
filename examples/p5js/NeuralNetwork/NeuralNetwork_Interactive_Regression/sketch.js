@@ -71,8 +71,8 @@ function startTraining() {
 
 function doneTraining() {
   // build x-bases to calculate corresponding y-values. We take every x-value possible of the canvas to make it look like a line
-  xMany = [];
-  for (x = 0; x <= canvasSize; x += 1) {
+  const xMany = [];
+  for (let x = 0; x <= canvasSize; x++) {
     xMany.push([x]);
   }
 
@@ -83,8 +83,8 @@ function doneTraining() {
     } else {
       console.log(results);
       for (let i = 0; i < results.length; i += 1) {
-        x = xMany[i][0];
-        y = results[i][0].value;
+        const x = xMany[i][0];
+        const y = results[i][0].value;
         circle(x, y, 1);
       }
     }

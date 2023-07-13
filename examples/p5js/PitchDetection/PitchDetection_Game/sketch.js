@@ -9,10 +9,9 @@ A game using pitch Detection with CREPE
 === */
 
 // Pitch variables
-let crepe;
-const voiceLow = 100;
-const voiceHigh = 500;
-let audioStream;
+let audioContext;
+let mic;
+let pitch;
 
 // Circle variables
 const circleSize = 42;
@@ -21,12 +20,9 @@ const scale = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 // Text variables
 let goalNote = 0;
 let currentNote = '';
-const currentText = '';
-let textCoordinates;
 
 function setup() {
   createCanvas(410, 320);
-  textCoordinates = [width / 2, 30];
   gameReset();
   audioContext = getAudioContext();
   mic = new p5.AudioIn();
@@ -58,13 +54,13 @@ function draw() {
   // Goal Circle is Blue
   noStroke();
   fill(0, 0, 255);
-  goalHeight = map(goalNote, 0, scale.length - 1, 0, height);
+  const goalHeight = map(goalNote, 0, scale.length - 1, 0, height);
   ellipse(width / 2, goalHeight, circleSize, circleSize);
   fill(255);
   text(scale[goalNote], (width / 2) - 5, goalHeight + (circleSize / 6));
   // Current Pitch Circle is Pink
   if (currentNote) {
-    currentHeight = map(scale.indexOf(currentNote), 0, scale.length - 1, 0, height);
+    const currentHeight = map(scale.indexOf(currentNote), 0, scale.length - 1, 0, height);
     fill(255, 0, 255);
     ellipse(width / 2, currentHeight, circleSize, circleSize);
     fill(255);

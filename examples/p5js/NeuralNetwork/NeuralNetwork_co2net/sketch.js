@@ -11,7 +11,6 @@ This example uses a callback pattern to create the classifier
 // y: scope1_ghg_emissions_tons_co2e
 === */
 let nn;
-let data;
 
 let counter = 0;
 const testInputs = [100, 50000, 100000, 500000, 2500000, 5000000, 10000000, 15000000];

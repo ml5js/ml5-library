@@ -68,7 +68,7 @@ function finishedTraining() {
 function gotResults(error, results) {
   background(0);
   if (error) {
-    console.log(err);
+    console.log(error);
     return;
   }
   // console.log(results);

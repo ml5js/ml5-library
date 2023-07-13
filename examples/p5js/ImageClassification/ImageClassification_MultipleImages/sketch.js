@@ -11,7 +11,7 @@ Multiple Image classification using MobileNet and p5.js
 // Initialize the Image Classifier method using MobileNet
 let classifier;
 
-let img;
+let data;
 let currentIndex = 0;
 const allImages = [];
 const predictions = [];
@@ -29,8 +29,8 @@ function setup() {
 }
 
 function appendImages() {
-  for (i = 0; i < data.images.length; i += 1) {
-    imgPath = data.images[i];
+  for (let i = 0; i < data.images.length; i++) {
+    const imgPath = data.images[i];
     allImages.push(`images/dataset/${imgPath}`);
   }
 }
@@ -43,7 +43,7 @@ function imageReady(img) {
 }
 
 function savePredictions() {
-  predictionsJSON = {
+  const predictionsJSON = {
     predictions,
   };
   saveJSON(predictionsJSON, "predictions.json");
@@ -56,7 +56,7 @@ function gotResult(err, results) {
     console.error(err);
   }
 
-  information = {
+  const information = {
     name: allImages[currentIndex],
     result: results,
   };

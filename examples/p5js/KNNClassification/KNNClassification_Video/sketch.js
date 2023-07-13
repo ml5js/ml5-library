@@ -69,55 +69,55 @@ function classify() {
 function createButtons() {
   // When the A button is pressed, add the current frame
   // from the video with a label of "rock" to the classifier
-  buttonA = select('#addClassRock');
+  const buttonA = select('#addClassRock');
   buttonA.mousePressed(function() {
     addExample('Rock');
   });
 
   // When the B button is pressed, add the current frame
   // from the video with a label of "paper" to the classifier
-  buttonB = select('#addClassPaper');
+  const buttonB = select('#addClassPaper');
   buttonB.mousePressed(function() {
     addExample('Paper');
   });
 
   // When the C button is pressed, add the current frame
   // from the video with a label of "scissor" to the classifier
-  buttonC = select('#addClassScissor');
+  const buttonC = select('#addClassScissor');
   buttonC.mousePressed(function() {
     addExample('Scissor');
   });
 
   // Reset buttons
-  resetBtnA = select('#resetRock');
+  const resetBtnA = select('#resetRock');
   resetBtnA.mousePressed(function() {
     clearLabel('Rock');
   });
-	
-  resetBtnB = select('#resetPaper');
+
+  const resetBtnB = select('#resetPaper');
   resetBtnB.mousePressed(function() {
     clearLabel('Paper');
   });
-	
-  resetBtnC = select('#resetScissor');
+
+  const resetBtnC = select('#resetScissor');
   resetBtnC.mousePressed(function() {
     clearLabel('Scissor');
   });
 
   // Predict button
-  buttonPredict = select('#buttonPredict');
+  const buttonPredict = select('#buttonPredict');
   buttonPredict.mousePressed(classify);
 
   // Clear all classes button
-  buttonClearAll = select('#clearAll');
+  const buttonClearAll = select('#clearAll');
   buttonClearAll.mousePressed(clearAllLabels);
 
   // Load saved classifier dataset
-  buttonSetData = select('#load');
+  const buttonSetData = select('#load');
   buttonSetData.mousePressed(loadMyKNN);
 
   // Get classifier dataset
-  buttonGetData = select('#save');
+  const buttonGetData = select('#save');
   buttonGetData.mousePressed(saveMyKNN);
 }
 

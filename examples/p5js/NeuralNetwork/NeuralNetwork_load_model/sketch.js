@@ -1,7 +1,8 @@
 let neuralNetwork;
-let submitButton;
 
-let rSlider, gSlider, bSlider;
+let rSlider;
+let gSlider;
+let bSlider;
 let labelP;
 let lossP;
 
@@ -38,7 +39,7 @@ function setup() {
 function modelReady() {
   console.log('model loaded!')
   classify();
-};
+}
 
 
 function classify() {
