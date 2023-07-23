@@ -20,18 +20,18 @@ class ObjectDetector {
    */
   /**
    * Create ObjectDetector model. Works on video and images.
-   * @param {string} modelNameOrUrl - The name or the URL of the model to use. Current model name options
+   * @param {string} modelName - The name of the model to use. Current model name options
    *    are: 'YOLO' and 'CocoSsd'.
    * @param {Object} options - Optional. A set of options.
    * @param {function} callback - Optional. A callback function that is called once the model has loaded.
    */
-  constructor(modelNameOrUrl, video, options, callback) {
+  constructor(modelName, video, options, callback) {
     this.video = video;
-    this.modelNameOrUrl = modelNameOrUrl;
+    this.modelNameOrUrl = modelName;
     this.options = options || {};
     this.callback = callback;
 
-    switch (modelNameOrUrl) {
+    switch (modelName) {
       case "yolo":
         this.model = new YOLO(
           this.video,
@@ -58,9 +58,7 @@ const objectDetector = (...inputs) => {
     .require('string', 'Please specify a model to use. E.g: "YOLO"');
 
   let model = string;
-  // TODO: I think we should delete this.
-  if (model.indexOf("http") === -1) {
-    model = model.toLowerCase();
+  model = model.toLowerCase();
   }
 
   const instance = new ObjectDetector(model, video, options, callback);
