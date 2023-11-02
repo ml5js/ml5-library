@@ -14,10 +14,11 @@ async function setup() {
   // create a canvas to draw to
   canvas = createCanvas(width, height);
   ctx = canvas.getContext('2d');
-  // get the video
-  video = await getVideo();
   // load bodyPix with video
   bodypix = await ml5.bodyPix(options)
+  // get the video
+  video = await getVideo();
+
 }
 
 // when the dom is loaded, call make();
