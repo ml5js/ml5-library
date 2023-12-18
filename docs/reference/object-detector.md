@@ -41,7 +41,7 @@ const objectDetector = ml5.objectDetector(modelNameOrUrl, ?options, ?callback);
 ```
 
 #### Parameters
-* **modelNameOrUrl**: A String value of a valid model OR a url to a `model.json` that contains a pre-trained model. Models available are: ['cocossd'](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd), ['yolo'](https://pjreddie.com/darknet/yolo/)
+* **modelNameOrUrl**: A String value of a valid model. Models available are: ['cocossd'](https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd), ['yolo'](https://pjreddie.com/darknet/yolo/)
 * **options**: Optional. An object describing a model accuracy and performance. For YOLO this are: `{ filterBoxesThreshold: 0.01, IOUThreshold: 0.4, classProbThreshold: 0.4 }`
 * **callback**: Optional. A function to run once the model has been loaded. If no callback is provided, it will return a promise that will be resolved once the model has loaded.
 
